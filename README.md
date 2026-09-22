@@ -22,6 +22,35 @@ git submodule update --init --recursive
 
 ---
 
+## NGHIÊN CỨU OFFLINE VÀ LOCAL INDEX
+
+Quy tắc nghiên cứu bắt buộc nằm trong [`AGENTS.md`](AGENTS.md). Hệ thống chỉ
+dùng dữ liệu local, không Web Search và không tự tải dữ liệu còn thiếu.
+
+```bash
+# Kiểm tra 13 nguồn local và trạng thái index
+bin/buddhist-corpus status
+
+# Xây index cốt lõi, incremental theo commit SHA
+bin/buddhist-corpus build --profile core
+
+# Tìm kiếm có provenance
+bin/buddhist-corpus search "sutaṃ" --language pli
+bin/buddhist-corpus search "如是我聞" --language lzh
+```
+
+Tài liệu:
+
+- [Khảo sát corpus](docs/CORPUS_SURVEY.md)
+- [Kiến trúc hệ thống](docs/ARCHITECTURE.md)
+- [Hướng dẫn CLI](docs/CLI.md)
+- [Buddhist corpus research skill](.codex/skills/buddhist-corpus-research/SKILL.md)
+
+Database sinh ra nằm trong `derived/`, không phải source-of-truth và không được
+commit.
+
+---
+
 ## 1. BẢNG TỔNG KẾT CÁC REPOSITORY ĐÃ CLONE (13/13 REPO)
 
 | STT | Phân loại | Repo & Thư mục cục bộ | Phiên bản (Commit SHA) | Kích thước | Mô tả nội dung & Mục đích sử dụng |
