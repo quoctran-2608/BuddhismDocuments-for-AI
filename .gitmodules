@@ -1,0 +1,39 @@
+[submodule "84000/data-rdf"]
+	path = 84000/data-rdf
+	url = https://github.com/84000/data-rdf.git
+[submodule "84000/data-tei"]
+	path = 84000/data-tei
+	url = https://github.com/84000/data-tei.git
+[submodule "84000/data-translation-memory"]
+	path = 84000/data-translation-memory
+	url = https://github.com/84000/data-translation-memory.git
+[submodule "buddhanexus/segmented-chinese"]
+	path = buddhanexus/segmented-chinese
+	url = https://github.com/BuddhaNexus/segmented-chinese.git
+[submodule "buddhanexus/segmented-pali"]
+	path = buddhanexus/segmented-pali
+	url = https://github.com/BuddhaNexus/segmented-pali.git
+[submodule "buddhanexus/segmented-sanskrit"]
+	path = buddhanexus/segmented-sanskrit
+	url = https://github.com/BuddhaNexus/segmented-sanskrit.git
+[submodule "cbeta/BM_u8"]
+	path = cbeta/BM_u8
+	url = https://github.com/cbeta-org/BM_u8.git
+[submodule "cbeta/xml-p5"]
+	path = cbeta/xml-p5
+	url = https://github.com/cbeta-org/xml-p5.git
+[submodule "openpecha/C0A2DD042"]
+	path = openpecha/C0A2DD042
+	url = https://github.com/OpenPecha-Data/C0A2DD042.git
+[submodule "pts/pts-archive"]
+	path = pts/pts-archive
+	url = https://github.com/bdhrs/pts-archive.git
+[submodule "suttacentral/bilara-data"]
+	path = suttacentral/bilara-data
+	url = https://github.com/suttacentral/bilara-data.git
+[submodule "suttacentral/sc-data"]
+	path = suttacentral/sc-data
+	url = https://github.com/suttacentral/sc-data.git
+[submodule "third-party/pali-canon"]
+	path = third-party/pali-canon
+	url = https://github.com/dangerzig/pali-canon.git
