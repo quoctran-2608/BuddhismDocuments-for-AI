@@ -14,16 +14,23 @@ import tempfile
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable, Iterable, Iterator
 
 from .model import Record, Work, normalize, relative, work_from_segment
 
 PARSER_VERSION = "2026-09-22.6"
+SC_RELATIONS_PARSER_VERSION = "2026-09-22.8-sc-cbeta-bridge"
 TEI = "{http://www.tei-c.org/ns/1.0}"
 XML_ID = "{http://www.w3.org/XML/1998/namespace}id"
 RDF_ABOUT = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about"
 RDF_RESOURCE = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource"
+CBETA_WORK_RE = re.compile(
+    r"^([A-Za-z]{1,4})(\d{1,3})n(\d{4,5}[a-z]?)$",
+    re.I,
+)
+TAISHO_LINE_RE = re.compile(r"^(\d{3,4})([a-c])(\d{1,2})([a-z]?)$", re.I)
 
 EVIDENCE_WEIGHT = {
     "canonical_root": 70,
@@ -34,6 +41,72 @@ EVIDENCE_WEIGHT = {
     "derived_critical_lemma": 30,
     "auxiliary_reference": 10,
 }
+
+
+def normalize_cbeta_work_id(value: str) -> str | None:
+    match = CBETA_WORK_RE.fullmatch(value.strip())
+    if not match:
+        return None
+    collection, volume, number = match.groups()
+    return f"{collection.upper()}{volume.zfill(2)}n{number.lower()}"
+
+
+def normalize_taisho_line(value: str) -> str | None:
+    match = TAISHO_LINE_RE.fullmatch(value.strip().lstrip("tT"))
+    if not match:
+        return None
+    page, column, line, suffix = match.groups()
+    return f"{page.zfill(4)}{column.lower()}{line.zfill(2)}{suffix.lower()}"
+
+
+def taisho_line_key(value: str) -> tuple[int, int, int, str] | None:
+    normalized = normalize_taisho_line(value)
+    if not normalized:
+        return None
+    match = TAISHO_LINE_RE.fullmatch(normalized)
+    assert match is not None
+    page, column, line, suffix = match.groups()
+    return int(page), ord(column.lower()) - ord("a"), int(line), suffix.lower()
+
+
+class _ScCbetaBridgeParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.uids: set[str] = set()
+        self.work_ids: set[str] = set()
+        self.anchors: set[str] = set()
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = {key: value or "" for key, value in attrs}
+        if tag == "article" and attributes.get("id"):
+            self.uids.add(attributes["id"])
+        if tag != "a":
+            return
+        anchor = normalize_taisho_line(attributes.get("id", ""))
+        if anchor:
+            self.anchors.add(anchor)
+        href = attributes.get("href", "")
+        if "cbeta" not in href.casefold():
+            return
+        for candidate in re.findall(
+            r"([A-Za-z]{1,4}\d{1,3}[nN]\d{4,5}[a-z]?)",
+            href,
+            re.I,
+        ):
+            work_id = normalize_cbeta_work_id(candidate)
+            if work_id:
+                self.work_ids.add(work_id)
+
+
+def parse_sc_cbeta_bridge(path: Path) -> dict[str, list[str]]:
+    parser = _ScCbetaBridgeParser()
+    parser.feed(path.read_text(encoding="utf-8", errors="replace"))
+    anchors = sorted(parser.anchors, key=taisho_line_key)
+    return {
+        "uids": sorted(parser.uids),
+        "work_ids": sorted(parser.work_ids),
+        "anchors": anchors,
+    }
 
 
 def local_sha(root: Path, repo: str) -> str:
@@ -440,6 +513,60 @@ def index_sc_relations(root: Path, sha: str, writer: Writer, profile: str) -> No
                     evidence,
                 )
             )
+    html_base = base / "html_text/lzh"
+    if profile == "acceptance":
+        html_paths: Iterable[Path] = [
+            html_base / "sutta/ea/ea9/ea9.7.html",
+        ]
+    else:
+        html_paths = html_base.glob("**/*.html")
+    for html_path in html_paths:
+        bridge = parse_sc_cbeta_bridge(html_path)
+        uids = bridge["uids"]
+        work_ids = bridge["work_ids"]
+        anchors = bridge["anchors"]
+        if not uids or not work_ids:
+            continue
+        source_path = relative(root, html_path)
+        for uid in uids:
+            for work_id in work_ids:
+                writer.add_relation(
+                    corpus,
+                    "suttacentral_cbeta:work",
+                    uid,
+                    work_id,
+                    source_path,
+                    sha,
+                    evidence,
+                    {
+                        "mapping_source": "explicit_local_cbeta_link",
+                        "anchor_count": len(anchors),
+                    },
+                )
+            # A line range is only attributed when the local mirror names one
+            # unambiguous CBETA work. Multiple explicit work links remain work
+            # mappings but are not silently assigned the same anchor range.
+            if len(work_ids) == 1 and anchors:
+                work_id = work_ids[0]
+                start_anchor = anchors[0]
+                end_anchor = anchors[-1]
+                writer.add_relation(
+                    corpus,
+                    "suttacentral_cbeta:line_range",
+                    uid,
+                    f"{work_id}:{start_anchor}..{end_anchor}",
+                    source_path,
+                    sha,
+                    evidence,
+                    {
+                        "work_id": work_id,
+                        "start_anchor": start_anchor,
+                        "end_anchor": end_anchor,
+                        "anchor_count": len(anchors),
+                        "anchors": anchors,
+                        "mapping_source": "explicit_local_cbeta_link_and_taisho_anchors",
+                    },
+                )
 
 
 def _cbeta_title(root_el: ET.Element) -> str | None:
@@ -564,11 +691,14 @@ def index_cbeta(root: Path, sha: str, writer: Writer, profile: str) -> None:
 
 
 def index_cbeta_bm(root: Path, sha: str, writer: Writer, profile: str) -> None:
-    if profile == "acceptance":
-        return
     base = root / "cbeta/BM_u8"
     pattern = re.compile(r"^([A-Z]+\d+n\d+)_p([0-9a-z]+).{4}(.*)$")
-    for path in base.glob("*/*/new.txt"):
+    paths: Iterable[Path]
+    if profile == "acceptance":
+        paths = [base / "T/T02/new.txt"]
+    else:
+        paths = base.glob("*/*/new.txt")
+    for path in paths:
         rel = relative(root, path)
         sequence = 0
         current_work: str | None = None
@@ -607,8 +737,10 @@ def index_cbeta_bm(root: Path, sha: str, writer: Writer, profile: str) -> None:
                 if not match:
                     continue
                 work_id, line_id, text = match.groups()
+                if profile == "acceptance" and work_id != "T02n0125":
+                    continue
                 clean = re.sub(r"<[^>]+>|\[[^\]]+\]", " ", text).strip()
-                if profile == "core":
+                if profile in {"core", "acceptance"}:
                     if current_work is not None and (work_id != current_work or len(chunk) >= 300):
                         flush()
                     current_work = work_id
@@ -634,7 +766,7 @@ def index_cbeta_bm(root: Path, sha: str, writer: Writer, profile: str) -> None:
                     )
                 )
                 sequence += 1
-        if profile == "core":
+        if profile in {"core", "acceptance"}:
             flush()
 
 
@@ -1112,11 +1244,16 @@ PROFILE_SOURCES = {
 
 
 def state_parser_version(corpus: str, profile: str) -> str:
+    base_version = (
+        SC_RELATIONS_PARSER_VERSION
+        if corpus == "suttacentral-relations"
+        else PARSER_VERSION
+    )
     if profile == "acceptance":
-        return f"{PARSER_VERSION}:acceptance"
+        return f"{base_version}:acceptance"
     if profile == "all" and corpus in {"suttacentral-bilara", "cbeta-bm"}:
-        return f"{PARSER_VERSION}:full"
-    return PARSER_VERSION
+        return f"{base_version}:full"
+    return base_version
 
 
 def purge_source(con: sqlite3.Connection, corpus: str) -> None:

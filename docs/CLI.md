@@ -28,6 +28,9 @@ bin/buddhist-corpus search "如是我聞" --language lzh
 bin/buddhist-corpus context --record-id 123 --window 3
 bin/buddhist-corpus work UT22084-001-001
 bin/buddhist-corpus parallels an1.1-5
+bin/buddhist-corpus parallels ea9.7
+bin/buddhist-corpus resolve ea9.7
+bin/buddhist-corpus resolve T02n0125:0563a14..0563a27
 bin/buddhist-corpus variants T01n0001
 bin/buddhist-corpus compare mn1 T01n0001
 bin/buddhist-corpus provenance --record-id 123
@@ -38,6 +41,9 @@ it indexes CBETA BM_u8 for broad retrieval. Use `all`, or open the matching
 CBETA XML P5 file directly, when critical apparatus and TEI markup are needed.
 Core records are bounded source chunks whose `segment_id` and `relation_ids`
 retain the source range for direct verification.
+
+See [SuttaCentral Āgama → CBETA bridge](SC_CBETA_BRIDGE.md) for the distinction
+between parallel evidence, identifier metadata, and a CBETA textual witness.
 
 Use another derived database with the global `--db` option:
 

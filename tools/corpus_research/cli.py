@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from .index import PROFILE_SOURCES, SOURCE_BUILDERS, build_index, local_sha
-from .retrieval import compare, context, parallels, provenance, search, status, variants, work
+from .retrieval import compare, context, parallels, provenance, resolve, search, status, variants, work
 
 
 def root_dir() -> Path:
@@ -52,6 +52,13 @@ def parser() -> argparse.ArgumentParser:
 
     par = sub.add_parser("parallels", help="show local relationship/alignment evidence")
     par.add_argument("identifier")
+
+    res = sub.add_parser(
+        "resolve",
+        help="resolve an indexed SC UID, CBETA work, or Taisho range to local primary records",
+    )
+    res.add_argument("identifier")
+    res.add_argument("--limit", type=int, default=100)
 
     var = sub.add_parser("variants", help="show local textual variant evidence")
     var.add_argument("identifier")
@@ -134,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
         emit(work(args.db, args.identifier))
     elif args.command == "parallels":
         emit(parallels(args.db, args.identifier))
+    elif args.command == "resolve":
+        emit(resolve(args.db, args.identifier, args.limit))
     elif args.command == "variants":
         emit(variants(args.db, args.identifier))
     elif args.command == "compare":

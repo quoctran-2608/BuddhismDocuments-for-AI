@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from pathlib import Path
 
-from .index import EVIDENCE_WEIGHT, connect_readonly
+from .index import (
+    EVIDENCE_WEIGHT,
+    connect_readonly,
+    normalize_cbeta_work_id,
+    normalize_taisho_line,
+    taisho_line_key,
+)
 from .model import compact, fold_diacritics, normalize
 
 
@@ -197,6 +204,134 @@ def parallels(db_path: Path, identifier: str) -> dict:
         "relations": rows,
         "found": bool(rows),
         "message": None if rows else "không đủ dữ liệu trong corpus hiện tại",
+    }
+
+
+def _parse_cbeta_identifier(identifier: str) -> tuple[str, str | None, str | None] | None:
+    range_match = re.fullmatch(
+        r"([A-Za-z]{1,4}\d{1,3}[nN]\d{4,5}[a-z]?):"
+        r"(\d{3,4}[a-c]\d{1,2}[a-z]?)"
+        r"(?:\.\.(\d{3,4}[a-c]\d{1,2}[a-z]?))?",
+        identifier,
+        re.I,
+    )
+    if range_match:
+        work_id = normalize_cbeta_work_id(range_match.group(1))
+        start_anchor = normalize_taisho_line(range_match.group(2))
+        end_anchor = normalize_taisho_line(range_match.group(3) or range_match.group(2))
+        if work_id and start_anchor and end_anchor:
+            return work_id, start_anchor, end_anchor
+        return None
+    work_id = normalize_cbeta_work_id(identifier)
+    return (work_id, None, None) if work_id else None
+
+
+def _resolve_cbeta_records(
+    con: sqlite3.Connection,
+    work_id: str,
+    start_anchor: str | None,
+    end_anchor: str | None,
+    limit: int,
+) -> list[dict]:
+    rows = con.execute(
+        """SELECT * FROM records
+           WHERE work_id COLLATE NOCASE = ?
+             AND corpus IN ('cbeta-bm','cbeta-tei')
+           ORDER BY corpus,sequence_no LIMIT 5000""",
+        (work_id,),
+    )
+    resolved: list[dict] = []
+    target_start = taisho_line_key(start_anchor) if start_anchor else None
+    target_end = taisho_line_key(end_anchor) if end_anchor else None
+    for row in rows:
+        item = _row(row)
+        if target_start is not None and target_end is not None:
+            relation_ids = item.get("relation_ids") or []
+            if len(relation_ids) < 2:
+                continue
+            record_start = taisho_line_key(relation_ids[0].split(":", 1)[-1])
+            record_end = taisho_line_key(relation_ids[-1].split(":", 1)[-1])
+            if (
+                record_start is None
+                or record_end is None
+                or record_end < target_start
+                or record_start > target_end
+            ):
+                continue
+            item["resolution_reason"] = "taisho_range_overlap"
+        else:
+            item["resolution_reason"] = "cbeta_work_id"
+        resolved.append(item)
+        if len(resolved) >= limit:
+            break
+    return resolved
+
+
+def resolve(db_path: Path, identifier: str, limit: int = 100) -> dict:
+    con = connect_readonly(db_path)
+    parsed = _parse_cbeta_identifier(identifier)
+    bridge_relations: list[dict] = []
+    requests: list[tuple[str, str | None, str | None]] = []
+    if parsed:
+        requests.append(parsed)
+    else:
+        bridge_relations = [
+            _row(row)
+            for row in con.execute(
+                """SELECT * FROM relations
+                   WHERE from_id=?
+                     AND relation_type IN (
+                       'suttacentral_cbeta:work',
+                       'suttacentral_cbeta:line_range'
+                     )
+                   ORDER BY relation_type,to_id""",
+                (identifier,),
+            )
+        ]
+        range_relations = [
+            row
+            for row in bridge_relations
+            if row["relation_type"] == "suttacentral_cbeta:line_range"
+        ]
+        targets = range_relations or [
+            row
+            for row in bridge_relations
+            if row["relation_type"] == "suttacentral_cbeta:work"
+        ]
+        for relation in targets:
+            target = _parse_cbeta_identifier(relation["to_id"])
+            if target:
+                requests.append(target)
+    resolved_by_id: dict[int, dict] = {}
+    for work_id, start_anchor, end_anchor in requests:
+        for item in _resolve_cbeta_records(
+            con,
+            work_id,
+            start_anchor,
+            end_anchor,
+            limit,
+        ):
+            resolved_by_id[item["id"]] = item
+            if len(resolved_by_id) >= limit:
+                break
+        if len(resolved_by_id) >= limit:
+            break
+    con.close()
+    resolved = list(resolved_by_id.values())
+    if parsed:
+        work_id, start_anchor, end_anchor = parsed
+        normalized = work_id
+        if start_anchor and end_anchor:
+            normalized = f"{work_id}:{start_anchor}..{end_anchor}"
+    else:
+        normalized = identifier
+    return {
+        "identifier": identifier,
+        "normalized_identifier": normalized,
+        "bridge_relations": bridge_relations,
+        "records": resolved,
+        "found": bool(resolved),
+        "message": None if resolved else "không đủ dữ liệu trong corpus hiện tại",
     }
 
 

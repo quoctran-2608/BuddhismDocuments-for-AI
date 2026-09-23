@@ -110,6 +110,7 @@ bin/buddhist-corpus search "query"
 bin/buddhist-corpus context --record-id ID
 bin/buddhist-corpus work WORK_ID
 bin/buddhist-corpus parallels WORK_OR_SEGMENT_ID
+bin/buddhist-corpus resolve CBETA_WORK_OR_TAISHO_RANGE
 bin/buddhist-corpus variants WORK_OR_SEGMENT_ID
 bin/buddhist-corpus compare ID1 ID2
 bin/buddhist-corpus provenance --record-id ID
@@ -117,6 +118,11 @@ bin/buddhist-corpus provenance --record-id ID
 
 Read raw files after retrieval when checking context, markup, apparatus, or
 source fidelity.
+
+For SuttaCentral Chinese parallels, keep three evidence steps separate:
+SuttaCentral parallel relation → local SuttaCentral-to-CBETA identifier bridge
+→ resolved CBETA textual witness. A bridge is metadata, not proof of textual
+identity.
 
 ### Term research
 

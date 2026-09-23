@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from corpus_research.index import build_index
-from corpus_research.retrieval import parallels, provenance, search, variants, work
+from corpus_research.retrieval import parallels, provenance, resolve, search, variants, work
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,6 +44,95 @@ class AcceptanceTests(unittest.TestCase):
         result = parallels(self.db, "an1.1-5")
         self.assertTrue(result["found"])
         self.assertTrue(any(row["to_id"] == "ea9.7" for row in result["relations"]))
+
+    def test_nikaya_agama_resolves_through_local_cbeta_bridge(self) -> None:
+        parallel = parallels(self.db, "an1.1-5")
+        parallel_edge = next(
+            row
+            for row in parallel["relations"]
+            if row["to_id"] == "ea9.7"
+            and row["relation_type"] == "suttacentral_parallel:full"
+        )
+        bridge = parallels(self.db, "ea9.7")
+        work_edge = next(
+            row
+            for row in bridge["relations"]
+            if row["relation_type"] == "suttacentral_cbeta:work"
+            and row["to_id"] == "T02n0125"
+        )
+        range_edge = next(
+            row
+            for row in bridge["relations"]
+            if row["relation_type"] == "suttacentral_cbeta:line_range"
+        )
+        self.assertEqual(
+            range_edge["to_id"],
+            "T02n0125:0563a14..0563a27",
+        )
+        primary = resolve(self.db, "ea9.7")
+        self.assertTrue(primary["found"])
+        self.assertEqual(
+            {
+                row["relation_type"]
+                for row in primary["bridge_relations"]
+            },
+            {
+                "suttacentral_cbeta:work",
+                "suttacentral_cbeta:line_range",
+            },
+        )
+        self.assertEqual(
+            [row["segment_id"] for row in primary["records"]],
+            [
+                "T02n0125:0559b25..0563a14",
+                "T02n0125:0563a15..0566c01q",
+            ],
+        )
+        self.assertEqual(parallel_edge["evidence_class"], "metadata_relationship")
+        self.assertEqual(work_edge["evidence_class"], "metadata_relationship")
+        self.assertTrue(
+            all(
+                row["evidence_class"] == "canonical_root"
+                and row["corpus"] == "cbeta-bm"
+                for row in primary["records"]
+            )
+        )
+        self.assertNotEqual(parallel_edge["source_path"], work_edge["source_path"])
+        self.assertNotEqual(work_edge["source_sha"], primary["records"][0]["source_sha"])
+
+    def test_cbeta_resolver_matches_suffix_case_insensitively(self) -> None:
+        with __import__("sqlite3").connect(self.db) as con:
+            con.execute(
+                """INSERT INTO records(
+                   corpus,language,collection_name,work_id,segment_id,title,raw_text,
+                   norm_text,folded_text,compact_text,lemma_text,source_path,source_sha,
+                   evidence_class,witness,relation_ids,sequence_no)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    "cbeta-bm",
+                    "lzh",
+                    "T",
+                    "T02n0150A",
+                    "T02n0150A:0875b01..0875c20",
+                    None,
+                    "local suffix fixture",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "cbeta/BM_u8/T/T02/new.txt",
+                    "0" * 40,
+                    "canonical_root",
+                    "CBETA BM_u8",
+                    '["T02n0150A:0875b01","T02n0150A:0875c20"]',
+                    999999,
+                ),
+            )
+        with __import__("sqlite3").connect(self.db) as con:
+            con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        result = resolve(self.db, "T02n0150a:0875b02..0875c19")
+        self.assertTrue(result["found"])
+        self.assertEqual(result["records"][0]["work_id"], "T02n0150A")
 
     def test_84000_work_has_toh_metadata_and_rdf_relation(self) -> None:
         result = work(self.db, "UT22084-001-001")

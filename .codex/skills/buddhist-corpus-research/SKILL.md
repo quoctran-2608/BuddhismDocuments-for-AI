@@ -85,12 +85,15 @@ Do not synthesize from one keyword result. Iterate:
 
 ```bash
 bin/buddhist-corpus parallels an1.1-5
-bin/buddhist-corpus work RELATED_ID
+bin/buddhist-corpus parallels ea9.7
+bin/buddhist-corpus resolve ea9.7
 bin/buddhist-corpus compare ID1 ID2
 ```
 
 SuttaCentral `full`/`partial` edges are relationship evidence, not proof that
-two passages say the same thing. Open both textual witnesses when local.
+two passages say the same thing. A `suttacentral_cbeta:*` edge is separate
+identifier metadata. Only the resolved `cbeta-bm` or `cbeta-tei` record is the
+local CBETA textual witness.
 
 ### 5. Variant research
 

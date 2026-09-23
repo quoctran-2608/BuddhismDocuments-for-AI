@@ -4,7 +4,14 @@ import unittest
 
 from pathlib import Path
 
-from corpus_research.index import PARSER_VERSION, state_parser_version
+from corpus_research.index import (
+    PARSER_VERSION,
+    SC_RELATIONS_PARSER_VERSION,
+    normalize_cbeta_work_id,
+    normalize_taisho_line,
+    state_parser_version,
+    taisho_line_key,
+)
 from corpus_research.model import compact, fold_diacritics, normalize, relative, work_from_segment
 
 
@@ -36,6 +43,17 @@ class NormalizationTests(unittest.TestCase):
             f"{PARSER_VERSION}:acceptance",
         )
         self.assertEqual(state_parser_version("84000-tei", "all"), PARSER_VERSION)
+        self.assertEqual(
+            state_parser_version("suttacentral-relations", "core"),
+            SC_RELATIONS_PARSER_VERSION,
+        )
+
+    def test_cbeta_and_taisho_identifier_normalization(self) -> None:
+        self.assertEqual(normalize_cbeta_work_id("T02N0125"), "T02n0125")
+        self.assertEqual(normalize_cbeta_work_id("T2n0125"), "T02n0125")
+        self.assertEqual(normalize_cbeta_work_id("T02n0150A"), "T02n0150a")
+        self.assertEqual(normalize_taisho_line("t563a7"), "0563a07")
+        self.assertLess(taisho_line_key("0563a14"), taisho_line_key("0563b01"))
 
 
 if __name__ == "__main__":
