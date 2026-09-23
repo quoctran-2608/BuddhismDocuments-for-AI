@@ -7,6 +7,8 @@ from pathlib import Path
 
 from .index import (
     EVIDENCE_WEIGHT,
+    SEARCH_INDEX_COMPONENT,
+    SEARCH_INDEX_VERSION,
     connect_readonly,
     normalize_cbeta_work_id,
     normalize_taisho_line,
@@ -24,6 +26,43 @@ def _row(row: sqlite3.Row) -> dict:
             except json.JSONDecodeError:
                 pass
     return item
+
+
+def _is_cjk_character(value: str) -> bool:
+    codepoint = ord(value)
+    return (
+        0x3400 <= codepoint <= 0x4DBF
+        or 0x4E00 <= codepoint <= 0x9FFF
+        or 0xF900 <= codepoint <= 0xFAFF
+        or 0x20000 <= codepoint <= 0x323AF
+        or 0x3040 <= codepoint <= 0x30FF
+        or 0xAC00 <= codepoint <= 0xD7AF
+    )
+
+
+def _cjk_substring_query(query: str) -> str | None:
+    value = compact(query)
+    if len(value) < 3 or not any(_is_cjk_character(char) for char in value):
+        return None
+    return value
+
+
+def _search_index_version(con: sqlite3.Connection) -> str | None:
+    tables = {
+        row["name"]
+        for row in con.execute(
+            """SELECT name FROM sqlite_master
+               WHERE type='table'
+                 AND name IN ('search_index_state','records_cjk_fts')"""
+        )
+    }
+    if tables != {"search_index_state", "records_cjk_fts"}:
+        return None
+    row = con.execute(
+        "SELECT version FROM search_index_state WHERE component=?",
+        (SEARCH_INDEX_COMPONENT,),
+    ).fetchone()
+    return row["version"] if row else None
 
 
 def status(db_path: Path) -> dict:
@@ -50,6 +89,19 @@ def search(
     norm = normalize(query)
     folded = fold_diacritics(query)
     comp = compact(query)
+    cjk_query = _cjk_substring_query(query)
+    search_index_version = _search_index_version(con)
+    cjk_index_available = search_index_version == SEARCH_INDEX_VERSION
+    limitations: list[str] = []
+    if any(_is_cjk_character(char) for char in comp):
+        if len(comp) < 3:
+            limitations.append(
+                "cjk_middle_substring_queries_shorter_than_3_characters_are_not_guaranteed"
+            )
+        elif not cjk_index_available:
+            limitations.append(
+                "cjk_substring_index_unavailable_or_stale; rebuild the derived search indexes"
+            )
     params: list = []
     filters = []
     if language:
@@ -82,6 +134,20 @@ def search(
                 candidates[row["id"]] = row
         except sqlite3.OperationalError:
             continue
+    if cjk_query and cjk_index_available:
+        escaped = cjk_query.replace('"', '""')
+        cjk_sql = f"""SELECT r.* FROM records_cjk_fts f
+                      JOIN records r ON r.id=f.rowid
+                      WHERE records_cjk_fts MATCH ?{where}
+                      ORDER BY
+                        CASE WHEN instr(r.raw_text, ?) > 0 THEN 0 ELSE 1 END,
+                        bm25(records_cjk_fts)
+                      LIMIT ?"""
+        for row in con.execute(
+            cjk_sql,
+            [f'"{escaped}"', *params, query, max(limit * 5, 50)],
+        ):
+            candidates[row["id"]] = row
     lemma_segments = set()
     for row in con.execute(
         """SELECT work_id,segment_id FROM lemmas
@@ -92,18 +158,24 @@ def search(
     ranked = []
     for row in candidates.values():
         raw = row["raw_text"]
+        cjk_candidate = cjk_query is not None and row["language"] in {"lzh", "zh"}
+        row_norm = row["norm_text"] or (normalize(raw) if cjk_candidate else "")
+        row_folded = row["folded_text"] or (
+            fold_diacritics(raw) if cjk_candidate else ""
+        )
+        row_compact = row["compact_text"] or (compact(raw) if cjk_candidate else "")
         score = EVIDENCE_WEIGHT.get(row["evidence_class"], 0)
         reasons = []
         if query in raw:
             score += 120
             reasons.append("exact")
-        elif norm in row["norm_text"]:
+        elif norm in row_norm:
             score += 95
             reasons.append("normalized")
-        elif folded in row["folded_text"]:
+        elif folded in row_folded:
             score += 75
             reasons.append("diacritic-folded")
-        elif comp and comp in row["compact_text"]:
+        elif comp and comp in row_compact:
             score += 70
             reasons.append("compact-unicode")
         else:
@@ -111,9 +183,9 @@ def search(
             reasons.append("fts")
         has_lemma_form = any(
             form and (
-                form in row["norm_text"]
-                or fold_diacritics(form) in row["folded_text"]
-                or compact(form) in row["compact_text"]
+                form in row_norm
+                or fold_diacritics(form) in row_folded
+                or compact(form) in row_compact
             )
             for form in lemma_forms - {norm}
         )
@@ -138,6 +210,9 @@ def search(
         "result_count": min(len(ranked), limit),
         "fail_closed": not ranked,
         "message": None if ranked else "không đủ dữ liệu trong corpus hiện tại",
+        "search_index_version": search_index_version,
+        "cjk_substring_index_available": cjk_index_available,
+        "limitations": limitations,
     }
 
 

@@ -19,7 +19,7 @@ bin/buddhist-corpus build --profile all
 # Checkpoint one expensive source without rebuilding FTS yet
 bin/buddhist-corpus build --profile core --source cbeta-bm --defer-fts
 
-# After all source checkpoints, rebuild the shared FTS index
+# After all source checkpoints, rebuild both derived search indexes
 bin/buddhist-corpus build --profile core
 
 # Search and inspect
@@ -41,6 +41,13 @@ it indexes CBETA BM_u8 for broad retrieval. Use `all`, or open the matching
 CBETA XML P5 file directly, when critical apparatus and TEI markup are needed.
 Core records are bounded source chunks whose `segment_id` and `relation_ids`
 retain the source range for direct verification.
+
+Normal builds rebuild both the ordinary Unicode FTS index and the versioned CJK
+trigram candidate index from existing `records`. An older database reports the
+CJK substring index as unavailable until this rebuild completes. Chinese
+middle-substring coverage requires at least three usable CJK characters; no
+whole-table fallback is used for one- or two-character queries. This does not
+claim Tibetan substring coverage.
 
 See [SuttaCentral Āgama → CBETA bridge](SC_CBETA_BRIDGE.md) for the distinction
 between parallel evidence, identifier metadata, and a CBETA textual witness.

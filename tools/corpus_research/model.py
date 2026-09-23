@@ -47,8 +47,8 @@ class Record:
     def row(self) -> tuple[Any, ...]:
         norm_text = normalize(self.text)
         folded_text = fold_diacritics(self.text)
-        # Long CJK/Tibetan chunks are already directly searchable in raw_text.
-        # Avoid storing several near-identical gigabyte-scale copies.
+        # Avoid storing several near-identical gigabyte-scale copies for long
+        # script-heavy chunks. Derived search indexes can use raw_text directly.
         if self.language in {"lzh", "zh", "bo"} and len(self.text) >= 2_000:
             norm_text = ""
             folded_text = ""

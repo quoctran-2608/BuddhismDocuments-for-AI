@@ -18,10 +18,12 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable, Iterable, Iterator
 
-from .model import Record, Work, normalize, relative, work_from_segment
+from .model import Record, Work, compact, normalize, relative, work_from_segment
 
 PARSER_VERSION = "2026-09-22.6"
 SC_RELATIONS_PARSER_VERSION = "2026-09-22.8-sc-cbeta-bridge"
+SEARCH_INDEX_COMPONENT = "text-search"
+SEARCH_INDEX_VERSION = "2026-09-23.cjk-trigram-v1"
 TEI = "{http://www.tei-c.org/ns/1.0}"
 XML_ID = "{http://www.w3.org/XML/1998/namespace}id"
 RDF_ABOUT = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about"
@@ -131,6 +133,7 @@ def connect(db_path: Path, schema_path: Path | None = None) -> sqlite3.Connectio
     con.execute("PRAGMA journal_mode=WAL")
     con.execute("PRAGMA synchronous=NORMAL")
     con.execute("PRAGMA temp_store=MEMORY")
+    con.create_function("corpus_compact", 1, compact, deterministic=True)
     if schema_path:
         con.executescript(schema_path.read_text(encoding="utf-8"))
     return con
@@ -1262,6 +1265,36 @@ def purge_source(con: sqlite3.Connection, corpus: str) -> None:
     con.execute("DELETE FROM source_state WHERE corpus=?", (corpus,))
 
 
+def rebuild_search_indexes(con: sqlite3.Connection) -> int:
+    con.create_function("corpus_compact", 1, compact, deterministic=True)
+    con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
+    con.execute("INSERT INTO records_cjk_fts(records_cjk_fts) VALUES('delete-all')")
+    con.execute(
+        """INSERT INTO records_cjk_fts(rowid,search_text)
+           SELECT id,corpus_compact(raw_text)
+           FROM records
+           WHERE language IN ('lzh','zh')"""
+    )
+    record_count = con.execute(
+        "SELECT COUNT(*) FROM records WHERE language IN ('lzh','zh')"
+    ).fetchone()[0]
+    con.execute(
+        """INSERT INTO search_index_state(component,version,rebuilt_at,record_count)
+           VALUES (?,?,?,?)
+           ON CONFLICT(component) DO UPDATE SET
+             version=excluded.version,
+             rebuilt_at=excluded.rebuilt_at,
+             record_count=excluded.record_count""",
+        (
+            SEARCH_INDEX_COMPONENT,
+            SEARCH_INDEX_VERSION,
+            datetime.now(timezone.utc).isoformat(),
+            record_count,
+        ),
+    )
+    return record_count
+
+
 def build_index(
     root: Path,
     db_path: Path,
@@ -1316,6 +1349,10 @@ def build_index(
             continue
         if progress:
             print(f"[index] {corpus} @ {sha[:12]}", file=sys.stderr, flush=True)
+        previous_record_count = con.execute(
+            "SELECT COUNT(*) FROM records WHERE corpus=?",
+            (corpus,),
+        ).fetchone()[0]
         with con:
             purge_source(con, corpus)
             writer = Writer(con)
@@ -1342,6 +1379,11 @@ def build_index(
                     writer.lemmas,
                 ),
             )
+            if previous_record_count or writer.records:
+                con.execute(
+                    "DELETE FROM search_index_state WHERE component=?",
+                    (SEARCH_INDEX_COMPONENT,),
+                )
         summary["sources"].append(
             {
                 "corpus": corpus,
@@ -1357,9 +1399,21 @@ def build_index(
         checkpoint()
     if rebuild_fts:
         with con:
-            con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
+            search_record_count = rebuild_search_indexes(con)
             con.execute("PRAGMA optimize")
+        summary["search_indexes"] = {
+            "status": "rebuilt",
+            "component": SEARCH_INDEX_COMPONENT,
+            "version": SEARCH_INDEX_VERSION,
+            "cjk_record_count": search_record_count,
+        }
         checkpoint()
+    else:
+        summary["search_indexes"] = {
+            "status": "deferred",
+            "component": SEARCH_INDEX_COMPONENT,
+            "version": SEARCH_INDEX_VERSION,
+        }
     con.close()
     if use_fast_workspace:
         workspace_dir.cleanup()

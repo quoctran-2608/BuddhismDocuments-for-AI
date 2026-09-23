@@ -39,9 +39,12 @@ One tokenizer is not enough for all scripts.
   provides token search for space-delimited scripts.
 - A diacritic-folded representation supports explicit fallback searches but is
   ranked below exact Unicode matches.
-- A compact normalized representation supports substring retrieval for Chinese
-  and Tibetan without pretending that Unicode61 performs linguistic word
-  segmentation.
+- A separate FTS5 trigram index over `compact(raw_text)` supplies Chinese
+  middle-substring candidates for `lzh`/`zh` records, including long CBETA
+  chunks whose stored normalized/compact columns are intentionally blank.
+  Queries shorter than three usable CJK characters do not have guaranteed
+  arbitrary middle-substring coverage. Tibetan substring behavior is not
+  established by this index.
 - Lemmas are stored in a separate table and copied into a searchable lemma
   representation. Only corpus-provided lemmas count as lemma evidence.
 - Relations and alignments live in separate tables; they are not concatenated

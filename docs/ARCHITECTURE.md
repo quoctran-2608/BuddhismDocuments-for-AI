@@ -21,7 +21,8 @@ The committed schema stores:
 - relation edges;
 - variant readings;
 - corpus-provided lemmas and morphology;
-- per-source build state.
+- per-source build state;
+- separate derived-search-index compatibility state.
 
 The `core` profile chunks source text at stable source boundaries to keep the
 global index practical: Bilara uses bounded segment ranges and CBETA BM_u8 uses
@@ -30,9 +31,12 @@ agent can reopen the exact raw file for finer context. The `all` profile keeps
 the more granular parsers. Bilara variant entries are likewise grouped into
 bounded ranges while retaining their individual segment labels in the reading.
 
-FTS5 handles Unicode token search. Exact and normalized substring retrieval
-handles CJK/Tibetan and punctuation-sensitive passages. No generated DB is a
-source-of-truth.
+FTS5 `unicode61` handles ordinary Unicode token search. A separate contentless
+FTS5 `trigram` index stores `compact(raw_text)` for `lzh`/`zh` records and
+generates candidates for Chinese middle-substring queries of at least three
+characters. Candidate-scoped exact/normalized/compact checks and the existing
+evidence ranking then run on the union. This batch does not establish Tibetan
+substring behavior. No generated DB is a source-of-truth.
 
 ### Incrementality
 
@@ -54,7 +58,9 @@ without repeating completed sources.
 
 Expensive sources can also be built explicitly with `--source` and
 `--defer-fts`. A final normal `build` pass skips unchanged sources and rebuilds
-the shared FTS index once.
+both the ordinary and CJK substring search indexes once. Rebuilding source
+records with `--defer-fts` invalidates the shared search-index compatibility
+state until that final pass.
 
 Profiles:
 

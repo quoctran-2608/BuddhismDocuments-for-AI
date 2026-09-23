@@ -13,6 +13,13 @@ CREATE TABLE IF NOT EXISTS source_state (
     lemma_count INTEGER NOT NULL DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS search_index_state (
+    component TEXT PRIMARY KEY,
+    version TEXT NOT NULL,
+    rebuilt_at TEXT NOT NULL,
+    record_count INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS works (
     corpus TEXT NOT NULL,
     work_id TEXT NOT NULL,
@@ -117,4 +124,10 @@ CREATE VIRTUAL TABLE IF NOT EXISTS records_fts USING fts5(
     content='records',
     content_rowid='id',
     tokenize='unicode61 remove_diacritics 0'
+);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS records_cjk_fts USING fts5(
+    search_text,
+    content='',
+    tokenize='trigram'
 );
