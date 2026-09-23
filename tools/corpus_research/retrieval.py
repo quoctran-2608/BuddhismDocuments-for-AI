@@ -219,7 +219,16 @@ def _parse_cbeta_identifier(identifier: str) -> tuple[str, str | None, str | Non
         work_id = normalize_cbeta_work_id(range_match.group(1))
         start_anchor = normalize_taisho_line(range_match.group(2))
         end_anchor = normalize_taisho_line(range_match.group(3) or range_match.group(2))
-        if work_id and start_anchor and end_anchor:
+        start_key = taisho_line_key(start_anchor) if start_anchor else None
+        end_key = taisho_line_key(end_anchor) if end_anchor else None
+        if (
+            work_id
+            and start_anchor
+            and end_anchor
+            and start_key is not None
+            and end_key is not None
+            and start_key <= end_key
+        ):
             return work_id, start_anchor, end_anchor
         return None
     work_id = normalize_cbeta_work_id(identifier)

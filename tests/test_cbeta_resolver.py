@@ -222,6 +222,18 @@ class CbetaResolverShapeTests(unittest.TestCase):
         self.assertFalse(result["found"])
         self.assertEqual(result["message"], "không đủ dữ liệu trong corpus hiện tại")
 
+    def test_reversed_input_range_remains_fail_closed(self) -> None:
+        self.add_record(
+            segment_id=f"{WORK_ID}:0559b25..0566c01q",
+            relation_ids=[
+                f"{WORK_ID}:0559b25",
+                f"{WORK_ID}:0566c01q",
+            ],
+        )
+        result = resolve(self.db, f"{WORK_ID}:0563a27..0563a14")
+        self.assertFalse(result["found"])
+        self.assertEqual(result["records"], [])
+
     def test_malformed_record_locator_remains_fail_closed(self) -> None:
         self.add_record(
             segment_id=f"{WORK_ID}:not-a-line",
