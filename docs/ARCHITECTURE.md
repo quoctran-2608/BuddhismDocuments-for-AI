@@ -16,7 +16,7 @@ The committed schema stores:
 
 - text records with corpus, language, collection, work/segment ID, title, raw
   text, normalized/folded/compact representations, path, SHA, evidence class,
-  witness, sequence, and relation IDs;
+  text role, witness, sequence, and relation IDs;
 - work metadata;
 - relation edges;
 - variant readings;
@@ -93,6 +93,13 @@ not establish a finding.
 Relationship tables preserve SuttaCentral parallel types, 84000 work/instance
 relationships, and alignment groups without turning them into textual claims.
 
+`evidence_class` describes source authority/provenance. `text_role` independently
+describes the indexed content: for example `root_text`, `translation_main`,
+`translation_heading`, `translator_comment`, or `translation_note`. An
+authoritative note remains authoritative structured evidence without becoming
+the translated scripture itself. Nested 84000 body notes are indexed separately
+and linked to the containing main segment with `84000:note_of`.
+
 On WSL-mounted paths, builds use a temporary Linux-filesystem SQLite workspace
 and copy the completed database back through SQLite's backup API. This avoids
 slow per-write NTFS translation while keeping the final artifact under
@@ -118,7 +125,7 @@ The skill supports:
 
 Every returned record contains enough fields to cite:
 
-`corpus | source_path | work_id | segment_id | source_sha | evidence_class | witness`
+`corpus | source_path | work_id | segment_id | source_sha | evidence_class | text_role | witness`
 
 Answers keep witnesses separate and state uncertainty. If the local repository
 does not establish a claim, the correct output is:

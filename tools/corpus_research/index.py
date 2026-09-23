@@ -22,6 +22,8 @@ from .model import Record, Work, compact, normalize, relative, work_from_segment
 
 PARSER_VERSION = "2026-09-22.6"
 SC_RELATIONS_PARSER_VERSION = "2026-09-22.8-sc-cbeta-bridge"
+BILARA_PARSER_VERSION = "2026-09-23.1-text-role"
+TEI_84000_PARSER_VERSION = "2026-09-23.1-note-roles"
 SEARCH_INDEX_COMPONENT = "text-search"
 SEARCH_INDEX_VERSION = "2026-09-23.cjk-trigram-v1"
 TEI = "{http://www.tei-c.org/ns/1.0}"
@@ -136,6 +138,52 @@ def connect(db_path: Path, schema_path: Path | None = None) -> sqlite3.Connectio
     con.create_function("corpus_compact", 1, compact, deterministic=True)
     if schema_path:
         con.executescript(schema_path.read_text(encoding="utf-8"))
+    record_columns = {
+        row["name"]
+        for row in con.execute("PRAGMA table_info(records)")
+    }
+    if record_columns and "text_role" not in record_columns:
+        con.execute(
+            """ALTER TABLE records
+               ADD COLUMN text_role TEXT NOT NULL DEFAULT 'unspecified'"""
+        )
+    if "text_role" in {
+        row["name"]
+        for row in con.execute("PRAGMA table_info(records)")
+    }:
+        con.execute(
+            """UPDATE records
+               SET text_role = CASE
+                 WHEN corpus IN ('cbeta-tei','cbeta-bm') THEN 'root_text'
+                 WHEN corpus IN ('84000-tm','openpecha') THEN 'alignment_text'
+                 WHEN corpus LIKE 'buddhanexus-%' THEN 'computational_text'
+                 WHEN corpus='pts-archive' THEN 'auxiliary_text'
+                 WHEN corpus='pali-canon-derived' THEN 'derived_text'
+                 WHEN corpus='suttacentral-bilara' AND witness LIKE 'root:%'
+                   THEN 'root_text'
+                 WHEN corpus='suttacentral-bilara' AND witness LIKE 'translation:%'
+                   THEN 'translation_main'
+                 WHEN corpus='suttacentral-bilara' AND witness LIKE 'comment:%'
+                   THEN 'translator_comment'
+                 ELSE text_role
+               END
+               WHERE text_role='unspecified'
+                 AND (
+                   corpus IN (
+                     'cbeta-tei','cbeta-bm','84000-tm','openpecha',
+                     'pts-archive','pali-canon-derived'
+                   )
+                   OR corpus LIKE 'buddhanexus-%'
+                   OR (
+                     corpus='suttacentral-bilara'
+                     AND (
+                       witness LIKE 'root:%'
+                       OR witness LIKE 'translation:%'
+                       OR witness LIKE 'comment:%'
+                     )
+                   )
+                 )"""
+        )
     return con
 
 
@@ -175,8 +223,8 @@ class Writer:
             """INSERT OR IGNORE INTO records(
                corpus,language,collection_name,work_id,segment_id,title,raw_text,
                norm_text,folded_text,compact_text,lemma_text,source_path,source_sha,
-               evidence_class,witness,relation_ids,sequence_no)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+               evidence_class,text_role,witness,relation_ids,sequence_no)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             self._record_rows,
         )
         self.records += self.con.total_changes - before
@@ -352,6 +400,7 @@ def index_bilara(root: Path, sha: str, writer: Writer, profile: str) -> None:
     selected = [
         "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
         "translation/en/sujato/sutta/mn/mn1_translation-en-sujato.json",
+        "comment/en/sujato/sutta/mn/mn1_comment-en-sujato.json",
         "variant/pli/ms/sutta/mn/mn1_variant-pli-ms.json",
     ]
     acceptance = profile == "acceptance"
@@ -376,6 +425,11 @@ def index_bilara(root: Path, sha: str, writer: Writer, profile: str) -> None:
             continue
         language = _language_from_bilara(path, base)
         witness = path.stem.rsplit("_", 1)[-1]
+        text_role = {
+            "root": "root_text",
+            "translation": "translation_main",
+            "comment": "translator_comment",
+        }.get(kind, "unspecified")
         if profile == "core" and kind == "variant":
             items = [
                 (segment_id, text)
@@ -425,6 +479,7 @@ def index_bilara(root: Path, sha: str, writer: Writer, profile: str) -> None:
                         rel,
                         sha,
                         evidence if kind == "root" else "authoritative_structured",
+                        text_role=text_role,
                         witness=f"{kind}:{witness}",
                         relation_ids=[first_id, last_id],
                         sequence_no=chunk_no // 50,
@@ -461,6 +516,7 @@ def index_bilara(root: Path, sha: str, writer: Writer, profile: str) -> None:
                     rel,
                     sha,
                     cls,
+                    text_role=text_role,
                     witness=f"{kind}:{witness}",
                     sequence_no=sequence,
                 )
@@ -672,6 +728,7 @@ def index_cbeta(root: Path, sha: str, writer: Writer, profile: str) -> None:
                     rel,
                     sha,
                     "authoritative_structured",
+                    text_role="root_text",
                     witness=collection,
                     sequence_no=sequence,
                 )
@@ -725,6 +782,7 @@ def index_cbeta_bm(root: Path, sha: str, writer: Writer, profile: str) -> None:
                     rel,
                     sha,
                     "canonical_root",
+                    text_role="root_text",
                     witness="CBETA BM_u8",
                     relation_ids=[f"{current_work}:{first_line}", f"{current_work}:{last_line}"],
                     sequence_no=sequence,
@@ -764,6 +822,7 @@ def index_cbeta_bm(root: Path, sha: str, writer: Writer, profile: str) -> None:
                         rel,
                         sha,
                         "canonical_root",
+                        text_role="root_text",
                         witness="CBETA BM_u8",
                         sequence_no=sequence,
                     )
@@ -788,10 +847,31 @@ def _tei_titles(root_el: ET.Element) -> list[dict]:
     return titles
 
 
+def _tei_text_without_notes(element: ET.Element) -> str:
+    parts: list[str] = []
+
+    def visit(node: ET.Element) -> None:
+        if node.text:
+            parts.append(node.text)
+        for child in node:
+            if child.tag.rsplit("}", 1)[-1] != "note":
+                visit(child)
+            if child.tail:
+                parts.append(child.tail)
+
+    visit(element)
+    return " ".join("".join(parts).split())
+
+
+def _tei_note_text(note: ET.Element) -> str:
+    return " ".join("".join(note.itertext()).split())
+
+
 def index_84000_tei(root: Path, sha: str, writer: Writer, profile: str) -> None:
     base = root / "84000/data-tei"
     sample = base / "translations/kangyur/translations/001-001_toh1-1_chapter_on_going_forth.xml"
-    paths = [sample] if profile == "acceptance" else base.glob("translations/**/translations/*.xml")
+    note_sample = base / "translations/kangyur/translations/072-037_toh337_wheel_of_dharma.xml"
+    paths = [sample, note_sample] if profile == "acceptance" else base.glob("translations/**/translations/*.xml")
     for path in paths:
         try:
             root_el = ET.parse(path).getroot()
@@ -830,10 +910,15 @@ def index_84000_tei(root: Path, sha: str, writer: Writer, profile: str) -> None:
                 continue
             if any(child.tag.rsplit("}", 1)[-1] in {"p", "l"} for child in element):
                 continue
-            text = " ".join("".join(element.itertext()).split())
+            text = _tei_text_without_notes(element)
             if not text:
                 continue
             segment = element.get(XML_ID) or current_segment or f"{work_id}:{sequence}"
+            text_role = (
+                "translation_heading"
+                if tag == "head"
+                else "translation_main"
+            )
             writer.add_record(
                 Record(
                     "84000-tei",
@@ -846,11 +931,60 @@ def index_84000_tei(root: Path, sha: str, writer: Writer, profile: str) -> None:
                     rel,
                     sha,
                     "authoritative_structured",
+                    text_role=text_role,
                     witness=toh,
                     relation_ids=[toh] if toh else [],
                     sequence_no=sequence,
                 )
             )
+            for note_index, note in enumerate(
+                (
+                    child
+                    for child in element.iter()
+                    if child.tag.rsplit("}", 1)[-1] == "note"
+                ),
+                start=1,
+            ):
+                note_text = _tei_note_text(note)
+                if not note_text:
+                    continue
+                source_note_id = note.get(XML_ID)
+                note_segment = (
+                    source_note_id
+                    or f"{segment}:synthetic-note:{sequence}:{note_index}"
+                )
+                writer.add_record(
+                    Record(
+                        "84000-tei",
+                        "en",
+                        "kangyur" if "kangyur" in path.parts else "tengyur",
+                        work_id,
+                        note_segment,
+                        title,
+                        note_text,
+                        rel,
+                        sha,
+                        "authoritative_structured",
+                        text_role="translation_note",
+                        witness=toh,
+                        relation_ids=[segment],
+                        sequence_no=sequence,
+                    )
+                )
+                writer.add_relation(
+                    "84000-tei",
+                    "84000:note_of",
+                    note_segment,
+                    segment,
+                    rel,
+                    sha,
+                    "metadata_relationship",
+                    {
+                        "source_supplied_note_id": bool(source_note_id),
+                        "note_place": note.get("place"),
+                        "containment": "tei_body_text_unit",
+                    },
+                )
             sequence += 1
 
 
@@ -938,6 +1072,7 @@ def index_84000_tm(root: Path, sha: str, writer: Writer, profile: str) -> None:
                         rel,
                         sha,
                         "parallel_alignment",
+                        text_role="alignment_text",
                         witness=unit.get("creation_method"),
                         relation_ids=[group, segment, unit.get("folio") or ""],
                         sequence_no=sequence,
@@ -995,6 +1130,7 @@ def index_openpecha(root: Path, sha: str, writer: Writer, profile: str) -> None:
                         relative(root, path),
                         sha,
                         "parallel_alignment",
+                        text_role="alignment_text",
                         witness=meta.get("source"),
                         relation_ids=[group_id],
                         sequence_no=sequence,
@@ -1059,6 +1195,7 @@ def index_buddhanexus(root: Path, sha: str, writer: Writer, corpus: str, profile
                     rel,
                     sha,
                     "computational_segmented",
+                    text_role="computational_text",
                     witness="BuddhaNexus",
                     sequence_no=sequence,
                 )
@@ -1092,6 +1229,7 @@ def index_pts(root: Path, sha: str, writer: Writer, profile: str) -> None:
                         relative(root, path),
                         sha,
                         "auxiliary_reference",
+                        text_role="auxiliary_text",
                         witness="Dhammakaya PaliText V2.5 export",
                         sequence_no=sequence,
                     )
@@ -1140,6 +1278,7 @@ def index_pali_derived(root: Path, sha: str, writer: Writer, profile: str) -> No
                         rel,
                         sha,
                         "derived_critical_lemma",
+                        text_role="derived_text",
                         witness="lemmatized SuttaCentral Mahāsaṅgīti",
                         sequence_no=sequence,
                         lemma_text=lemma_text,
@@ -1247,11 +1386,11 @@ PROFILE_SOURCES = {
 
 
 def state_parser_version(corpus: str, profile: str) -> str:
-    base_version = (
-        SC_RELATIONS_PARSER_VERSION
-        if corpus == "suttacentral-relations"
-        else PARSER_VERSION
-    )
+    base_version = {
+        "suttacentral-bilara": BILARA_PARSER_VERSION,
+        "suttacentral-relations": SC_RELATIONS_PARSER_VERSION,
+        "84000-tei": TEI_84000_PARSER_VERSION,
+    }.get(corpus, PARSER_VERSION)
     if profile == "acceptance":
         return f"{base_version}:acceptance"
     if profile == "all" and corpus in {"suttacentral-bilara", "cbeta-bm"}:

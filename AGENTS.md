@@ -84,7 +84,16 @@ Every research finding must be traceable to:
 - work/text identifier;
 - segment, line, folio, Toh., CBETA, or equivalent identifier when present;
 - pinned source commit SHA;
-- evidence class and witness/edition when relevant.
+- evidence class, text role, and witness/edition when relevant.
+
+`evidence_class` and `text_role` answer different questions:
+
+- `evidence_class` describes source authority/provenance;
+- `text_role` describes what the indexed text is within that source.
+
+Do not quote or synthesize a translator comment or translation note as though
+it were root/scriptural text. Comments and notes can be useful authoritative
+evidence, but their role must remain explicit.
 
 If variants differ, state which witness says what. If provenance is incomplete,
 label the statement as a hypothesis or omit it.

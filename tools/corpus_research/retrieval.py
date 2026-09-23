@@ -495,6 +495,7 @@ def provenance(db_path: Path, record_id: int) -> dict:
                 "segment_id",
                 "source_sha",
                 "evidence_class",
+                "text_role",
                 "witness",
                 "language",
                 "collection_name",

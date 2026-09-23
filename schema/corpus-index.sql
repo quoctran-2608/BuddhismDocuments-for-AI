@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS records (
     source_path TEXT NOT NULL,
     source_sha TEXT NOT NULL,
     evidence_class TEXT NOT NULL,
+    text_role TEXT NOT NULL DEFAULT 'unspecified',
     witness TEXT,
     relation_ids TEXT NOT NULL DEFAULT '[]',
     sequence_no INTEGER NOT NULL DEFAULT 0,

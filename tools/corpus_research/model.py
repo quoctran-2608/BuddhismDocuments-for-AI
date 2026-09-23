@@ -39,6 +39,7 @@ class Record:
     source_path: str
     source_sha: str
     evidence_class: str
+    text_role: str = "unspecified"
     witness: str | None = None
     relation_ids: list[str] = field(default_factory=list)
     sequence_no: int = 0
@@ -70,6 +71,7 @@ class Record:
             self.source_path,
             self.source_sha,
             self.evidence_class,
+            self.text_role,
             self.witness,
             json.dumps(self.relation_ids, ensure_ascii=False),
             self.sequence_no,

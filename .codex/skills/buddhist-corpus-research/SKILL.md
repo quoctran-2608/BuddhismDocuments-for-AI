@@ -12,7 +12,8 @@ Read and obey the repository root `AGENTS.md` before using this skill.
 - Input: a term, passage, topic, work ID, relation, variant, or verification
   question.
 - Output: findings supported only by local repository evidence, with corpus,
-  relative path, work/segment ID, source SHA, evidence class, and witness.
+  relative path, work/segment ID, source SHA, evidence class, text role, and
+  witness.
 - Failure: if local sources/indexes cannot establish the claim, return
   `không đủ dữ liệu trong corpus hiện tại`.
 - Side effects: retrieval is read-only. `build` creates/replaces derived data
@@ -134,6 +135,12 @@ It deliberately gives canonical/root and authoritative structured editions
 more weight than alignment, computational segmentation, derived analysis, or
 auxiliary data. Ranking is a retrieval aid, not a verdict.
 
+`evidence_class` records source authority; `text_role` records whether a result
+is root text, main translation, heading, translator comment, translation note,
+alignment text, or another explicit role. Do not quote or synthesize
+`translator_comment` or `translation_note` records as though they were
+root/scriptural text. They remain useful evidence when labeled by role.
+
 ## Answer template
 
 1. **Finding** — concise claim.
@@ -141,4 +148,4 @@ auxiliary data. Ranking is a retrieval aid, not a verdict.
 3. **Parallels/variants** — relationship type and differences.
 4. **Confidence and limits**.
 5. **Provenance** for every cited item:
-   `corpus | source_path | work_id | segment_id | source_sha | evidence_class | witness`.
+   `corpus | source_path | work_id | segment_id | source_sha | evidence_class | text_role | witness`.

@@ -36,6 +36,11 @@ bin/buddhist-corpus compare mn1 T01n0001
 bin/buddhist-corpus provenance --record-id 123
 ```
 
+Returned records and `provenance` expose both `evidence_class` and `text_role`.
+The first describes source authority; the second distinguishes root text, main
+translation, heading, translator comment, translation note, and other content
+roles. Do not present comments or notes as though they were the main scripture.
+
 `core` uses lighter full-text representations where appropriate. For Chinese,
 it indexes CBETA BM_u8 for broad retrieval. Use `all`, or open the matching
 CBETA XML P5 file directly, when critical apparatus and TEI markup are needed.

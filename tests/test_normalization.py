@@ -5,8 +5,10 @@ import unittest
 from pathlib import Path
 
 from corpus_research.index import (
+    BILARA_PARSER_VERSION,
     PARSER_VERSION,
     SC_RELATIONS_PARSER_VERSION,
+    TEI_84000_PARSER_VERSION,
     normalize_cbeta_work_id,
     normalize_taisho_line,
     state_parser_version,
@@ -33,16 +35,26 @@ class NormalizationTests(unittest.TestCase):
         self.assertEqual(relative(root, root / "a/b.txt"), "a/b.txt")
 
     def test_profile_sensitive_parser_state(self) -> None:
-        self.assertEqual(state_parser_version("suttacentral-bilara", "core"), PARSER_VERSION)
+        self.assertEqual(
+            state_parser_version("suttacentral-bilara", "core"),
+            BILARA_PARSER_VERSION,
+        )
         self.assertEqual(
             state_parser_version("suttacentral-bilara", "all"),
-            f"{PARSER_VERSION}:full",
+            f"{BILARA_PARSER_VERSION}:full",
         )
         self.assertEqual(
             state_parser_version("84000-tei", "acceptance"),
-            f"{PARSER_VERSION}:acceptance",
+            f"{TEI_84000_PARSER_VERSION}:acceptance",
         )
-        self.assertEqual(state_parser_version("84000-tei", "all"), PARSER_VERSION)
+        self.assertEqual(
+            state_parser_version("84000-tei", "core"),
+            TEI_84000_PARSER_VERSION,
+        )
+        self.assertEqual(
+            state_parser_version("84000-tei", "all"),
+            TEI_84000_PARSER_VERSION,
+        )
         self.assertEqual(
             state_parser_version("suttacentral-relations", "core"),
             SC_RELATIONS_PARSER_VERSION,
