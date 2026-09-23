@@ -136,6 +136,11 @@ context available at shard boundaries, with explicit roles for deduplication.
 The manifest reports actual index coverage and pinned source state. This is a
 second access path to the same index, not a second research engine.
 
+The main repository contains the code and canonical research architecture.
+`config/remote-corpus.json` locates the separate remote repository, whose
+`remote/corpus/` tree contains only the deterministic generated
+connector-readable export.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:
@@ -160,6 +165,8 @@ SQLite records + FTS + relations + variants + lemmas
           ├───────────────────────────────┐
           ▼                               ▼
 CLI retrieval/ranking/context       Deterministic JSONL export
+          │                               │
+          │                     Separate remote corpus repo
           │                               │
           └───────────────┬───────────────┘
                           ▼

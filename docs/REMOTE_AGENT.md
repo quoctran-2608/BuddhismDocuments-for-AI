@@ -4,6 +4,10 @@ The remote corpus export gives GitHub-only agents a read/search/fetch path into
 the same evidence model used by the local SQLite CLI. It does not add a second
 parser, index, ranking method, or research methodology.
 
+The main repository contains the code and canonical research architecture.
+`config/remote-corpus.json` points to the separate repository that contains the
+deterministic generated connector-readable export.
+
 ## Generate or regenerate
 
 ```bash
@@ -23,14 +27,16 @@ Local agents should use `search`, `evidence`, `context`, `provenance`,
 
 GitHub Connector agents should:
 
-1. open `remote/corpus/manifest.json`;
-2. check actual indexed/exported corpora, counts, parser versions, and source
+1. read `config/remote-corpus.json` from the main repository;
+2. identify the remote repository, branch, and root path;
+3. open `<root_path>/manifest.json` in the remote repository;
+4. check actual indexed/exported corpora, counts, parser versions, and source
    SHAs;
-3. search UTF-8 text under `remote/corpus/records/`;
-4. fetch matching JSONL shards and use only `export_role: "primary"` as hits;
-5. read the neighboring overlap rows and record-level provenance;
-6. inspect `relations/` or `variants/` when needed;
-7. apply the existing evidence hierarchy and keep witnesses separate.
+5. search UTF-8 text under `<root_path>/records/` in the remote repository;
+6. fetch matching JSONL shards and use only `export_role: "primary"` as hits;
+7. read the neighboring overlap rows and record-level provenance;
+8. inspect `relations/` or `variants/` under `<root_path>` when needed;
+9. apply the existing evidence hierarchy and keep witnesses separate.
 
 `context_overlap` rows preserve two records on each side of a shard boundary.
 They duplicate indexed records only for context, so consumers must deduplicate

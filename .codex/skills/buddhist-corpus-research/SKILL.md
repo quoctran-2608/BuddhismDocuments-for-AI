@@ -31,16 +31,18 @@ provenance, and variants after search.
 
 ### GitHub Connector mode
 
-When shell/SQLite access is unavailable but the repository can be read:
+When shell/SQLite access is unavailable but the repositories can be read:
 
-1. open `remote/corpus/manifest.json`;
-2. inspect actual coverage, counts, and pinned source SHAs;
-3. GitHub-search text under `remote/corpus/records/`;
-4. fetch the relevant JSONL shard;
-5. inspect primary-hit context and provenance;
-6. inspect `relations/` and `variants/` when needed;
-7. verify a stronger available witness under the evidence hierarchy;
-8. synthesize with the same research modes below.
+1. read `config/remote-corpus.json` from the main repository;
+2. identify the remote corpus repository, branch, and root path;
+3. open `<root_path>/manifest.json` in that repository;
+4. inspect actual coverage, counts, and pinned source SHAs;
+5. GitHub-search `<root_path>/records/` in the remote repository;
+6. fetch the relevant JSONL shard;
+7. inspect primary-hit context and provenance;
+8. inspect `relations/` and `variants/` under `<root_path>` when needed;
+9. apply the existing research skill, including evidence hierarchy, research
+   modes, ranking interpretation, witness separation, and fail-closed behavior.
 
 Rows marked `context_overlap` exist only to preserve shard-boundary context.
 Deduplicate by record `id` and treat only `export_role: "primary"` as a hit.
