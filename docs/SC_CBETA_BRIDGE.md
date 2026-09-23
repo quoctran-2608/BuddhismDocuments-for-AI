@@ -52,6 +52,17 @@ work/range may also be resolved. Both forms resolve overlap against local
 `cbeta-bm` and/or `cbeta-tei` records. The returned CBETA record remains a
 separate primary witness with its own source path and pinned source SHA.
 
+Range resolution supports both index shapes:
+
+1. core/acceptance chunks use valid first/last `relation_ids`;
+2. granular `all` records fall back to a valid `segment_id` locator:
+   `WORK:START..END` or `WORK:LINE`.
+
+Valid `relation_ids` take precedence. Text content is never used to infer or
+repair a locator. The record query streams the complete work rather than
+truncating at 5,000 rows, so a detailed `all` index does not lose range
+resolution for long CBETA works.
+
 ## Local coverage and unresolved cases
 
 The pinned `html_text/lzh` tree contains 4,714 HTML mirrors:

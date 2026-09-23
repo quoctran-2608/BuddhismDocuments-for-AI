@@ -226,6 +226,48 @@ def _parse_cbeta_identifier(identifier: str) -> tuple[str, str | None, str | Non
     return (work_id, None, None) if work_id else None
 
 
+def _record_cbeta_interval(
+    item: dict,
+    expected_work_id: str,
+) -> tuple[tuple[int, int, int, str], tuple[int, int, int, str], str] | None:
+    record_work_id = normalize_cbeta_work_id(item.get("work_id") or "")
+    if record_work_id != expected_work_id:
+        return None
+
+    relation_ids = item.get("relation_ids") or []
+    if len(relation_ids) >= 2:
+        first = _parse_cbeta_identifier(str(relation_ids[0]))
+        last = _parse_cbeta_identifier(str(relation_ids[-1]))
+        if first and last:
+            first_work, first_start, _first_end = first
+            last_work, _last_start, last_end = last
+            record_start = taisho_line_key(first_start) if first_start else None
+            record_end = taisho_line_key(last_end) if last_end else None
+            if (
+                first_work == expected_work_id
+                and last_work == expected_work_id
+                and record_start is not None
+                and record_end is not None
+                and record_start <= record_end
+            ):
+                return record_start, record_end, "relation_ids"
+
+    segment = _parse_cbeta_identifier(item.get("segment_id") or "")
+    if not segment:
+        return None
+    segment_work, segment_start, segment_end = segment
+    record_start = taisho_line_key(segment_start) if segment_start else None
+    record_end = taisho_line_key(segment_end) if segment_end else None
+    if (
+        segment_work != expected_work_id
+        or record_start is None
+        or record_end is None
+        or record_start > record_end
+    ):
+        return None
+    return record_start, record_end, "segment_id"
+
+
 def _resolve_cbeta_records(
     con: sqlite3.Connection,
     work_id: str,
@@ -237,7 +279,7 @@ def _resolve_cbeta_records(
         """SELECT * FROM records
            WHERE work_id COLLATE NOCASE = ?
              AND corpus IN ('cbeta-bm','cbeta-tei')
-           ORDER BY corpus,sequence_no LIMIT 5000""",
+           ORDER BY corpus,sequence_no""",
         (work_id,),
     )
     resolved: list[dict] = []
@@ -246,19 +288,14 @@ def _resolve_cbeta_records(
     for row in rows:
         item = _row(row)
         if target_start is not None and target_end is not None:
-            relation_ids = item.get("relation_ids") or []
-            if len(relation_ids) < 2:
+            interval = _record_cbeta_interval(item, work_id)
+            if interval is None:
                 continue
-            record_start = taisho_line_key(relation_ids[0].split(":", 1)[-1])
-            record_end = taisho_line_key(relation_ids[-1].split(":", 1)[-1])
-            if (
-                record_start is None
-                or record_end is None
-                or record_end < target_start
-                or record_start > target_end
-            ):
+            record_start, record_end, locator = interval
+            if record_end < target_start or record_start > target_end:
                 continue
             item["resolution_reason"] = "taisho_range_overlap"
+            item["resolution_locator"] = locator
         else:
             item["resolution_reason"] = "cbeta_work_id"
         resolved.append(item)
