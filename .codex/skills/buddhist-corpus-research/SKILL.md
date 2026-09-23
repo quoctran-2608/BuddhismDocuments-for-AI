@@ -21,6 +21,33 @@ Read and obey the repository root `AGENTS.md` before using this skill.
 - Permissions: read the root and submodules; write only outside submodules;
   execute local Python/Git/SQLite tools; no network permission.
 
+## Execution environment
+
+### Local mode
+
+When the local CLI and SQLite index are available, use the existing workflow in
+this skill. `evidence --record-id ID --context 2` can bundle a record, context,
+provenance, and variants after search.
+
+### GitHub Connector mode
+
+When shell/SQLite access is unavailable but the repository can be read:
+
+1. open `remote/corpus/manifest.json`;
+2. inspect actual coverage, counts, and pinned source SHAs;
+3. GitHub-search text under `remote/corpus/records/`;
+4. fetch the relevant JSONL shard;
+5. inspect primary-hit context and provenance;
+6. inspect `relations/` and `variants/` when needed;
+7. verify a stronger available witness under the evidence hierarchy;
+8. synthesize with the same research modes below.
+
+Rows marked `context_overlap` exist only to preserve shard-boundary context.
+Deduplicate by record `id` and treat only `export_role: "primary"` as a hit.
+Connector mode changes only the data-access path, not scholarly reasoning. If
+the export cannot establish the claim, return
+`không đủ dữ liệu trong remote corpus export hiện tại`.
+
 ## Start
 
 ```bash

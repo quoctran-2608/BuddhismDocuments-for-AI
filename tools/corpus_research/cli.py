@@ -6,7 +6,19 @@ import sys
 from pathlib import Path
 
 from .index import PROFILE_SOURCES, SOURCE_BUILDERS, build_index, local_sha
-from .retrieval import compare, context, parallels, provenance, resolve, search, status, variants, work
+from .remote_export import DEFAULT_SHARD_BYTES, export_remote
+from .retrieval import (
+    compare,
+    context,
+    evidence,
+    parallels,
+    provenance,
+    resolve,
+    search,
+    status,
+    variants,
+    work,
+)
 
 
 def root_dir() -> Path:
@@ -42,6 +54,8 @@ def parser() -> argparse.ArgumentParser:
     find.add_argument("--limit", type=int, default=20)
     find.add_argument("--language")
     find.add_argument("--corpus")
+    find.add_argument("--context", type=int, default=0)
+    find.add_argument("--with-provenance", action="store_true")
 
     ctx = sub.add_parser("context", help="read neighboring indexed records")
     ctx.add_argument("--record-id", type=int, required=True)
@@ -68,6 +82,20 @@ def parser() -> argparse.ArgumentParser:
 
     prov = sub.add_parser("provenance", help="show the source contract for one record")
     prov.add_argument("--record-id", type=int, required=True)
+
+    ev = sub.add_parser(
+        "evidence",
+        help="bundle one record with context, provenance, and variants",
+    )
+    ev.add_argument("--record-id", type=int, required=True)
+    ev.add_argument("--context", type=int, default=2)
+
+    export = sub.add_parser(
+        "export-remote",
+        help="export the current SQLite index for GitHub Connector access",
+    )
+    export.add_argument("--output", type=Path, default=root_dir() / "remote/corpus")
+    export.add_argument("--max-shard-bytes", type=int, default=DEFAULT_SHARD_BYTES)
     return p
 
 
@@ -134,7 +162,17 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
     if args.command == "search":
-        emit(search(args.db, args.query, args.limit, args.language, args.corpus))
+        emit(
+            search(
+                args.db,
+                args.query,
+                args.limit,
+                args.language,
+                args.corpus,
+                args.context,
+                args.with_provenance,
+            )
+        )
     elif args.command == "context":
         emit(context(args.db, args.record_id, args.window))
     elif args.command == "work":
@@ -149,6 +187,21 @@ def main(argv: list[str] | None = None) -> int:
         emit(compare(args.db, args.identifiers))
     elif args.command == "provenance":
         emit(provenance(args.db, args.record_id))
+    elif args.command == "evidence":
+        emit(evidence(args.db, args.record_id, args.context))
+    elif args.command == "export-remote":
+        try:
+            emit(
+                export_remote(
+                    args.db,
+                    args.output,
+                    args.max_shard_bytes,
+                    progress=True,
+                )
+            )
+        except (OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     return 0
 
 

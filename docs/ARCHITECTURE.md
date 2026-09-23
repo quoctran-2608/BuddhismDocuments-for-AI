@@ -84,6 +84,8 @@ The CLI exposes:
 - `variants`
 - `compare`
 - `provenance`
+- `evidence`
+- `export-remote`
 
 Search ranking combines exactness, Unicode normalization, explicit
 diacritic-folding, compact-script matching, corpus-provided lemma matches,
@@ -92,6 +94,10 @@ not establish a finding.
 
 Relationship tables preserve SuttaCentral parallel types, 84000 work/instance
 relationships, and alignment groups without turning them into textual claims.
+
+`evidence` is a bundled read adapter over existing records, context, provenance,
+and variants. Search can opt into the same context/provenance fields without
+changing default ranking or output.
 
 `evidence_class` describes source authority/provenance. `text_role` independently
 describes the indexed content: for example `root_text`, `translation_main`,
@@ -121,6 +127,15 @@ The skill supports:
 - cross-tradition comparison;
 - source verification.
 
+## 4a. GitHub Connector Access Layer
+
+`export-remote` reads the current SQLite index and writes deterministic,
+GitHub-searchable JSONL shards under `remote/corpus/`. Records retain provenance;
+relations and variants remain separate evidence types. Two-record overlap keeps
+context available at shard boundaries, with explicit roles for deduplication.
+The manifest reports actual index coverage and pinned source state. This is a
+second access path to the same index, not a second research engine.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:
@@ -142,11 +157,15 @@ Deterministic local parsers ── source SHA/parser state
           │
           ▼
 SQLite records + FTS + relations + variants + lemmas
-          │
-          ▼
-CLI retrieval/ranking/context/provenance
-          │
-          ▼
+          ├───────────────────────────────┐
+          ▼                               ▼
+CLI retrieval/ranking/context       Deterministic JSONL export
+          │                               │
+          └───────────────┬───────────────┘
+                          ▼
+              Local or GitHub Connector access
+                          │
+                          ▼
 Research skill with evidence hierarchy and fail-closed rules
           │
           ▼

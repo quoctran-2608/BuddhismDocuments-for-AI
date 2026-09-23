@@ -28,6 +28,94 @@ def _row(row: sqlite3.Row) -> dict:
     return item
 
 
+PROVENANCE_FIELDS = (
+    "corpus",
+    "source_path",
+    "work_id",
+    "segment_id",
+    "source_sha",
+    "evidence_class",
+    "text_role",
+    "witness",
+    "language",
+    "collection_name",
+    "relation_ids",
+)
+
+
+def _provenance(item: dict) -> dict:
+    return {key: item.get(key) for key in PROVENANCE_FIELDS}
+
+
+def _context_neighbors(
+    con: sqlite3.Connection,
+    target: sqlite3.Row | dict,
+    window: int,
+) -> tuple[list[dict], list[dict]]:
+    if window <= 0:
+        return [], []
+    key = (
+        target["corpus"],
+        target["work_id"],
+        target["source_path"],
+        target["sequence_no"],
+        target["sequence_no"],
+        target["id"],
+        window,
+    )
+    before = [
+        _row(row)
+        for row in con.execute(
+            """SELECT * FROM records
+               WHERE corpus=? AND work_id IS ? AND source_path=?
+                 AND (sequence_no < ? OR (sequence_no=? AND id < ?))
+               ORDER BY sequence_no DESC,id DESC LIMIT ?""",
+            key,
+        )
+    ]
+    before.reverse()
+    after = [
+        _row(row)
+        for row in con.execute(
+            """SELECT * FROM records
+               WHERE corpus=? AND work_id IS ? AND source_path=?
+                 AND (sequence_no > ? OR (sequence_no=? AND id > ?))
+               ORDER BY sequence_no,id LIMIT ?""",
+            key,
+        )
+    ]
+    return before, after
+
+
+def _variants_for_record(
+    con: sqlite3.Connection,
+    target: sqlite3.Row | dict,
+) -> list[dict]:
+    work_id = target["work_id"]
+    segment_id = target["segment_id"]
+    if work_id is None and segment_id is None:
+        return []
+    return [
+        _row(row)
+        for row in con.execute(
+            """SELECT * FROM variants
+               WHERE (? IS NOT NULL AND work_id=?)
+                  OR (
+                    ? IS NOT NULL
+                    AND (segment_id=? OR segment_id LIKE ?)
+                  )
+               ORDER BY corpus,segment_id,id LIMIT 500""",
+            (
+                work_id,
+                work_id,
+                segment_id,
+                segment_id,
+                f"{segment_id}%" if segment_id is not None else None,
+            ),
+        )
+    ]
+
+
 def _is_cjk_character(value: str) -> bool:
     codepoint = ord(value)
     return (
@@ -84,7 +172,11 @@ def search(
     limit: int = 20,
     language: str | None = None,
     corpus: str | None = None,
+    context_window: int = 0,
+    with_provenance: bool = False,
 ) -> dict:
+    if context_window < 0:
+        raise ValueError("context window must be non-negative")
     con = connect_readonly(db_path)
     norm = normalize(query)
     folded = fold_diacritics(query)
@@ -203,10 +295,19 @@ def search(
         item["match_reasons"] = reasons
         ranked.append(item)
     ranked.sort(key=lambda x: (-x["score"], x["corpus"], x["source_path"], x["sequence_no"]))
+    results = ranked[:limit]
+    if context_window or with_provenance:
+        for item in results:
+            if context_window:
+                before, after = _context_neighbors(con, item, context_window)
+                item["context_before"] = before
+                item["context_after"] = after
+            if with_provenance:
+                item["provenance"] = _provenance(item)
     con.close()
     return {
         "query": query,
-        "results": ranked[:limit],
+        "results": results,
         "result_count": min(len(ranked), limit),
         "fail_closed": not ranked,
         "message": None if ranked else "không đủ dữ liệu trong corpus hiện tại",
@@ -217,27 +318,44 @@ def search(
 
 
 def context(db_path: Path, record_id: int, window: int = 2) -> dict:
+    if window < 0:
+        raise ValueError("context window must be non-negative")
     con = connect_readonly(db_path)
     target = con.execute("SELECT * FROM records WHERE id=?", (record_id,)).fetchone()
     if not target:
         con.close()
         return {"record_id": record_id, "found": False, "message": "không đủ dữ liệu trong corpus hiện tại"}
-    rows = con.execute(
-        """SELECT * FROM records
-           WHERE corpus=? AND work_id IS ? AND source_path=?
-             AND sequence_no BETWEEN ? AND ?
-           ORDER BY sequence_no""",
-        (
-            target["corpus"],
-            target["work_id"],
-            target["source_path"],
-            target["sequence_no"] - window,
-            target["sequence_no"] + window,
-        ),
-    )
-    result = [_row(r) for r in rows]
+    before, after = _context_neighbors(con, target, window)
+    result = [*before, _row(target), *after]
     con.close()
     return {"record_id": record_id, "found": True, "context": result}
+
+
+def evidence(db_path: Path, record_id: int, window: int = 2) -> dict:
+    if window < 0:
+        raise ValueError("context window must be non-negative")
+    con = connect_readonly(db_path)
+    target = con.execute("SELECT * FROM records WHERE id=?", (record_id,)).fetchone()
+    if not target:
+        con.close()
+        return {
+            "record_id": record_id,
+            "found": False,
+            "message": "không đủ dữ liệu trong corpus hiện tại",
+        }
+    item = _row(target)
+    before, after = _context_neighbors(con, target, window)
+    record_variants = _variants_for_record(con, target)
+    con.close()
+    return {
+        "record_id": record_id,
+        "found": True,
+        "record": item,
+        "context_before": before,
+        "context_after": after,
+        "provenance": _provenance(item),
+        "variants": record_variants,
+    }
 
 
 def work(db_path: Path, identifier: str) -> dict:
@@ -486,22 +604,7 @@ def provenance(db_path: Path, record_id: int) -> dict:
     return {
         "record_id": record_id,
         "found": True,
-        "provenance": {
-            key: item.get(key)
-            for key in (
-                "corpus",
-                "source_path",
-                "work_id",
-                "segment_id",
-                "source_sha",
-                "evidence_class",
-                "text_role",
-                "witness",
-                "language",
-                "collection_name",
-                "relation_ids",
-            )
-        },
+        "provenance": _provenance(item),
         "text": item["raw_text"],
     }
 

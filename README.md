@@ -37,6 +37,10 @@ bin/buddhist-corpus build --profile core
 # Tìm kiếm có provenance
 bin/buddhist-corpus search "sutaṃ" --language pli
 bin/buddhist-corpus search "如是我聞" --language lzh
+
+# Bundled evidence và static export cho GitHub Connector
+bin/buddhist-corpus evidence --record-id 123 --context 2
+bin/buddhist-corpus export-remote --output remote/corpus
 ```
 
 Tài liệu:
@@ -44,6 +48,7 @@ Tài liệu:
 - [Khảo sát corpus](docs/CORPUS_SURVEY.md)
 - [Kiến trúc hệ thống](docs/ARCHITECTURE.md)
 - [Hướng dẫn CLI](docs/CLI.md)
+- [GitHub Connector research access](docs/REMOTE_AGENT.md)
 - [Buddhist corpus research skill](.codex/skills/buddhist-corpus-research/SKILL.md)
 
 Database sinh ra nằm trong `derived/`, không phải source-of-truth và không được

@@ -25,7 +25,9 @@ bin/buddhist-corpus build --profile core
 # Search and inspect
 bin/buddhist-corpus search "sutaṃ" --language pli
 bin/buddhist-corpus search "如是我聞" --language lzh
+bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
 bin/buddhist-corpus context --record-id 123 --window 3
+bin/buddhist-corpus evidence --record-id 123 --context 2
 bin/buddhist-corpus work UT22084-001-001
 bin/buddhist-corpus parallels an1.1-5
 bin/buddhist-corpus parallels ea9.7
@@ -34,7 +36,19 @@ bin/buddhist-corpus resolve T02n0125:0563a14..0563a27
 bin/buddhist-corpus variants T01n0001
 bin/buddhist-corpus compare mn1 T01n0001
 bin/buddhist-corpus provenance --record-id 123
+
+# Export the complete current SQLite index for GitHub Connector access
+bin/buddhist-corpus export-remote --output remote/corpus
 ```
+
+Without `--context` or `--with-provenance`, `search` keeps its previous output
+shape and ranking. Context is restricted to the same corpus, work ID, and source
+path, ordered by `sequence_no`. `evidence` bundles the target record, neighboring
+records, provenance, and locally indexed variants.
+
+`export-remote` reads the existing SQLite database rather than reparsing source
+repositories. It emits deterministic UTF-8 JSONL shards, plus a coverage/source
+manifest. See [GitHub Connector Research Access](REMOTE_AGENT.md).
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main
