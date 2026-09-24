@@ -130,16 +130,31 @@ The skill supports:
 ## 4a. GitHub Connector Access Layer
 
 `export-remote` reads the current SQLite index and writes deterministic,
-GitHub-searchable JSONL shards under `remote/corpus/`. Records retain provenance;
-relations and variants remain separate evidence types. Two-record overlap keeps
-context available at shard boundaries, with explicit roles for deduplication.
-The manifest reports actual index coverage and pinned source state. This is a
-second access path to the same index, not a second research engine.
+connector-readable JSONL shards under `remote/corpus/`. Records retain
+provenance; relations and variants remain separate evidence types. Two-record
+overlap keeps context available at shard boundaries, with explicit roles for
+deduplication. A deterministic static locator maps normalized terms, CJK
+bigrams, and identifiers to candidate shard paths. The locator neither stores
+record payloads nor makes scholarly claims. The manifest reports actual index
+coverage and pinned source state. This is a second access path to the same
+index, not a second research engine.
 
 The main repository contains the code and canonical research architecture.
 `config/remote-corpus.json` locates the separate remote repository, whose
 `remote/corpus/` tree contains only the deterministic generated
-connector-readable export.
+connector-readable export. The remote repository is a derived artifact, not
+source-of-truth. Local mode remains offline; connector mode uses only the
+declared main and remote GitHub repositories for repository evidence.
+
+Normal research uses all data actually present in the current index/export
+unless the user limits the corpus. Coverage always comes from the manifest, so
+an export containing six components must never be described as covering all 13
+sources. Exported records preserve source SHA, evidence class, text role, and
+witness. GitHub Code Search is optional and never required: the connector uses
+the locator, fetches candidate shards, and verifies the actual content. If that
+cannot establish a claim, it fails closed with:
+
+**không đủ dữ liệu trong remote corpus export hiện tại**
 
 ## 5. Answer / Provenance Layer
 
@@ -164,7 +179,7 @@ Deterministic local parsers ── source SHA/parser state
 SQLite records + FTS + relations + variants + lemmas
           ├───────────────────────────────┐
           ▼                               ▼
-CLI retrieval/ranking/context       Deterministic JSONL export
+CLI retrieval/ranking/context       JSONL export + static locator
           │                               │
           │                     Separate remote corpus repo
           │                               │

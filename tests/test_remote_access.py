@@ -57,7 +57,7 @@ class RemoteAccessTests(unittest.TestCase):
             for sequence_no in range(1, 6):
                 text = f"neighbor {sequence_no}"
                 if sequence_no == 3:
-                    text = "central anicca evidence"
+                    text = "central anicca evidence 無常"
                 rows.append(
                     (
                         "fixture-corpus",
@@ -242,6 +242,27 @@ class RemoteAccessTests(unittest.TestCase):
         self.assertEqual(primary["source_sha"], "a" * 40)
         self.assertTrue(list((output / "relations").rglob("*.jsonl")))
         self.assertTrue(list((output / "variants").rglob("*.jsonl")))
+        locator_manifest = json.loads(
+            (output / "locator/manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(locator_manifest["locator_version"], 1)
+        self.assertGreater(locator_manifest["file_count"], 0)
+        self.assertEqual(manifest["locator"]["manifest"], "locator/manifest.json")
+        self.assertEqual(
+            locator_manifest["generated_from"]["record_count"],
+            manifest["index"]["record_count"],
+        )
+        locator_rows = [
+            json.loads(line)
+            for path in sorted((output / "locator").rglob("*.jsonl"))
+            for line in path.read_text(encoding="utf-8").splitlines()
+        ]
+        by_key = {row["key"]: row for row in locator_rows}
+        self.assertTrue(by_key["anicca"]["records"])
+        self.assertTrue(by_key["無常"]["records"])
+        self.assertTrue(by_key["mn-fixture"]["records"])
+        self.assertTrue(by_key["mn-fixture"]["relations"])
+        self.assertTrue(by_key["mn-fixture"]["variants"])
         record_shards = [
             shard
             for shard in manifest_shards(manifest)

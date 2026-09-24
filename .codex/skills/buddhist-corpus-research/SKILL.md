@@ -37,18 +37,32 @@ When shell/SQLite access is unavailable but the repositories can be read:
 2. identify the remote corpus repository, branch, and root path;
 3. open `<root_path>/manifest.json` in that repository;
 4. inspect actual coverage, counts, and pinned source SHAs;
-5. GitHub-search `<root_path>/records/` in the remote repository;
-6. fetch the relevant JSONL shard;
+5. use `<root_path>/locator/manifest.json` to normalize and route the query or
+   identifier to candidate shard paths;
+6. fetch candidate JSONL shards and verify the actual hit in exported content;
 7. inspect primary-hit context and provenance;
 8. inspect `relations/` and `variants/` under `<root_path>` when needed;
 9. apply the existing research skill, including evidence hierarchy, research
    modes, ranking interpretation, witness separation, and fail-closed behavior.
+
+GitHub Code Search is optional only. The connector workflow must not depend on
+GitHub Code Search indexing. Locator rows identify candidate files only; they
+are not evidence and cannot establish a scholarly conclusion.
 
 Rows marked `context_overlap` exist only to preserve shard-boundary context.
 Deduplicate by record `id` and treat only `export_role: "primary"` as a hit.
 Connector mode changes only the data-access path, not scholarly reasoning. If
 the export cannot establish the claim, return
 `không đủ dữ liệu trong remote corpus export hiện tại`.
+
+The main repository is the canonical research architecture. The remote
+repository is a deterministic derived access artifact, not source-of-truth.
+Local mode remains offline. Connector mode uses only the declared main and
+remote GitHub repositories for repository evidence. Unless the user limits the
+corpus, research uses all data actually present in the current index/export.
+Read coverage from the manifest and never claim all 13 sources when the export
+contains fewer components. Remote records preserve source SHA, evidence class,
+text role, and witness.
 
 ## Start
 

@@ -32,15 +32,25 @@ GitHub Connector agents should:
 3. open `<root_path>/manifest.json` in the remote repository;
 4. check actual indexed/exported corpora, counts, parser versions, and source
    SHAs;
-5. search UTF-8 text under `<root_path>/records/` in the remote repository;
-6. fetch matching JSONL shards and use only `export_role: "primary"` as hits;
-7. read the neighboring overlap rows and record-level provenance;
-8. inspect `relations/` or `variants/` under `<root_path>` when needed;
-9. apply the existing evidence hierarchy and keep witnesses separate.
+5. read `<root_path>/locator/manifest.json`, normalize the query or identifier,
+   and calculate the declared bucket;
+6. fetch the bucket part file(s), then resolve their zero-based shard indexes
+   through the root manifest `shards` array;
+7. fetch candidate JSONL shards, verify the actual hit, and use only
+   `export_role: "primary"` as record hits;
+8. read the neighboring overlap rows and record-level provenance;
+9. inspect `relations/` or `variants/` under `<root_path>` when needed;
+10. apply the existing evidence hierarchy and keep witnesses separate.
 
 `context_overlap` rows preserve two records on each side of a shard boundary.
 They duplicate indexed records only for context, so consumers must deduplicate
 by record `id`.
+
+The locator maps normalized terms, CJK bigrams, and identifiers to candidate
+shards. For a passage, look up a few distinctive terms or CJK bigrams and
+intersect or prioritize their paths, then verify the full phrase in
+`raw_text`. Locator rows are not evidence. GitHub Code Search is optional only;
+the connector workflow does not depend on its indexing.
 
 ## Coverage and limits
 
@@ -51,8 +61,15 @@ contracts. `shard_fields` names the columns used by each compact row in
 `shards`; those rows include path, counts, ID range, and first/last work hints.
 The manifest must not be read as claiming unindexed corpora.
 
-GitHub code search may tokenize scripts differently, lag after commits, or omit
-very broad queries. Search the smallest distinctive exact phrase, then fetch
-the shard. If the export is missing or cannot establish a claim, report:
+The main repository is the canonical research architecture. The remote
+repository is a deterministic derived access artifact, not source-of-truth.
+Local mode remains offline, while connector mode uses only the declared main
+and remote GitHub repositories for repository evidence. Unless the user limits
+the corpus, use all data actually present in the current export. Read coverage
+from the manifest and never claim all 13 sources when fewer components are
+present. Exported records preserve source SHA, evidence class, text role, and
+witness.
+
+If the locator or export is missing or cannot establish a claim, report:
 
 **không đủ dữ liệu trong remote corpus export hiện tại**

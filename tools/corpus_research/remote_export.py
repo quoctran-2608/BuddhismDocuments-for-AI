@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import itertools
 import json
 import os
@@ -8,18 +9,23 @@ import shutil
 import sqlite3
 import sys
 import tempfile
-from collections import deque
+import unicodedata
+from collections import defaultdict, deque
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Iterator
 
 from .index import SEARCH_INDEX_COMPONENT, connect_readonly
+from .model import compact, fold_diacritics, normalize
 
 
 EXPORT_VERSION = 1
+LOCATOR_VERSION = 1
 DEFAULT_SHARD_BYTES = 512 * 1024
 REMOTE_FAILURE_MESSAGE = "không đủ dữ liệu trong remote corpus export hiện tại"
 EXPORT_MARKER = ".buddhist-corpus-remote-export"
+LOCATOR_BUCKET_HEX_CHARS = 2
+LATIN_TOKEN_RE = re.compile(r"[^\W_]+", flags=re.UNICODE)
 SHARD_FIELDS = (
     "kind",
     "corpus",
@@ -78,6 +84,64 @@ def _decoded(value: object, fallback: object) -> object:
 def _slug(value: str) -> str:
     slug = re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip("-")
     return slug or "unknown"
+
+
+def _locator_bucket(key: str) -> str:
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()[
+        :LOCATOR_BUCKET_HEX_CHARS
+    ]
+
+
+def _is_latin_or_digit(char: str) -> bool:
+    return char.isdigit() or "LATIN" in unicodedata.name(char, "")
+
+
+def _is_cjk(char: str) -> bool:
+    codepoint = ord(char)
+    return (
+        0x3400 <= codepoint <= 0x4DBF
+        or 0x4E00 <= codepoint <= 0x9FFF
+        or 0xF900 <= codepoint <= 0xFAFF
+        or 0x20000 <= codepoint <= 0x2FA1F
+    )
+
+
+def _latin_locator_terms(*values: str | None) -> set[str]:
+    terms: set[str] = set()
+    for value in values:
+        if not value:
+            continue
+        for representation in {normalize(value), fold_diacritics(value)}:
+            for token in LATIN_TOKEN_RE.findall(representation):
+                if (
+                    2 <= len(token) <= 80
+                    and any(char.isalpha() for char in token)
+                    and all(_is_latin_or_digit(char) for char in token)
+                ):
+                    terms.add(token)
+    return terms
+
+
+def _cjk_locator_terms(value: str | None) -> set[str]:
+    if not value:
+        return set()
+    terms: set[str] = set()
+    previous: str | None = None
+    for char in compact(value):
+        if _is_cjk(char):
+            if previous is not None:
+                terms.add(previous + char)
+            previous = char
+        else:
+            previous = None
+    return terms
+
+
+def _identifier_locator_key(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    key = normalize(value)
+    return key or None
 
 
 @dataclass(slots=True)
@@ -354,6 +418,375 @@ def _export_simple_table(
     writer.flush()
 
 
+class _LocatorFileWriter:
+    def __init__(self, root: Path, target_bytes: int):
+        self.root = root
+        self.target_bytes = target_bytes
+        self.files: list[dict] = []
+        self.parts: dict[str, dict[str, int]] = defaultdict(dict)
+
+    def write_bucket(
+        self,
+        namespace: str,
+        bucket: str,
+        rows: Iterable[dict],
+    ) -> None:
+        part = 0
+        lines: list[bytes] = []
+        byte_size = 0
+        first_key: str | None = None
+        last_key: str | None = None
+
+        def flush() -> None:
+            nonlocal part, lines, byte_size, first_key, last_key
+            if not lines:
+                return
+            part += 1
+            relative_path = (
+                Path(namespace) / bucket / f"part-{part:06d}.jsonl"
+            )
+            path = self.root / relative_path
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b"".join(lines))
+            self.files.append(
+                {
+                    "path": relative_path.as_posix(),
+                    "byte_size": byte_size,
+                    "line_count": len(lines),
+                    "first_key": first_key,
+                    "last_key": last_key,
+                    "oversized": byte_size > self.target_bytes,
+                }
+            )
+            lines = []
+            byte_size = 0
+            first_key = None
+            last_key = None
+
+        for row in rows:
+            line = _json_bytes(row)
+            if lines and byte_size + len(line) > self.target_bytes:
+                flush()
+            if first_key is None:
+                first_key = row["key"]
+            last_key = row["key"]
+            lines.append(line)
+            byte_size += len(line)
+            if len(line) > self.target_bytes:
+                flush()
+        flush()
+        if part:
+            self.parts[namespace][bucket] = part
+
+
+def _locator_rows(
+    con: sqlite3.Connection,
+    namespace: str,
+    bucket: str,
+) -> Iterator[dict]:
+    current_key: str | None = None
+    references: dict[str, list[str]] = {}
+    for key, kind, shard_index in con.execute(
+        """SELECT locator_key,artifact_kind,shard_index
+           FROM locator_entries
+           WHERE namespace=? AND bucket=?
+           ORDER BY locator_key,artifact_kind,shard_index""",
+        (namespace, bucket),
+    ):
+        if current_key is not None and key != current_key:
+            yield {"key": current_key, **references}
+            references = {}
+        current_key = key
+        references.setdefault(kind, []).append(shard_index)
+    if current_key is not None:
+        yield {"key": current_key, **references}
+
+
+def _insert_locator_entries(
+    con: sqlite3.Connection,
+    namespace: str,
+    keys: Iterable[str],
+    artifact_kind: str,
+    shard_index: int,
+) -> None:
+    con.executemany(
+        """INSERT OR IGNORE INTO locator_entries(
+           namespace,bucket,locator_key,artifact_kind,shard_index)
+           VALUES (?,?,?,?,?)""",
+        (
+            (
+                namespace,
+                _locator_bucket(key),
+                key,
+                artifact_kind,
+                shard_index,
+            )
+            for key in keys
+        ),
+    )
+
+
+def _index_locator_shard(
+    con: sqlite3.Connection,
+    root: Path,
+    shard_index: int,
+    shard: dict,
+) -> None:
+    kind = shard["kind"]
+    shard_path = shard["path"]
+    latin_terms: set[str] = set()
+    cjk_terms: set[str] = set()
+    identifiers: set[str] = set()
+
+    with (root / shard_path).open(encoding="utf-8") as source:
+        for line in source:
+            item = json.loads(line)
+            if kind == "records":
+                if item["export_role"] != "primary":
+                    continue
+                latin_terms.update(
+                    _latin_locator_terms(item.get("raw_text"), item.get("title"))
+                )
+                cjk_terms.update(_cjk_locator_terms(item.get("raw_text")))
+                identifier_values = [
+                    item.get("work_id"),
+                    item.get("segment_id"),
+                    *item.get("relation_ids", []),
+                ]
+            elif kind == "relations":
+                identifier_values = [item.get("from_id"), item.get("to_id")]
+            elif kind == "variants":
+                latin_terms.update(
+                    _latin_locator_terms(item.get("lemma"), item.get("reading"))
+                )
+                identifier_values = [item.get("work_id"), item.get("segment_id")]
+            else:
+                identifier_values = []
+            identifiers.update(
+                key
+                for value in identifier_values
+                if (key := _identifier_locator_key(value)) is not None
+            )
+
+    if latin_terms:
+        _insert_locator_entries(
+            con,
+            "terms/latin",
+            latin_terms,
+            kind,
+            shard_index,
+        )
+    if cjk_terms:
+        _insert_locator_entries(
+            con,
+            "terms/cjk",
+            cjk_terms,
+            kind,
+            shard_index,
+        )
+    if identifiers:
+        _insert_locator_entries(
+            con,
+            "ids",
+            identifiers,
+            kind,
+            shard_index,
+        )
+    con.commit()
+
+
+def _export_locator(
+    root: Path,
+    shards: list[dict],
+    workspace: Path,
+    target_bytes: int,
+    source_summary: dict,
+    progress: bool,
+) -> dict:
+    locator_root = root / "locator"
+    locator_root.mkdir(parents=True)
+    locator_db = workspace / "locator.sqlite3"
+    con = sqlite3.connect(locator_db)
+    con.execute("PRAGMA journal_mode=OFF")
+    con.execute("PRAGMA synchronous=OFF")
+    con.execute("PRAGMA temp_store=FILE")
+    con.execute(
+        """CREATE TABLE locator_entries(
+           namespace TEXT NOT NULL,
+           bucket TEXT NOT NULL,
+           locator_key TEXT NOT NULL,
+           artifact_kind TEXT NOT NULL,
+           shard_index INTEGER NOT NULL,
+           PRIMARY KEY(namespace,locator_key,artifact_kind,shard_index)
+        ) WITHOUT ROWID"""
+    )
+    for shard_index, shard in enumerate(shards):
+        _index_locator_shard(con, root, shard_index, shard)
+        completed = shard_index + 1
+        if progress and (completed % 250 == 0 or completed == len(shards)):
+            print(
+                f"[export] locator indexed {completed}/{len(shards)} shards",
+                file=sys.stderr,
+                flush=True,
+            )
+    con.execute(
+        """CREATE INDEX locator_route
+           ON locator_entries(
+             namespace,bucket,locator_key,artifact_kind,shard_index
+           )"""
+    )
+
+    writer = _LocatorFileWriter(locator_root, target_bytes)
+    namespaces = [
+        row[0]
+        for row in con.execute(
+            "SELECT DISTINCT namespace FROM locator_entries ORDER BY namespace"
+        )
+    ]
+    for namespace in namespaces:
+        buckets = [
+            row[0]
+            for row in con.execute(
+                """SELECT DISTINCT bucket FROM locator_entries
+                   WHERE namespace=? ORDER BY bucket""",
+                (namespace,),
+            )
+        ]
+        for bucket in buckets:
+            writer.write_bucket(
+                namespace,
+                bucket,
+                _locator_rows(con, namespace, bucket),
+            )
+
+    key_counts = {
+        namespace: con.execute(
+            """SELECT COUNT(DISTINCT locator_key) FROM locator_entries
+               WHERE namespace=?""",
+            (namespace,),
+        ).fetchone()[0]
+        for namespace in namespaces
+    }
+    reference_counts = {
+        namespace: con.execute(
+            "SELECT COUNT(*) FROM locator_entries WHERE namespace=?",
+            (namespace,),
+        ).fetchone()[0]
+        for namespace in namespaces
+    }
+    con.close()
+
+    manifest = {
+        "locator_version": LOCATOR_VERSION,
+        "generated_from": {
+            "artifact": "current SQLite remote export",
+            **source_summary,
+        },
+        "purpose": "candidate shard routing only; never scholarly evidence",
+        "deterministic_contract": (
+            "same SQLite snapshot, exporter version, and shard size produce "
+            "byte-identical locator files"
+        ),
+        "routing": {
+            "hash": "SHA-256 of the UTF-8 normalized lookup key",
+            "bucket": (
+                f"first {LOCATOR_BUCKET_HEX_CHARS} lowercase hexadecimal characters"
+            ),
+            "file_pattern": (
+                "<namespace>/<bucket>/part-<six-digit>.jsonl relative to locator/"
+            ),
+            "part_selection": (
+                "within the hashed bucket, choose the file whose inclusive "
+                "first_key..last_key range contains the normalized key"
+            ),
+            "parts": {
+                namespace: dict(sorted(buckets.items()))
+                for namespace, buckets in sorted(writer.parts.items())
+            },
+        },
+        "namespaces": {
+            "terms/latin": {
+                "input": "one distinctive Latin-script token",
+                "normalization": (
+                    "NFC, Unicode casefold, whitespace collapse; also NFKD "
+                    "diacritic-folded token form"
+                ),
+                "tokenization": (
+                    "existing normalized/folded word-token behavior; keys are "
+                    "2-80 Latin letters or letters with digits"
+                ),
+            },
+            "terms/cjk": {
+                "input": "one CJK bigram",
+                "normalization": (
+                    "existing compact(raw_text), then overlapping two-codepoint "
+                    "CJK n-grams within CJK runs"
+                ),
+                "passage_lookup": (
+                    "derive distinctive overlapping bigrams and intersect or "
+                    "prioritize their record shard references"
+                ),
+            },
+            "ids": {
+                "input": "work, segment, relation endpoint, or known local identifier",
+                "normalization": "NFC, Unicode casefold, whitespace collapse",
+            },
+        },
+        "line_format": {
+            "key": "normalized lookup key",
+            "records": (
+                "optional sorted zero-based indexes into root manifest.shards"
+            ),
+            "relations": (
+                "optional sorted zero-based indexes into root manifest.shards"
+            ),
+            "variants": (
+                "optional sorted zero-based indexes into root manifest.shards"
+            ),
+        },
+        "shard_reference": {
+            "manifest": "../manifest.json",
+            "array": "shards",
+            "index_base": 0,
+            "path_field": "path",
+            "path_field_position": SHARD_FIELDS.index("path"),
+        },
+        "key_counts": key_counts,
+        "reference_counts": reference_counts,
+        "target_file_bytes": target_bytes,
+        "file_count": len(writer.files),
+        "byte_size": sum(item["byte_size"] for item in writer.files),
+        "oversized_file_count": sum(item["oversized"] for item in writer.files),
+        "file_fields": [
+            "path",
+            "byte_size",
+            "line_count",
+            "first_key",
+            "last_key",
+            "oversized",
+        ],
+        "files": [
+            [
+                item[field]
+                for field in (
+                    "path",
+                    "byte_size",
+                    "line_count",
+                    "first_key",
+                    "last_key",
+                    "oversized",
+                )
+            ]
+            for item in writer.files
+        ],
+    }
+    (locator_root / "manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    return manifest
+
+
 def _remote_readme() -> str:
     return """# GitHub Connector Corpus Export
 
@@ -361,17 +794,22 @@ This directory is a deterministic, read-only export of the existing SQLite
 index. It is an access adapter, not a second research system.
 
 1. Read `manifest.json` and verify actual corpus coverage and pinned SHAs.
-2. Search UTF-8 text only under `records/`.
-3. Treat `export_role: "primary"` as a hit. Rows marked `context_overlap`
+2. Read `locator/manifest.json`, normalize the query or identifier as declared,
+   calculate its bucket, and fetch the listed locator part file(s).
+3. Resolve locator shard indexes through the root manifest `shards` array.
+   GitHub Code Search is optional only and is never required.
+4. Fetch candidate shards and verify the actual query in exported content.
+5. Treat `export_role: "primary"` as a hit. Rows marked `context_overlap`
    only preserve two neighboring records across shard boundaries; deduplicate
    all rows by `id`.
-4. Read provenance on the record itself.
-5. Inspect `relations/` and `variants/` when the research question needs them.
-6. Apply the evidence hierarchy and witness separation from the repository
+6. Read provenance on the record itself.
+7. Inspect `relations/` and `variants/` when the research question needs them.
+8. Apply the evidence hierarchy and witness separation from the repository
    research skill.
 
 In the manifest, `shard_fields` names the columns used by each compact row in
-`shards`.
+`shards`. Locator results are candidate file locations, not evidence or
+scholarly conclusions.
 
 Files are JSON Lines, ordered and sharded at record boundaries. If the export
 does not contain enough evidence, report:
@@ -466,6 +904,23 @@ def export_remote(
         if progress:
             print("[export] variants complete", file=sys.stderr, flush=True)
 
+        locator_manifest = _export_locator(
+            stage,
+            writer.shards,
+            Path(workspace.name),
+            max_shard_bytes,
+            {
+                "export_version": EXPORT_VERSION,
+                "search_index_version": search_index_version,
+                "record_count": sum(record_counts.values()),
+                "relation_count": sum(relation_counts.values()),
+                "variant_count": sum(variant_counts.values()),
+            },
+            progress,
+        )
+        if progress:
+            print("[export] locator complete", file=sys.stderr, flush=True)
+
         indexed_corpora = sorted(
             set(record_counts)
             | set(work_counts)
@@ -524,6 +979,13 @@ def export_remote(
                 [shard[field] for field in SHARD_FIELDS]
                 for shard in writer.shards
             ],
+            "locator": {
+                "version": locator_manifest["locator_version"],
+                "manifest": "locator/manifest.json",
+                "file_count": locator_manifest["file_count"],
+                "byte_size": locator_manifest["byte_size"],
+                "key_counts": locator_manifest["key_counts"],
+            },
         }
         (stage / "manifest.json").write_text(
             json.dumps(
@@ -561,5 +1023,7 @@ def export_remote(
         "relation_count": manifest["index"]["relation_count"],
         "variant_count": manifest["index"]["variant_count"],
         "shard_count": len(manifest["shards"]),
+        "locator_file_count": manifest["locator"]["file_count"],
+        "locator_byte_size": manifest["locator"]["byte_size"],
         "manifest": str(output / "manifest.json"),
     }
