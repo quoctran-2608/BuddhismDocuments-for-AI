@@ -56,6 +56,10 @@ class RemoteAccessTests(unittest.TestCase):
             rows = []
             for sequence_no in range(1, 6):
                 text = f"neighbor {sequence_no}"
+                evidence_class = "canonical_root"
+                if sequence_no == 1:
+                    text = "anicca low-priority evidence"
+                    evidence_class = "auxiliary_reference"
                 if sequence_no == 3:
                     text = "central anicca evidence 無常"
                 rows.append(
@@ -73,7 +77,7 @@ class RemoteAccessTests(unittest.TestCase):
                         "",
                         "fixture/source/mn.json",
                         "a" * 40,
-                        "canonical_root",
+                        evidence_class,
                         "root_text",
                         "fixture witness",
                         "[]",
@@ -245,7 +249,7 @@ class RemoteAccessTests(unittest.TestCase):
         locator_manifest = json.loads(
             (output / "locator/manifest.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(locator_manifest["locator_version"], 1)
+        self.assertEqual(locator_manifest["locator_version"], 2)
         self.assertGreater(locator_manifest["file_count"], 0)
         self.assertEqual(manifest["locator"]["manifest"], "locator/manifest.json")
         self.assertEqual(
@@ -263,6 +267,23 @@ class RemoteAccessTests(unittest.TestCase):
         self.assertTrue(by_key["mn-fixture"]["records"])
         self.assertTrue(by_key["mn-fixture"]["relations"])
         self.assertTrue(by_key["mn-fixture"]["variants"])
+        anicca_shards = by_key["anicca"]["records"]
+        self.assertEqual(len(anicca_shards), 2)
+        primary_ids_by_shard = {}
+        for shard_index in anicca_shards:
+            shard = manifest_shards(manifest)[shard_index]
+            primary_ids_by_shard[shard_index] = [
+                row["id"]
+                for row in (
+                    json.loads(line)
+                    for line in (output / shard["path"])
+                    .read_text(encoding="utf-8")
+                    .splitlines()
+                )
+                if row["export_role"] == "primary"
+            ]
+        self.assertIn(3, primary_ids_by_shard[anicca_shards[0]])
+        self.assertIn(1, primary_ids_by_shard[anicca_shards[1]])
         record_shards = [
             shard
             for shard in manifest_shards(manifest)

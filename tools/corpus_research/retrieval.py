@@ -42,9 +42,108 @@ PROVENANCE_FIELDS = (
     "relation_ids",
 )
 
+MATCH_SCORE = {
+    "exact": 120,
+    "normalized": 95,
+    "diacritic-folded": 75,
+    "compact-unicode": 70,
+    "fts": 30,
+}
+
 
 def _provenance(item: dict) -> dict:
     return {key: item.get(key) for key in PROVENANCE_FIELDS}
+
+
+def _record_value(record: sqlite3.Row | dict, key: str, default: object = None) -> object:
+    try:
+        value = record[key]
+    except (IndexError, KeyError):
+        return default
+    return default if value is None else value
+
+
+def score_record_match(
+    record: sqlite3.Row | dict,
+    query: str,
+    *,
+    normalized_query: str | None = None,
+    folded_query: str | None = None,
+    compact_query: str | None = None,
+    lemma_forms: set[str] | frozenset[str] = frozenset(),
+    lemma_segments: set[tuple[str | None, str | None]]
+    | frozenset[tuple[str | None, str | None]] = frozenset(),
+    match_kind: str | None = None,
+    corpus_lemma: bool | None = None,
+    derive_missing_text: bool = False,
+) -> tuple[int, list[str]]:
+    """Apply the shared deterministic final record-ranking semantics."""
+    norm = normalized_query if normalized_query is not None else normalize(query)
+    folded = folded_query if folded_query is not None else fold_diacritics(query)
+    comp = compact_query if compact_query is not None else compact(query)
+    raw = str(_record_value(record, "raw_text", ""))
+    row_norm = str(_record_value(record, "norm_text", ""))
+    row_folded = str(_record_value(record, "folded_text", ""))
+    row_compact = str(_record_value(record, "compact_text", ""))
+    if derive_missing_text:
+        row_norm = row_norm or normalize(raw)
+        row_folded = row_folded or fold_diacritics(raw)
+        row_compact = row_compact or compact(raw)
+
+    if match_kind is None:
+        if query in raw:
+            match_kind = "exact"
+        elif norm in row_norm:
+            match_kind = "normalized"
+        elif folded in row_folded:
+            match_kind = "diacritic-folded"
+        elif comp and comp in row_compact:
+            match_kind = "compact-unicode"
+        else:
+            match_kind = "fts"
+    if match_kind not in MATCH_SCORE:
+        raise ValueError(f"unknown record match kind: {match_kind}")
+
+    score = EVIDENCE_WEIGHT.get(str(_record_value(record, "evidence_class", "")), 0)
+    score += MATCH_SCORE[match_kind]
+    reasons = [match_kind]
+
+    if corpus_lemma is None:
+        has_lemma_form = any(
+            form
+            and (
+                form in row_norm
+                or fold_diacritics(form) in row_folded
+                or compact(form) in row_compact
+            )
+            for form in lemma_forms - {norm}
+        )
+        lemma_text = str(_record_value(record, "lemma_text", ""))
+        corpus_lemma = (
+            (
+                _record_value(record, "work_id"),
+                _record_value(record, "segment_id"),
+            )
+            in lemma_segments
+            or norm in lemma_text.split()
+            or has_lemma_form
+        )
+    if corpus_lemma:
+        score += 80
+        reasons.append("corpus-lemma")
+    if _record_value(record, "segment_id"):
+        score += 5
+    return score, reasons
+
+
+def record_rank_key(record: sqlite3.Row | dict) -> tuple:
+    """Return the stable tie-break used after the shared record score."""
+    return (
+        -int(_record_value(record, "score", 0)),
+        str(_record_value(record, "corpus", "")),
+        str(_record_value(record, "source_path", "")),
+        int(_record_value(record, "sequence_no", 0)),
+    )
 
 
 def _context_neighbors(
@@ -249,52 +348,23 @@ def search(
         lemma_segments.add((row["work_id"], row["segment_id"]))
     ranked = []
     for row in candidates.values():
-        raw = row["raw_text"]
-        cjk_candidate = cjk_query is not None and row["language"] in {"lzh", "zh"}
-        row_norm = row["norm_text"] or (normalize(raw) if cjk_candidate else "")
-        row_folded = row["folded_text"] or (
-            fold_diacritics(raw) if cjk_candidate else ""
+        score, reasons = score_record_match(
+            row,
+            query,
+            normalized_query=norm,
+            folded_query=folded,
+            compact_query=comp,
+            lemma_forms=lemma_forms,
+            lemma_segments=lemma_segments,
+            derive_missing_text=(
+                cjk_query is not None and row["language"] in {"lzh", "zh"}
+            ),
         )
-        row_compact = row["compact_text"] or (compact(raw) if cjk_candidate else "")
-        score = EVIDENCE_WEIGHT.get(row["evidence_class"], 0)
-        reasons = []
-        if query in raw:
-            score += 120
-            reasons.append("exact")
-        elif norm in row_norm:
-            score += 95
-            reasons.append("normalized")
-        elif folded in row_folded:
-            score += 75
-            reasons.append("diacritic-folded")
-        elif comp and comp in row_compact:
-            score += 70
-            reasons.append("compact-unicode")
-        else:
-            score += 30
-            reasons.append("fts")
-        has_lemma_form = any(
-            form and (
-                form in row_norm
-                or fold_diacritics(form) in row_folded
-                or compact(form) in row_compact
-            )
-            for form in lemma_forms - {norm}
-        )
-        if (
-            (row["work_id"], row["segment_id"]) in lemma_segments
-            or norm in row["lemma_text"].split()
-            or has_lemma_form
-        ):
-            score += 80
-            reasons.append("corpus-lemma")
-        if row["segment_id"]:
-            score += 5
         item = _row(row)
         item["score"] = score
         item["match_reasons"] = reasons
         ranked.append(item)
-    ranked.sort(key=lambda x: (-x["score"], x["corpus"], x["source_path"], x["sequence_no"]))
+    ranked.sort(key=record_rank_key)
     results = ranked[:limit]
     if context_window or with_provenance:
         for item in results:

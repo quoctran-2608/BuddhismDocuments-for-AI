@@ -38,12 +38,19 @@ When shell/SQLite access is unavailable but the repositories can be read:
 3. open `<root_path>/manifest.json` in that repository;
 4. inspect actual coverage, counts, and pinned source SHAs;
 5. use `<root_path>/locator/manifest.json` to normalize and route the query or
-   identifier to candidate shard paths;
-6. fetch candidate JSONL shards and verify the actual hit in exported content;
+   identifier to a full, priority-ordered candidate shard list;
+6. for ordinary research, fetch roughly the first 20–50 candidate shards and
+   verify actual hits in exported content;
 7. inspect primary-hit context and provenance;
 8. inspect `relations/` and `variants/` under `<root_path>` when needed;
 9. apply the existing research skill, including evidence hierarchy, research
    modes, ranking interpretation, witness separation, and fail-closed behavior.
+
+Continue deeper into the full candidate list when research must be exhaustive
+or the first candidates do not establish enough evidence. Locator priority uses
+the shared deterministic record-ranking semantics, but locator routing is not a
+byte-for-byte reproduction of SQLite FTS candidate generation. Candidate order
+is routing guidance, not scholarly evidence.
 
 GitHub Code Search is optional only. The connector workflow must not depend on
 GitHub Code Search indexing. Locator rows identify candidate files only; they

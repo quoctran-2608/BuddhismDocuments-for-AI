@@ -36,8 +36,9 @@ GitHub Connector agents should:
    and calculate the declared bucket;
 6. fetch the bucket part file(s), then resolve their zero-based shard indexes
    through the root manifest `shards` array;
-7. fetch candidate JSONL shards, verify the actual hit, and use only
-   `export_role: "primary"` as record hits;
+7. treat record shard indexes as a full priority-ordered candidate list; for
+   ordinary research, fetch roughly the first 20–50 shards and verify actual
+   hits, using only `export_role: "primary"` as record hits;
 8. read the neighboring overlap rows and record-level provenance;
 9. inspect `relations/` or `variants/` under `<root_path>` when needed;
 10. apply the existing evidence hierarchy and keep witnesses separate.
@@ -51,6 +52,14 @@ shards. For a passage, look up a few distinctive terms or CJK bigrams and
 intersect or prioritize their paths, then verify the full phrase in
 `raw_text`. Locator rows are not evidence. GitHub Code Search is optional only;
 the connector workflow does not depend on its indexing.
+
+The record list retains every candidate shard but orders it by the best
+matching record in each shard. Priority reuses the local searcher's shared
+deterministic final scoring semantics: evidence weight, exact/normalized/
+diacritic-folded/compact matching, corpus-lemma evidence, segment quality, and
+stable tie-breaking. Locator routing is not a byte-for-byte reproduction of
+SQLite FTS/BM25 candidate generation. Continue beyond the first 20–50 shards
+for exhaustive research or when the initial evidence is insufficient.
 
 ## Coverage and limits
 

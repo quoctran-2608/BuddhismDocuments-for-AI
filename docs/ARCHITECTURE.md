@@ -139,6 +139,15 @@ record payloads nor makes scholarly claims. The manifest reports actual index
 coverage and pinned source state. This is a second access path to the same
 index, not a second research engine.
 
+Record candidates remain exhaustive but are ordered by the best matching
+record in each shard. Both local search and export call the same deterministic
+record-scoring helper for evidence weight, exact/normalized/diacritic-folded/
+compact matching, corpus-lemma evidence, and segment quality. Stable record
+metadata breaks score ties. The exporter computes shard priority incrementally
+while visiting each record; it does not run one SQLite search per locator key.
+This reuses final ranking semantics, but static locator routing is not a
+byte-for-byte reproduction of SQLite FTS/BM25 candidate generation.
+
 The main repository contains the code and canonical research architecture.
 `config/remote-corpus.json` locates the separate remote repository, whose
 `remote/corpus/` tree contains only the deterministic generated
@@ -155,6 +164,18 @@ the locator, fetches candidate shards, and verifies the actual content. If that
 cannot establish a claim, it fails closed with:
 
 **không đủ dữ liệu trong remote corpus export hiện tại**
+
+The normal connector path is:
+
+```text
+query → locator → priority-ordered candidate shards
+      → fetch roughly the first 20–50 → verify records
+      → context → provenance → relations/variants → research skill
+```
+
+Exhaustive research or insufficient initial evidence may continue through the
+full candidate list. Locator priority is routing guidance, not scholarly
+evidence.
 
 ## 5. Answer / Provenance Layer
 

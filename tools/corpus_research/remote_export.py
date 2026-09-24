@@ -17,10 +17,11 @@ from typing import Iterable, Iterator
 
 from .index import SEARCH_INDEX_COMPONENT, connect_readonly
 from .model import compact, fold_diacritics, normalize
+from .retrieval import MATCH_SCORE, score_record_match
 
 
 EXPORT_VERSION = 1
-LOCATOR_VERSION = 1
+LOCATOR_VERSION = 2
 DEFAULT_SHARD_BYTES = 512 * 1024
 REMOTE_FAILURE_MESSAGE = "không đủ dữ liệu trong remote corpus export hiện tại"
 EXPORT_MARKER = ".buddhist-corpus-remote-export"
@@ -106,35 +107,69 @@ def _is_cjk(char: str) -> bool:
     )
 
 
-def _latin_locator_terms(*values: str | None) -> set[str]:
-    terms: set[str] = set()
-    for value in values:
+def _valid_latin_locator_term(token: str) -> bool:
+    return (
+        2 <= len(token) <= 80
+        and any(char.isalpha() for char in token)
+        and all(_is_latin_or_digit(char) for char in token)
+    )
+
+
+def _latin_locator_matches(
+    raw_text: str | None,
+    title: str | None,
+) -> dict[str, str]:
+    matches: dict[str, str] = {}
+
+    def add(value: str | None, raw: bool) -> None:
         if not value:
-            continue
-        for representation in {normalize(value), fold_diacritics(value)}:
-            for token in LATIN_TOKEN_RE.findall(representation):
-                if (
-                    2 <= len(token) <= 80
-                    and any(char.isalpha() for char in token)
-                    and all(_is_latin_or_digit(char) for char in token)
-                ):
-                    terms.add(token)
-    return terms
+            return
+        normalized_tokens = {
+            token
+            for token in LATIN_TOKEN_RE.findall(normalize(value))
+            if _valid_latin_locator_term(token)
+        }
+        folded_tokens = {
+            token
+            for token in LATIN_TOKEN_RE.findall(fold_diacritics(value))
+            if _valid_latin_locator_term(token)
+        }
+        exact_tokens = {
+            token
+            for token in LATIN_TOKEN_RE.findall(value)
+            if _valid_latin_locator_term(token)
+        }
+        for token in normalized_tokens:
+            if not raw:
+                kind = "fts"
+            else:
+                kind = "exact" if token in exact_tokens else "normalized"
+            if MATCH_SCORE[kind] > MATCH_SCORE.get(matches.get(token, ""), -1):
+                matches[token] = kind
+        for token in folded_tokens:
+            kind = "diacritic-folded" if raw else "fts"
+            if MATCH_SCORE[kind] > MATCH_SCORE.get(matches.get(token, ""), -1):
+                matches[token] = kind
+
+    add(raw_text, True)
+    add(title, False)
+    return matches
 
 
-def _cjk_locator_terms(value: str | None) -> set[str]:
+def _cjk_locator_matches(value: str | None) -> dict[str, str]:
     if not value:
-        return set()
-    terms: set[str] = set()
-    previous: str | None = None
+        return {}
+    matches: dict[str, str] = {}
+    previous = None
     for char in compact(value):
         if _is_cjk(char):
             if previous is not None:
-                terms.add(previous + char)
+                term = previous + char
+                matches[term] = "exact" if term in value else "compact-unicode"
             previous = char
         else:
             previous = None
-    return terms
+    return matches
 
 
 def _identifier_locator_key(value: object) -> str | None:
@@ -485,12 +520,17 @@ def _locator_rows(
     bucket: str,
 ) -> Iterator[dict]:
     current_key: str | None = None
-    references: dict[str, list[str]] = {}
+    references: dict[str, list[int]] = {}
     for key, kind, shard_index in con.execute(
         """SELECT locator_key,artifact_kind,shard_index
            FROM locator_entries
            WHERE namespace=? AND bucket=?
-           ORDER BY locator_key,artifact_kind,shard_index""",
+           ORDER BY
+             locator_key,
+             artifact_kind,
+             CASE WHEN artifact_kind='records' THEN priority_score END DESC,
+             CASE WHEN artifact_kind='records' THEN rank_ordinal END,
+             shard_index""",
         (namespace, bucket),
     ):
         if current_key is not None and key != current_key:
@@ -508,11 +548,14 @@ def _insert_locator_entries(
     keys: Iterable[str],
     artifact_kind: str,
     shard_index: int,
+    priority_score: int = 0,
+    rank_ordinal: int = 0,
 ) -> None:
     con.executemany(
         """INSERT OR IGNORE INTO locator_entries(
-           namespace,bucket,locator_key,artifact_kind,shard_index)
-           VALUES (?,?,?,?,?)""",
+           namespace,bucket,locator_key,artifact_kind,shard_index,
+           priority_score,rank_ordinal)
+           VALUES (?,?,?,?,?,?,?)""",
         (
             (
                 namespace,
@@ -520,23 +563,158 @@ def _insert_locator_entries(
                 key,
                 artifact_kind,
                 shard_index,
+                priority_score,
+                rank_ordinal,
             )
             for key in keys
         ),
     )
 
 
-def _index_locator_shard(
+def _insert_ranked_locator_entries(
     con: sqlite3.Connection,
+    namespace: str,
+    matches: dict[str, tuple[int, int]],
+    shard_index: int,
+) -> None:
+    con.executemany(
+        """INSERT INTO locator_entries(
+           namespace,bucket,locator_key,artifact_kind,shard_index,
+           priority_score,rank_ordinal)
+           VALUES (?,?,?,?,?,?,?)
+           ON CONFLICT(namespace,locator_key,artifact_kind,shard_index)
+           DO UPDATE SET
+             priority_score=excluded.priority_score,
+             rank_ordinal=excluded.rank_ordinal
+           WHERE excluded.priority_score > locator_entries.priority_score
+              OR (
+                excluded.priority_score = locator_entries.priority_score
+                AND excluded.rank_ordinal < locator_entries.rank_ordinal
+              )""",
+        (
+            (
+                namespace,
+                _locator_bucket(key),
+                key,
+                "records",
+                shard_index,
+                score,
+                rank_ordinal,
+            )
+            for key, (score, rank_ordinal) in matches.items()
+        ),
+    )
+
+
+def _best_match(
+    matches: dict[str, tuple[int, int]],
+    key: str,
+    score: int,
+    rank_ordinal: int,
+) -> None:
+    current = matches.get(key)
+    if current is None or score > current[0] or (
+        score == current[0] and rank_ordinal < current[1]
+    ):
+        matches[key] = (score, rank_ordinal)
+
+
+def _lemma_surface_map(con: sqlite3.Connection) -> dict[str, set[str]]:
+    mapping: dict[str, set[str]] = defaultdict(set)
+    for surface, lemma in con.execute(
+        """SELECT DISTINCT surface,lemma FROM lemmas
+           WHERE surface IS NOT NULL AND lemma IS NOT NULL"""
+    ):
+        normalized_surface = normalize(surface)
+        normalized_lemma = normalize(lemma)
+        if not normalized_surface or not normalized_lemma:
+            continue
+        mapping[normalized_surface].add(normalized_lemma)
+        mapping[fold_diacritics(surface)].add(normalized_lemma)
+    return mapping
+
+
+def _record_rank_ordinals(con: sqlite3.Connection) -> dict[int, int]:
+    return {
+        row["id"]: row["rank_ordinal"]
+        for row in con.execute(
+            """SELECT id,ROW_NUMBER() OVER (
+                 ORDER BY corpus,source_path,sequence_no,id
+               ) - 1 AS rank_ordinal
+               FROM records"""
+        )
+    }
+
+
+def _record_lemma_keys(
+    record: sqlite3.Row,
+    latin_matches: dict[str, str],
+    surface_map: dict[str, set[str]],
+) -> set[str]:
+    lemma_keys = {
+        lemma
+        for surface in latin_matches
+        for lemma in surface_map.get(surface, ())
+        if lemma != surface
+    }
+    lemma_keys.update(
+        token
+        for token in str(record["lemma_text"] or "").split()
+        if token
+    )
+    return lemma_keys
+
+
+def _ranked_record_matches(
+    record: sqlite3.Row,
+    rank_ordinal: int,
+    surface_map: dict[str, set[str]],
+) -> tuple[dict[str, tuple[int, int]], dict[str, tuple[int, int]]]:
+    latin_kinds = _latin_locator_matches(record["raw_text"], record["title"])
+    cjk_kinds = _cjk_locator_matches(record["raw_text"])
+    lemma_keys = _record_lemma_keys(record, latin_kinds, surface_map)
+    score_cache: dict[tuple[str, bool], int] = {}
+
+    def score(key: str, kind: str) -> int:
+        cache_key = (kind, key in lemma_keys)
+        if cache_key not in score_cache:
+            score_cache[cache_key] = score_record_match(
+                record,
+                key,
+                match_kind=kind,
+                corpus_lemma=cache_key[1],
+            )[0]
+        return score_cache[cache_key]
+
+    latin_scores = {
+        key: (score(key, kind), rank_ordinal)
+        for key, kind in latin_kinds.items()
+    }
+    return (
+        latin_scores,
+        {
+            key: (score(key, kind), rank_ordinal)
+            for key, kind in cjk_kinds.items()
+        },
+    )
+
+
+def _index_locator_shard(
+    locator_con: sqlite3.Connection,
+    source_con: sqlite3.Connection,
     root: Path,
     shard_index: int,
     shard: dict,
+    rank_ordinals: dict[int, int],
+    surface_map: dict[str, set[str]],
 ) -> None:
     kind = shard["kind"]
     shard_path = shard["path"]
-    latin_terms: set[str] = set()
-    cjk_terms: set[str] = set()
+    latin_matches: dict[str, tuple[int, int]] = {}
+    cjk_matches: dict[str, tuple[int, int]] = {}
+    variant_terms: set[str] = set()
     identifiers: set[str] = set()
+    record_ids: list[int] = []
 
     with (root / shard_path).open(encoding="utf-8") as source:
         for line in source:
@@ -544,10 +722,7 @@ def _index_locator_shard(
             if kind == "records":
                 if item["export_role"] != "primary":
                     continue
-                latin_terms.update(
-                    _latin_locator_terms(item.get("raw_text"), item.get("title"))
-                )
-                cjk_terms.update(_cjk_locator_terms(item.get("raw_text")))
+                record_ids.append(item["id"])
                 identifier_values = [
                     item.get("work_id"),
                     item.get("segment_id"),
@@ -556,8 +731,11 @@ def _index_locator_shard(
             elif kind == "relations":
                 identifier_values = [item.get("from_id"), item.get("to_id")]
             elif kind == "variants":
-                latin_terms.update(
-                    _latin_locator_terms(item.get("lemma"), item.get("reading"))
+                variant_terms.update(
+                    _latin_locator_matches(
+                        item.get("lemma"),
+                        item.get("reading"),
+                    )
                 )
                 identifier_values = [item.get("work_id"), item.get("segment_id")]
             else:
@@ -568,74 +746,71 @@ def _index_locator_shard(
                 if (key := _identifier_locator_key(value)) is not None
             )
 
-    if latin_terms:
-        _insert_locator_entries(
-            con,
+    if record_ids:
+        placeholders = ",".join("?" for _ in record_ids)
+        records = source_con.execute(
+            f"SELECT * FROM records WHERE id IN ({placeholders}) ORDER BY id",
+            record_ids,
+        )
+        for record in records:
+            record_latin, record_cjk = _ranked_record_matches(
+                record,
+                rank_ordinals[record["id"]],
+                surface_map,
+            )
+            for key, (score, rank_ordinal) in record_latin.items():
+                _best_match(
+                    latin_matches,
+                    key,
+                    score,
+                    rank_ordinal,
+                )
+            for key, (score, rank_ordinal) in record_cjk.items():
+                _best_match(
+                    cjk_matches,
+                    key,
+                    score,
+                    rank_ordinal,
+                )
+    if latin_matches:
+        _insert_ranked_locator_entries(
+            locator_con,
             "terms/latin",
-            latin_terms,
-            kind,
+            latin_matches,
             shard_index,
         )
-    if cjk_terms:
-        _insert_locator_entries(
-            con,
+    if cjk_matches:
+        _insert_ranked_locator_entries(
+            locator_con,
             "terms/cjk",
-            cjk_terms,
-            kind,
+            cjk_matches,
             shard_index,
         )
     if identifiers:
         _insert_locator_entries(
-            con,
+            locator_con,
             "ids",
             identifiers,
             kind,
             shard_index,
         )
-    con.commit()
+    if variant_terms:
+        _insert_locator_entries(
+            locator_con,
+            "terms/latin",
+            variant_terms,
+            kind,
+            shard_index,
+        )
+    locator_con.commit()
 
 
-def _export_locator(
-    root: Path,
-    shards: list[dict],
-    workspace: Path,
+def _write_locator_files(
+    con: sqlite3.Connection,
+    locator_root: Path,
     target_bytes: int,
     source_summary: dict,
-    progress: bool,
 ) -> dict:
-    locator_root = root / "locator"
-    locator_root.mkdir(parents=True)
-    locator_db = workspace / "locator.sqlite3"
-    con = sqlite3.connect(locator_db)
-    con.execute("PRAGMA journal_mode=OFF")
-    con.execute("PRAGMA synchronous=OFF")
-    con.execute("PRAGMA temp_store=FILE")
-    con.execute(
-        """CREATE TABLE locator_entries(
-           namespace TEXT NOT NULL,
-           bucket TEXT NOT NULL,
-           locator_key TEXT NOT NULL,
-           artifact_kind TEXT NOT NULL,
-           shard_index INTEGER NOT NULL,
-           PRIMARY KEY(namespace,locator_key,artifact_kind,shard_index)
-        ) WITHOUT ROWID"""
-    )
-    for shard_index, shard in enumerate(shards):
-        _index_locator_shard(con, root, shard_index, shard)
-        completed = shard_index + 1
-        if progress and (completed % 250 == 0 or completed == len(shards)):
-            print(
-                f"[export] locator indexed {completed}/{len(shards)} shards",
-                file=sys.stderr,
-                flush=True,
-            )
-    con.execute(
-        """CREATE INDEX locator_route
-           ON locator_entries(
-             namespace,bucket,locator_key,artifact_kind,shard_index
-           )"""
-    )
-
     writer = _LocatorFileWriter(locator_root, target_bytes)
     namespaces = [
         row[0]
@@ -674,8 +849,6 @@ def _export_locator(
         ).fetchone()[0]
         for namespace in namespaces
     }
-    con.close()
-
     manifest = {
         "locator_version": LOCATOR_VERSION,
         "generated_from": {
@@ -732,6 +905,28 @@ def _export_locator(
                 "normalization": "NFC, Unicode casefold, whitespace collapse",
             },
         },
+        "priority": {
+            "records": (
+                "all candidate shard indexes sorted by the best matching record "
+                "in each shard: shared score descending, stable record rank "
+                "ascending, shard index ascending"
+            ),
+            "shared_semantics": (
+                "uses corpus_research.retrieval.score_record_match for evidence, "
+                "exact, normalized, diacritic-folded, compact-unicode, "
+                "corpus-lemma, and segment-quality scoring"
+            ),
+            "fts_equivalence": (
+                "locator priority follows the shared deterministic record-ranking "
+                "semantics, but locator routing is not a byte-for-byte "
+                "reproduction of SQLite FTS candidate generation"
+            ),
+            "coverage": "priority changes ordering only; all candidate shards remain",
+            "other_artifacts": (
+                "identifier, relation, and variant references retain deterministic "
+                "full ordering"
+            ),
+        },
         "line_format": {
             "key": "normalized lookup key",
             "records": (
@@ -787,6 +982,70 @@ def _export_locator(
     return manifest
 
 
+def _export_locator(
+    root: Path,
+    shards: list[dict],
+    workspace: Path,
+    source_con: sqlite3.Connection,
+    target_bytes: int,
+    source_summary: dict,
+    progress: bool,
+) -> dict:
+    locator_root = root / "locator"
+    locator_root.mkdir(parents=True)
+    locator_db = workspace / "locator.sqlite3"
+    con = sqlite3.connect(locator_db)
+    con.execute("PRAGMA journal_mode=OFF")
+    con.execute("PRAGMA synchronous=OFF")
+    con.execute("PRAGMA temp_store=FILE")
+    con.execute(
+        """CREATE TABLE locator_entries(
+           namespace TEXT NOT NULL,
+           bucket TEXT NOT NULL,
+           locator_key TEXT NOT NULL,
+           artifact_kind TEXT NOT NULL,
+           shard_index INTEGER NOT NULL,
+           priority_score INTEGER NOT NULL,
+           rank_ordinal INTEGER NOT NULL,
+           PRIMARY KEY(namespace,locator_key,artifact_kind,shard_index)
+        ) WITHOUT ROWID"""
+    )
+    rank_ordinals = _record_rank_ordinals(source_con)
+    surface_map = _lemma_surface_map(source_con)
+    for shard_index, shard in enumerate(shards):
+        _index_locator_shard(
+            con,
+            source_con,
+            root,
+            shard_index,
+            shard,
+            rank_ordinals,
+            surface_map,
+        )
+        completed = shard_index + 1
+        if progress and (completed % 250 == 0 or completed == len(shards)):
+            print(
+                f"[export] locator indexed {completed}/{len(shards)} shards",
+                file=sys.stderr,
+                flush=True,
+            )
+    con.execute(
+        """CREATE INDEX locator_route
+           ON locator_entries(
+             namespace,bucket,locator_key,artifact_kind,
+             priority_score DESC,rank_ordinal,shard_index
+           )"""
+    )
+    manifest = _write_locator_files(
+        con,
+        locator_root,
+        target_bytes,
+        source_summary,
+    )
+    con.close()
+    return manifest
+
+
 def _remote_readme() -> str:
     return """# GitHub Connector Corpus Export
 
@@ -797,8 +1056,11 @@ index. It is an access adapter, not a second research system.
 2. Read `locator/manifest.json`, normalize the query or identifier as declared,
    calculate its bucket, and fetch the listed locator part file(s).
 3. Resolve locator shard indexes through the root manifest `shards` array.
-   GitHub Code Search is optional only and is never required.
-4. Fetch candidate shards and verify the actual query in exported content.
+   Record shard indexes retain full coverage and are ordered by the best
+   matching record in each shard.
+4. For ordinary research, fetch roughly the first 20–50 candidate shards and
+   verify the actual query in exported content. Continue deeper when exhaustive
+   research or insufficient evidence requires it.
 5. Treat `export_role: "primary"` as a hit. Rows marked `context_overlap`
    only preserve two neighboring records across shard boundaries; deduplicate
    all rows by `id`.
@@ -809,7 +1071,10 @@ index. It is an access adapter, not a second research system.
 
 In the manifest, `shard_fields` names the columns used by each compact row in
 `shards`. Locator results are candidate file locations, not evidence or
-scholarly conclusions.
+scholarly conclusions. Priority follows the shared deterministic final
+record-ranking semantics, but it is not a byte-for-byte reproduction of SQLite
+FTS/BM25 candidate generation. GitHub Code Search is optional only and is never
+required.
 
 Files are JSON Lines, ordered and sharded at record boundaries. If the export
 does not contain enough evidence, report:
@@ -908,6 +1173,7 @@ def export_remote(
             stage,
             writer.shards,
             Path(workspace.name),
+            con,
             max_shard_bytes,
             {
                 "export_version": EXPORT_VERSION,
