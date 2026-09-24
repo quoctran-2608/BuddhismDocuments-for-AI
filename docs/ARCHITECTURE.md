@@ -169,13 +169,19 @@ The normal connector path is:
 
 ```text
 query → locator → priority-ordered candidate shards
-      → fetch roughly the first 20–50 → verify records
+      → select by research mode and user scope → verify records
       → context → provenance → relations/variants → research skill
 ```
 
-Exhaustive research or insufficient initial evidence may continue through the
-full candidate list. Locator priority is routing guidance, not scholarly
-evidence.
+Quick exact lookups may start with the highest-ranked candidates. Topic,
+comparative, and cross-corpus research instead groups the full candidate list by
+corpus, preserves priority within each corpus, and samples relevant corpora
+separately so one corpus cannot consume the entire candidate budget. Explicit
+user corpus restrictions are never broadened automatically. Exhaustive research
+or insufficient initial evidence may continue through the full candidate list.
+Locator priority only decides which files to open first; user scope, research
+mode, evidence hierarchy, text role, witness separation, and provenance govern
+scholarly judgment.
 
 ## 5. Answer / Provenance Layer
 

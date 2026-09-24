@@ -36,12 +36,13 @@ GitHub Connector agents should:
    and calculate the declared bucket;
 6. fetch the bucket part file(s), then resolve their zero-based shard indexes
    through the root manifest `shards` array;
-7. treat record shard indexes as a full priority-ordered candidate list; for
-   ordinary research, fetch roughly the first 20–50 shards and verify actual
-   hits, using only `export_role: "primary"` as record hits;
-8. read the neighboring overlap rows and record-level provenance;
-9. inspect `relations/` or `variants/` under `<root_path>` when needed;
-10. apply the existing evidence hierarchy and keep witnesses separate.
+7. treat record shard indexes as a full priority-ordered candidate list and
+   select shards according to the research mode below;
+8. fetch the selected shards and verify actual hits, using only
+   `export_role: "primary"` as record hits;
+9. read the neighboring overlap rows and record-level provenance;
+10. inspect `relations/` or `variants/` under `<root_path>` when needed;
+11. apply the existing evidence hierarchy and keep witnesses separate.
 
 `context_overlap` rows preserve two records on each side of a shard boundary.
 They duplicate indexed records only for context, so consumers must deduplicate
@@ -58,8 +59,28 @@ matching record in each shard. Priority reuses the local searcher's shared
 deterministic final scoring semantics: evidence weight, exact/normalized/
 diacritic-folded/compact matching, corpus-lemma evidence, segment quality, and
 stable tie-breaking. Locator routing is not a byte-for-byte reproduction of
-SQLite FTS/BM25 candidate generation. Continue beyond the first 20–50 shards
-for exhaustive research or when the initial evidence is insufficient.
+SQLite FTS/BM25 candidate generation.
+
+Select candidates according to the question:
+
+- For a quick term, passage, work-ID, or source-specific lookup, start with the
+  highest-priority candidates within the requested scope.
+- For topic, comparative, or cross-corpus research, do not take only the first
+  20–50 global candidates. Group the full list by corpus, preserve priority
+  within each corpus, and take a useful sample from every relevant corpus,
+  commonly about 5–10 shards per corpus. Then verify records and inspect
+  context, provenance, relations, variants, and independent witnesses before
+  synthesis. The number is guidance, not a fixed quota.
+- If the user restricts the question to a Nikāya, CBETA, T99, one Vinaya, or
+  another explicit corpus scope, use only candidates in that scope and do not
+  expand it without permission.
+
+This corpus-balanced selection prevents one large or highly ranked corpus from
+consuming the entire candidate budget. Locator priority decides which files to
+open first; it does not decide which corpus matters more, which text is correct,
+whether a witness is sufficient, or which source best answers the question.
+Those decisions remain governed by user scope, research mode, evidence
+hierarchy, text role, witness separation, and provenance.
 
 ## Coverage and limits
 

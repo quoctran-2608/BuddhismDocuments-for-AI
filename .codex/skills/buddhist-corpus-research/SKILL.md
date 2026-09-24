@@ -39,18 +39,35 @@ When shell/SQLite access is unavailable but the repositories can be read:
 4. inspect actual coverage, counts, and pinned source SHAs;
 5. use `<root_path>/locator/manifest.json` to normalize and route the query or
    identifier to a full, priority-ordered candidate shard list;
-6. for ordinary research, fetch roughly the first 20–50 candidate shards and
-   verify actual hits in exported content;
+6. select candidate shards according to the research mode below, then verify
+   actual hits in exported content;
 7. inspect primary-hit context and provenance;
 8. inspect `relations/` and `variants/` under `<root_path>` when needed;
 9. apply the existing research skill, including evidence hierarchy, research
    modes, ranking interpretation, witness separation, and fail-closed behavior.
 
-Continue deeper into the full candidate list when research must be exhaustive
-or the first candidates do not establish enough evidence. Locator priority uses
-the shared deterministic record-ranking semantics, but locator routing is not a
-byte-for-byte reproduction of SQLite FTS candidate generation. Candidate order
-is routing guidance, not scholarly evidence.
+Choose candidates by research mode:
+
+- **Quick or exact lookup:** for a term, passage, work ID, or quick verification
+  of a specific source, start with the highest-priority candidates in scope.
+- **Topic, comparative, or cross-corpus research:** never spend the whole
+  candidate budget on the first 20–50 global entries. Group the full candidate
+  list by corpus, preserve locator priority within each corpus, and fetch a
+  useful sample from every relevant corpus, often about 5–10 shards per corpus.
+  Verify records, then inspect context, provenance, relations, variants, and
+  independent witnesses before synthesis. Adjust the sample size to the
+  question and continue deeper when evidence is insufficient or exhaustive
+  research is required.
+- **User-restricted scope:** if the user asks for only a Nikāya, CBETA, T99, one
+  Vinaya, or another explicit scope, select only candidates in that scope. Do
+  not broaden the corpus set without permission.
+
+Locator priority decides which files to open first. It does not decide which
+corpus is more important, which text is more correct, whether one witness is
+sufficient, or which source best answers the question. Those judgments still
+follow user scope, research mode, evidence hierarchy, text role, witness
+separation, and provenance. Locator routing is not a byte-for-byte reproduction
+of SQLite FTS candidate generation.
 
 GitHub Code Search is optional only. The connector workflow must not depend on
 GitHub Code Search indexing. Locator rows identify candidate files only; they
