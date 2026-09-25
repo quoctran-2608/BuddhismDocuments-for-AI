@@ -4,7 +4,7 @@
 > GitHub repository chính: `quoctran-2608/BuddhismDocuments-for-AI`<br>
 > GitHub repository artefact Connector: `quoctran-2608/BuddhismDocuments-for-AI-remote`<br>
 > Thư mục checkout đang làm việc: `Buddhism-forAI-Documents/raw`<br>
-> Commit mã phân tích source repetition: `b63555118d9e2443f4be0dbdfdfc8f4563bff95d`<br>
+> Commit mã ước tính production key universe: `cdea23167d88f7962b024f1e4635e3889a37e929`<br>
 > Nhánh đang mở: `feat/github-connector-research-access`<br>
 > Trạng thái với `main`: nhánh đang mở, `main` và `origin/main` cùng trỏ tới commit trên.
 
@@ -42,7 +42,7 @@ Trạng thái hiện tại:
   `source_state`.
 - File SQLite hiện tại khoảng **42,94 GiB** và được đặt ngoài repository; đường
   `derived/corpus.sqlite3` chỉ là symbolic link (liên kết tượng trưng).
-- Bộ kiểm thử hiện tại qua **42/42 test**.
+- Bộ kiểm thử hiện tại qua **43/43 test**.
 - Proof of concept (POC, bản chứng minh ý tưởng) pointer-only hiện có 11 key:
   `anicca`, `dukkha`, `jhāna`, `nibbāna`, `Mahākassapa`, `無常`, `如是我聞`,
   `苦`, `空`, `T02n0099`, `T01n0001`.
@@ -987,7 +987,7 @@ PYTHONPATH=tools python3 -m unittest discover -s tests -v
 Kết quả:
 
 ```text
-Ran 42 tests in 11.270s
+Ran 43 tests in 12.503s
 OK
 ```
 
