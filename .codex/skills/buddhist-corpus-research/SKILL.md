@@ -47,6 +47,11 @@ When shell/SQLite access is unavailable but the repositories can be read:
 9. apply the existing research skill, including evidence hierarchy, research
    modes, ranking interpretation, witness separation, and fail-closed behavior.
 
+The generated POC has already selected the best distinct `(work_id, source_path)`
+candidate within each available corpus before applying its per-corpus limit.
+Pointer `source_blob_sha`, when non-null, is the offline Git blob ID for
+`source_sha:source_path`; compare it with the pinned source file when available.
+
 Choose candidates by research mode:
 
 - **Quick or exact lookup:** for a term, passage, work ID, or quick verification

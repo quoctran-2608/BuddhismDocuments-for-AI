@@ -109,7 +109,12 @@ def parser() -> argparse.ArgumentParser:
     )
     pointer.add_argument("--query", action="append", default=[])
     pointer.add_argument("--identifier", action="append", default=[])
-    pointer.add_argument("--limit", type=int, default=20)
+    pointer.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="maximum distinct work/source pointers retained per corpus",
+    )
     return p
 
 
@@ -226,6 +231,7 @@ def main(argv: list[str] | None = None) -> int:
                     args.query,
                     args.identifier,
                     args.limit,
+                    root,
                 )
             )
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:

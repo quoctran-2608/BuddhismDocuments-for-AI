@@ -43,8 +43,16 @@ bin/buddhist-corpus export-remote --output remote/corpus
 # Small raw-text-free pointer proof of concept for GitHub Connector access
 bin/buddhist-corpus export-remote-pointers \
   --query anicca \
+  --query dukkha \
+  --query jhāna \
+  --query nibbāna \
+  --query Mahākassapa \
   --query 無常 \
+  --query 如是我聞 \
+  --query 苦 \
+  --query 空 \
   --identifier T02n0099 \
+  --identifier T01n0001 \
   --output remote/pointer-poc
 ```
 
@@ -57,8 +65,12 @@ records, provenance, and locally indexed variants.
 connector path. `export-remote-pointers` reads the existing SQLite database
 only during generation. It emits a small deterministic locator whose ranked
 pointers identify a GitHub repository, pinned source SHA, repository-relative
-source path, work/segment identifiers, evidence class, text role, and witness.
-It never writes `raw_text`. See [GitHub Connector Research Access](REMOTE_AGENT.md).
+source path, Git blob SHA when the pinned local object is available, work/segment
+identifiers, evidence class, text role, and witness. It never writes `raw_text`.
+For each query, it fetches candidates with the existing ranking, keeps the
+best-ranked distinct `(work_id, source_path)` candidate within each corpus, then
+retains up to `--limit` candidates per corpus. See
+[GitHub Connector Research Access](REMOTE_AGENT.md).
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

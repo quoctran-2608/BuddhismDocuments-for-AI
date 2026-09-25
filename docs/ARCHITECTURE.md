@@ -149,6 +149,15 @@ identifier pointers; it does not create a second ranking system. This reuses
 final ranking semantics, but static locator routing is not a byte-for-byte
 reproduction of SQLite FTS/BM25 candidate generation.
 
+For each query, the POC collects existing-ranked candidates separately by
+corpus, collapses records sharing `(corpus, work_id, source_path)` to their
+best-ranked record, and retains a bounded number per corpus. It then applies the
+existing stable final tie-break across the selected records. This prevents many
+segments from one work/file, or one large corpus, from consuming the whole POC
+candidate list without inventing a new score. Each pointer also records
+`source_blob_sha` when the local pinned Git object can resolve
+`<source_sha>:<source_path>` offline.
+
 The main repository contains the code and canonical research architecture.
 `config/remote-corpus.json` locates the separate remote repository, whose
 `remote/pointer-poc/` tree contains the deterministic generated pointer POC.

@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
@@ -15,8 +16,9 @@ from .model import normalize
 from .retrieval import record_rank_key, score_record_match, search
 
 
-POINTER_EXPORT_VERSION = 1
+POINTER_EXPORT_VERSION = 2
 POINTER_MARKER = ".buddhist-corpus-remote-pointer-export"
+POINTER_CANDIDATE_MULTIPLIER = 5
 POINTER_FIELDS = (
     "rank",
     "score",
@@ -26,6 +28,7 @@ POINTER_FIELDS = (
     "repository",
     "source_sha",
     "source_path",
+    "source_blob_sha",
     "indexed_source_path",
     "work_id",
     "segment_id",
@@ -91,8 +94,44 @@ def _github_source_path(indexed_path: str, repo_path: str) -> str:
     return source_path
 
 
-def _pointer(row: dict, source: dict[str, str], rank: int) -> dict:
+def _source_blob_sha(
+    root: Path | None,
+    source: dict[str, str],
+    source_sha: str,
+    source_path: str,
+    cache: dict[tuple[str, str, str], str | None],
+) -> str | None:
+    """Return the pinned Git blob ID when the local source object is available."""
+    key = (source["repo_path"], source_sha, source_path)
+    if key in cache:
+        return cache[key]
+    if root is None:
+        cache[key] = None
+        return None
+    repo = root / source["repo_path"]
+    if not (repo / ".git").exists():
+        cache[key] = None
+        return None
+    result = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", f"{source_sha}:{source_path}"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    blob_sha = result.stdout.strip()
+    cache[key] = blob_sha if result.returncode == 0 and blob_sha else None
+    return cache[key]
+
+
+def _pointer(
+    row: dict,
+    source: dict[str, str],
+    rank: int,
+    root: Path | None,
+    blob_cache: dict[tuple[str, str, str], str | None],
+) -> dict:
     indexed_source_path = str(row["source_path"])
+    source_path = _github_source_path(indexed_source_path, source["repo_path"])
     pointer = {
         "rank": rank,
         "score": row["score"],
@@ -101,9 +140,13 @@ def _pointer(row: dict, source: dict[str, str], rank: int) -> dict:
         "corpus": row["corpus"],
         "repository": source["repository"],
         "source_sha": row["source_sha"],
-        "source_path": _github_source_path(
-            indexed_source_path,
-            source["repo_path"],
+        "source_path": source_path,
+        "source_blob_sha": _source_blob_sha(
+            root,
+            source,
+            str(row["source_sha"]),
+            source_path,
+            blob_cache,
         ),
         "indexed_source_path": indexed_source_path,
         "work_id": row["work_id"],
@@ -117,7 +160,7 @@ def _pointer(row: dict, source: dict[str, str], rank: int) -> dict:
     return pointer
 
 
-def _identifier_rows(db_path: Path, identifier: str, limit: int) -> list[dict]:
+def _identifier_rows(db_path: Path, identifier: str) -> list[dict]:
     con = connect_readonly(db_path)
     try:
         rows = [
@@ -143,19 +186,56 @@ def _identifier_rows(db_path: Path, identifier: str, limit: int) -> list[dict]:
         row["match_reasons"] = reasons
         ranked.append(row)
     ranked.sort(key=record_rank_key)
-    return ranked[:limit]
+    return ranked
+
+
+def _select_corpus_candidates(
+    rows: Iterable[dict],
+    per_corpus_limit: int,
+) -> list[dict]:
+    """Keep ranked distinct work/source candidates within each corpus."""
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        grouped[str(row["corpus"])].append(row)
+
+    selected: list[dict] = []
+    for corpus in sorted(grouped):
+        distinct: dict[tuple[object, object], dict] = {}
+        for row in sorted(grouped[corpus], key=record_rank_key):
+            # Rows from one source file and work differ only in local segment
+            # position for this POC. Keep its best existing-ranked candidate.
+            key = (row.get("work_id"), row.get("source_path"))
+            distinct.setdefault(key, row)
+        selected.extend(list(distinct.values())[:per_corpus_limit])
+    selected.sort(key=record_rank_key)
+    return selected
+
+
+def _term_rows(
+    db_path: Path,
+    query: str,
+    sources: dict[str, dict[str, str]],
+    per_corpus_limit: int,
+) -> list[dict]:
+    candidate_limit = per_corpus_limit * POINTER_CANDIDATE_MULTIPLIER
+    rows = []
+    for corpus in sorted(sources):
+        rows.extend(search(db_path, query, limit=candidate_limit, corpus=corpus)["results"])
+    return _select_corpus_candidates(rows, per_corpus_limit)
 
 
 def _pointers(
     rows: Iterable[dict],
     sources: dict[str, dict[str, str]],
+    root: Path | None,
+    blob_cache: dict[tuple[str, str, str], str | None],
 ) -> list[dict]:
     pointers = []
     for rank, row in enumerate(rows, start=1):
         source = sources.get(row["corpus"])
         if source is None:
             raise ValueError(f"missing GitHub source mapping for {row['corpus']}")
-        pointers.append(_pointer(row, source, rank))
+        pointers.append(_pointer(row, source, rank, root, blob_cache))
     return pointers
 
 
@@ -190,6 +270,7 @@ def export_pointer_poc(
     queries: Iterable[str],
     identifiers: Iterable[str],
     limit: int = 20,
+    root: Path | None = None,
 ) -> dict:
     """Write a small pointer-only Connector artifact without exporting raw text."""
     if limit <= 0:
@@ -208,6 +289,7 @@ def export_pointer_poc(
 
     entries: list[dict] = []
     seen: set[tuple[str, str]] = set()
+    blob_cache: dict[tuple[str, str, str], str | None] = {}
     for query in queries:
         key = normalize(query)
         if not key or ("term", key) in seen:
@@ -221,8 +303,10 @@ def export_pointer_poc(
                 "query": query,
                 "query_kind": "term",
                 "pointers": _pointers(
-                    search(db_path, query, limit=limit)["results"],
+                    _term_rows(db_path, query, source_map, limit),
                     source_map,
+                    root,
+                    blob_cache,
                 ),
             }
         )
@@ -238,8 +322,13 @@ def export_pointer_poc(
                 "query": identifier,
                 "query_kind": "identifier",
                 "pointers": _pointers(
-                    _identifier_rows(db_path, identifier, limit),
+                    _select_corpus_candidates(
+                        _identifier_rows(db_path, identifier),
+                        limit,
+                    ),
                     source_map,
+                    root,
+                    blob_cache,
                 ),
             }
         )
@@ -310,6 +399,19 @@ def export_pointer_poc(
             ),
             "tie_break": "corpus, source_path, sequence_no",
         },
+        "selection": {
+            "strategy": "per_corpus_best_distinct_work_source",
+            "per_corpus_limit": limit,
+            "candidate_fetch_limit_per_corpus": (
+                limit * POINTER_CANDIDATE_MULTIPLIER
+            ),
+            "deduplicate_by": ["corpus", "work_id", "source_path"],
+            "final_order": "existing record_rank_key after selection",
+        },
+        "source_blob_sha": {
+            "algorithm": "git rev-parse <source_sha>:<source_path>",
+            "availability": "null when the local pinned Git object is unavailable",
+        },
         "source_mapping_config": sources_config.name,
         "source_contract": source_contract,
         "pointer_fields": list(POINTER_FIELDS),
@@ -363,13 +465,16 @@ second search engine.
    row.
 3. Follow pointers in rank order: open `repository` at `source_sha`, then open
    `source_path` directly in GitHub.
-4. Use `work_id`, `segment_id`, and `sequence_no` to locate the passage in the
+4. When available, compare `source_blob_sha` with the Git blob ID reported for
+   that pinned source file.
+5. Use `work_id`, `segment_id`, and `sequence_no` to locate the passage in the
    original file. Verify wording, context, provenance, text role, and witness
    in that source before making a finding.
 
-Pointer rank only decides which source file to open first. It is not evidence
-and does not override user scope, evidence hierarchy, text role, witness
-separation, or provenance. GitHub Code Search is not required.
+Pointers retain the existing shared ranking, but this POC first keeps the best
+distinct `(work_id, source_path)` candidate within each corpus. It is not
+evidence and does not override user scope, evidence hierarchy, text role,
+witness separation, or provenance. GitHub Code Search is not required.
 
 If the listed pointers cannot establish a claim, report:
 

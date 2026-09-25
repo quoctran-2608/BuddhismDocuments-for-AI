@@ -14,18 +14,37 @@ maps each corpus to the GitHub source repository that a pointer opens.
 ```bash
 bin/buddhist-corpus export-remote-pointers \
   --query anicca \
+  --query dukkha \
+  --query jhāna \
+  --query nibbāna \
+  --query Mahākassapa \
   --query 無常 \
+  --query 如是我聞 \
+  --query 苦 \
+  --query 空 \
   --identifier T02n0099 \
+  --identifier T01n0001 \
   --output remote/pointer-poc
 ```
 
 The command reads only `derived/corpus.sqlite3` and does not use the network or
 commit files. It writes ranked pointers, not copied record text. Each pointer
 contains the source repository, pinned source SHA, repository-relative path,
-work/segment identifiers, evidence class, text role, witness, sequence number,
-and the score/reasons used to choose its position. Output ordering and JSON
-encoding are deterministic for the same database, source SHAs, code, and
-options.
+`source_blob_sha` when the pinned local Git object is available, work/segment
+identifiers, evidence class, text role, witness, sequence number, and the
+score/reasons used to choose its position. `source_blob_sha` is computed offline
+with `git rev-parse <source_sha>:<source_path>` and is `null` only when the local
+Git object cannot be read. Output ordering and JSON encoding are deterministic
+for the same database, source SHAs, code, and options.
+
+For each term query, the exporter calls existing local `search()` separately for
+each mapped corpus, so the candidate score and match reasons remain the existing
+ranking. It then keeps only the best-ranked record for each
+`(corpus, work_id, source_path)` group and retains up to `--limit` distinct
+work/source pointers per corpus. Identifier queries use existing exact
+`score_record_match()` scoring before the same grouping. The final list is sorted
+with the existing stable `record_rank_key`; this selection step does not create a
+second ranking system.
 
 ## Local mode and connector mode
 
@@ -56,10 +75,11 @@ The pointer locator maps normalized terms, CJK bigrams, and identifiers to
 ranked source pointers. For a passage, look up a few distinctive terms or CJK
 bigrams, open the indicated pinned source files, and verify the full phrase in
 the original source. A pointer includes the repository, pinned source SHA,
-repository-relative source path, work ID, segment ID, sequence number,
-evidence class, text role, and witness. Pointer rows are not evidence. GitHub
-Code Search is optional only; the connector workflow does not depend on its
-indexing.
+repository-relative source path, optional `source_blob_sha`, work ID, segment
+ID, sequence number, evidence class, text role, and witness. When present,
+compare `source_blob_sha` with the blob ID of the opened pinned GitHub file.
+Pointer rows are not evidence. GitHub Code Search is optional only; the connector
+workflow does not depend on its indexing.
 
 Pointer priority reuses the local searcher's shared deterministic final scoring
 semantics: evidence weight, exact/normalized/diacritic-folded/compact matching,
@@ -68,7 +88,9 @@ the existing `search()` results for term queries and `score_record_match()` for
 exact identifier pointers. It is not a byte-for-byte reproduction of SQLite
 FTS/BM25 candidate generation.
 
-Select candidates according to the question:
+The generated POC already has corpus-balanced file/work candidates: no single
+corpus can consume the list merely by contributing many segments from one
+work/file. Select the exported candidates according to the question:
 
 - For a quick term, passage, work-ID, or source-specific lookup, start with the
   highest-priority candidates within the requested scope.

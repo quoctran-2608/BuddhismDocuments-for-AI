@@ -3,11 +3,18 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from corpus_research.pointer_export import export_pointer_poc
+from corpus_research.pointer_export import (
+    _select_corpus_candidates,
+    _source_blob_sha,
+    _term_rows,
+    export_pointer_poc,
+)
 from corpus_research.remote_export import export_remote
 from corpus_research.retrieval import evidence, search
 
@@ -415,6 +422,7 @@ class RemoteAccessTests(unittest.TestCase):
             ["anicca", "無常"],
             ["mn-fixture"],
             limit=10,
+            root=ROOT,
         )
         self.assertFalse(result["raw_text_exported"])
         first_digest = tree_digest(output)
@@ -444,6 +452,7 @@ class RemoteAccessTests(unittest.TestCase):
                 "repository",
                 "source_sha",
                 "source_path",
+                "source_blob_sha",
                 "indexed_source_path",
                 "work_id",
                 "segment_id",
@@ -468,8 +477,11 @@ class RemoteAccessTests(unittest.TestCase):
         anicca = by_key["anicca"]["pointers"]
         self.assertEqual(
             [pointer["record_id"] for pointer in anicca],
-            [3, 1],
+            [3],
         )
+        self.assertEqual(anicca[0]["score"], 195)
+        self.assertEqual(anicca[0]["match_reasons"], ["exact"])
+        self.assertIsNone(anicca[0]["source_blob_sha"])
         self.assertEqual(anicca[0]["repository"], "fixture-org/fixture-source")
         self.assertEqual(anicca[0]["source_path"], "mn.json")
         self.assertEqual(
@@ -485,8 +497,135 @@ class RemoteAccessTests(unittest.TestCase):
             ["anicca", "無常"],
             ["mn-fixture"],
             limit=10,
+            root=ROOT,
         )
         self.assertEqual(first_digest, tree_digest(output))
+
+    def test_pointer_selection_keeps_best_distinct_work_file_per_corpus(self) -> None:
+        rows = [
+            {
+                "id": 3,
+                "corpus": "alpha",
+                "work_id": "shared",
+                "source_path": "alpha/shared.json",
+                "sequence_no": 2,
+                "score": 195,
+            },
+            {
+                "id": 2,
+                "corpus": "alpha",
+                "work_id": "shared",
+                "source_path": "alpha/shared.json",
+                "sequence_no": 1,
+                "score": 195,
+            },
+            {
+                "id": 1,
+                "corpus": "alpha",
+                "work_id": "other",
+                "source_path": "alpha/other.json",
+                "sequence_no": 1,
+                "score": 150,
+            },
+            {
+                "id": 4,
+                "corpus": "beta",
+                "work_id": "beta-work",
+                "source_path": "beta/work.json",
+                "sequence_no": 1,
+                "score": 130,
+            },
+        ]
+        selected = _select_corpus_candidates(rows, per_corpus_limit=1)
+        self.assertEqual([row["id"] for row in selected], [2, 4])
+        self.assertEqual({row["corpus"] for row in selected}, {"alpha", "beta"})
+
+    def test_term_pointer_candidates_reuse_search_per_corpus(self) -> None:
+        sources = {
+            "alpha": {"repository": "org/alpha", "repo_path": "alpha"},
+            "beta": {"repository": "org/beta", "repo_path": "beta"},
+        }
+        responses = {
+            "alpha": [
+                {
+                    "id": 1,
+                    "corpus": "alpha",
+                    "work_id": "one-work",
+                    "source_path": "alpha/one.json",
+                    "sequence_no": 1,
+                    "score": 195,
+                    "match_reasons": ["exact"],
+                },
+                {
+                    "id": 2,
+                    "corpus": "alpha",
+                    "work_id": "one-work",
+                    "source_path": "alpha/one.json",
+                    "sequence_no": 2,
+                    "score": 195,
+                    "match_reasons": ["exact"],
+                },
+                {
+                    "id": 3,
+                    "corpus": "alpha",
+                    "work_id": "two-work",
+                    "source_path": "alpha/two.json",
+                    "sequence_no": 1,
+                    "score": 190,
+                    "match_reasons": ["exact"],
+                },
+            ],
+            "beta": [
+                {
+                    "id": 4,
+                    "corpus": "beta",
+                    "work_id": "beta-work",
+                    "source_path": "beta/work.json",
+                    "sequence_no": 1,
+                    "score": 100,
+                    "match_reasons": ["fts"],
+                },
+            ],
+        }
+
+        def existing_search(
+            _db: Path,
+            _query: str,
+            limit: int,
+            _language: str | None = None,
+            corpus: str | None = None,
+        ) -> dict:
+            self.assertEqual(limit, 5)
+            return {"results": responses[corpus or ""]}
+
+        with patch(
+            "corpus_research.pointer_export.search",
+            side_effect=existing_search,
+        ) as mocked_search:
+            rows = _term_rows(self.db, "anicca", sources, per_corpus_limit=1)
+
+        self.assertEqual(mocked_search.call_count, 2)
+        self.assertEqual([row["id"] for row in rows], [1, 4])
+        self.assertEqual({row["corpus"] for row in rows}, {"alpha", "beta"})
+
+    def test_source_blob_sha_matches_pinned_local_source_file(self) -> None:
+        source = {"repo_path": "cbeta/BM_u8"}
+        source_sha = "83bc009a6f3333fa2d61cb436ee6181b1335beb4"
+        source_path = "T/T02/new.txt"
+        expected = subprocess.check_output(
+            [
+                "git",
+                "-C",
+                str(ROOT / source["repo_path"]),
+                "rev-parse",
+                f"{source_sha}:{source_path}",
+            ],
+            text=True,
+        ).strip()
+        self.assertEqual(
+            _source_blob_sha(ROOT, source, source_sha, source_path, {}),
+            expected,
+        )
 
 
 if __name__ == "__main__":
