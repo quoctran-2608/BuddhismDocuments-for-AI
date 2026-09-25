@@ -16,6 +16,7 @@ from .pointer_benchmark import (
     export_pointer_benchmark,
 )
 from .pointer_compact import export_pointer_compact_poc
+from .pointer_repetition import analyze_pointer_repetition
 from .retrieval import (
     compare,
     context,
@@ -165,6 +166,15 @@ def parser() -> argparse.ArgumentParser:
         type=Path,
         default=root_dir() / "remote/pointer-compact-poc",
     )
+    repetition = sub.add_parser(
+        "analyze-pointer-repetition",
+        help="measure metadata repetition in an existing pointer benchmark",
+    )
+    repetition.add_argument(
+        "--benchmark",
+        type=Path,
+        default=root_dir() / "remote/pointer-benchmark",
+    )
     return p
 
 
@@ -308,6 +318,12 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "export-pointer-compact-poc":
         try:
             emit(export_pointer_compact_poc(args.benchmark, args.output))
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "analyze-pointer-repetition":
+        try:
+            emit(analyze_pointer_repetition(args.benchmark))
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

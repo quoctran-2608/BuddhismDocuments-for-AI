@@ -1705,3 +1705,84 @@ Kết luận của POC này: với định nghĩa pointer phải chứa full met
 segment hiện tại, pointer-table/reference đơn giản không phải hướng giảm kích
 thước. Dự án dừng tại phép đo này, không tự thiết kế thêm layer/nén/production
 locator.
+
+---
+
+## 19. Phân tích lặp metadata source/file (25/09/2026)
+
+Sau compact POC, dự án **không tạo format hay artefact mới**. Chỉ thêm lệnh
+read-only:
+
+```text
+bin/buddhist-corpus analyze-pointer-repetition \
+  --benchmark remote/pointer-benchmark
+```
+
+Lệnh chỉ đọc 500 query benchmark đã commit; không chạy SQLite retrieval, không
+resample, không ghi `remote/`, không đổi ranking/candidate/source SHA.
+
+### Kết quả group repetition
+
+| Group | Identity | Unique | Duplicate occurrence | Dedup ratio | Avg reuse | Median | P95 | Max |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| A | `(repository, source_sha, source_path, source_blob_sha)` | 4.932 | 7.176 | 59,2666% | 2,4550 | 1 | 9 | 189 |
+| B | A + `indexed_source_path` | 4.932 | 7.176 | 59,2666% | 2,4550 | 1 | 9 | 189 |
+| C | `(corpus, work_id)` | 4.974 | 7.134 | 58,9197% | 2,4343 | 1 | 8 | 143 |
+| D | source + work | 5.356 | 6.752 | 55,7648% | 2,2606 | 1 | 7 | 143 |
+| E | Full static segment pointer | 12.010 | 98 | 0,8094% | 1,0082 | 1 | 1 | 3 |
+
+Tổng pointer occurrence: **12.108**. A và B có cùng số unique trong benchmark
+này, nhưng mô phỏng source table giữ cả `indexed_source_path` để bảo toàn đầy đủ
+metadata pointer.
+
+Top source/file reuse:
+
+| Reuse | Repository | Source path |
+|---:|---|---|
+| 189 | `cbeta-org/BM_u8` | `T/T01/new.txt` |
+| 142 | `cbeta-org/xml-p5` | `T/T01/T01n0001.xml` |
+| 77 | `cbeta-org/BM_u8` | `B/B06/new.txt` |
+| 55 | `bdhrs/pts-archive` | `texts/09-mn-i.txt` |
+| 47 | `cbeta-org/BM_u8` | `T/T03/new.txt` |
+| 45 | `bdhrs/pts-archive` | `texts/01-vin-i.txt` |
+| 45 | `cbeta-org/BM_u8` | `T/T02/new.txt` |
+| 39 | `cbeta-org/BM_u8` | `B/B08/new.txt` |
+| 38 | `BuddhaNexus/segmented-pali` | `inputfiles_cut_segments_on_typography/atk-s0201a.json` |
+| 37 | `cbeta-org/xml-p5` | `B/B15/B15n0088.xml` |
+
+Lệnh JSON có đủ top 20; bảng này ghi top 10 để bàn giao dễ đọc.
+
+### Byte contribution
+
+Đếm byte UTF-8 của JSON field fragment theo dạng `"field":value` (không tính dấu
+phẩy/ngoặc JSON):
+
+| Nhóm field | Byte |
+|---|---:|
+| Source/file (`repository`, SHA, blob SHA, path, indexed path) | 3.415.280 |
+| Work/segment (`record_id`, corpus, work/segment, sequence, evidence/text role, witness) | 2.472.763 |
+| Query-specific (`rank`, `score`, `match_reasons`) | 598.180 |
+| Tổng field fragment | 6.486.223 |
+| JSON syntax ngoài field fragment | 217.944 |
+| Tổng pointer object JSONL | 6.704.167 |
+
+### Mô phỏng source table trong bộ nhớ
+
+Mô phỏng dùng source ID ổn định 64-hex SHA-256 và giữ nguyên non-locator file
+của benchmark. Đây chỉ là tính byte JSONL, không tạo serialization artefact.
+
+| Biến thể | Tổng byte ước tính | Thay đổi so với 6.935.403 byte |
+|---|---:|---:|
+| A. Dedup source/file (bao gồm `indexed_source_path`) | 6.455.625 | giảm 6,9178% |
+| B. Dedup source/file + work identity | 7.604.382 | tăng 9,6459% |
+
+Biến thể A có 4.932 record source table; B có thêm 4.974 work record. Các số
+này bảo toàn 12.108 occurrence và không đổi semantics theo định nghĩa mô phỏng.
+
+Theo ngưỡng đã đặt trong prompt:
+
+> **Không đáng để thêm một layer source table chỉ để tiết kiệm dung lượng.**
+
+Lý do: giảm source/file-only là 6,9178%, thấp hơn 10%; thêm work table còn làm
+tổng byte tăng. Không có production locator, source table, compression hoặc
+layout repository mới được tạo từ kết quả này.

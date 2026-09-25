@@ -174,3 +174,20 @@ count/order, score, match reasons, source metadata, and `source_blob_sha` are
 unchanged. It contains no `raw_text`. Its measured size is evidence about this
 specific full-segment metadata format only, not a decision to add a new runtime
 layer.
+
+## Read-only pointer repetition analysis
+
+The CLI command `analyze-pointer-repetition --benchmark remote/pointer-benchmark`
+does not create an artifact. It reads the existing 500-query benchmark and
+reports repetition for source-file, indexed-source, work, source-plus-work, and
+full segment metadata identities. Its hypothetical source/work table sizes are
+in-memory JSONL measurements only; they do not change Connector behavior or add
+a runtime table.
+
+For the committed 500-query benchmark, source/file-only simulation reduces the
+full benchmark by 6.9178%, which is below the 10% decision threshold. Therefore:
+
+> Không đáng để thêm một layer source table chỉ để tiết kiệm dung lượng.
+
+This statement is about storage reduction only. It does not alter retrieval,
+ranking, evidence, or the existing artifacts.

@@ -230,6 +230,21 @@ It is intentionally only a measurement. The current benchmark has almost one
 unique full segment pointer per occurrence, so the POC result must be evaluated
 from its measured bytes before considering any future serialization decision.
 
+### Read-only source/file repetition measurement
+
+`analyze-pointer-repetition` reads the completed benchmark artifact and emits a
+JSON analysis without creating a remote artifact or calling SQLite. It measures
+metadata reuse at source-file, indexed-source, work, source-plus-work, and full
+segment levels, then simulates only the JSON bytes of stable-ID source/work
+tables while holding all benchmark query, candidate, ranking, and non-locator
+content constant.
+
+On the current 500-query benchmark, a source/file table that also preserves
+`indexed_source_path` estimates a 6.9178% reduction; adding a separate work
+table estimates a 9.6459% increase. Both results are below the project decision
+threshold for adding a source table, so this is a recorded measurement rather
+than a new serialization or runtime layer.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:

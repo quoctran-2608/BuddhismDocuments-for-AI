@@ -107,6 +107,11 @@ against that exact benchmark. Resolve a locator reference by reading its
 claim is limited to the source benchmark rows; do not infer that it changes
 research retrieval, ranking, evidence, or production architecture.
 
+`analyze-pointer-repetition` is read-only measurement over the committed
+benchmark. It must not be mistaken for a request to add source/work tables.
+Use its byte simulations only to report whether metadata repetition clears the
+chosen storage threshold; do not infer a new runtime architecture from them.
+
 ## Start
 
 ```bash

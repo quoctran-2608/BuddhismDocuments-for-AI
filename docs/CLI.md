@@ -68,6 +68,11 @@ bin/buddhist-corpus export-pointer-benchmark \
 bin/buddhist-corpus export-pointer-compact-poc \
   --benchmark remote/pointer-benchmark \
   --output remote/pointer-compact-poc
+
+# Read-only repetition and byte analysis of the existing benchmark.
+# This prints JSON only; it does not create or replace an artifact.
+bin/buddhist-corpus analyze-pointer-repetition \
+  --benchmark remote/pointer-benchmark
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -101,6 +106,12 @@ under a stable SHA-256 `pointer_id`; locator rows keep only `pointer_id`,
 `rank`, `score`, and `match_reasons`. It verifies that resolving every reference
 reconstructs the benchmark rows exactly. This is a serialization POC, not a
 production locator change.
+
+`analyze-pointer-repetition` is read-only. It measures the existing benchmark's
+metadata repetition for source-file, indexed-source, work, source-plus-work, and
+full static segment identities; it also reports byte fragments and in-memory
+source-table simulations. It does not call SQLite retrieval, resample queries,
+or write under `remote/`.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

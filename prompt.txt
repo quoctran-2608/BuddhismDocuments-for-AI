@@ -1,173 +1,224 @@
 Tiếp tục trên `main`.
 
-Benchmark 500 query hiện tại đã PASS.
+Compact full-pointer POC đã hoàn thành và đã được ChatGPT kiểm tra độc lập.
 
-Không sửa retrieval, ranking, evidence model, corpus grouping hay research methodology.
-
-Vấn đề cần kiểm tra lần này rất đơn giản:
-
-Benchmark hiện có:
+Kết luận hiện tại:
 
 ```text
 500 query
 12,108 pointer occurrences
-5,356 distinct (corpus, work_id, source_path)
-~6.94 MB
+12,010 full pointer metadata records
 ```
 
-Có khả năng metadata pointer đang bị lặp lại nhiều lần giữa các query.
+Vì vậy việc deduplicate toàn bộ pointer tới cấp segment gần như không tiết kiệm dung lượng.
 
-Mục tiêu: làm một **POC compact serialization** để đo xem nếu lưu metadata source/work một lần rồi locator chỉ tham chiếu bằng ID thì giảm kích thước bao nhiêu.
+Không tiếp tục hướng đó.
 
-## 1. Giữ nguyên toàn bộ pipeline hiện tại
+## Mục tiêu lần này
+
+Chỉ **đo xem metadata ở cấp source/file có bị lặp đủ nhiều để đáng tách riêng hay không**.
+
+Không tạo production locator.
+Không redesign.
+Không tạo format mới nếu chưa có số liệu.
+
+Dùng đúng benchmark 500 query hiện tại làm input.
+
+## 1. Giữ nguyên toàn bộ pipeline và artefact hiện có
 
 Không thay:
 
 - `search()`;
 - `score_record_match()`;
 - `record_rank_key()`;
-- per-corpus candidate selection;
+- candidate selection theo corpus;
 - collapse `(work_id, source_path)`;
 - `--limit`;
-- `source_blob_sha`;
+- evidence model;
 - 13 pinned source SHA;
-- evidence model.
+- benchmark query sample;
+- benchmark locator.
 
-Không vector DB, embeddings, API, server, ranking mới hay search engine mới.
+Không chạy lại retrieval nếu không cần.
 
-## 2. Không thay benchmark sample
+Không vector DB, embeddings, API, server, search engine mới hay scope engine.
 
-Dùng **đúng 500 query benchmark hiện tại** để có thể so sánh trực tiếp.
+## 2. Chỉ phân tích repetition của pointer metadata hiện tại
 
-Không resample.
+Từ 12,108 pointer occurrences của benchmark hiện tại, đo mức độ lặp của ít nhất các grouping sau:
 
-## 3. Tạo artefact compact riêng
-
-Không đè:
+### A. Source file identity
 
 ```text
-remote/pointer-poc/
-remote/pointer-benchmark/
+(repository, source_sha, source_path, source_blob_sha)
 ```
 
-Tạo ví dụ:
+### B. Indexed source identity
 
 ```text
-remote/pointer-compact-poc/
+(repository, source_sha, source_path, source_blob_sha, indexed_source_path)
 ```
 
-Cấu trúc đơn giản:
+### C. Work identity
 
 ```text
-pointer table
-→ mỗi distinct pointer/source-work metadata lưu một lần
-→ có stable pointer_id
-
-locator
-→ query
-→ danh sách pointer_id theo đúng thứ tự ranking hiện tại
+(corpus, work_id)
 ```
 
-Pointer table phải giữ đủ metadata cần thiết hiện nay, gồm ít nhất:
+### D. Source + work
 
 ```text
-corpus
+(corpus, repository, source_sha, source_path, source_blob_sha, work_id)
+```
+
+### E. Full segment pointer hiện tại
+
+Dùng full static pointer metadata như compact POC vừa làm để làm baseline.
+
+## 3. Đo các chỉ số sau cho từng grouping
+
+Báo:
+
+```text
+total pointer occurrences
+unique records
+duplicate occurrences
+dedup ratio
+average reuse count
+median reuse count
+p95 reuse count
+max reuse count
+```
+
+Ngoài ra báo top 20 source/file được reuse nhiều nhất.
+
+## 4. Đo byte contribution thực tế
+
+Với benchmark hiện tại, ước lượng hoặc tính trực tiếp:
+
+- tổng số byte của các field source/file lặp lại;
+- tổng số byte của segment-specific fields;
+- tổng số byte của query-specific fields:
+  - rank
+  - score
+  - match_reasons
+
+Tối thiểu phân nhóm:
+
+```text
+SOURCE/FILE FIELDS
 repository
 source_sha
 source_blob_sha
 source_path
 indexed_source_path
+
+WORK/SEGMENT FIELDS
+record_id
+corpus
 work_id
 segment_id
+sequence_no
 evidence_class
 text_role
 witness
+
+QUERY-SPECIFIC FIELDS
+rank
+score
+match_reasons
 ```
 
-Thông tin ranking/query-specific như `rank`, `score`, `match_reasons` nếu cần khác nhau giữa các query thì giữ ở locator reference, không ép vào shared pointer nếu làm sai semantics.
+Nếu field grouping khác hợp lý hơn thì được phép báo thêm, nhưng không thay semantics.
 
-Không copy `raw_text`.
+## 5. Mô phỏng một cách đơn giản
 
-## 4. Điều quan trọng
+Không tạo artefact mới.
 
-Compact representation phải tái dựng được kết quả logic tương đương benchmark hiện tại:
-
-```text
-query
-→ cùng candidate
-→ cùng thứ tự
-→ cùng score/match reasons
-→ cùng source pointer
-```
-
-Không được tiết kiệm dung lượng bằng cách bỏ candidate hoặc thay `--limit`.
-
-## 5. Đo và so sánh
+Chỉ tính hypothetical size nếu source/file metadata được lưu một lần theo stable source_id và pointer chỉ giữ source_id + phần còn lại.
 
 Báo:
 
 ```text
-kích thước benchmark cũ
-kích thước compact mới
-% giảm dung lượng
-
-pointer occurrences cũ
-shared pointer records mới
-locator references mới
-
-số file
-bytes của pointer table
-bytes của locator
+current benchmark bytes
+hypothetical source-dedup bytes
+estimated reduction %
 ```
 
-Ngoài ra ngoại suy lại cho:
+Nếu có thể, tính thêm hai biến thể đơn giản:
 
 ```text
-10,000 keys
-50,000 keys
-100,000 keys
+A. dedup source/file only
+B. dedup source/file + work identity
 ```
 
-dựa trên compact benchmark mới.
+Nhưng không triển khai serialization mới.
 
-## 6. Test tối thiểu
+## 6. Tiêu chí quyết định
 
-Xác minh:
+Không tự quyết định kiến trúc production.
 
-- đúng 500 query;
-- candidate count từng query không đổi;
-- order không đổi;
-- score không đổi;
-- `match_reasons` không đổi;
-- source metadata không đổi;
-- `source_blob_sha` không đổi;
-- không `raw_text`;
-- deterministic output;
-- không dangling `pointer_id`;
-- mọi `pointer_id` resolve được về metadata đầy đủ.
+Chỉ báo số liệu.
 
-## 7. Không làm production
+Nếu reduction dự kiến:
 
-Đây chỉ là POC đo hiệu quả serialization.
+```text
+< 10%
+```
 
-Nếu compact không tiết kiệm đáng kể thì báo kết quả và dừng.
+thì ghi rõ:
 
-Không tự thiết kế thêm layer mới.
+```text
+"Không đáng để thêm một layer source table chỉ để tiết kiệm dung lượng."
+```
 
-## 8. Khi xong chỉ báo
+Nếu:
+
+```text
+>= 10%
+```
+
+thì báo chính xác mức giảm và dừng để ChatGPT quyết định.
+
+## 7. Không sửa issue khác
+
+Không xử lý:
+
+- CBETA evidence classification;
+- locator production;
+- compression;
+- gzip;
+- binary format;
+- short IDs;
+- database mới;
+- repository layout mới.
+
+## 8. Tests
+
+Nếu thêm code phân tích, test tối thiểu:
+
+- deterministic;
+- không thay benchmark artefact;
+- counts khớp input;
+- byte accounting tự nhất quán.
+
+Giữ toàn bộ test hiện tại PASS.
+
+## 9. Khi xong chỉ báo
 
 1. main commit SHA;
-2. remote artefact commit SHA;
-3. file đã sửa;
-4. compact format;
-5. benchmark cũ bao nhiêu byte;
-6. compact mới bao nhiêu byte;
-7. giảm bao nhiêu %;
-8. pointer occurrences vs shared pointer records;
-9. estimate 10k / 50k / 100k;
-10. tests đã chạy;
-11. có thay đổi candidate/ranking semantics hay không.
+2. file đã sửa;
+3. tổng pointer occurrences;
+4. số unique theo từng grouping A/B/C/D/E;
+5. reuse statistics;
+6. top reused source/file;
+7. byte contribution theo 3 nhóm field;
+8. hypothetical size nếu dedup source/file;
+9. hypothetical size nếu dedup source/file + work;
+10. % giảm;
+11. tests đã chạy;
+12. có đáng tiếp tục source-level dedup hay không theo ngưỡng 10%.
 
 Sau đó dừng.
 
-ChatGPT sẽ kiểm tra độc lập qua GitHub Connector.
+**Không tạo production artefact. Không tự redesign. ChatGPT sẽ kiểm tra độc lập rồi quyết định bước cuối.**

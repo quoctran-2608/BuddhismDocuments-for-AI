@@ -773,6 +773,48 @@ class RemoteAccessTests(unittest.TestCase):
         export_pointer_compact_poc(benchmark, compact)
         self.assertEqual(first_digest, tree_digest(compact))
 
+    def test_pointer_repetition_analysis_is_deterministic_and_read_only(self) -> None:
+        from corpus_research.pointer_benchmark import export_pointer_benchmark
+        from corpus_research.pointer_repetition import analyze_pointer_repetition
+
+        benchmark = Path(self.temp.name) / "pointer-benchmark"
+        export_pointer_benchmark(
+            self.db,
+            benchmark,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        before = tree_digest(benchmark)
+        first = analyze_pointer_repetition(benchmark)
+        second = analyze_pointer_repetition(benchmark)
+        self.assertEqual(first, second)
+        self.assertEqual(before, tree_digest(benchmark))
+        self.assertEqual(first["source_benchmark"]["query_count"], 3)
+        self.assertEqual(first["source_benchmark"]["pointer_occurrences"], 2)
+        for grouping in first["groupings"].values():
+            self.assertEqual(
+                grouping["total_pointer_occurrences"],
+                grouping["unique_records"] + grouping["duplicate_occurrences"],
+            )
+        bytes_ = first["byte_contribution"]
+        self.assertEqual(
+            bytes_["pointer_object_jsonl_bytes"],
+            bytes_["field_fragment_bytes"] + bytes_["pointer_json_syntax_bytes"],
+        )
+        for name in (
+            "A_source_file_only",
+            "B_source_file_plus_work_identity",
+        ):
+            simulation = first["hypothetical"][name]
+            self.assertGreater(simulation["estimated_total_bytes"], 0)
+            self.assertIn("estimated_reduction_percent", simulation)
+        self.assertEqual(len(first["top_reused_source_files"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
