@@ -36,13 +36,14 @@ When shell/SQLite access is unavailable but the repositories can be read:
 1. read `config/remote-corpus.json` from the main repository;
 2. identify the remote corpus repository, branch, and root path;
 3. open `<root_path>/manifest.json` in that repository;
-4. inspect actual coverage, counts, and pinned source SHAs;
+4. inspect the exact POC query coverage, source mappings, and pinned source
+   SHAs;
 5. use `<root_path>/locator/manifest.json` to normalize and route the query or
-   identifier to a full, priority-ordered candidate shard list;
-6. select candidate shards according to the research mode below, then verify
-   actual hits in exported content;
-7. inspect primary-hit context and provenance;
-8. inspect `relations/` and `variants/` under `<root_path>` when needed;
+   identifier to its priority-ordered pointer list;
+6. select ranked source pointers according to the research mode below, then
+   open the original GitHub repository at each pointer's pinned SHA and path;
+7. verify wording, context, provenance, text role, and witness in the source;
+8. inspect source relationships and variants when needed;
 9. apply the existing research skill, including evidence hierarchy, research
    modes, ranking interpretation, witness separation, and fail-closed behavior.
 
@@ -51,18 +52,17 @@ Choose candidates by research mode:
 - **Quick or exact lookup:** for a term, passage, work ID, or quick verification
   of a specific source, start with the highest-priority candidates in scope.
 - **Topic, comparative, or cross-corpus research:** never spend the whole
-  candidate budget on the first 20–50 global entries. Group the full candidate
-  list by corpus, preserve locator priority within each corpus, and fetch a
-  useful sample from every relevant corpus, often about 5–10 shards per corpus.
-  Verify records, then inspect context, provenance, relations, variants, and
-  independent witnesses before synthesis. Adjust the sample size to the
-  question and continue deeper when evidence is insufficient or exhaustive
-  research is required.
+  candidate budget on the first 20–50 global entries. Group available pointers
+  by corpus, preserve locator priority within each corpus, and open a useful
+  sample from every relevant corpus. Verify source text, then inspect context,
+  provenance, relations, variants, and independent witnesses before synthesis.
+  The POC may not contain enough pointers for exhaustive research; state that
+  limit rather than treating it as full query coverage.
 - **User-restricted scope:** if the user asks for only a Nikāya, CBETA, T99, one
   Vinaya, or another explicit scope, select only candidates in that scope. Do
   not broaden the corpus set without permission.
 
-Locator priority decides which files to open first. It does not decide which
+Pointer priority decides which source files to open first. It does not decide which
 corpus is more important, which text is more correct, whether one witness is
 sufficient, or which source best answers the question. Those judgments still
 follow user scope, research mode, evidence hierarchy, text role, witness
@@ -70,23 +70,25 @@ separation, and provenance. Locator routing is not a byte-for-byte reproduction
 of SQLite FTS candidate generation.
 
 GitHub Code Search is optional only. The connector workflow must not depend on
-GitHub Code Search indexing. Locator rows identify candidate files only; they
-are not evidence and cannot establish a scholarly conclusion.
+GitHub Code Search indexing. Pointer rows identify candidate original source
+files only; they are not evidence and cannot establish a scholarly conclusion.
 
-Rows marked `context_overlap` exist only to preserve shard-boundary context.
-Deduplicate by record `id` and treat only `export_role: "primary"` as a hit.
-Connector mode changes only the data-access path, not scholarly reasoning. If
-the export cannot establish the claim, return
+The pointer POC does not copy `raw_text` or context rows. Use each pointer's
+`repository`, `source_sha`, `source_path`, `work_id`, `segment_id`, and
+`sequence_no` to inspect the original file directly. Connector mode changes
+only the data-access path, not scholarly reasoning. If the export cannot
+establish the claim, return
 `không đủ dữ liệu trong remote corpus export hiện tại`.
 
 The main repository is the canonical research architecture. The remote
 repository is a deterministic derived access artifact, not source-of-truth.
 Local mode remains offline. Connector mode uses only the declared main and
-remote GitHub repositories for repository evidence. Unless the user limits the
-corpus, research uses all data actually present in the current index/export.
-Read coverage from the manifest and never claim all 13 sources when the export
-contains fewer components. Remote records preserve source SHA, evidence class,
-text role, and witness.
+remote GitHub repositories plus the pinned original source repositories named
+by pointers for repository evidence. Unless the user limits the corpus,
+research uses all data actually present in the current pointer POC. Read
+coverage from the manifest and never claim all 13 sources when the POC contains
+fewer components. Pointers preserve source SHA, evidence class, text role, and
+witness.
 
 ## Start
 

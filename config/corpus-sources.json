@@ -1,10 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_from": "manifest.json and direct local schema inspection",
   "sources": [
     {
       "corpus": "suttacentral-bilara",
       "repo": "suttacentral/bilara-data",
+      "github_repository": "suttacentral/bilara-data",
       "evidence_class": "canonical_root",
       "roles": ["root text", "translation", "variant", "comment"],
       "profiles": ["core", "all"]
@@ -12,6 +13,7 @@
     {
       "corpus": "suttacentral-relations",
       "repo": "suttacentral/sc-data",
+      "github_repository": "suttacentral/sc-data",
       "evidence_class": "metadata_relationship",
       "roles": ["parallel graph", "structure", "language", "school", "dictionary"],
       "profiles": ["core", "all"]
@@ -19,6 +21,7 @@
     {
       "corpus": "cbeta-tei",
       "repo": "cbeta/xml-p5",
+      "github_repository": "cbeta-org/xml-p5",
       "evidence_class": "authoritative_structured",
       "roles": ["Chinese canonical edition", "line IDs", "critical apparatus"],
       "profiles": ["all"]
@@ -26,6 +29,7 @@
     {
       "corpus": "cbeta-bm",
       "repo": "cbeta/BM_u8",
+      "github_repository": "cbeta-org/BM_u8",
       "evidence_class": "canonical_root",
       "roles": ["plain UTF-8 Chinese witness", "CBETA line IDs"],
       "profiles": ["core", "all"]
@@ -33,6 +37,7 @@
     {
       "corpus": "84000-tei",
       "repo": "84000/data-tei",
+      "github_repository": "84000/data-tei",
       "evidence_class": "authoritative_structured",
       "roles": ["English translation", "Toh metadata", "TEI milestones"],
       "profiles": ["core", "all"]
@@ -40,6 +45,7 @@
     {
       "corpus": "84000-rdf",
       "repo": "84000/data-rdf",
+      "github_repository": "84000/data-rdf",
       "evidence_class": "metadata_relationship",
       "roles": ["Toh relationships", "work/instance identifiers", "labels"],
       "profiles": ["core", "all"]
@@ -47,6 +53,7 @@
     {
       "corpus": "84000-tm",
       "repo": "84000/data-translation-memory",
+      "github_repository": "84000/data-translation-memory",
       "evidence_class": "parallel_alignment",
       "roles": ["Tibetan-English alignment", "folio", "TEI passage ID"],
       "profiles": ["discovery", "all"]
@@ -54,6 +61,7 @@
     {
       "corpus": "openpecha",
       "repo": "openpecha/C0A2DD042",
+      "github_repository": "OpenPecha-Data/C0A2DD042",
       "evidence_class": "parallel_alignment",
       "roles": ["line-aligned Tibetan multilingual corpus"],
       "profiles": ["discovery", "all"]
@@ -61,6 +69,7 @@
     {
       "corpus": "buddhanexus-pali",
       "repo": "buddhanexus/segmented-pali",
+      "github_repository": "BuddhaNexus/segmented-pali",
       "evidence_class": "computational_segmented",
       "roles": ["candidate discovery", "SuttaCentral-compatible segment IDs"],
       "profiles": ["discovery", "all"]
@@ -68,6 +77,7 @@
     {
       "corpus": "buddhanexus-chinese",
       "repo": "buddhanexus/segmented-chinese",
+      "github_repository": "BuddhaNexus/segmented-chinese",
       "evidence_class": "computational_segmented",
       "roles": ["candidate discovery", "CBETA-compatible line IDs"],
       "profiles": ["discovery", "all"]
@@ -75,6 +85,7 @@
     {
       "corpus": "buddhanexus-sanskrit",
       "repo": "buddhanexus/segmented-sanskrit",
+      "github_repository": "BuddhaNexus/segmented-sanskrit",
       "evidence_class": "computational_segmented",
       "roles": ["candidate discovery", "machine segmentation"],
       "profiles": ["discovery", "all"]
@@ -82,6 +93,7 @@
     {
       "corpus": "pts-archive",
       "repo": "pts/pts-archive",
+      "github_repository": "bdhrs/pts-archive",
       "evidence_class": "auxiliary_reference",
       "roles": ["ROTA/PTS-style page reference", "noisy auxiliary witness"],
       "profiles": ["all"]
@@ -89,6 +101,7 @@
     {
       "corpus": "pali-canon-derived",
       "repo": "third-party/pali-canon",
+      "github_repository": "dangerzig/pali-canon",
       "evidence_class": "derived_critical_lemma",
       "roles": ["lemma", "morphology", "multi-witness critical apparatus"],
       "profiles": ["core", "all"]

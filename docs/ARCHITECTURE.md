@@ -129,59 +129,62 @@ The skill supports:
 
 ## 4a. GitHub Connector Access Layer
 
-`export-remote` reads the current SQLite index and writes deterministic,
-connector-readable JSONL shards under `remote/corpus/`. Records retain
-provenance; relations and variants remain separate evidence types. Two-record
-overlap keeps context available at shard boundaries, with explicit roles for
-deduplication. A deterministic static locator maps normalized terms, CJK
-bigrams, and identifiers to candidate shard paths. The locator neither stores
-record payloads nor makes scholarly claims. The manifest reports actual index
-coverage and pinned source state. This is a second access path to the same
-index, not a second research engine.
+The pointer POC reads the current SQLite index only at generation time and
+writes deterministic, connector-readable JSONL locator rows under
+`remote/pointer-poc/`. Each row contains ranked provenance pointers to the
+original pinned GitHub source file; it does not copy `raw_text`, record shards,
+or a second corpus. A deterministic static locator maps normalized terms, CJK
+bigrams, and identifiers to these source pointers. The locator neither stores
+record payloads nor makes scholarly claims. The manifest reports exact POC
+queries, source repository mappings, and pinned source state. This is a second
+access path to the same index, not a second research engine.
 
-Record candidates remain exhaustive but are ordered by the best matching
-record in each shard. Both local search and export call the same deterministic
+Pointer candidates are ordered by the existing local ranking. Both local search
+and export call the same deterministic
 record-scoring helper for evidence weight, exact/normalized/diacritic-folded/
 compact matching, corpus-lemma evidence, and segment quality. Stable record
-metadata breaks score ties. The exporter computes shard priority incrementally
-while visiting each record; it does not run one SQLite search per locator key.
-This reuses final ranking semantics, but static locator routing is not a
-byte-for-byte reproduction of SQLite FTS/BM25 candidate generation.
+metadata breaks score ties. The POC reuses `search()` for term queries and
+`score_record_match()` for exact
+identifier pointers; it does not create a second ranking system. This reuses
+final ranking semantics, but static locator routing is not a byte-for-byte
+reproduction of SQLite FTS/BM25 candidate generation.
 
 The main repository contains the code and canonical research architecture.
 `config/remote-corpus.json` locates the separate remote repository, whose
-`remote/corpus/` tree contains only the deterministic generated
-connector-readable export. The remote repository is a derived artifact, not
-source-of-truth. Local mode remains offline; connector mode uses only the
-declared main and remote GitHub repositories for repository evidence.
+`remote/pointer-poc/` tree contains the deterministic generated pointer POC.
+`config/corpus-sources.json` maps each corpus to its original GitHub
+repository. The remote repository is a derived artifact, not source-of-truth.
+Local mode remains offline; connector mode uses only the declared main, remote,
+and pinned original source repositories for repository evidence.
 
-Normal research uses all data actually present in the current index/export
-unless the user limits the corpus. Coverage always comes from the manifest, so
-an export containing six components must never be described as covering all 13
-sources. Exported records preserve source SHA, evidence class, text role, and
-witness. GitHub Code Search is optional and never required: the connector uses
-the locator, fetches candidate shards, and verifies the actual content. If that
-cannot establish a claim, it fails closed with:
+Normal research uses all data actually present in the current pointer POC unless
+the user limits the corpus. Coverage always comes from the manifest, so a POC
+containing three query keys must never be described as covering all 13 sources
+or the complete index. Pointers preserve source SHA, evidence class, text role,
+and witness. GitHub Code Search is optional and never required: the connector
+uses the locator, opens candidate source files at their pinned SHAs, and
+verifies the actual content. If that cannot establish a claim, it fails closed
+with:
 
 **không đủ dữ liệu trong remote corpus export hiện tại**
 
 The normal connector path is:
 
 ```text
-query → locator → priority-ordered candidate shards
-      → select by research mode and user scope → verify records
+query → locator → priority-ordered source pointers
+      → select by research mode and user scope → open pinned source files
       → context → provenance → relations/variants → research skill
 ```
 
 Quick exact lookups may start with the highest-ranked candidates. Topic,
-comparative, and cross-corpus research instead groups the full candidate list by
+comparative, and cross-corpus research instead groups available pointers by
 corpus, preserves priority within each corpus, and samples relevant corpora
 separately so one corpus cannot consume the entire candidate budget. Explicit
-user corpus restrictions are never broadened automatically. Exhaustive research
-or insufficient initial evidence may continue through the full candidate list.
-Locator priority only decides which files to open first; user scope, research
-mode, evidence hierarchy, text role, witness separation, and provenance govern
-scholarly judgment.
+user corpus restrictions are never broadened automatically. The POC may be too
+small for exhaustive research; when it is, it fails closed rather than implying
+unexported coverage. Pointer priority only decides which files to open first;
+user scope, research mode, evidence hierarchy, text role, witness separation,
+and provenance govern scholarly judgment.
 
 ## 5. Answer / Provenance Layer
 

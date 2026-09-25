@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from corpus_research.pointer_export import export_pointer_poc
 from corpus_research.remote_export import export_remote
 from corpus_research.retrieval import evidence, search
 
@@ -169,6 +170,21 @@ class RemoteAccessTests(unittest.TestCase):
             con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
         with sqlite3.connect(self.db) as con:
             con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        self.sources_config = Path(self.temp.name) / "corpus-sources.json"
+        self.sources_config.write_text(
+            json.dumps(
+                {
+                    "sources": [
+                        {
+                            "corpus": "fixture-corpus",
+                            "repo": "fixture/source",
+                            "github_repository": "fixture-org/fixture-source",
+                        }
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
 
     def tearDown(self) -> None:
         self.temp.cleanup()
@@ -389,6 +405,88 @@ class RemoteAccessTests(unittest.TestCase):
             [row["raw_text"] for row in rows if row["export_role"] == "primary"],
             ["committed WAL evidence"],
         )
+
+    def test_pointer_poc_is_deterministic_and_never_exports_raw_text(self) -> None:
+        output = Path(self.temp.name) / "pointer-poc"
+        result = export_pointer_poc(
+            self.db,
+            output,
+            self.sources_config,
+            ["anicca", "無常"],
+            ["mn-fixture"],
+            limit=10,
+        )
+        self.assertFalse(result["raw_text_exported"])
+        first_digest = tree_digest(output)
+        manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(manifest["proof_of_concept"])
+        self.assertFalse(manifest["raw_text_exported"])
+        locator_manifest = json.loads(
+            (output / "locator/manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertFalse(locator_manifest["raw_text_exported"])
+        self.assertEqual(
+            locator_manifest["pointer_fields"],
+            manifest["pointer_fields"],
+        )
+        self.assertEqual(
+            manifest["runtime"],
+            "GitHub Connector -> pinned source repository file",
+        )
+        self.assertEqual(
+            manifest["pointer_fields"],
+            [
+                "rank",
+                "score",
+                "match_reasons",
+                "record_id",
+                "corpus",
+                "repository",
+                "source_sha",
+                "source_path",
+                "indexed_source_path",
+                "work_id",
+                "segment_id",
+                "sequence_no",
+                "evidence_class",
+                "text_role",
+                "witness",
+            ],
+        )
+        payload = b"".join(
+            path.read_bytes()
+            for path in (output / "locator").rglob("*.jsonl")
+        )
+        self.assertNotIn(b"raw_text", payload)
+        self.assertNotIn(b"central anicca evidence", payload)
+        rows = [
+            json.loads(line)
+            for path in output.rglob("*.jsonl")
+            for line in path.read_text(encoding="utf-8").splitlines()
+        ]
+        by_key = {row["key"]: row for row in rows}
+        anicca = by_key["anicca"]["pointers"]
+        self.assertEqual(
+            [pointer["record_id"] for pointer in anicca],
+            [3, 1],
+        )
+        self.assertEqual(anicca[0]["repository"], "fixture-org/fixture-source")
+        self.assertEqual(anicca[0]["source_path"], "mn.json")
+        self.assertEqual(
+            anicca[0]["indexed_source_path"],
+            "fixture/source/mn.json",
+        )
+        self.assertEqual(by_key["無常"]["pointers"][0]["record_id"], 3)
+        self.assertTrue(by_key["mn-fixture"]["pointers"])
+        export_pointer_poc(
+            self.db,
+            output,
+            self.sources_config,
+            ["anicca", "無常"],
+            ["mn-fixture"],
+            limit=10,
+        )
+        self.assertEqual(first_digest, tree_digest(output))
 
 
 if __name__ == "__main__":

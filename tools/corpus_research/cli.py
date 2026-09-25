@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .index import PROFILE_SOURCES, SOURCE_BUILDERS, build_index, local_sha
 from .remote_export import DEFAULT_SHARD_BYTES, export_remote
+from .pointer_export import export_pointer_poc
 from .retrieval import (
     compare,
     context,
@@ -96,6 +97,19 @@ def parser() -> argparse.ArgumentParser:
     )
     export.add_argument("--output", type=Path, default=root_dir() / "remote/corpus")
     export.add_argument("--max-shard-bytes", type=int, default=DEFAULT_SHARD_BYTES)
+
+    pointer = sub.add_parser(
+        "export-remote-pointers",
+        help="export a small raw-text-free GitHub Connector pointer POC",
+    )
+    pointer.add_argument(
+        "--output",
+        type=Path,
+        default=root_dir() / "remote/pointer-poc",
+    )
+    pointer.add_argument("--query", action="append", default=[])
+    pointer.add_argument("--identifier", action="append", default=[])
+    pointer.add_argument("--limit", type=int, default=20)
     return p
 
 
@@ -200,6 +214,21 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
         except (OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "export-remote-pointers":
+        try:
+            emit(
+                export_pointer_poc(
+                    args.db,
+                    args.output,
+                    root / "config/corpus-sources.json",
+                    args.query,
+                    args.identifier,
+                    args.limit,
+                )
+            )
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2
     return 0

@@ -37,8 +37,15 @@ bin/buddhist-corpus variants T01n0001
 bin/buddhist-corpus compare mn1 T01n0001
 bin/buddhist-corpus provenance --record-id 123
 
-# Export the complete current SQLite index for GitHub Connector access
+# Legacy full-record export; do not use this for the pointer-only connector path
 bin/buddhist-corpus export-remote --output remote/corpus
+
+# Small raw-text-free pointer proof of concept for GitHub Connector access
+bin/buddhist-corpus export-remote-pointers \
+  --query anicca \
+  --query 無常 \
+  --identifier T02n0099 \
+  --output remote/pointer-poc
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -46,9 +53,12 @@ shape and ranking. Context is restricted to the same corpus, work ID, and source
 path, ordered by `sequence_no`. `evidence` bundles the target record, neighboring
 records, provenance, and locally indexed variants.
 
-`export-remote` reads the existing SQLite database rather than reparsing source
-repositories. It emits deterministic UTF-8 JSONL shards, plus a coverage/source
-manifest. See [GitHub Connector Research Access](REMOTE_AGENT.md).
+`export-remote` is the legacy full-record export and is not the pointer-only
+connector path. `export-remote-pointers` reads the existing SQLite database
+only during generation. It emits a small deterministic locator whose ranked
+pointers identify a GitHub repository, pinned source SHA, repository-relative
+source path, work/segment identifiers, evidence class, text role, and witness.
+It never writes `raw_text`. See [GitHub Connector Research Access](REMOTE_AGENT.md).
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

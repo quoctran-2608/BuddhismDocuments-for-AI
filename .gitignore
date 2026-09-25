@@ -1,5 +1,6 @@
 .m/
 derived/
 remote/corpus/
+remote/pointer-poc/
 __pycache__/
 *.py[cod]
