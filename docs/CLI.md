@@ -54,6 +54,14 @@ bin/buddhist-corpus export-remote-pointers \
   --identifier T02n0099 \
   --identifier T01n0001 \
   --output remote/pointer-poc
+
+# Deterministic 500-key measurement of the same pointer pipeline.
+# This creates a separate benchmark artifact; it does not replace the POC.
+bin/buddhist-corpus export-pointer-benchmark \
+  --latin-keys 200 \
+  --cjk-keys 200 \
+  --identifier-keys 100 \
+  --output remote/pointer-benchmark
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -71,6 +79,15 @@ For each query, it fetches candidates with the existing ranking, keeps the
 best-ranked distinct `(work_id, source_path)` candidate within each corpus, then
 retains up to `--limit` candidates per corpus. See
 [GitHub Connector Research Access](REMOTE_AGENT.md).
+
+`export-pointer-benchmark` measures this unchanged pointer pipeline on a
+deterministic sample of real local index keys: Latin/romanized keys come from
+`lemmas.lemma`; CJK keys are trigrams from a stable 5,000-row `lzh`/`zh`
+`records.raw_text` sample; identifiers come from stable per-corpus
+`records.work_id` row samples. It creates `manifest.json`,
+`benchmark-queries.json`, locator JSONL, and `benchmark-summary.json` under a
+separate output path. The default safe cap is 32 MiB; it refuses to replace the
+target artifact if a generated benchmark exceeds that cap.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

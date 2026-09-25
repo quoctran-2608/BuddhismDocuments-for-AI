@@ -69,11 +69,11 @@ class RemoteAccessTests(unittest.TestCase):
                     text = "anicca low-priority evidence"
                     evidence_class = "auxiliary_reference"
                 if sequence_no == 3:
-                    text = "central anicca evidence 無常"
+                    text = "central anicca evidence 無常 如是我聞"
                 rows.append(
                     (
                         "fixture-corpus",
-                        "pli",
+                        "lzh" if sequence_no == 3 else "pli",
                         "MN",
                         "mn-fixture",
                         f"mn-fixture:{sequence_no}",
@@ -173,6 +173,27 @@ class RemoteAccessTests(unittest.TestCase):
                     "a" * 40,
                     "canonical_root",
                 ),
+            )
+            con.executemany(
+                """INSERT INTO lemmas(
+                   corpus,language,work_id,segment_id,surface,lemma,pos,
+                   morphology_json,source_path,source_sha,evidence_class)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                [
+                    (
+                        "fixture-corpus",
+                        "pli",
+                        "mn-fixture",
+                        "mn-fixture:3",
+                        "anicca",
+                        "anicca",
+                        None,
+                        "{}",
+                        "fixture/source/mn.json",
+                        "a" * 40,
+                        "canonical_root",
+                    )
+                ],
             )
             con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
         with sqlite3.connect(self.db) as con:
@@ -479,8 +500,8 @@ class RemoteAccessTests(unittest.TestCase):
             [pointer["record_id"] for pointer in anicca],
             [3],
         )
-        self.assertEqual(anicca[0]["score"], 195)
-        self.assertEqual(anicca[0]["match_reasons"], ["exact"])
+        self.assertEqual(anicca[0]["score"], 275)
+        self.assertEqual(anicca[0]["match_reasons"], ["exact", "corpus-lemma"])
         self.assertIsNone(anicca[0]["source_blob_sha"])
         self.assertEqual(anicca[0]["repository"], "fixture-org/fixture-source")
         self.assertEqual(anicca[0]["source_path"], "mn.json")
@@ -626,6 +647,83 @@ class RemoteAccessTests(unittest.TestCase):
             _source_blob_sha(ROOT, source, source_sha, source_path, {}),
             expected,
         )
+
+    def test_pointer_benchmark_is_deterministic_and_reports_pointer_invariants(
+        self,
+    ) -> None:
+        from corpus_research.pointer_benchmark import (
+            _stable_sample,
+            export_pointer_benchmark,
+            sample_benchmark_queries,
+        )
+
+        self.assertEqual(
+            _stable_sample(["pli-tv-bi-vb-pc22"], 1, "identifier"),
+            ["pli-tv-bi-vb-pc22"],
+        )
+        sample = sample_benchmark_queries(
+            self.db,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+        )
+        self.assertEqual(
+            [(row["category"], row["sampling_source"]) for row in sample],
+            [
+                ("latin_romanized", "lemmas.lemma"),
+                (
+                    "cjk",
+                    "records.raw_text CJK trigrams from a stable 5,000-row sample",
+                ),
+                (
+                    "identifier",
+                    "records.work_id from stable per-corpus row samples",
+                ),
+            ],
+        )
+        output = Path(self.temp.name) / "pointer-benchmark"
+        result = export_pointer_benchmark(
+            self.db,
+            output,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        self.assertEqual(result["query_count"], 3)
+        self.assertFalse(result["raw_text_exported"])
+        first_digest = tree_digest(output)
+        summary = json.loads(
+            (output / "benchmark-summary.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(summary["overall"]["raw_text_field_count"], 0)
+        self.assertEqual(
+            summary["overall"]["duplicate_query_corpus_work_source_count"],
+            0,
+        )
+        self.assertEqual(summary["overall"]["source_blob_sha_null_count"], 2)
+        self.assertTrue((output / "benchmark-queries.json").is_file())
+        self.assertEqual(
+            json.loads((output / "manifest.json").read_text(encoding="utf-8"))[
+                "artifact_kind"
+            ],
+            "pointer_benchmark",
+        )
+        export_pointer_benchmark(
+            self.db,
+            output,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        self.assertEqual(first_digest, tree_digest(output))
 
 
 if __name__ == "__main__":

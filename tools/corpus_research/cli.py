@@ -8,6 +8,13 @@ from pathlib import Path
 from .index import PROFILE_SOURCES, SOURCE_BUILDERS, build_index, local_sha
 from .remote_export import DEFAULT_SHARD_BYTES, export_remote
 from .pointer_export import export_pointer_poc
+from .pointer_benchmark import (
+    DEFAULT_CJK_KEYS,
+    DEFAULT_IDENTIFIER_KEYS,
+    DEFAULT_LATIN_KEYS,
+    DEFAULT_MAX_TOTAL_BYTES,
+    export_pointer_benchmark,
+)
 from .retrieval import (
     compare,
     context,
@@ -114,6 +121,34 @@ def parser() -> argparse.ArgumentParser:
         type=int,
         default=20,
         help="maximum distinct work/source pointers retained per corpus",
+    )
+    benchmark = sub.add_parser(
+        "export-pointer-benchmark",
+        help="measure the existing pointer pipeline on deterministic local keys",
+    )
+    benchmark.add_argument(
+        "--output",
+        type=Path,
+        default=root_dir() / "remote/pointer-benchmark",
+    )
+    benchmark.add_argument("--latin-keys", type=int, default=DEFAULT_LATIN_KEYS)
+    benchmark.add_argument("--cjk-keys", type=int, default=DEFAULT_CJK_KEYS)
+    benchmark.add_argument(
+        "--identifier-keys",
+        type=int,
+        default=DEFAULT_IDENTIFIER_KEYS,
+    )
+    benchmark.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="maximum distinct work/source pointers retained per corpus",
+    )
+    benchmark.add_argument(
+        "--max-total-bytes",
+        type=int,
+        default=DEFAULT_MAX_TOTAL_BYTES,
+        help="stop before replacing output if the artifact exceeds this size",
     )
     return p
 
@@ -232,6 +267,24 @@ def main(argv: list[str] | None = None) -> int:
                     args.identifier,
                     args.limit,
                     root,
+                )
+            )
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "export-pointer-benchmark":
+        try:
+            emit(
+                export_pointer_benchmark(
+                    args.db,
+                    args.output,
+                    root / "config/corpus-sources.json",
+                    root,
+                    args.latin_keys,
+                    args.cjk_keys,
+                    args.identifier_keys,
+                    args.limit,
+                    args.max_total_bytes,
                 )
             )
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:

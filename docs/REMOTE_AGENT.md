@@ -132,3 +132,25 @@ SHA, evidence class, text role, and witness.
 If the locator or export is missing or cannot establish a claim, report:
 
 **không đủ dữ liệu trong remote corpus export hiện tại**
+
+## Pointer benchmark artifact
+
+`remote/pointer-benchmark/` is a separate measurement artifact, not a production
+locator and not a replacement for `remote/pointer-poc/`. It lets a GitHub
+Connector inspect how the current pointer pipeline behaves on 500 real local
+index keys without changing the ranking or evidence model.
+
+Read:
+
+1. `manifest.json` for the unchanged ranking/selection contract and source state;
+2. `benchmark-queries.json` for the exact deterministic query sample and its
+   local sampling source;
+3. `benchmark-summary.json` for size, pointer, corpus, duplicate, raw-text, and
+   blob-SHA measurements;
+4. the locator bucket files only when checking individual pointers.
+
+The benchmark samples 200 Latin/romanized keys from `lemmas.lemma`, 200 CJK
+trigrams from a stable 5,000-row `lzh`/`zh` `records.raw_text` sample, and 100
+identifiers from stable per-corpus `records.work_id` row samples. These are
+sampling inputs only: the output still contains source pointers and no copied
+`raw_text`.

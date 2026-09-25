@@ -1517,3 +1517,102 @@ candidate theo corpus và có `source_blob_sha`, cùng toàn bộ test liên qua
 chưa hoàn thành là **một giải pháp pointer-only có độ bao
 phủ rộng thay thế hoàn toàn legacy remote export**. AI tiếp nhận không được mô
 tả POC hiện tại như một chỉ mục hoàn chỉnh của 13 nguồn.
+
+---
+
+## 17. Benchmark độ mở rộng pointer (25/09/2026)
+
+Sau POC vòng 2, dự án không thiết kế lại kiến trúc mà đo đúng pipeline đã có:
+
+```text
+query thật từ SQLite
+→ search()/score_record_match()/record_rank_key() hiện có
+→ theo corpus
+→ collapse (work_id, source_path)
+→ pointer có source_blob_sha
+```
+
+Mã mới: `tools/corpus_research/pointer_benchmark.py`; CLI:
+
+```text
+bin/buddhist-corpus export-pointer-benchmark
+```
+
+Không có schema/index/ranking/vector DB/API mới. Benchmark tạo artefact riêng:
+
+```text
+remote/pointer-benchmark/
+```
+
+và không ghi đè `remote/pointer-poc/`.
+
+### Lấy mẫu deterministic
+
+- 200 key Latin/romanized: `lemmas.lemma`, lọc key có chữ cái và không có CJK;
+- 200 key CJK: trigram có thật từ `records.raw_text` của một sample cố định 5.000
+  record `lzh`/`zh`;
+- 100 identifier: `records.work_id` từ sample cố định theo từng corpus;
+- sau normalize, chọn theo thứ tự SHA-256 của
+  `category + NUL + key`.
+
+Lý do dùng ba nguồn này: chúng đã có trong index, không cần tạo vocabulary,
+schema hoặc index mới. `benchmark-queries.json` ghi toàn bộ 500 key và nguồn
+lấy mẫu để Connector kiểm tra.
+
+### Kết quả benchmark thật
+
+Lệnh chạy:
+
+```text
+bin/buddhist-corpus export-pointer-benchmark \
+  --latin-keys 200 --cjk-keys 200 --identifier-keys 100 \
+  --limit 20 --max-total-bytes 33554432 \
+  --output remote/pointer-benchmark
+```
+
+Kết quả:
+
+| Chỉ số | Toàn bộ | Latin/romanized | CJK | Identifier |
+|---|---:|---:|---:|---:|
+| Query | 500 | 200 | 200 | 100 |
+| Pointer | 12.108 | 4.331 | 7.274 | 503 |
+| Pointer/query trung bình | 24,216 | 21,655 | 36,370 | 5,030 |
+| Median pointer/query | 10 | 12 | 43 | 6 |
+| P95 pointer/query | 63 | 64 | 64 | 8 |
+| Query không kết quả | 4 | 4 | 0 | 0 |
+| Corpus/query trung bình | 2,836 | 3,040 | 3,140 | 1,820 |
+| Bytes/query trung bình | 13.483 | 12.907 | 19.183 | 3.233 |
+| Median bytes/query | 6.129 | 7.134 | 22.956 | 3.705 |
+| P95 bytes/query | 34.987 | 37.719 | 33.884 | 4.967 |
+| Max bytes/query | 67.461 | 67.461 | 42.118 | 5.238 |
+
+Artefact:
+
+- 368 file;
+- 6.935.403 byte tổng;
+- 6.741.307 byte locator;
+- dưới ngưỡng an toàn 33.554.432 byte;
+- 0 `raw_text` field;
+- 0 duplicate `(query, corpus, work_id, source_path)`;
+- 0 `source_blob_sha` null;
+- 5.356 distinct `(corpus, work_id, source_path)` trên toàn bộ benchmark.
+
+Thời gian generation đo được: 8 phút 36 giây; peak RSS (bộ nhớ tiến trình cao
+nhất) khoảng 68.044 KiB.
+
+Ước lượng tuyến tính thuần từ 6.935.403 byte / 500 key:
+
+| Số key | Kích thước ước tính |
+|---:|---:|
+| 10.000 | 138.708.060 byte |
+| 50.000 | 693.540.300 byte |
+| 100.000 | 1.387.080.600 byte |
+
+Đây chỉ là extrapolation (ngoại suy) tuyến tính từ benchmark; không phải quyết
+định triển khai production locator.
+
+Điểm bất thường cần nhớ:
+
+- CJK tốn bytes/pointer nhiều hơn Latin vì có số pointer/query cao hơn.
+- Benchmark hiện chỉ đo 500 key; nó không chứng minh coverage của toàn bộ
+  vocabulary.

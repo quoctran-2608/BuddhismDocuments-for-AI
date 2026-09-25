@@ -195,6 +195,21 @@ unexported coverage. Pointer priority only decides which files to open first;
 user scope, research mode, evidence hierarchy, text role, witness separation,
 and provenance govern scholarly judgment.
 
+### Pointer benchmark
+
+`export-pointer-benchmark` is a measurement wrapper around the existing pointer
+export, not a new retrieval system. It samples real keys deterministically from
+the existing index without adding a table or index: `lemmas.lemma` for
+Latin/romanized keys, CJK trigrams from a stable bounded `records.raw_text`
+sample, and `records.work_id` from stable per-corpus bounded row samples for
+identifiers. It then invokes the unchanged per-corpus search, collapse, ranking,
+pointer, and blob-SHA path.
+
+The generated `remote/pointer-benchmark/` tree is separate from the pointer POC.
+It records the exact query list and benchmark summary alongside raw-text-free
+locator JSONL. The summary reports measured artifact size and a simple linear
+extrapolation only; it does not select a production architecture.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:

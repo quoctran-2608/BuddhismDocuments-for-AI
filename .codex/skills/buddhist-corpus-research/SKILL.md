@@ -95,6 +95,12 @@ coverage from the manifest and never claim all 13 sources when the POC contains
 fewer components. Pointers preserve source SHA, evidence class, text role, and
 witness.
 
+`remote/pointer-benchmark/`, when present, is a measurement artifact rather than
+a research-coverage promise or a production locator. Read its
+`benchmark-summary.json` and `benchmark-queries.json` to inspect measured size,
+sampling, and limits. Do not treat its 500 sampled keys as a complete vocabulary
+or use its linear estimates as evidence for a redesign.
+
 ## Start
 
 ```bash
