@@ -815,6 +815,67 @@ class RemoteAccessTests(unittest.TestCase):
             self.assertIn("estimated_reduction_percent", simulation)
         self.assertEqual(len(first["top_reused_source_files"]), 1)
 
+    def test_pointer_key_universe_analysis_is_read_only_and_consistent(self) -> None:
+        from corpus_research.pointer_benchmark import export_pointer_benchmark
+        from corpus_research.pointer_universe import analyze_pointer_key_universe
+
+        benchmark = Path(self.temp.name) / "pointer-benchmark"
+        export_pointer_benchmark(
+            self.db,
+            benchmark,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        before_db = hashlib.sha256(self.db.read_bytes()).hexdigest()
+        before_benchmark = tree_digest(benchmark)
+        first = analyze_pointer_key_universe(self.db, benchmark)
+        second = analyze_pointer_key_universe(self.db, benchmark)
+        self.assertEqual(first, second)
+        self.assertEqual(before_db, hashlib.sha256(self.db.read_bytes()).hexdigest())
+        self.assertEqual(before_benchmark, tree_digest(benchmark))
+        namespaces = first["namespaces"]
+        self.assertEqual(namespaces["terms_latin"]["total_rows"], 1)
+        self.assertEqual(namespaces["terms_latin"]["distinct_original_keys"], 1)
+        self.assertEqual(namespaces["terms_latin"]["distinct_normalized_keys"], 1)
+        self.assertEqual(
+            namespaces["terms_latin"]["normalized_collision_examples"],
+            [],
+        )
+        self.assertEqual(namespaces["ids"]["distinct_original_work_id"], 2)
+        self.assertEqual(namespaces["ids"]["distinct_normalized_work_id"], 2)
+        self.assertEqual(namespaces["ids"]["distinct_corpus_work_id"], 2)
+        self.assertEqual(namespaces["ids"]["normalized_collision_examples"], [])
+        self.assertEqual(
+            namespaces["known_namespace_total_excluding_unavailable_cjk"],
+            3,
+        )
+        estimates = first["estimates"]["known_latin_plus_identifier"]
+        self.assertEqual(estimates["key_count"], 3)
+        self.assertGreater(
+            estimates["estimated_total_artifact_bytes"]["central"]["bytes"],
+            0,
+        )
+        self.assertGreater(
+            estimates["estimated_pointer_occurrences"]["central"],
+            0,
+        )
+        self.assertIsNone(first["estimates"]["category_specific"]["cjk"]["key_count"])
+        self.assertIsNone(namespaces["production_namespace_total"])
+        cjk_per_key = first["estimates"]["cjk_formula_per_key"]
+        self.assertLessEqual(
+            cjk_per_key["locator_bytes"]["lower"],
+            cjk_per_key["locator_bytes"]["central"],
+        )
+        self.assertLessEqual(
+            cjk_per_key["locator_bytes"]["central"],
+            cjk_per_key["locator_bytes"]["upper"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

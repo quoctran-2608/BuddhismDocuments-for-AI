@@ -112,6 +112,12 @@ benchmark. It must not be mistaken for a request to add source/work tables.
 Use its byte simulations only to report whether metadata repetition clears the
 chosen storage threshold; do not infer a new runtime architecture from them.
 
+`analyze-pointer-key-universe` is also read-only. It can report a finite
+Latin/romanized and identifier universe from existing tables, but current CJK
+trigram FTS has no enumerable vocabulary table. Do not scan all source text or
+create a vocabulary index merely to make a complete CJK count; report the limit
+and the per-key benchmark formula instead.
+
 ## Start
 
 ```bash

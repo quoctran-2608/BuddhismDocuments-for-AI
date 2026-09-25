@@ -1,224 +1,291 @@
 Tiếp tục trên `main`.
 
-Compact full-pointer POC đã hoàn thành và đã được ChatGPT kiểm tra độc lập.
+Các bước trước đã hoàn thành và được ChatGPT kiểm tra độc lập:
 
-Kết luận hiện tại:
+- pointer-only runtime: PASS;
+- corpus-balanced selection: PASS;
+- `source_blob_sha`: PASS;
+- benchmark 500 query: PASS;
+- full-pointer compact POC: không hiệu quả;
+- source/file dedup analysis: không đáng triển khai theo ngưỡng 10%.
 
-```text
-500 query
-12,108 pointer occurrences
-12,010 full pointer metadata records
-```
-
-Vì vậy việc deduplicate toàn bộ pointer tới cấp segment gần như không tiết kiệm dung lượng.
-
-Không tiếp tục hướng đó.
+Từ đây **không tối ưu serialization thêm nữa**.
 
 ## Mục tiêu lần này
 
-Chỉ **đo xem metadata ở cấp source/file có bị lặp đủ nhiều để đáng tách riêng hay không**.
+Chỉ **đếm chính xác tập search key có thể dùng cho production locator từ index hiện tại**, rồi dùng số liệu benchmark đã có để ước tính kích thước production.
 
-Không tạo production locator.
+Không generate production locator.
+Không tạo artefact remote mới.
 Không redesign.
-Không tạo format mới nếu chưa có số liệu.
 
-Dùng đúng benchmark 500 query hiện tại làm input.
-
-## 1. Giữ nguyên toàn bộ pipeline và artefact hiện có
+## 1. Giữ nguyên toàn bộ hệ thống hiện tại
 
 Không thay:
 
-- `search()`;
-- `score_record_match()`;
-- `record_rank_key()`;
-- candidate selection theo corpus;
-- collapse `(work_id, source_path)`;
-- `--limit`;
+- retrieval;
+- ranking;
 - evidence model;
+- pointer format;
+- corpus balancing;
+- collapse `(work_id, source_path)`;
 - 13 pinned source SHA;
-- benchmark query sample;
-- benchmark locator.
+- benchmark artefact;
+- remote repository.
 
-Không chạy lại retrieval nếu không cần.
+Không vector DB, embeddings, API, server, compression, source table, work table hay search engine mới.
 
-Không vector DB, embeddings, API, server, search engine mới hay scope engine.
+## 2. Đếm key universe từ dữ liệu/index hiện có
 
-## 2. Chỉ phân tích repetition của pointer metadata hiện tại
+Cần báo ít nhất 3 nhóm:
 
-Từ 12,108 pointer occurrences của benchmark hiện tại, đo mức độ lặp của ít nhất các grouping sau:
+### A. Latin / Pāli / Sanskrit / romanized terms
 
-### A. Source file identity
+Dùng nguồn vocabulary/search-key phù hợp hiện có trong index.
 
-```text
-(repository, source_sha, source_path, source_blob_sha)
-```
-
-### B. Indexed source identity
+Ưu tiên:
 
 ```text
-(repository, source_sha, source_path, source_blob_sha, indexed_source_path)
+lemmas.lemma
 ```
 
-### C. Work identity
+Đếm:
 
 ```text
-(corpus, work_id)
+total rows
+distinct non-empty keys
+distinct normalized keys
 ```
 
-### D. Source + work
+Loại key CJK khỏi nhóm này.
+
+Không tự tạo dictionary mới.
+
+### B. Identifier keys
+
+Dùng identifier thực tế hiện có, ưu tiên:
 
 ```text
-(corpus, repository, source_sha, source_path, source_blob_sha, work_id)
+records.work_id
 ```
 
-### E. Full segment pointer hiện tại
+Đếm:
 
-Dùng full static pointer metadata như compact POC vừa làm để làm baseline.
+```text
+distinct original work_id
+distinct normalized work_id
+```
 
-## 3. Đo các chỉ số sau cho từng grouping
+Nếu cùng identifier xuất hiện ở nhiều corpus thì báo thêm:
+
+```text
+distinct (corpus, work_id)
+```
+
+Nhưng production key count chính vẫn cần một con số distinct key rõ ràng.
+
+### C. CJK search keys
+
+Dùng **index CJK hiện có**, không lấy lại sample 5.000 record như benchmark.
+
+Mục tiêu là đếm toàn bộ key CJK thực tế mà runtime locator có thể hỗ trợ.
+
+Nếu CJK index hiện tại có bảng/index vocabulary rõ ràng, dùng trực tiếp.
 
 Báo:
 
 ```text
+distinct CJK keys
+key length distribution
+```
+
+Tối thiểu:
+
+```text
+1-char
+2-char
+3-char
+4+ char
+```
+
+Nếu index hiện tại chỉ chứa trigram hoặc một representation cụ thể thì ghi rõ chính xác.
+
+**Không scan/generate một index CJK mới.**
+
+Nếu không thể lấy một “production CJK key universe” có ý nghĩa từ index hiện tại mà không làm kiến trúc mới, hãy báo rõ và dừng phần CJK ở số liệu khả dụng nhất.
+
+## 3. Dedupe giữa các nhóm
+
+Báo:
+
+```text
+Latin distinct normalized keys
+CJK distinct keys
+Identifier distinct normalized keys
+```
+
+Sau đó tính:
+
+```text
+union total production keys
+```
+
+Nếu namespace khác nhau nên không dedupe xuyên nhóm, ghi rõ:
+
+```text
+production key namespace total
+```
+
+thay vì gộp sai semantics.
+
+Ví dụ:
+
+```text
+terms/latin
+terms/cjk
+ids
+```
+
+## 4. Đếm key usability
+
+Không cần chạy retrieval cho toàn bộ universe.
+
+Nhưng báo tối thiểu các sanity checks:
+
+- empty keys;
+- keys normalize thành empty;
+- duplicate normalized keys;
+- identifier bị mất punctuation nếu normalize;
+- số key có độ dài bất thường.
+
+Không tự sửa dữ liệu trong task này.
+
+## 5. Ước tính production locator size
+
+Dùng **benchmark thực tế đã verify**:
+
+```text
+500 query
+6,935,403 bytes
+```
+
+Nhưng không chỉ lấy một average duy nhất nếu có breakdown theo category.
+
+Ưu tiên dùng category-specific bytes/query từ benchmark:
+
+```text
+Latin/romanized
+CJK
+Identifier
+```
+
+để estimate:
+
+```text
+estimated Latin bytes
+estimated CJK bytes
+estimated identifier bytes
+estimated total production bytes
+```
+
+Báo cả:
+
+```text
+decimal MB
+MiB
+GiB nếu cần
+```
+
+Ngoài ra báo một range đơn giản:
+
+```text
+lower estimate
+central estimate
+upper estimate
+```
+
+Có thể dùng median / average / p95 benchmark để tạo range, miễn cách tính rõ ràng.
+
+Không gọi đây là size chắc chắn.
+
+## 6. Ước tính pointer count
+
+Dùng benchmark category-specific pointer/query để ước tính:
+
+```text
+Latin pointer occurrences
+CJK pointer occurrences
+Identifier pointer occurrences
 total pointer occurrences
-unique records
-duplicate occurrences
-dedup ratio
-average reuse count
-median reuse count
-p95 reuse count
-max reuse count
 ```
 
-Ngoài ra báo top 20 source/file được reuse nhiều nhất.
+Đây chỉ là extrapolation.
 
-## 4. Đo byte contribution thực tế
+## 7. Ước tính generation cost đơn giản
 
-Với benchmark hiện tại, ước lượng hoặc tính trực tiếp:
-
-- tổng số byte của các field source/file lặp lại;
-- tổng số byte của segment-specific fields;
-- tổng số byte của query-specific fields:
-  - rank
-  - score
-  - match_reasons
-
-Tối thiểu phân nhóm:
+Nếu có thể từ benchmark trước, dùng số đo generation:
 
 ```text
-SOURCE/FILE FIELDS
-repository
-source_sha
-source_blob_sha
-source_path
-indexed_source_path
-
-WORK/SEGMENT FIELDS
-record_id
-corpus
-work_id
-segment_id
-sequence_no
-evidence_class
-text_role
-witness
-
-QUERY-SPECIFIC FIELDS
-rank
-score
-match_reasons
+500 query
+8 phút 36 giây
 ```
 
-Nếu field grouping khác hợp lý hơn thì được phép báo thêm, nhưng không thay semantics.
-
-## 5. Mô phỏng một cách đơn giản
-
-Không tạo artefact mới.
-
-Chỉ tính hypothetical size nếu source/file metadata được lưu một lần theo stable source_id và pointer chỉ giữ source_id + phần còn lại.
-
-Báo:
+để ngoại suy tuyến tính thô:
 
 ```text
-current benchmark bytes
-hypothetical source-dedup bytes
-estimated reduction %
+estimated generation time
 ```
 
-Nếu có thể, tính thêm hai biến thể đơn giản:
+Nhưng ghi rõ đây chỉ là rough extrapolation, không phải benchmark production thật.
 
-```text
-A. dedup source/file only
-B. dedup source/file + work identity
-```
+Không tối ưu performance trong task này.
 
-Nhưng không triển khai serialization mới.
+## 8. Không tạo production artefact
 
-## 6. Tiêu chí quyết định
+Không:
 
-Không tự quyết định kiến trúc production.
+- export full locator;
+- commit remote artefact;
+- tạo source/work table;
+- tạo compression;
+- tạo binary format;
+- thay repository layout.
 
-Chỉ báo số liệu.
+Đây chỉ là measurement.
 
-Nếu reduction dự kiến:
+## 9. Tests
 
-```text
-< 10%
-```
-
-thì ghi rõ:
-
-```text
-"Không đáng để thêm một layer source table chỉ để tiết kiệm dung lượng."
-```
-
-Nếu:
-
-```text
->= 10%
-```
-
-thì báo chính xác mức giảm và dừng để ChatGPT quyết định.
-
-## 7. Không sửa issue khác
-
-Không xử lý:
-
-- CBETA evidence classification;
-- locator production;
-- compression;
-- gzip;
-- binary format;
-- short IDs;
-- database mới;
-- repository layout mới.
-
-## 8. Tests
-
-Nếu thêm code phân tích, test tối thiểu:
+Nếu thêm command/tool phân tích mới, test tối thiểu:
 
 - deterministic;
-- không thay benchmark artefact;
-- counts khớp input;
-- byte accounting tự nhất quán.
+- read-only;
+- không thay DB;
+- không thay benchmark;
+- counts tự nhất quán;
+- category totals tự nhất quán;
+- estimate formulas đúng.
 
 Giữ toàn bộ test hiện tại PASS.
 
-## 9. Khi xong chỉ báo
+## 10. Output cần báo
+
+Khi xong chỉ báo:
 
 1. main commit SHA;
 2. file đã sửa;
-3. tổng pointer occurrences;
-4. số unique theo từng grouping A/B/C/D/E;
-5. reuse statistics;
-6. top reused source/file;
-7. byte contribution theo 3 nhóm field;
-8. hypothetical size nếu dedup source/file;
-9. hypothetical size nếu dedup source/file + work;
-10. % giảm;
-11. tests đã chạy;
-12. có đáng tiếp tục source-level dedup hay không theo ngưỡng 10%.
+3. Latin distinct original/normalized key count;
+4. CJK distinct key count + length distribution;
+5. Identifier distinct original/normalized key count;
+6. production namespace total;
+7. duplicate/normalization anomalies;
+8. estimated production bytes theo từng category;
+9. estimated total size;
+10. lower / central / upper estimate;
+11. estimated pointer occurrences;
+12. rough generation time estimate;
+13. tests đã chạy;
+14. theo số liệu này, production locator có thực tế để generate không — chỉ trả lời theo size/time, không redesign.
 
 Sau đó dừng.
 
-**Không tạo production artefact. Không tự redesign. ChatGPT sẽ kiểm tra độc lập rồi quyết định bước cuối.**
+**Không generate production locator. Không tự đổi kiến trúc. ChatGPT sẽ kiểm tra độc lập rồi mới quyết định bước production cuối.**

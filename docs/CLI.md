@@ -73,6 +73,11 @@ bin/buddhist-corpus export-pointer-compact-poc \
 # This prints JSON only; it does not create or replace an artifact.
 bin/buddhist-corpus analyze-pointer-repetition \
   --benchmark remote/pointer-benchmark
+
+# Read-only key-universe count and production-scale extrapolation.
+# It does not generate a production locator or create a remote artifact.
+bin/buddhist-corpus analyze-pointer-key-universe \
+  --benchmark remote/pointer-benchmark
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -112,6 +117,14 @@ metadata repetition for source-file, indexed-source, work, source-plus-work, and
 full static segment identities; it also reports byte fragments and in-memory
 source-table simulations. It does not call SQLite retrieval, resample queries,
 or write under `remote/`.
+
+`analyze-pointer-key-universe` counts the known existing namespaces from the
+SQLite index and uses the committed 500-query benchmark's category-specific
+bytes/query and pointers/query for extrapolation. It reads Latin/romanized keys
+from `lemmas.lemma` and identifiers from `records.work_id`. The current CJK
+runtime index is a contentless FTS5 trigram index without a vocabulary table, so
+the command reports that its finite CJK key universe is unavailable rather than
+scanning text or creating a vocabulary index. It never generates a locator.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

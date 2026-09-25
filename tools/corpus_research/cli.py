@@ -17,6 +17,7 @@ from .pointer_benchmark import (
 )
 from .pointer_compact import export_pointer_compact_poc
 from .pointer_repetition import analyze_pointer_repetition
+from .pointer_universe import analyze_pointer_key_universe
 from .retrieval import (
     compare,
     context,
@@ -175,6 +176,15 @@ def parser() -> argparse.ArgumentParser:
         type=Path,
         default=root_dir() / "remote/pointer-benchmark",
     )
+    universe = sub.add_parser(
+        "analyze-pointer-key-universe",
+        help="count known pointer key namespaces and estimate benchmark scale",
+    )
+    universe.add_argument(
+        "--benchmark",
+        type=Path,
+        default=root_dir() / "remote/pointer-benchmark",
+    )
     return p
 
 
@@ -324,6 +334,12 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "analyze-pointer-repetition":
         try:
             emit(analyze_pointer_repetition(args.benchmark))
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "analyze-pointer-key-universe":
+        try:
+            emit(analyze_pointer_key_universe(args.db, args.benchmark))
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

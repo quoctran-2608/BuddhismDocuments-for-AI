@@ -245,6 +245,25 @@ table estimates a 9.6459% increase. Both results are below the project decision
 threshold for adding a source table, so this is a recorded measurement rather
 than a new serialization or runtime layer.
 
+### Production key-universe measurement
+
+`analyze-pointer-key-universe` is another read-only measurement layer. It does
+not invoke `search()`, build a locator, or change the benchmark. It reads:
+
+```text
+lemmas.lemma       → Latin/romanized namespace
+records.work_id    → identifier namespace
+records_cjk_fts    → CJK runtime representation/status
+benchmark summary  → category-specific size, pointer, and time extrapolation
+```
+
+The CJK runtime is deliberately not treated as an enumerable key vocabulary:
+`records_cjk_fts` is an FTS5 contentless trigram index and no `fts5vocab` table
+exists. Counting all possible CJK trigrams would need either a text scan or a
+new vocabulary structure. The measurement therefore reports CJK cost per
+potential key and leaves the full cross-namespace production total unknown,
+rather than silently changing the system to obtain a number.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:

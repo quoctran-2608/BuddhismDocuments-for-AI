@@ -1786,3 +1786,123 @@ Theo ngưỡng đã đặt trong prompt:
 Lý do: giảm source/file-only là 6,9178%, thấp hơn 10%; thêm work table còn làm
 tổng byte tăng. Không có production locator, source table, compression hoặc
 layout repository mới được tạo từ kết quả này.
+
+---
+
+## 20. Đếm production key universe và ước tính scale (25/09/2026)
+
+Mục tiêu của bước này chỉ là đếm namespace key đã có trong index và ngoại suy từ
+benchmark 500 query đã verify. Lệnh mới là read-only:
+
+```text
+bin/buddhist-corpus analyze-pointer-key-universe \
+  --benchmark remote/pointer-benchmark
+```
+
+Nó không chạy `search()`, không generate locator, không tạo remote artefact,
+không thay benchmark, retrieval/ranking/evidence/source SHA.
+
+### Universe key khả dụng từ index hiện tại
+
+| Namespace | Nguồn | Kết quả |
+|---|---|---:|
+| `terms/latin` row | `lemmas.lemma` | 50.560 row |
+| `terms/latin` original distinct | `lemmas.lemma`, loại CJK | 26.547 |
+| `terms/latin` normalized distinct | cùng nguồn | 26.547 |
+| `ids` original distinct | `records.work_id` | 32.498 |
+| `ids` normalized distinct | `records.work_id` | 32.497 |
+| `ids` distinct `(corpus, work_id)` | `records` | 41.264 |
+| Known namespace total | Latin normalized + identifier normalized | **59.044** |
+
+Sanity checks:
+
+- Latin: 0 empty, 0 normalize thành empty, 0 collision normalized; phân bố
+  normalized length là 1 key 1-char, 26 key 2-char, 69 key 3-char, 26.451 key
+  4+ char.
+- Identifier: 0 empty, 0 normalize thành empty; có 1 collision normalized:
+  `Dhp` và `dhp` cùng thành `dhp`.
+- `normalize()` không làm mất punctuation; 22.789 identifier có punctuation nhạy
+  cảm vẫn được giữ. `compact()` sẽ làm đổi 22.824 identifier, nên không được
+  dùng compact form thay cho exact identifier.
+
+### Giới hạn CJK cần ghi đúng
+
+Runtime CJK hiện có là:
+
+```text
+records_cjk_fts
+FTS5 contentless trigram
+41.855.049 search documents
+minimum substring query length: 3 CJK characters
+```
+
+Không có `records_cjk_fts_vocab` hay vocabulary table hiện hữu. Vì vậy không có
+một finite CJK key universe có thể đếm trực tiếp từ index mà không quét toàn bộ
+raw text hoặc tạo FTS vocabulary/index mới — cả hai đều ngoài scope. Do đó:
+
+```text
+CJK distinct key count: unavailable from current index
+CJK length distribution: unavailable from current index
+Full cross-namespace production total: unknown
+```
+
+Không được gộp bừa `terms/latin`, `terms/cjk`, `ids`: chúng là namespace khác
+semantics. 59.044 chỉ là tổng namespace biết được **Latin + identifier**, không
+phải tổng production đầy đủ.
+
+### Extrapolation size và pointer từ benchmark thật
+
+Nguồn benchmark: 500 query, 6.935.403 byte; category-specific bytes/query và
+pointer/query được dùng riêng cho từng namespace. Range:
+
+```text
+lower = min(median, average)
+central = average
+upper = max(average, p95)
+```
+
+| Category | Key count | Locator byte lower | Central | Upper | Pointer lower | Central | Upper |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Latin/romanized | 26.547 | 189.386.298 | 342.636.687 | 1.001.326.293 | 318.564 | 574.875 | 1.699.008 |
+| Identifier | 32.497 | 105.067.351 | 105.067.351 | 161.412.599 | 163.460 | 163.460 | 259.976 |
+| CJK | unknown | unknown | unknown | unknown | unknown | unknown | unknown |
+
+Known Latin + identifier only:
+
+| Range | Locator bytes | Decimal MB | MiB | GiB | Total artifact bytes incl. fixed 194.096 byte | Pointer occurrences |
+|---|---:|---:|---:|---:|---:|---:|
+| Lower | 294.453.649 | 294,454 | 280,813 | 0,274 | 294.647.745 | 482.024 |
+| Central | 447.704.038 | 447,704 | 426,964 | 0,417 | 447.898.134 | 738.335 |
+| Upper | 1.162.738.892 | 1.162,739 | 1.108,874 | 1,083 | 1.162.932.988 | 1.958.984 |
+
+Với CJK, chỉ có công thức per-key từ benchmark hiện có:
+
+| Metric CJK per potential key | Lower | Central | Upper |
+|---|---:|---:|---:|
+| Locator byte | 19.183,17 | 19.183,17 | 33.884 |
+| Pointer occurrence | 36,37 | 36,37 | 64 |
+
+Không nhân công thức này với một universe CJK giả định.
+
+### Rough generation time
+
+Benchmark 500 query tốn 516 giây (8 phút 36 giây), tương đương **1,032
+giây/query**. Với 59.044 known key Latin + identifier:
+
+```text
+60.933 giây ≈ 16 giờ 55 phút 33 giây
+```
+
+Đây là ngoại suy tuyến tính thô, không phải production benchmark; nó chưa bao
+gồm CJK vì universe CJK chưa enumerable.
+
+### Kết luận thực tế theo size/time, không redesign
+
+- **Known Latin + identifier**: kích thước central khoảng 447,9 MB (427,1 MiB),
+  khoảng 16 giờ 56 phút generation theo linear extrapolation. Đây có vẻ khả thi
+  về storage và batch time nếu chỉ xét hai namespace này.
+- **Full production gồm CJK**: chưa thể kết luận là khả thi vì index hiện tại
+  không cho số universe CJK hữu hạn mà không thay kiến trúc. CJK phải được đo
+  bằng một quyết định/phạm vi riêng do ChatGPT chọn sau này.
+
+Không có production locator hoặc remote artifact mới được tạo trong bước này.

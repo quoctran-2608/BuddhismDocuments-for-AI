@@ -191,3 +191,24 @@ full benchmark by 6.9178%, which is below the 10% decision threshold. Therefore:
 
 This statement is about storage reduction only. It does not alter retrieval,
 ranking, evidence, or the existing artifacts.
+
+## Read-only production key-universe estimate
+
+`analyze-pointer-key-universe --benchmark remote/pointer-benchmark` is a
+read-only planning measurement. It counts the known production namespaces from
+the current index and extrapolates only from the verified 500-query benchmark;
+it does not generate a production locator.
+
+- `terms/latin`: uses non-CJK `lemmas.lemma`, counted both as original and
+  normalized keys.
+- `ids`: uses `records.work_id`, preserving the original spelling for exact
+  identifier lookup while also reporting normalized collisions.
+- `terms/cjk`: the current runtime is a contentless FTS5 trigram index. It
+  supports compact CJK substring queries of at least three characters, but has
+  no enumerable vocabulary table. A finite CJK production key count is therefore
+  unavailable without a text scan or a new FTS vocabulary/index, neither of
+  which this measurement performs.
+
+Consequently, the command reports a known Latin-plus-identifier estimate and a
+CJK per-key formula, not a false complete production total. Treat the generation
+time as a rough linear extrapolation from the prior 500-query run only.
