@@ -1,0 +1,52 @@
+Tiếp tục trên `main`.
+
+Mục tiêu: cải tiến pointer POC hiện tại để không phụ thuộc `global top 20`, nhưng vẫn giữ kiến trúc pointer-only hiện có.
+
+Làm đơn giản như sau:
+
+1. Với mỗi query:
+   - dùng ranking hiện tại, không tạo ranking mới;
+   - group candidate theo `corpus`;
+   - trong mỗi corpus, nếu nhiều record cùng `work_id + source_path`, chỉ giữ record có ranking tốt nhất;
+   - giữ một số candidate tốt theo từng corpus thay vì chỉ global top-N.
+
+2. Pointer giữ cấu trúc hiện tại và thêm:
+   `source_blob_sha`
+   nếu có thể tính offline từ `source_sha + source_path`.
+
+3. Không export `raw_text`.
+
+4. Không build lại corpus, không đổi 13 source SHA, không full-generate pointer index.
+
+5. Làm POC nhỏ với các query:
+   `anicca`
+   `dukkha`
+   `jhāna`
+   `nibbāna`
+   `Mahākassapa`
+   `無常`
+   `如是我聞`
+   `苦`
+   `空`
+   `T02n0099`
+   `T01n0001`
+
+6. Test tối thiểu để chắc:
+   - ranking cũ vẫn được reuse;
+   - duplicate cùng work/file được collapse;
+   - candidate không còn bị một corpus chiếm toàn bộ khi corpus khác cũng có kết quả;
+   - pointer không có `raw_text`;
+   - `source_blob_sha` đúng với source file khi có.
+
+Không làm thêm kiến trúc mới, scope engine, search engine mới, vector DB, embeddings, API hay full production generation.
+
+Khi xong chỉ báo:
+1. commit SHA;
+2. file nào đã sửa;
+3. logic group/collapse được làm ở đâu;
+4. ví dụ kết quả cho `anicca`, `無常`, `如是我聞`, `T02n0099`;
+5. `source_blob_sha` được tạo thế nào;
+6. số pointer và kích thước POC mới;
+7. test đã chạy.
+
+Sau đó dừng. ChatGPT sẽ tự kiểm tra qua GitHub Connector.
