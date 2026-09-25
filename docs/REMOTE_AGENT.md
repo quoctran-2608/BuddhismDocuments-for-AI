@@ -154,3 +154,23 @@ trigrams from a stable 5,000-row `lzh`/`zh` `records.raw_text` sample, and 100
 identifiers from stable per-corpus `records.work_id` row samples. These are
 sampling inputs only: the output still contains source pointers and no copied
 `raw_text`.
+
+## Compact pointer serialization POC
+
+`remote/pointer-compact-poc/` is a separate serialization measurement built from
+the exact 500-query benchmark; it does not rerun retrieval or change the sampled
+keys. Read `manifest.json` and `compact-summary.json` first.
+
+- `pointers/part-000001.jsonl` stores full source/segment metadata once under a
+  stable `pointer_id`.
+- `locator/` rows store each query's `pointer_refs` in the existing ranking
+  order. A reference retains `pointer_id`, `rank`, `score`, and
+  `match_reasons`.
+- To reconstruct a result, resolve every `pointer_id` from the pointer table,
+  merge it with the ranking fields, and preserve reference order.
+
+The compact POC verifies equivalence with the benchmark: query count, candidate
+count/order, score, match reasons, source metadata, and `source_blob_sha` are
+unchanged. It contains no `raw_text`. Its measured size is evidence about this
+specific full-segment metadata format only, not a decision to add a new runtime
+layer.

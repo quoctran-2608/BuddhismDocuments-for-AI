@@ -2,5 +2,7 @@
 derived/
 remote/corpus/
 remote/pointer-poc/
+remote/pointer-benchmark/
+remote/pointer-compact-poc/
 __pycache__/
 *.py[cod]

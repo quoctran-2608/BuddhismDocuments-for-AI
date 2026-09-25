@@ -15,6 +15,7 @@ from .pointer_benchmark import (
     DEFAULT_MAX_TOTAL_BYTES,
     export_pointer_benchmark,
 )
+from .pointer_compact import export_pointer_compact_poc
 from .retrieval import (
     compare,
     context,
@@ -149,6 +150,20 @@ def parser() -> argparse.ArgumentParser:
         type=int,
         default=DEFAULT_MAX_TOTAL_BYTES,
         help="stop before replacing output if the artifact exceeds this size",
+    )
+    compact = sub.add_parser(
+        "export-pointer-compact-poc",
+        help="compact an existing pointer benchmark without rerunning retrieval",
+    )
+    compact.add_argument(
+        "--benchmark",
+        type=Path,
+        default=root_dir() / "remote/pointer-benchmark",
+    )
+    compact.add_argument(
+        "--output",
+        type=Path,
+        default=root_dir() / "remote/pointer-compact-poc",
     )
     return p
 
@@ -287,6 +302,12 @@ def main(argv: list[str] | None = None) -> int:
                     args.max_total_bytes,
                 )
             )
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "export-pointer-compact-poc":
+        try:
+            emit(export_pointer_compact_poc(args.benchmark, args.output))
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

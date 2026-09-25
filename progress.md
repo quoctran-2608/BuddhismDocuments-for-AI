@@ -1616,3 +1616,85 @@ nhất) khoảng 68.044 KiB.
 - CJK tốn bytes/pointer nhiều hơn Latin vì có số pointer/query cao hơn.
 - Benchmark hiện chỉ đo 500 key; nó không chứng minh coverage của toàn bộ
   vocabulary.
+
+---
+
+## 18. POC compact serialization (25/09/2026)
+
+Mục tiêu của bước này chỉ là đo metadata pointer bị lặp giữa 500 query benchmark,
+không chạy lại retrieval và không đổi pipeline:
+
+```text
+benchmark locator hiện có
+→ pointer metadata dùng chung có pointer_id
+→ locator reference giữ rank/score/match_reasons
+→ tái dựng lại benchmark để kiểm chứng
+```
+
+Artefact mới, tách biệt:
+
+```text
+remote/pointer-compact-poc/
+```
+
+### Format
+
+`pointers/part-000001.jsonl` có một dòng cho mỗi metadata pointer đầy đủ và
+`pointer_id` ổn định. `pointer_id` là SHA-256 của canonical JSON metadata.
+Pointer table giữ `record_id`, corpus, repository, source SHA/blob SHA, path,
+work/segment, sequence, evidence class, text role và witness.
+
+Locator giữ:
+
+```text
+pointer_id
+rank
+score
+match_reasons
+```
+
+Do `rank`, `score` và `match_reasons` có thể khác theo query, chúng không được
+đưa vào pointer table dùng chung. Resolver compact trộn metadata từ table với
+các trường ranking từ reference theo đúng thứ tự trong locator.
+
+### Kiểm chứng tương đương
+
+- 500/500 query giống benchmark;
+- 12.108/12.108 pointer occurrence giống benchmark;
+- candidate, thứ tự, score, `match_reasons`, metadata và `source_blob_sha` đều
+  tái dựng giống hệt;
+- 0 dangling `pointer_id`;
+- 0 `raw_text`;
+- output deterministic.
+
+### Kết quả đo
+
+| Chỉ số | Benchmark thường | Compact POC |
+|---|---:|---:|
+| Tổng byte | 6.935.403 | 8.783.402 |
+| Số file | 368 | 369 |
+| Pointer occurrence | 12.108 | 12.108 reference |
+| Shared pointer metadata record | — | 12.010 |
+| Bytes locator | 6.771.429 | 1.696.050 |
+| Bytes pointer table | — | 6.981.715 |
+
+Compact POC **tăng 26,6459% dung lượng**, nên không tiết kiệm đáng kể.
+
+Lý do đo được, không phải suy đoán: metadata đầy đủ phải giữ `segment_id` và các
+trường nguồn/nhân chứng. Trong 12.108 occurrence chỉ có 98 occurrence lặp cùng
+metadata đầy đủ; có 12.010 pointer record riêng, và 97 record được dùng lại ít
+nhất hai lần. Phần locator giảm mạnh, nhưng bảng pointer đầy đủ cộng thêm
+`pointer_id` lớn hơn metadata lặp đã tiết kiệm.
+
+Ước lượng tuyến tính từ compact POC (chỉ để so sánh, không làm production):
+
+| Số key | Byte compact ước tính |
+|---:|---:|
+| 10.000 | 175.668.040 |
+| 50.000 | 878.340.200 |
+| 100.000 | 1.756.680.400 |
+
+Kết luận của POC này: với định nghĩa pointer phải chứa full metadata tới mức
+segment hiện tại, pointer-table/reference đơn giản không phải hướng giảm kích
+thước. Dự án dừng tại phép đo này, không tự thiết kế thêm layer/nén/production
+locator.

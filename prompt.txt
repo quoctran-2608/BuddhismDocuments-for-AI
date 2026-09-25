@@ -1,131 +1,126 @@
 Tiếp tục trên `main`.
 
-POC pointer vòng 2 đã PASS. Không thiết kế lại kiến trúc.
+Benchmark 500 query hiện tại đã PASS.
 
-Mục tiêu lần này: **đo xem cơ chế pointer hiện tại có thể mở rộng từ 11 query thành locator rộng đến mức nào**, trước khi quyết định generate production locator.
+Không sửa retrieval, ranking, evidence model, corpus grouping hay research methodology.
 
-Giữ nguyên cơ chế hiện tại:
+Vấn đề cần kiểm tra lần này rất đơn giản:
+
+Benchmark hiện có:
 
 ```text
-query
-→ search bằng retrieval/ranking hiện có
-→ theo từng corpus
-→ collapse cùng (work_id, source_path)
-→ giữ best-ranked record
-→ pointer
-→ source/blob thật
+500 query
+12,108 pointer occurrences
+5,356 distinct (corpus, work_id, source_path)
+~6.94 MB
 ```
 
-## 1. Không thay đổi các nguyên tắc đã PASS
+Có khả năng metadata pointer đang bị lặp lại nhiều lần giữa các query.
 
-- không tạo ranking mới;
-- tiếp tục reuse `search()`, `score_record_match()`, `record_rank_key()` hiện có;
-- không thay evidence model;
-- không đổi 13 pinned source SHA;
-- không export `raw_text`;
-- không vector DB;
-- không embeddings;
-- không API/server;
-- không GitHub Code Search dependency;
-- không scope engine mới;
-- không full-generate production locator.
+Mục tiêu: làm một **POC compact serialization** để đo xem nếu lưu metadata source/work một lần rồi locator chỉ tham chiếu bằng ID thì giảm kích thước bao nhiêu.
 
-## 2. Tạo một benchmark deterministic
+## 1. Giữ nguyên toàn bộ pipeline hiện tại
 
-Dùng dữ liệu/index local hiện có để lấy một tập khoảng **500 search key thực tế**.
+Không thay:
 
-Ưu tiên chia tương đối:
+- `search()`;
+- `score_record_match()`;
+- `record_rank_key()`;
+- per-corpus candidate selection;
+- collapse `(work_id, source_path)`;
+- `--limit`;
+- `source_blob_sha`;
+- 13 pinned source SHA;
+- evidence model.
 
-```text
-~200 Latin / Pāli / Sanskrit / romanized terms
-~200 CJK terms
-~100 identifiers
-```
+Không vector DB, embeddings, API, server, ranking mới hay search engine mới.
 
-Các key phải lấy từ dữ liệu/index hiện có, không tự bịa một danh sách thuật ngữ.
+## 2. Không thay benchmark sample
 
-Sampling phải deterministic để chạy lại cho cùng kết quả.
+Dùng **đúng 500 query benchmark hiện tại** để có thể so sánh trực tiếp.
 
-Nếu schema hiện tại không có sẵn một vocabulary phù hợp cho một nhóm, hãy dùng cách đơn giản nhất từ dữ liệu/index hiện có và ghi rõ lấy từ đâu.
+Không resample.
 
-**Không tạo index/schema mới chỉ để lấy sample.**
+## 3. Tạo artefact compact riêng
 
-## 3. Chạy đúng pointer pipeline hiện tại cho 500 key
-
-Mỗi query vẫn phải:
-
-- search riêng theo corpus như POC vòng 2;
-- collapse `(work_id, source_path)` trong corpus;
-- giữ record tốt nhất bằng ranking hiện tại;
-- giữ tối đa `--limit` candidate distinct work/file mỗi corpus;
-- có `source_blob_sha` khi resolve được;
-- không chứa `raw_text`.
-
-Không tối ưu thuật toán ở bước này.
-
-Mục tiêu là **đo chính implementation đang có**, không phải cải tiến nó.
-
-## 4. Tạo benchmark artefact có thể kiểm tra qua GitHub Connector
-
-Trong repository remote, tạo một artefact benchmark riêng, không đè POC vòng 2.
-
-Ví dụ:
+Không đè:
 
 ```text
+remote/pointer-poc/
 remote/pointer-benchmark/
 ```
 
-Artefact phải đủ để ChatGPT kiểm tra độc lập:
-
-- manifest;
-- danh sách 500 query;
-- locator/pointer JSONL;
-- benchmark summary;
-- không có raw text.
-
-Nếu kích thước artefact vượt mức hợp lý để commit lên remote, **không tự đổi kiến trúc**.
-
-Trong trường hợp đó:
-- dừng generation ở ngưỡng an toàn;
-- báo số query đã generate;
-- báo kích thước thực tế;
-- extrapolate phần còn lại;
-- không tự nghĩ ra compression/index architecture mới.
-
-## 5. Benchmark cần đo
-
-Báo ít nhất:
+Tạo ví dụ:
 
 ```text
-số query
-số pointer
-số corpus/query
-số distinct work/file
-tổng bytes
-bytes/query trung bình
-median bytes/query
-p95 bytes/query
-max bytes/query
-pointer/query trung bình
-median pointer/query
-p95 pointer/query
-query không có kết quả
-source_blob_sha null count
-duplicate (query, corpus, work_id, source_path)
-raw_text field count
+remote/pointer-compact-poc/
 ```
 
-Cho biết breakdown tối thiểu theo:
+Cấu trúc đơn giản:
 
 ```text
-Latin/romanized
-CJK
-identifier
+pointer table
+→ mỗi distinct pointer/source-work metadata lưu một lần
+→ có stable pointer_id
+
+locator
+→ query
+→ danh sách pointer_id theo đúng thứ tự ranking hiện tại
 ```
 
-## 6. Ước lượng scale
+Pointer table phải giữ đủ metadata cần thiết hiện nay, gồm ít nhất:
 
-Dựa **chỉ trên số đo benchmark thực tế**, ước lượng thô kích thước locator nếu có:
+```text
+corpus
+repository
+source_sha
+source_blob_sha
+source_path
+indexed_source_path
+work_id
+segment_id
+evidence_class
+text_role
+witness
+```
+
+Thông tin ranking/query-specific như `rank`, `score`, `match_reasons` nếu cần khác nhau giữa các query thì giữ ở locator reference, không ép vào shared pointer nếu làm sai semantics.
+
+Không copy `raw_text`.
+
+## 4. Điều quan trọng
+
+Compact representation phải tái dựng được kết quả logic tương đương benchmark hiện tại:
+
+```text
+query
+→ cùng candidate
+→ cùng thứ tự
+→ cùng score/match reasons
+→ cùng source pointer
+```
+
+Không được tiết kiệm dung lượng bằng cách bỏ candidate hoặc thay `--limit`.
+
+## 5. Đo và so sánh
+
+Báo:
+
+```text
+kích thước benchmark cũ
+kích thước compact mới
+% giảm dung lượng
+
+pointer occurrences cũ
+shared pointer records mới
+locator references mới
+
+số file
+bytes của pointer table
+bytes của locator
+```
+
+Ngoài ra ngoại suy lại cho:
 
 ```text
 10,000 keys
@@ -133,48 +128,46 @@ Dựa **chỉ trên số đo benchmark thực tế**, ước lượng thô kích
 100,000 keys
 ```
 
-Chỉ extrapolate đơn giản từ benchmark.
+dựa trên compact benchmark mới.
 
-Không dùng kết quả này để tự quyết định kiến trúc mới.
+## 6. Test tối thiểu
 
-Nếu có thể đếm nhanh số search key/vocabulary khả dụng từ index hiện tại mà không scan/build nặng, báo thêm con số đó.
+Xác minh:
 
-Nếu việc đếm này tốn kém hoặc cần thiết kế mới thì bỏ qua.
-
-## 7. Regression test
-
-Giữ toàn bộ test hiện tại PASS và thêm test tối thiểu cho benchmark/export mới:
-
-- deterministic sampling;
+- đúng 500 query;
+- candidate count từng query không đổi;
+- order không đổi;
+- score không đổi;
+- `match_reasons` không đổi;
+- source metadata không đổi;
+- `source_blob_sha` không đổi;
+- không `raw_text`;
 - deterministic output;
-- reuse ranking hiện tại;
-- group/collapse vẫn đúng;
-- không raw_text;
-- source_blob_sha vẫn đúng;
-- không duplicate `(query, corpus, work_id, source_path)`.
+- không dangling `pointer_id`;
+- mọi `pointer_id` resolve được về metadata đầy đủ.
 
-## 8. Không xử lý issue CBETA evidence classification trong task này
+## 7. Không làm production
 
-Vấn đề một số CBETA modern works đang có `canonical_root` đã được ghi nhận riêng.
+Đây chỉ là POC đo hiệu quả serialization.
 
-Không sửa taxonomy/evidence classification trong task này.
+Nếu compact không tiết kiệm đáng kể thì báo kết quả và dừng.
 
-Pointer ranking vẫn chỉ là candidate ranking, không phải scholarly authority.
+Không tự thiết kế thêm layer mới.
 
-## 9. Khi xong chỉ báo
+## 8. Khi xong chỉ báo
 
 1. main commit SHA;
 2. remote artefact commit SHA;
 3. file đã sửa;
-4. 500 search key được lấy deterministic như thế nào;
-5. số query thực tế đã benchmark;
-6. tổng pointer;
-7. tổng kích thước;
-8. bảng thống kê Latin/CJK/identifier;
-9. ước lượng 10k / 50k / 100k keys;
-10. test đã chạy;
-11. có điều gì bất thường phát hiện được không.
+4. compact format;
+5. benchmark cũ bao nhiêu byte;
+6. compact mới bao nhiêu byte;
+7. giảm bao nhiêu %;
+8. pointer occurrences vs shared pointer records;
+9. estimate 10k / 50k / 100k;
+10. tests đã chạy;
+11. có thay đổi candidate/ranking semantics hay không.
 
 Sau đó dừng.
 
-**Không triển khai production locator. Không tự redesign. ChatGPT sẽ kiểm tra độc lập code và artefact qua GitHub Connector trước khi quyết định bước tiếp theo.**
+ChatGPT sẽ kiểm tra độc lập qua GitHub Connector.

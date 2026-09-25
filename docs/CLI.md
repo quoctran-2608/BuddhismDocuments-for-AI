@@ -62,6 +62,12 @@ bin/buddhist-corpus export-pointer-benchmark \
   --cjk-keys 200 \
   --identifier-keys 100 \
   --output remote/pointer-benchmark
+
+# Compact-serialization measurement of the existing 500-query benchmark.
+# It reads the benchmark artifact; it does not rerun retrieval or resample keys.
+bin/buddhist-corpus export-pointer-compact-poc \
+  --benchmark remote/pointer-benchmark \
+  --output remote/pointer-compact-poc
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -88,6 +94,13 @@ deterministic sample of real local index keys: Latin/romanized keys come from
 `benchmark-queries.json`, locator JSONL, and `benchmark-summary.json` under a
 separate output path. The default safe cap is 32 MiB; it refuses to replace the
 target artifact if a generated benchmark exceeds that cap.
+
+`export-pointer-compact-poc` reads the exact existing benchmark query list and
+locator rows. It stores full source/segment metadata once in a pointer table
+under a stable SHA-256 `pointer_id`; locator rows keep only `pointer_id`,
+`rank`, `score`, and `match_reasons`. It verifies that resolving every reference
+reconstructs the benchmark rows exactly. This is a serialization POC, not a
+production locator change.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

@@ -210,6 +210,26 @@ It records the exact query list and benchmark summary alongside raw-text-free
 locator JSONL. The summary reports measured artifact size and a simple linear
 extrapolation only; it does not select a production architecture.
 
+### Compact pointer serialization POC
+
+`export-pointer-compact-poc` reads the completed benchmark artifact rather than
+calling SQLite retrieval. It separates static full pointer metadata from
+query-specific ranking fields:
+
+```text
+pointer table: pointer_id → record/source/segment metadata
+locator: query → ordered (pointer_id, rank, score, match_reasons)
+```
+
+`pointer_id` is SHA-256 over canonical JSON for the static metadata. The exporter
+resolves the compact rows immediately and rejects output unless it reproduces the
+source benchmark exactly. This preserves all 500 queries, candidates, ordering,
+scores, match reasons, evidence fields, and blob SHA values.
+
+It is intentionally only a measurement. The current benchmark has almost one
+unique full segment pointer per occurrence, so the POC result must be evaluated
+from its measured bytes before considering any future serialization decision.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:

@@ -725,6 +725,54 @@ class RemoteAccessTests(unittest.TestCase):
         )
         self.assertEqual(first_digest, tree_digest(output))
 
+    def test_compact_pointer_poc_reconstructs_benchmark_exactly(self) -> None:
+        from corpus_research.pointer_benchmark import export_pointer_benchmark
+        from corpus_research.pointer_compact import (
+            _locator_rows,
+            export_pointer_compact_poc,
+            reconstruct_compact_rows,
+        )
+
+        benchmark = Path(self.temp.name) / "pointer-benchmark"
+        export_pointer_benchmark(
+            self.db,
+            benchmark,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        compact = Path(self.temp.name) / "pointer-compact-poc"
+        result = export_pointer_compact_poc(benchmark, compact)
+        self.assertEqual(result["query_count"], 3)
+        self.assertFalse(result["raw_text_exported"])
+        self.assertEqual(
+            reconstruct_compact_rows(compact),
+            _locator_rows(benchmark),
+        )
+        summary = json.loads(
+            (compact / "compact-summary.json").read_text(encoding="utf-8")
+        )
+        self.assertTrue(summary["equivalent_to_source_benchmark"])
+        self.assertEqual(
+            summary["locator_references"],
+            sum(len(row["pointers"]) for row in _locator_rows(benchmark)),
+        )
+        self.assertEqual(summary["dangling_pointer_id_count"], 0)
+        self.assertEqual(summary["raw_text_field_count"], 0)
+        self.assertEqual(summary["shared_pointer_records"], 2)
+        payload = b"".join(
+            path.read_bytes()
+            for path in compact.rglob("*.jsonl")
+        )
+        self.assertNotIn(b"raw_text", payload)
+        first_digest = tree_digest(compact)
+        export_pointer_compact_poc(benchmark, compact)
+        self.assertEqual(first_digest, tree_digest(compact))
+
 
 if __name__ == "__main__":
     unittest.main()

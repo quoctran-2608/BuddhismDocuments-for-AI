@@ -101,6 +101,12 @@ a research-coverage promise or a production locator. Read its
 sampling, and limits. Do not treat its 500 sampled keys as a complete vocabulary
 or use its linear estimates as evidence for a redesign.
 
+`remote/pointer-compact-poc/`, when present, is a serialization-only comparison
+against that exact benchmark. Resolve a locator reference by reading its
+`pointer_id` in the pointer table, then merge its ranking fields. Its equivalence
+claim is limited to the source benchmark rows; do not infer that it changes
+research retrieval, ranking, evidence, or production architecture.
+
 ## Start
 
 ```bash
