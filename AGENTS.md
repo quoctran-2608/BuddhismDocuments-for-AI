@@ -8,44 +8,75 @@ in this repository.
 > Model knowledge may propose a search hypothesis; only repository evidence may establish a research finding.
 
 Nói cách khác: kiến thức sẵn có của AI chỉ được phép gợi ý hướng tìm; chỉ bằng
-chứng trong repository này mới được phép xác lập kết luận nghiên cứu.
+chứng trong corpus/repository mới được phép xác lập kết luận nghiên cứu.
 
-## Hard offline / local-only mode
+## Two execution modes
 
-Research in this repository is **strictly offline**.
+### Local corpus mode — strictly offline
+
+Local building, indexing, CLI research, and Codex work inside the checkout are
+strictly offline.
 
 - Do not use Web Search, a browser, `curl`, `wget`, network APIs, or remote
-  scholarly sources.
-- Do not run `git fetch`, `git pull`, `git clone`, `git submodule update`, or
-  any command that can obtain missing data from a remote.
-- Do not call the GitHub API as a substitute for local data.
-- Do not download models, packages, package data, dictionaries, or corpora.
-- Use only files already present in this checkout and standard tools already
-  installed locally.
+  scholarly sources to fill corpus gaps.
+- Do not run `git fetch`, `git pull`, `git clone`, `git submodule update`,
+  or any command that obtains missing research data from a remote.
+- Do not call the GitHub API as a substitute for local source data.
+- Do not download models, packages, dictionaries, or corpora.
+- Use only files already present in the checkout and standard installed tools.
 - If a submodule, Git object, LFS object, or expected source file is absent,
-  stop that line of inquiry and report: **không đủ dữ liệu trong corpus hiện
-  tại**. Never repair the gap by downloading.
+  stop that line of inquiry and report:
+  **không đủ dữ liệu trong corpus hiện tại**.
+
+### GitHub Connector mode — declared read-only research path
+
+A ChatGPT/GitHub Connector session without the local SQLite database may use
+the documented Connector path. This is a narrow research-data exception to the
+local offline rule, not permission to browse the public web.
+
+The agent may read only:
+
+1. the canonical repository
+   `quoctran-2608/BuddhismDocuments-for-AI`;
+2. the remote locator repository declared by
+   `config/remote-corpus.json`;
+3. the original source repositories named by locator pointers, at each
+   pointer's pinned `source_sha` or `source_blob_sha`.
+
+In Connector mode:
+
+- read `.codex/skills/buddhist-corpus-research/SKILL.md` and
+  `config/remote-corpus.json` first;
+- use the production locator rather than GitHub Code Search for routing;
+- treat locator rows as candidate pointers, never as textual evidence;
+- open the pinned upstream source and read the relevant context before making a
+  finding;
+- do not use general Web Search or unrelated internet sources as corpus
+  evidence;
+- if the production locator cannot establish a claim, report:
+  **không đủ dữ liệu trong remote corpus export hiện tại**.
+
+This Connector exception does not authorize changing pinned source repositories
+or silently replacing missing corpus evidence with internet material.
 
 ## Immutable source layer
 
-The 13 submodule directories listed in `.gitmodules` are immutable
-sources-of-origin.
+The 13 source repositories/submodules are immutable sources-of-origin.
 
 - Never edit, normalize, format, regenerate, or commit inside a source
-  submodule.
-- Put parsers, indexes, caches, reports, and all other derived artifacts
-  outside the submodules.
-- Derived artifacts must be reproducible from pinned local source commits.
+  submodule/repository as part of research.
+- Put parsers, indexes, caches, reports, and derived artifacts outside sources.
+- Derived artifacts must be reproducible from pinned source commits.
 - Large generated databases belong under `derived/` and are not
   source-of-truth.
 
-Before research, run:
+In local mode, before research run:
 
 ```bash
 bin/buddhist-corpus status
 ```
 
-Treat a missing source or a SHA mismatch as a provenance failure.
+Treat a missing source or SHA mismatch as a provenance failure.
 
 ## Evidence hierarchy
 
@@ -64,7 +95,7 @@ replace a primary witness.
    source edition.
 5. **Computationally segmented corpora** — BuddhaNexus. Use for candidate
    discovery. Return to CBETA, SuttaCentral, or another appropriate source
-   witness whenever one is locally available.
+   witness whenever one is available.
 6. **Derived critical/lemmatized data** — `third-party/pali-canon`. Use lemma,
    morphology, collation, and variant data as derived analysis. Name its base
    witnesses and do not present a reconstructed or selected reading as an
@@ -86,33 +117,31 @@ Every research finding must be traceable to:
 - pinned source commit SHA;
 - evidence class, text role, and witness/edition when relevant.
 
-`evidence_class` and `text_role` answer different questions:
-
-- `evidence_class` describes source authority/provenance;
-- `text_role` describes what the indexed text is within that source.
+`evidence_class` describes source authority/provenance.
+`text_role` describes what the indexed text is within that source.
 
 Do not quote or synthesize a translator comment or translation note as though
-it were root/scriptural text. Comments and notes can be useful authoritative
-evidence, but their role must remain explicit.
-
-If variants differ, state which witness says what. If provenance is incomplete,
-label the statement as a hypothesis or omit it.
+it were root/scriptural text. If variants differ, state which witness says
+what. If provenance is incomplete, label the statement as a hypothesis or omit
+it.
 
 ## Cross-language and cross-tradition guardrails
 
 - Do not invent Pāli ↔ Sanskrit ↔ Chinese ↔ Tibetan equivalence from model
   memory.
-- A cross-language equation becomes evidence only when a local alignment,
+- Model knowledge may generate cross-language terms to test, but those terms
+  remain search hypotheses until repository evidence supports the relation.
+- A cross-language equation becomes evidence only when an alignment,
   relationship record, dictionary, shared canonical identifier, or other
-  repository record supports it.
-- Model knowledge may generate terms to test, but unconfirmed terms must not
-  appear as findings.
+  repository evidence supports it.
 - Do not harmonize different traditions automatically. Report similarities,
   differences, variants, witness scope, and uncertainty.
 
 ## Required research workflow
 
-Use the local CLI before recursively scanning raw files:
+### Local mode
+
+Use the CLI before recursively scanning raw files:
 
 ```bash
 bin/buddhist-corpus search "query"
@@ -128,9 +157,28 @@ bin/buddhist-corpus provenance --record-id ID
 Read raw files after retrieval when checking context, markup, apparatus, or
 source fidelity.
 
+### Connector mode
+
+Follow the production routing protocol in
+`.codex/skills/buddhist-corpus-research/SKILL.md`:
+
+```text
+question
+→ supported search hypotheses
+→ production locator
+→ ranked source pointers
+→ pinned upstream source
+→ context/provenance
+→ relations/variants when needed
+→ witness-separated synthesis
+```
+
+Do not recursively browse locator shards or substitute GitHub Code Search for
+the declared hash-bucket routing.
+
 For SuttaCentral Chinese parallels, keep three evidence steps separate:
-SuttaCentral parallel relation → local SuttaCentral-to-CBETA identifier bridge
-→ resolved CBETA textual witness. A bridge is metadata, not proof of textual
+SuttaCentral parallel relation → SuttaCentral-to-CBETA identifier bridge →
+resolved CBETA textual witness. A bridge is metadata, not proof of textual
 identity.
 
 ### Term research
@@ -142,13 +190,13 @@ Use this order:
 3. corpus-provided lemma and morphology;
 4. internally attested spelling variants;
 5. context around occurrences;
-6. local aligned or parallel texts.
+6. aligned or parallel texts.
 
 Do not infer unattested variants.
 
 ### Topic/concept research
 
-Never stop at semantic or keyword search. Iterate:
+Never stop at one semantic or keyword hit. Iterate:
 
 `seed evidence → internal terminology → occurrences → context → structure →
 parallels → variants → independent witnesses → synthesis`
@@ -158,8 +206,8 @@ Record which step supplied each claim.
 ### Candidate discovery
 
 BuddhaNexus, OpenPecha, and Translation Memory normally produce candidates,
-not final textual proof. Resolve candidate identifiers back to stronger local
-sources when possible. If that resolution is unavailable, state the limit.
+not final textual proof. Resolve candidate identifiers back to stronger source
+witnesses when possible. If that resolution is unavailable, state the limit.
 
 ## Answer contract
 
@@ -169,8 +217,7 @@ A research answer must:
 2. cite repository evidence with the required provenance fields;
 3. identify variants and independent witnesses rather than flattening them;
 4. describe uncertainty and missing coverage;
-5. end with **không đủ dữ liệu trong corpus hiện tại** for any claim the local
-   repository cannot establish.
+5. fail closed for any claim the available corpus evidence cannot establish.
 
 Internet knowledge and model memory must never become an implicit fourteenth
 source.

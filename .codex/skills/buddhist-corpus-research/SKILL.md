@@ -1,168 +1,281 @@
 ---
 name: buddhist-corpus-research
-description: Offline, provenance-first research across the 13 local Buddhist corpus sources.
+description: Provenance-first Buddhist corpus research in local SQLite mode or GitHub Connector production mode.
 ---
 
 # Buddhist Corpus Research
 
 Read and obey the repository root `AGENTS.md` before using this skill.
 
-## Contract
+## Goal
 
-- Input: a term, passage, topic, work ID, relation, variant, or verification
-  question.
-- Output: findings supported only by local repository evidence, with corpus,
-  relative path, work/segment ID, source SHA, evidence class, text role, and
-  witness.
-- Failure: if local sources/indexes cannot establish the claim, return
-  `không đủ dữ liệu trong corpus hiện tại`.
-- Side effects: retrieval is read-only. `build` creates/replaces derived data
-  under `derived/`; it never edits a submodule.
-- Permissions: read the root and submodules; write only outside submodules;
-  execute local Python/Git/SQLite tools; no network permission.
+Turn a short user request about a Buddhist term, passage, work ID, or topic into
+a repository-evidenced answer without requiring the user to know the corpus
+layout.
 
-## Execution environment
+The core contract is:
+
+```text
+model knowledge → search hypothesis only
+repository evidence → research finding
+```
+
+A locator pointer is never evidence by itself.
+
+## Choose the execution mode automatically
 
 ### Local mode
 
-When the local CLI and SQLite index are available, use the existing workflow in
-this skill. `evidence --record-id ID --context 2` can bundle a record, context,
-provenance, and variants after search.
+Use local mode when the CLI and SQLite index are available.
 
-### GitHub Connector mode
-
-When shell/SQLite access is unavailable but the repositories can be read:
-
-1. read `config/remote-corpus.json` from the main repository;
-2. identify the remote corpus repository, branch, and root path;
-3. open `<root_path>/manifest.json` in that repository;
-4. inspect the exact POC query coverage, source mappings, and pinned source
-   SHAs;
-5. use `<root_path>/locator/manifest.json` to normalize and route the query or
-   identifier to its priority-ordered pointer list;
-6. select ranked source pointers according to the research mode below, then
-   open the original GitHub repository at each pointer's pinned SHA and path;
-7. verify wording, context, provenance, text role, and witness in the source;
-8. inspect source relationships and variants when needed;
-9. apply the existing research skill, including evidence hierarchy, research
-   modes, ranking interpretation, witness separation, and fail-closed behavior.
-
-The generated POC has already selected the best distinct `(work_id, source_path)`
-candidate within each available corpus before applying its per-corpus limit.
-Pointer `source_blob_sha`, when non-null, is the offline Git blob ID for
-`source_sha:source_path`; compare it with the pinned source file when available.
-
-Choose candidates by research mode:
-
-- **Quick or exact lookup:** for a term, passage, work ID, or quick verification
-  of a specific source, start with the highest-priority candidates in scope.
-- **Topic, comparative, or cross-corpus research:** never spend the whole
-  candidate budget on the first 20–50 global entries. Group available pointers
-  by corpus, preserve locator priority within each corpus, and open a useful
-  sample from every relevant corpus. Verify source text, then inspect context,
-  provenance, relations, variants, and independent witnesses before synthesis.
-  The POC may not contain enough pointers for exhaustive research; state that
-  limit rather than treating it as full query coverage.
-- **User-restricted scope:** if the user asks for only a Nikāya, CBETA, T99, one
-  Vinaya, or another explicit scope, select only candidates in that scope. Do
-  not broaden the corpus set without permission.
-
-Pointer priority decides which source files to open first. It does not decide which
-corpus is more important, which text is more correct, whether one witness is
-sufficient, or which source best answers the question. Those judgments still
-follow user scope, research mode, evidence hierarchy, text role, witness
-separation, and provenance. Locator routing is not a byte-for-byte reproduction
-of SQLite FTS candidate generation.
-
-GitHub Code Search is optional only. The connector workflow must not depend on
-GitHub Code Search indexing. Pointer rows identify candidate original source
-files only; they are not evidence and cannot establish a scholarly conclusion.
-
-The pointer POC does not copy `raw_text` or context rows. Use each pointer's
-`repository`, `source_sha`, `source_path`, `work_id`, `segment_id`, and
-`sequence_no` to inspect the original file directly. Connector mode changes
-only the data-access path, not scholarly reasoning. If the export cannot
-establish the claim, return
-`không đủ dữ liệu trong remote corpus export hiện tại`.
-
-The main repository is the canonical research architecture. The remote
-repository is a deterministic derived access artifact, not source-of-truth.
-Local mode remains offline. Connector mode uses only the declared main and
-remote GitHub repositories plus the pinned original source repositories named
-by pointers for repository evidence. Unless the user limits the corpus,
-research uses all data actually present in the current pointer POC. Read
-coverage from the manifest and never claim all 13 sources when the POC contains
-fewer components. Pointers preserve source SHA, evidence class, text role, and
-witness.
-
-`remote/pointer-benchmark/`, when present, is a measurement artifact rather than
-a research-coverage promise or a production locator. Read its
-`benchmark-summary.json` and `benchmark-queries.json` to inspect measured size,
-sampling, and limits. Do not treat its 500 sampled keys as a complete vocabulary
-or use its linear estimates as evidence for a redesign.
-
-`remote/pointer-compact-poc/`, when present, is a serialization-only comparison
-against that exact benchmark. Resolve a locator reference by reading its
-`pointer_id` in the pointer table, then merge its ranking fields. Its equivalence
-claim is limited to the source benchmark rows; do not infer that it changes
-research retrieval, ranking, evidence, or production architecture.
-
-`analyze-pointer-repetition` is read-only measurement over the committed
-benchmark. It must not be mistaken for a request to add source/work tables.
-Use its byte simulations only to report whether metadata repetition clears the
-chosen storage threshold; do not infer a new runtime architecture from them.
-
-`analyze-pointer-key-universe` is also read-only. It reports the finite
-Latin/romanized and identifier universe from existing tables. For CJK, do not
-scan source text or create a persistent vocabulary index merely to count keys.
-
-When a task explicitly authorizes measuring the already-indexed CJK vocabulary,
-use only:
-
-```sql
-CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
-USING fts5vocab(main, records_cjk_fts, 'row');
-```
-
-on a `mode=ro` connection. The TEMP table disappears on close. Treat its output
-as the finite indexed trigram token universe, not a dictionary of Buddhist terms,
-topic coverage, or a new query parser.
-
-For Connector production v1, use `remote/pointer-production-v1/` only for
-supported `terms/latin` and exact `ids` keys. Do not infer that it supports
-arbitrary CJK trigram lookup. Start from the user question, propose hypotheses,
-use an available production pointer, then open the upstream repository at the
-pinned SHA/blob and read source context before answering. A pointer rank is a
-file-opening priority, not scholarly authority.
-
-## Start
+Start with:
 
 ```bash
 bin/buddhist-corpus status
 ```
 
-If the index is absent:
+Then use the CLI workflow documented below.
 
-```bash
-bin/buddhist-corpus build --profile core
+### GitHub Connector mode
+
+Use Connector mode when GitHub repositories are connected but local
+shell/SQLite access is unavailable.
+
+Do **not** ask the user to explain how the two project repositories fit
+together. Discover the runtime from the repository:
+
+1. open `config/remote-corpus.json` in
+   `quoctran-2608/BuddhismDocuments-for-AI`;
+2. use its `repository`, `branch`, `root_path`, and `mode`;
+3. open `<root_path>/manifest.json` and
+   `<root_path>/locator/manifest.json` in the declared remote repository;
+4. use the production locator to find candidate source pointers;
+5. open the original upstream repository named by each pointer at the pinned
+   `source_sha` / `source_blob_sha`;
+6. read the relevant source context before making a finding.
+
+The current production config points to:
+
+```text
+main repo:
+quoctran-2608/BuddhismDocuments-for-AI
+
+remote locator repo:
+quoctran-2608/BuddhismDocuments-for-AI-remote
+
+production root:
+remote/pointer-production-v1
 ```
 
-Use `--profile discovery` to add alignment/segmented candidate sources and
-`--profile all` for all supported local sources. Builds are incremental by
-submodule SHA.
+Always read the config rather than hardcoding these values in case a later
+version changes them.
+
+## Production Connector routing protocol
+
+Production v1 materializes exactly two namespaces:
+
+```text
+terms/latin  → normalized non-CJK lemma keys
+ids          → exact original work_id spelling
+```
+
+It does **not** materialize a general `terms/cjk` namespace. The local CJK
+FTS trigram index is build/retrieval infrastructure, not a production dictionary
+of Buddhist terms.
+
+### 1. Decide whether the lookup is an identifier or a term
+
+Use `ids` for an exact work/text identifier such as a canonical work ID.
+Preserve its original spelling exactly. Do not casefold identifiers; e.g.
+`Dhp` and `dhp` are distinct production keys.
+
+Use `terms/latin` for Pāli, Sanskrit, romanized, and other non-CJK term
+hypotheses that can be expressed as production lemma keys.
+
+For Vietnamese/English/CJK topic questions, the model may propose likely
+Pāli/Sanskrit/romanized terms as **search hypotheses only**. Do not present
+those cross-language equations as findings until repository evidence supports
+them.
+
+### 2. Normalize a term key exactly
+
+For `terms/latin`, apply the production normalization used by
+`corpus_research.model.normalize()`:
+
+```text
+Unicode NFC
+→ Unicode casefold
+→ split on whitespace
+→ join with one ASCII space
+```
+
+Do not strip diacritics for bucket routing.
+
+For `ids`, use the exact original identifier string with no normalization.
+
+### 3. Calculate the bucket
+
+The manifest declares:
+
+```text
+SHA-256 of exact UTF-8 production key
+→ first two lowercase hex characters
+```
+
+Then open:
+
+```text
+<root_path>/locator/terms/latin/<bucket>/part-000001.jsonl
+```
+
+or:
+
+```text
+<root_path>/locator/ids/<bucket>/part-000001.jsonl
+```
+
+Find the JSONL row whose `key` exactly equals the production key.
+
+Do not recursively scan all locator shards. Do not depend on GitHub Code Search;
+generated JSONL may not be indexed there.
+
+Verified production example:
+
+```text
+key: anicca
+SHA-256 bucket prefix: 45
+
+remote/pointer-production-v1/
+  locator/terms/latin/45/part-000001.jsonl
+```
+
+### 4. If a shard is too large for a normal file fetch
+
+Use the Git blob for that shard when the Connector exposes its blob SHA.
+This is normal for production JSONL files and does not change the research
+method.
+
+### 5. Read the locator row
+
+A row contains:
+
+```text
+key
+query_kind
+pointer_count
+pointers[]
+```
+
+Each pointer includes ranking fields plus source provenance such as:
+
+```text
+rank
+score
+match_reasons
+record_id
+corpus
+repository
+source_sha
+source_blob_sha
+source_path
+indexed_source_path
+work_id
+segment_id
+sequence_no
+evidence_class
+text_role
+witness
+```
+
+The production exporter already balances candidates by corpus and collapses
+duplicate `(corpus, work_id, source_path)` groups. Preserve pointer order
+within each corpus when selecting files to open.
+
+### 6. Open source evidence, not just the pointer
+
+For every claim you want to use:
+
+1. open `repository` at the pointer's `source_sha`;
+2. open `source_path`, or fetch `source_blob_sha` when appropriate;
+3. locate `work_id` / `segment_id` / `sequence_no`;
+4. read enough surrounding source context to interpret the passage;
+5. check `evidence_class`, `text_role`, and `witness`;
+6. only then treat the wording as evidence.
+
+If a compressed or binary discovery source cannot be rendered in Connector
+mode, do not claim unseen wording from it. Prefer a stronger readable witness
+when available.
+
+### 7. Topic and comparative research
+
+For a topic, do not stop at one hypothesis or one corpus.
+
+Use this loop:
+
+```text
+user topic
+→ 2–6 plausible supported hypotheses
+→ production locator rows
+→ group pointers by relevant corpus
+→ open strong source witnesses
+→ collect terminology actually attested in source
+→ test additional supported hypotheses when useful
+→ inspect parallels/variants/independent witnesses
+→ synthesize agreements, differences, and limits
+```
+
+Do not spend the entire candidate budget on the first globally ranked corpus.
+
+Where relevant, prefer primary/authoritative witnesses such as SuttaCentral
+Bilara roots, CBETA BM/TEI, and 84000 TEI over discovery-only corpora. Use
+BuddhaNexus, Translation Memory, OpenPecha, and similar corpora mainly to locate
+or relate evidence, then return to a stronger source witness when possible.
+
+### 8. User-restricted scope
+
+If the user asks for only a Nikāya, CBETA, T99, one Vinaya, one language, or
+another explicit scope, respect that scope. Do not broaden it without
+permission.
+
+### 9. Unsupported or missing production key
+
+If a production key is absent:
+
+- try other justified supported hypotheses;
+- use terminology found in already-opened evidence to refine hypotheses;
+- do not scan all shards;
+- do not invent a CJK production namespace;
+- do not silently switch to general internet research.
+
+If the available production locator cannot establish the requested claim,
+state:
+
+**không đủ dữ liệu trong remote corpus export hiện tại**
+
+and explain the coverage limitation briefly.
+
+## Ranking interpretation
+
+Pointer rank decides which source files to open first. It does not decide:
+
+- which tradition is correct;
+- which witness is historically earlier;
+- which source is doctrinally authoritative;
+- whether one witness is enough;
+- whether a cross-language equation is true.
+
+Those judgments follow evidence hierarchy, user scope, source context, text
+role, witness separation, and explicit repository relationships.
+
+GitHub Connector routing is not a byte-for-byte reproduction of SQLite FTS
+candidate generation. It is a deterministic production access path to selected
+source candidates.
 
 ## Research modes
 
-### 1. Term research
+### Term research
 
-1. Search the exact form.
-2. Review `match_reasons`: exact, normalized, diacritic-folded, compact, FTS,
-   and corpus-lemma.
-3. For Pāli, inspect corpus-provided lemma/morphology before proposing variant
-   spellings.
-4. Read context.
-5. Inspect variants.
-6. Only then expand through local parallels/alignment.
+Local mode:
 
 ```bash
 bin/buddhist-corpus search "sutaṃ" --language pli
@@ -170,33 +283,48 @@ bin/buddhist-corpus context --record-id RECORD_ID
 bin/buddhist-corpus variants mn1
 ```
 
-### 2. Passage search
+Connector mode follows the production routing protocol above.
 
-Search a distinctive phrase, rank stronger editions above discovery corpora,
-then read context and provenance.
+In either mode:
+
+1. exact/normalized form;
+2. corpus-provided lemma or attested spelling;
+3. context;
+4. variants;
+5. parallels/alignment only after evidence is anchored.
+
+### Passage research
+
+Local mode:
 
 ```bash
 bin/buddhist-corpus search "如是我聞" --language lzh
 bin/buddhist-corpus provenance --record-id RECORD_ID
 ```
 
-If a BuddhaNexus result identifies a CBETA work/line, query that identifier or
-search the phrase in `cbeta-tei`. Cite CBETA as the textual witness and
-BuddhaNexus only as discovery evidence.
+In Connector mode, there is no arbitrary CJK production locator. Use a supported
+identifier or justified romanized/Indic hypothesis to reach candidate sources.
+If that route cannot establish the passage, state the production coverage
+limit instead of pretending exhaustive Chinese search.
 
-### 3. Concept/topic research
+### Concept/topic research
 
-Do not synthesize from one keyword result. Iterate:
+Never synthesize from one keyword hit. Iterate:
 
-1. seed evidence;
-2. collect terminology found in that evidence;
-3. search each internally attested term;
-4. read context and work structure;
-5. inspect parallels and variants;
-6. seek independent witnesses;
-7. synthesize agreements, differences, and limits.
+```text
+seed evidence
+→ internally attested terminology
+→ occurrences
+→ context/work structure
+→ parallels
+→ variants
+→ independent witnesses
+→ synthesis
+```
 
-### 4. Parallel-text research
+### Parallel-text research
+
+Local mode:
 
 ```bash
 bin/buddhist-corpus parallels an1.1-5
@@ -205,12 +333,12 @@ bin/buddhist-corpus resolve ea9.7
 bin/buddhist-corpus compare ID1 ID2
 ```
 
-SuttaCentral `full`/`partial` edges are relationship evidence, not proof that
-two passages say the same thing. A `suttacentral_cbeta:*` edge is separate
-identifier metadata. Only the resolved `cbeta-bm` or `cbeta-tei` record is the
-local CBETA textual witness.
+Keep SuttaCentral relation evidence, identifier bridges, and resolved CBETA
+textual witnesses separate.
 
-### 5. Variant research
+### Variant research
+
+Local mode:
 
 ```bash
 bin/buddhist-corpus variants T01n0001
@@ -218,48 +346,61 @@ bin/buddhist-corpus variants mn1
 ```
 
 Keep lemma, reading, witness sigla, confidence, and source path distinct.
-Derived critical selections are editorial outputs; list base witnesses.
 
-### 6. Cross-tradition comparison
+### Cross-tradition comparison
 
-Use `compare` to keep witnesses separate. Establish cross-language equivalence
-only through local relation/alignment evidence. Never harmonize differences.
+Keep witnesses separate. Establish cross-language equivalence only from
+repository alignment/relationship evidence; model-generated equivalents remain
+hypotheses until confirmed.
 
-### 7. Source verification
+## Local CLI quick reference
+
+If the index is absent:
 
 ```bash
-bin/buddhist-corpus provenance --record-id RECORD_ID
-bin/buddhist-corpus status
+bin/buddhist-corpus build --profile core
 ```
 
-Open the returned `source_path` directly when markup, folio, apparatus, or
-larger context matters. Confirm that `source_sha` matches the pinned local
-submodule SHA.
+Use `--profile discovery` for alignment/segmented sources and `--profile all`
+for all supported sources.
 
-## Ranking interpretation
+Useful commands:
 
-Ranking combines:
+```bash
+bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
+bin/buddhist-corpus evidence --record-id RECORD_ID --context 2
+bin/buddhist-corpus context --record-id RECORD_ID --window 3
+bin/buddhist-corpus work WORK_ID
+bin/buddhist-corpus parallels WORK_OR_SEGMENT_ID
+bin/buddhist-corpus resolve CBETA_WORK_OR_TAISHO_RANGE
+bin/buddhist-corpus variants WORK_OR_SEGMENT_ID
+bin/buddhist-corpus compare ID1 ID2
+bin/buddhist-corpus provenance --record-id RECORD_ID
+```
 
-- exactness and normalization;
-- corpus-provided lemma matches;
-- evidence class;
-- stable segment identifiers and provenance.
+## Historical/measurement artifacts
 
-It deliberately gives canonical/root and authoritative structured editions
-more weight than alignment, computational segmentation, derived analysis, or
-auxiliary data. Ranking is a retrieval aid, not a verdict.
+These are not the normal Connector runtime:
 
-`evidence_class` records source authority; `text_role` records whether a result
-is root text, main translation, heading, translator comment, translation note,
-alignment text, or another explicit role. Do not quote or synthesize
-`translator_comment` or `translation_note` records as though they were
-root/scriptural text. They remain useful evidence when labeled by role.
+- `remote/pointer-poc/` — historical proof of concept;
+- `remote/pointer-benchmark/` — 500-key scale measurement;
+- `remote/pointer-compact-poc/` — serialization experiment.
 
-## Answer template
+Do not route ordinary research through them when
+`config/remote-corpus.json` declares `pointer_production_v1`.
 
-1. **Finding** — concise claim.
-2. **Evidence by witness** — do not merge witnesses.
-3. **Parallels/variants** — relationship type and differences.
-4. **Confidence and limits**.
-5. **Provenance** for every cited item:
-   `corpus | source_path | work_id | segment_id | source_sha | evidence_class | text_role | witness`.
+## Answer contract
+
+Answer in the user's requested language and clearly separate:
+
+1. **Finding** — what the source evidence supports.
+2. **Evidence by witness/corpus** — do not merge independent witnesses.
+3. **Parallels/variants** — relationship type and meaningful differences.
+4. **Interpretation** — your synthesis, clearly distinguished from quotation.
+5. **Confidence and limits**.
+6. **Provenance** for every cited item:
+   `corpus | repository | source_path | work_id | segment_id | source_sha | evidence_class | text_role | witness`.
+
+Do not present pointer metadata as a quotation. Quote only text actually opened
+in the original source. If the source evidence cannot establish a claim, fail
+closed rather than completing it from model memory.

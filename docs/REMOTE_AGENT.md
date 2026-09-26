@@ -1,259 +1,299 @@
 # GitHub Connector Research Access
 
-The pointer export gives GitHub-only agents a read/fetch path into the same
-evidence model used by the local SQLite CLI. It does not add a second parser,
-index, ranking method, or research methodology.
+This document is the production runtime guide for a ChatGPT/GitHub Connector
+agent. Ordinary Connector research should use the production locator declared
+by the main repository, not the historical POC or benchmark artifacts.
 
-The main repository contains the code and canonical research architecture.
-`config/remote-corpus.json` points to the separate repository that contains the
-deterministic generated connector-readable pointer POC. `config/corpus-sources.json`
-maps each corpus to the GitHub source repository that a pointer opens.
+## 1. Repository roles
 
-## Generate the pointer POC
+### Main repository
 
-```bash
-bin/buddhist-corpus export-remote-pointers \
-  --query anicca \
-  --query dukkha \
-  --query jhāna \
-  --query nibbāna \
-  --query Mahākassapa \
-  --query 無常 \
-  --query 如是我聞 \
-  --query 苦 \
-  --query 空 \
-  --identifier T02n0099 \
-  --identifier T01n0001 \
-  --output remote/pointer-poc
+`quoctran-2608/BuddhismDocuments-for-AI`
+
+Contains:
+
+- research rules and skill;
+- canonical architecture;
+- source mappings;
+- production locator configuration;
+- local build/retrieval/export code.
+
+The main repository is the architecture source-of-truth.
+
+### Remote locator repository
+
+Read `config/remote-corpus.json` in the main repository to discover it.
+
+The current production config declares:
+
+```text
+repository: quoctran-2608/BuddhismDocuments-for-AI-remote
+branch: main
+root_path: remote/pointer-production-v1
+mode: pointer_production_v1
 ```
 
-The command reads only `derived/corpus.sqlite3` and does not use the network or
-commit files. It writes ranked pointers, not copied record text. Each pointer
-contains the source repository, pinned source SHA, repository-relative path,
-`source_blob_sha` when the pinned local Git object is available, work/segment
-identifiers, evidence class, text role, witness, sequence number, and the
-score/reasons used to choose its position. `source_blob_sha` is computed offline
-with `git rev-parse <source_sha>:<source_path>` and is `null` only when the local
-Git object cannot be read. Output ordering and JSON encoding are deterministic
-for the same database, source SHAs, code, and options.
+The remote repository is a deterministic derived access artifact. It is not a
+textual source-of-truth.
 
-For each term query, the exporter calls existing local `search()` separately for
-each mapped corpus, so the candidate score and match reasons remain the existing
-ranking. It then keeps only the best-ranked record for each
-`(corpus, work_id, source_path)` group and retains up to `--limit` distinct
-work/source pointers per corpus. Identifier queries use existing exact
-`score_record_match()` scoring before the same grouping. The final list is sorted
-with the existing stable `record_rank_key`; this selection step does not create a
-second ranking system.
+### Upstream source repositories
 
-## Local mode and connector mode
+Every locator pointer names the original source repository and a pinned
+`source_sha`, `source_path`, and normally `source_blob_sha`.
 
-Local agents should use `search`, `evidence`, `context`, `provenance`,
-`parallels`, `resolve`, and `variants`.
+Research evidence comes from these pinned upstream files after they are opened
+and read.
 
-GitHub Connector agents should:
+## 2. Normal production workflow
 
-1. read `config/remote-corpus.json` from the main repository;
-2. identify the remote repository, branch, and root path;
-3. open `<root_path>/manifest.json` in the remote repository;
-4. check that the artifact is `pointer-locator-jsonl`, that
-   `raw_text_exported` is false, and inspect source repository mappings and
-   pinned source SHAs;
-5. read `<root_path>/locator/manifest.json`, normalize the query or identifier,
-   and calculate the declared bucket;
-6. fetch the bucket part file(s), then read its ranked pointer list;
-7. select pointers according to the research mode below;
-8. open `repository` at `source_sha`, then open `source_path` directly in the
-   original GitHub repository;
-9. use `work_id`, `segment_id`, and `sequence_no` to locate the passage, then
-   verify wording, context, provenance, text role, and witness in the source;
-10. inspect source relationships or variants when the research question needs
-    them;
-11. apply the existing evidence hierarchy and keep witnesses separate.
+A Connector agent should execute this automatically when the user asks a
+Buddhist research question:
 
-The pointer locator maps normalized terms, CJK bigrams, and identifiers to
-ranked source pointers. For a passage, look up a few distinctive terms or CJK
-bigrams, open the indicated pinned source files, and verify the full phrase in
-the original source. A pointer includes the repository, pinned source SHA,
-repository-relative source path, optional `source_blob_sha`, work ID, segment
-ID, sequence number, evidence class, text role, and witness. When present,
-compare `source_blob_sha` with the blob ID of the opened pinned GitHub file.
-Pointer rows are not evidence. GitHub Code Search is optional only; the connector
-workflow does not depend on its indexing.
+```text
+user question
+→ read main skill/config
+→ generate supported hypotheses
+→ route each key to a production locator shard
+→ read ranked pointers
+→ select relevant corpora/witnesses
+→ open pinned upstream source files
+→ read context/provenance
+→ inspect relations/variants when needed
+→ synthesize
+```
 
-Pointer priority reuses the local searcher's shared deterministic final scoring
-semantics: evidence weight, exact/normalized/diacritic-folded/compact matching,
-corpus-lemma evidence, segment quality, and stable tie-breaking. The POC uses
-the existing `search()` results for term queries and `score_record_match()` for
-exact identifier pointers. It is not a byte-for-byte reproduction of SQLite
-FTS/BM25 candidate generation.
+Do not ask the user to tell you which of the two project repositories to use.
 
-The generated POC already has corpus-balanced file/work candidates: no single
-corpus can consume the list merely by contributing many segments from one
-work/file. Select the exported candidates according to the question:
+## 3. Production namespaces
 
-- For a quick term, passage, work-ID, or source-specific lookup, start with the
-  highest-priority candidates within the requested scope.
-- For topic, comparative, or cross-corpus research, do not take only the first
-  20–50 global candidates. Group the full list by corpus, preserve priority
-  within each corpus, and take a useful sample from every relevant corpus,
-  commonly about 5–10 shards per corpus. Then verify records and inspect
-  context, provenance, relations, variants, and independent witnesses before
-  synthesis. The number is guidance, not a fixed quota.
-- If the user restricts the question to a Nikāya, CBETA, T99, one Vinaya, or
-  another explicit corpus scope, use only candidates in that scope and do not
-  expand it without permission.
+Production v1 materializes:
 
-This corpus-balanced selection prevents one large or highly ranked corpus from
-consuming the entire candidate budget. Pointer priority decides which source
-files to open first; it does not decide which corpus matters more, which text is correct,
-whether a witness is sufficient, or which source best answers the question.
-Those decisions remain governed by user scope, research mode, evidence
-hierarchy, text role, witness separation, and provenance.
+```text
+terms/latin  → 26,547 normalized non-CJK lemma keys
+ids          → 32,498 exact original work_id keys
+```
 
-## Coverage and limits
+Total:
 
-This is a small proof of concept for the explicitly generated query keys; it is
-not a complete export of every indexed record. It exports no copied `raw_text`,
-record shard, relation shard, variant shard, or second search engine. The
-manifest reports the exact query keys, pointer counts, source mappings, and
-pinned source contracts. It must not be read as claiming complete query
-coverage or all indexed corpora.
+```text
+59,045 production keys
+```
 
-The main repository is the canonical research architecture. The remote
-repository is a deterministic derived access artifact, not source-of-truth.
-Local mode remains offline, while connector mode uses the declared main and
-remote repositories plus the pinned original source repositories named by
-pointers. Unless the user limits the corpus, use all data actually present in
-the current export. Read coverage from the manifest and never claim all 13
-sources when fewer components are present. Exported pointers preserve source
-SHA, evidence class, text role, and witness.
+It intentionally does **not** materialize `terms/cjk`.
 
-If the locator or export is missing or cannot establish a claim, report:
+The measured local CJK FTS contains tens of millions of low-level trigrams;
+those tokens are search-index infrastructure, not a Buddhist terminology
+dictionary. Do not construct or assume a remote CJK trigram namespace.
+
+## 4. Key normalization and bucket routing
+
+### Term key
+
+Production term normalization is:
+
+```text
+Unicode NFC
+→ casefold
+→ collapse all whitespace runs to one ASCII space
+```
+
+Do not remove diacritics for bucket routing.
+
+### Identifier key
+
+Use the exact original identifier spelling. Do not normalize or casefold it.
+
+### Bucket
+
+For either namespace:
+
+```text
+SHA-256(exact UTF-8 production key)
+→ first 2 lowercase hexadecimal characters
+```
+
+Paths:
+
+```text
+<root_path>/locator/terms/latin/<bucket>/part-000001.jsonl
+<root_path>/locator/ids/<bucket>/part-000001.jsonl
+```
+
+Read the JSONL row whose `key` exactly equals the requested production key.
+
+Verified example:
+
+```text
+anicca
+→ bucket 45
+→ remote/pointer-production-v1/locator/terms/latin/45/part-000001.jsonl
+```
+
+Do **not** recursively inspect all 256 buckets.
+Do **not** depend on GitHub Code Search; generated locator JSONL may not be
+indexed there.
+
+If a shard is too large for the normal file-content endpoint, fetch/read the
+shard by its Git blob SHA.
+
+## 5. Locator row and pointer semantics
+
+Each locator row contains a key and an ordered `pointers` list.
+
+Pointers preserve:
+
+```text
+rank
+score
+match_reasons
+record_id
+corpus
+repository
+source_sha
+source_blob_sha
+source_path
+indexed_source_path
+work_id
+segment_id
+sequence_no
+evidence_class
+text_role
+witness
+```
+
+Production selection reuses the existing local ranking, searches each corpus,
+collapses duplicate `(corpus, work_id, source_path)` candidates, keeps a
+bounded per-corpus set, then applies the existing stable final order.
+
+This is candidate selection only.
+
+A pointer does **not** prove that its source says anything. Open the source.
+
+## 6. Source verification
+
+For each pointer used in the answer:
+
+1. open the named `repository` at `source_sha`;
+2. open `source_path` or use `source_blob_sha` if needed;
+3. locate `work_id`, `segment_id`, or the indicated sequence/line;
+4. read enough surrounding material for context;
+5. preserve `evidence_class`, `text_role`, and `witness`;
+6. quote or paraphrase only what was actually read.
+
+When a discovery pointer is computational/alignment data, use it to find a
+stronger witness when one is available.
+
+If a compressed/binary source cannot be rendered, do not claim its unseen
+wording.
+
+## 7. Research from a short natural-language prompt
+
+The user does not need to supply Pāli/Sanskrit search keys.
+
+For a Vietnamese/English/topic request:
+
+1. infer a small set of plausible Pāli/Sanskrit/romanized hypotheses;
+2. normalize each term and try production routing;
+3. keep hypotheses distinct from findings;
+4. after opening real sources, use terminology actually attested there to
+   refine the search;
+5. for comparative research, sample relevant corpora separately rather than
+   taking only the globally highest pointers.
+
+Where relevant, prioritize canonical/authoritative readable witnesses such as
+SuttaCentral Bilara roots, CBETA BM/TEI, and 84000 TEI. Discovery corpora do not
+silently replace them.
+
+For an explicit work ID, route directly through `ids`.
+
+## 8. CJK and Chinese-source research
+
+Connector production v1 has no arbitrary Chinese-term namespace.
+
+This does **not** mean CBETA is absent. A supported Latin/Indic hypothesis can
+route to CBETA pointers, and an exact CBETA/work identifier can route through
+`ids`.
+
+However, do not claim exhaustive Chinese substring search in Connector mode.
+If a question requires a Chinese-only term that cannot be reached through a
+supported key or identifier, state the coverage limit.
+
+Do not use historical benchmark CJK trigrams as production keys.
+
+## 9. Research modes
+
+### Quick term / exact ID
+
+Start with the highest-priority candidates in the requested scope, open the
+strong source files, and verify context.
+
+### Topic / comparative / cross-corpus
+
+Group pointers by relevant corpus and preserve priority within each corpus.
+Open a useful sample of independent/strong witnesses before synthesis.
+
+Do not allow one large corpus to consume the entire evidence budget.
+
+### User-restricted scope
+
+If the user asks for CBETA only, one Nikāya, T99, one Vinaya, one language, or
+another explicit scope, stay inside it unless permission to broaden is given.
+
+## 10. Evidence hierarchy and scholarly guardrails
+
+Pointer rank is a file-opening priority, not scholarly authority.
+
+Prefer, where applicable:
+
+1. canonical/root textual witnesses;
+2. authoritative structured editions;
+3. metadata/relationship evidence;
+4. parallel/alignment data;
+5. computational segmentation;
+6. derived critical/lemma data;
+7. auxiliary/reference data.
+
+Keep source witnesses separate. Do not treat translator comments/notes as
+scriptural root text. Do not infer cross-language identity from model memory.
+
+## 11. Failure behavior
+
+If a key is absent, try other justified supported hypotheses or exact IDs.
+
+Do not:
+
+- scan every locator shard;
+- invent a CJK production namespace;
+- silently fall back to internet sources;
+- turn locator metadata into textual evidence.
+
+If the current remote export cannot establish the requested claim, say:
 
 **không đủ dữ liệu trong remote corpus export hiện tại**
 
-## Pointer benchmark artifact
+and briefly name the missing coverage.
 
-`remote/pointer-benchmark/` is a separate measurement artifact, not a production
-locator and not a replacement for `remote/pointer-poc/`. It lets a GitHub
-Connector inspect how the current pointer pipeline behaves on 500 real local
-index keys without changing the ranking or evidence model.
+## 12. Historical and measurement artifacts
 
-Read:
+The following may remain in the remote repository but are not the normal
+runtime when config says `pointer_production_v1`:
 
-1. `manifest.json` for the unchanged ranking/selection contract and source state;
-2. `benchmark-queries.json` for the exact deterministic query sample and its
-   local sampling source;
-3. `benchmark-summary.json` for size, pointer, corpus, duplicate, raw-text, and
-   blob-SHA measurements;
-4. the locator bucket files only when checking individual pointers.
+- `remote/pointer-poc/` — historical pointer proof of concept;
+- `remote/pointer-benchmark/` — deterministic 500-key scale benchmark;
+- `remote/pointer-compact-poc/` — serialization experiment.
 
-The benchmark samples 200 Latin/romanized keys from `lemmas.lemma`, 200 CJK
-trigrams from a stable 5,000-row `lzh`/`zh` `records.raw_text` sample, and 100
-identifiers from stable per-corpus `records.work_id` row samples. These are
-sampling inputs only: the output still contains source pointers and no copied
-`raw_text`.
+Use them only when explicitly auditing development history or measurements.
 
-## Compact pointer serialization POC
+## 13. Local generation reference
 
-`remote/pointer-compact-poc/` is a separate serialization measurement built from
-the exact 500-query benchmark; it does not rerun retrieval or change the sampled
-keys. Read `manifest.json` and `compact-summary.json` first.
+Production v1 is generated locally with:
 
-- `pointers/part-000001.jsonl` stores full source/segment metadata once under a
-  stable `pointer_id`.
-- `locator/` rows store each query's `pointer_refs` in the existing ranking
-  order. A reference retains `pointer_id`, `rank`, `score`, and
-  `match_reasons`.
-- To reconstruct a result, resolve every `pointer_id` from the pointer table,
-  merge it with the ranking fields, and preserve reference order.
-
-The compact POC verifies equivalence with the benchmark: query count, candidate
-count/order, score, match reasons, source metadata, and `source_blob_sha` are
-unchanged. It contains no `raw_text`. Its measured size is evidence about this
-specific full-segment metadata format only, not a decision to add a new runtime
-layer.
-
-## Read-only pointer repetition analysis
-
-The CLI command `analyze-pointer-repetition --benchmark remote/pointer-benchmark`
-does not create an artifact. It reads the existing 500-query benchmark and
-reports repetition for source-file, indexed-source, work, source-plus-work, and
-full segment metadata identities. Its hypothetical source/work table sizes are
-in-memory JSONL measurements only; they do not change Connector behavior or add
-a runtime table.
-
-For the committed 500-query benchmark, source/file-only simulation reduces the
-full benchmark by 6.9178%, which is below the 10% decision threshold. Therefore:
-
-> Không đáng để thêm một layer source table chỉ để tiết kiệm dung lượng.
-
-This statement is about storage reduction only. It does not alter retrieval,
-ranking, evidence, or the existing artifacts.
-
-## Read-only production key-universe estimate
-
-`analyze-pointer-key-universe --benchmark remote/pointer-benchmark` is a
-read-only planning measurement. It counts the known production namespaces from
-the current index and extrapolates only from the verified 500-query benchmark;
-it does not generate a production locator.
-
-- `terms/latin`: uses non-CJK `lemmas.lemma`, counted both as original and
-  normalized keys.
-- `ids`: uses `records.work_id`, preserving the original spelling for exact
-  identifier lookup while also reporting normalized collisions.
-- `terms/cjk`: the current runtime is a contentless FTS5 trigram index. It
-  supports compact CJK substring queries of at least three characters, but has
-  no enumerable vocabulary table. A finite CJK production key count is therefore
-  unavailable without a text scan or a new FTS vocabulary/index, neither of
-  which this measurement performs.
-
-Consequently, the command reports a known Latin-plus-identifier estimate and a
-CJK per-key formula, not a false complete production total. Treat the generation
-time as a rough linear extrapolation from the prior 500-query run only.
-
-## Read-only CJK FTS vocabulary measurement
-
-`analyze-cjk-fts-vocabulary --benchmark remote/pointer-benchmark` measures the
-finite token universe already stored by `records_cjk_fts`. It creates only:
-
-```sql
-CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
-USING fts5vocab(main, records_cjk_fts, 'row');
+```bash
+bin/buddhist-corpus export-pointer-production-v1 \
+  --output remote/pointer-production-v1 \
+  --limit 20 \
+  --workers 4
 ```
 
-The table is in SQLite's `temp` schema and disappears when the read-only
-connection closes; it is not stored in `corpus.sqlite3`. The analysis reports
-CJK-containing indexed trigram tokens, their document frequencies, and a
-deterministic lexical sample. It does not scan `records.raw_text`, rebuild the
-FTS index, alter ranking, or create a production locator.
-
-The resulting token universe is a finite runtime-token count, **not** a list of
-all Buddhist CJK concepts or a query parser. A longer CJK phrase may involve
-more than one trigram; no decomposition/intersection behavior is added here.
-
-## Production locator v1
-
-`remote/pointer-production-v1/` is the production GitHub Connector runtime
-artifact. It replaces neither the benchmark nor either POC. Its manifest states:
-
-```text
-artifact_kind: pointer_production_v1
-proof_of_concept: false
-raw_text_exported: false
-```
-
-It materializes only two finite, meaningful namespaces:
-
-```text
-terms/latin  → normalized non-CJK lemma keys
-ids          → exact original work_id spelling
-```
-
-It deliberately does **not** contain `locator/terms/cjk/`. The 45.7 million
-CJK FTS trigram tokens remain local build/retrieval infrastructure; they are not
-a Buddhist-term/topic vocabulary. For each supported key, use the locator,
-open the upstream source file at its pinned SHA/blob, read context, and then
-make a research finding from repository evidence. Model knowledge may propose
-search hypotheses; pointer rank is not scholarly authority.
+The exporter writes ranked pointers, not copied `raw_text`, and validates the
+approved finite production key universe before final publish.
