@@ -4,7 +4,7 @@
 > GitHub repository chính: `quoctran-2608/BuddhismDocuments-for-AI`<br>
 > GitHub repository artefact Connector: `quoctran-2608/BuddhismDocuments-for-AI-remote`<br>
 > Thư mục checkout đang làm việc: `Buddhism-forAI-Documents/raw`<br>
-> Commit mã CJK FTS vocabulary measurement: *sẽ cập nhật sau khi commit*<br>
+> Commit mã CJK FTS vocabulary measurement: `9a82b67b449399e501d53609635ab82b48cc5a91`<br>
 > Nhánh đang mở: `feat/github-connector-research-access`<br>
 > Trạng thái với `main`: nhánh đang mở, `main` và `origin/main` cùng trỏ tới commit trên.
 
