@@ -232,3 +232,28 @@ FTS index, alter ranking, or create a production locator.
 The resulting token universe is a finite runtime-token count, **not** a list of
 all Buddhist CJK concepts or a query parser. A longer CJK phrase may involve
 more than one trigram; no decomposition/intersection behavior is added here.
+
+## Production locator v1
+
+`remote/pointer-production-v1/` is the production GitHub Connector runtime
+artifact. It replaces neither the benchmark nor either POC. Its manifest states:
+
+```text
+artifact_kind: pointer_production_v1
+proof_of_concept: false
+raw_text_exported: false
+```
+
+It materializes only two finite, meaningful namespaces:
+
+```text
+terms/latin  → normalized non-CJK lemma keys
+ids          → exact original work_id spelling
+```
+
+It deliberately does **not** contain `locator/terms/cjk/`. The 45.7 million
+CJK FTS trigram tokens remain local build/retrieval infrastructure; they are not
+a Buddhist-term/topic vocabulary. For each supported key, use the locator,
+open the upstream source file at its pinned SHA/blob, read context, and then
+make a research finding from repository evidence. Model knowledge may propose
+search hypotheses; pointer rank is not scholarly authority.

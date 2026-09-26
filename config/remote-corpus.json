@@ -1,6 +1,6 @@
 {
   "repository": "quoctran-2608/BuddhismDocuments-for-AI-remote",
   "branch": "main",
-  "root_path": "remote/pointer-poc",
-  "mode": "pointer_poc"
+  "root_path": "remote/pointer-production-v1",
+  "mode": "pointer_production_v1"
 }

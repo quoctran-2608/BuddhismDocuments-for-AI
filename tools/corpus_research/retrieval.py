@@ -273,10 +273,12 @@ def search(
     corpus: str | None = None,
     context_window: int = 0,
     with_provenance: bool = False,
+    connection: sqlite3.Connection | None = None,
 ) -> dict:
     if context_window < 0:
         raise ValueError("context window must be non-negative")
-    con = connect_readonly(db_path)
+    con = connection or connect_readonly(db_path)
+    owns_connection = connection is None
     norm = normalize(query)
     folded = fold_diacritics(query)
     comp = compact(query)
@@ -374,7 +376,8 @@ def search(
                 item["context_after"] = after
             if with_provenance:
                 item["provenance"] = _provenance(item)
-    con.close()
+    if owns_connection:
+        con.close()
     return {
         "query": query,
         "results": results,

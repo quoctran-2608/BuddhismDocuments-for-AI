@@ -83,6 +83,13 @@ bin/buddhist-corpus analyze-pointer-key-universe \
 # It never persists a vocabulary table, scans raw text, or creates a locator.
 bin/buddhist-corpus analyze-cjk-fts-vocabulary \
   --benchmark remote/pointer-benchmark
+
+# Generate or resume the production v1 raw-text-free runtime locator.
+# Only terms/latin and exact original ids are materialized; no CJK trigram export.
+bin/buddhist-corpus export-pointer-production-v1 \
+  --output remote/pointer-production-v1 \
+  --limit 20 \
+  --workers 4
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -145,6 +152,24 @@ top tokens, and deterministic lexical sample directly from FTS5. It does not
 read `records.raw_text`, rebuild FTS, or create an artifact. “CJK token” means
 an indexed trigram containing at least one character in the runtime CJK ranges;
 such a trigram can also contain non-CJK characters.
+
+`export-pointer-production-v1` is the production runtime export. It first
+validates the approved finite universe: 26,547 normalized non-CJK
+`lemmas.lemma` keys and 32,498 **original-spelling** `records.work_id` keys.
+It fails before writing output if either count differs. It keeps `Dhp` and `dhp`
+as separate exact identifier keys. The command uses the existing term search,
+identifier scoring, corpus balancing, collapse, final rank order, pointer
+format, and per-corpus limit. It intentionally does not materialize
+`terms/cjk`, whose FTS trigrams are local retrieval infrastructure rather than a
+Buddhist-term vocabulary.
+
+Generation writes durable JSONL rows to
+`remote/.pointer-production-v1.production-v1.staging/`; the final production
+path is atomically replaced only after every key is complete and
+`manifest.json`/`production-summary.json` are valid. A subsequent command
+resumes the marked stage. `--workers` runs independent existing retrieval calls
+in separate read-only processes, while the parent writes deterministic locator
+rows in production-key order.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

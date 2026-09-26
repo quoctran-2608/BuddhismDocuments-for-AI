@@ -128,6 +128,13 @@ on a `mode=ro` connection. The TEMP table disappears on close. Treat its output
 as the finite indexed trigram token universe, not a dictionary of Buddhist terms,
 topic coverage, or a new query parser.
 
+For Connector production v1, use `remote/pointer-production-v1/` only for
+supported `terms/latin` and exact `ids` keys. Do not infer that it supports
+arbitrary CJK trigram lookup. Start from the user question, propose hypotheses,
+use an available production pointer, then open the upstream repository at the
+pinned SHA/blob and read source context before answering. A pointer rank is a
+file-opening priority, not scholarly authority.
+
 ## Start
 
 ```bash

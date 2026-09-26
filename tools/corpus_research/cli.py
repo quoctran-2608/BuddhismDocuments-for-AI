@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from .pointer_compact import export_pointer_compact_poc
 from .pointer_repetition import analyze_pointer_repetition
 from .pointer_universe import analyze_pointer_key_universe
 from .pointer_cjk_vocab import analyze_cjk_fts_vocabulary
+from .pointer_production import export_pointer_production_v1
 from .retrieval import (
     compare,
     context,
@@ -195,6 +197,27 @@ def parser() -> argparse.ArgumentParser:
         type=Path,
         default=root_dir() / "remote/pointer-benchmark",
     )
+    production = sub.add_parser(
+        "export-pointer-production-v1",
+        help="generate or resume production pointer locator v1",
+    )
+    production.add_argument(
+        "--output",
+        type=Path,
+        default=root_dir() / "remote/pointer-production-v1",
+    )
+    production.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="maximum distinct work/source pointers retained per corpus",
+    )
+    production.add_argument(
+        "--workers",
+        type=int,
+        default=min(8, os.cpu_count() or 1),
+        help="independent retrieval workers; output order remains deterministic",
+    )
     return p
 
 
@@ -356,6 +379,21 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "analyze-cjk-fts-vocabulary":
         try:
             emit(analyze_cjk_fts_vocabulary(args.db, args.benchmark))
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "export-pointer-production-v1":
+        try:
+            emit(
+                export_pointer_production_v1(
+                    args.db,
+                    args.output,
+                    root / "config/corpus-sources.json",
+                    root,
+                    limit=args.limit,
+                    workers=args.workers,
+                )
+            )
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

@@ -4,5 +4,7 @@ remote/corpus/
 remote/pointer-poc/
 remote/pointer-benchmark/
 remote/pointer-compact-poc/
+remote/pointer-production-v1/
+remote/.pointer-production-v1.production-v1.staging/
 __pycache__/
 *.py[cod]

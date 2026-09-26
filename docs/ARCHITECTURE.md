@@ -283,6 +283,28 @@ vocabulary. It is neither term segmentation nor a claim about all searchable
 Buddhist concepts. A longer CJK phrase can involve more than one trigram; this
 measurement does not add query decomposition or intersection behavior.
 
+### Production pointer locator v1
+
+The approved production v1 materializes only `terms/latin` and `ids`:
+
+```text
+lemmas.lemma (normalized non-CJK) → terms/latin
+records.work_id (exact original)  → ids
+```
+
+It rejects a run when the verified universe differs from 26,547 Latin keys or
+32,498 original identifiers. Original identifiers remain distinct even when
+normalization collides, such as `Dhp` and `dhp`. The exporter invokes the same
+existing search, exact-identifier scoring, corpus balancing, collapse, ranking,
+pointer conversion, and blob-SHA lookup as the POC/benchmark pipeline.
+
+Rows are written under a marked staging directory with checkpoints. Only after
+all keys, manifest, and summary are complete does an atomic directory replace
+publish `remote/pointer-production-v1/`. Independent retrieval may run in
+multiple read-only worker processes, but the sole writer emits rows in fixed key
+order. No production CJK-trigram locator, compact serialization, source/work
+table, or retrieval semantic change is introduced.
+
 ## 5. Answer / Provenance Layer
 
 Every returned record contains enough fields to cite:

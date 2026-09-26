@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import shutil
+import sqlite3
 import subprocess
 from collections import defaultdict
 from pathlib import Path
@@ -123,6 +124,63 @@ def _source_blob_sha(
     return cache[key]
 
 
+def _populate_source_blob_cache(
+    rows: Iterable[dict],
+    sources: dict[str, dict[str, str]],
+    root: Path | None,
+    cache: dict[tuple[str, str, str], str | None],
+) -> None:
+    """Resolve uncached source blobs in Git batches without changing pointers."""
+    if root is None:
+        return
+    grouped: dict[tuple[str, str], list[tuple[tuple[str, str, str], str]]] = (
+        defaultdict(list)
+    )
+    for row in rows:
+        source = sources.get(row["corpus"])
+        if source is None:
+            raise ValueError(f"missing GitHub source mapping for {row['corpus']}")
+        source_path = _github_source_path(str(row["source_path"]), source["repo_path"])
+        source_sha = str(row["source_sha"])
+        key = (source["repo_path"], source_sha, source_path)
+        if key not in cache:
+            grouped[(source["repo_path"], source_sha)].append((key, source_path))
+    for (repo_path, source_sha), unresolved in grouped.items():
+        repo = root / repo_path
+        if not (repo / ".git").exists():
+            for key, _ in unresolved:
+                cache[key] = None
+            continue
+        # cat-file resolves all <commit>:<path> expressions in one Git process.
+        # It returns only object names, so a failed path is unambiguously null.
+        expressions = "".join(f"{source_sha}:{path}\n" for _, path in unresolved)
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repo),
+                "cat-file",
+                "--batch-check=%(objectname)",
+            ],
+            input=expressions,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        lines = result.stdout.splitlines()
+        for (key, _), value in zip(unresolved, lines, strict=False):
+            cache[key] = (
+                value
+                if result.returncode == 0
+                and len(value) == 40
+                and all(char in "0123456789abcdef" for char in value)
+                else None
+            )
+        # A truncated/failed batch must never leave a missing cache entry.
+        for key, _ in unresolved[len(lines) :]:
+            cache[key] = None
+
+
 def _pointer(
     row: dict,
     source: dict[str, str],
@@ -160,8 +218,12 @@ def _pointer(
     return pointer
 
 
-def _identifier_rows(db_path: Path, identifier: str) -> list[dict]:
-    con = connect_readonly(db_path)
+def _identifier_rows(
+    db_path: Path,
+    identifier: str,
+    connection: sqlite3.Connection | None = None,
+) -> list[dict]:
+    con = connection or connect_readonly(db_path)
     try:
         rows = [
             dict(row)
@@ -173,7 +235,10 @@ def _identifier_rows(db_path: Path, identifier: str) -> list[dict]:
             )
         ]
     finally:
-        con.close()
+        if connection is not None:
+            pass
+        else:
+            con.close()
     ranked = []
     for row in rows:
         score, reasons = score_record_match(
@@ -216,11 +281,17 @@ def _term_rows(
     query: str,
     sources: dict[str, dict[str, str]],
     per_corpus_limit: int,
+    connection: sqlite3.Connection | None = None,
 ) -> list[dict]:
     candidate_limit = per_corpus_limit * POINTER_CANDIDATE_MULTIPLIER
     rows = []
     for corpus in sorted(sources):
-        rows.extend(search(db_path, query, limit=candidate_limit, corpus=corpus)["results"])
+        kwargs = {"connection": connection} if connection is not None else {}
+        rows.extend(
+            search(db_path, query, limit=candidate_limit, corpus=corpus, **kwargs)[
+                "results"
+            ]
+        )
     return _select_corpus_candidates(rows, per_corpus_limit)
 
 
@@ -230,8 +301,10 @@ def _pointers(
     root: Path | None,
     blob_cache: dict[tuple[str, str, str], str | None],
 ) -> list[dict]:
+    ordered_rows = list(rows)
+    _populate_source_blob_cache(ordered_rows, sources, root, blob_cache)
     pointers = []
-    for rank, row in enumerate(rows, start=1):
+    for rank, row in enumerate(ordered_rows, start=1):
         source = sources.get(row["corpus"])
         if source is None:
             raise ValueError(f"missing GitHub source mapping for {row['corpus']}")

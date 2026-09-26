@@ -30,6 +30,10 @@ def tree_digest(root: Path) -> str:
     return digest.hexdigest()
 
 
+def locator_digest(root: Path) -> str:
+    return tree_digest(root / "locator")
+
+
 def manifest_shards(manifest: dict) -> list[dict]:
     fields = manifest["shard_fields"]
     return [dict(zip(fields, row, strict=True)) for row in manifest["shards"]]
@@ -699,7 +703,7 @@ class RemoteAccessTests(unittest.TestCase):
         )
         self.assertEqual(result["query_count"], 3)
         self.assertFalse(result["raw_text_exported"])
-        first_digest = tree_digest(output)
+        first_locator_digest = locator_digest(output)
         summary = json.loads(
             (output / "benchmark-summary.json").read_text(encoding="utf-8")
         )
@@ -727,7 +731,7 @@ class RemoteAccessTests(unittest.TestCase):
             limit=10,
             max_total_bytes=1_000_000,
         )
-        self.assertEqual(first_digest, tree_digest(output))
+        self.assertEqual(first_locator_digest, locator_digest(output))
 
     def test_compact_pointer_poc_reconstructs_benchmark_exactly(self) -> None:
         from corpus_research.pointer_benchmark import export_pointer_benchmark
@@ -941,6 +945,170 @@ class RemoteAccessTests(unittest.TestCase):
         self.assertGreater(
             first["estimates"]["rough_generation_seconds_per_key"],
             0,
+        )
+
+    def test_pointer_production_v1_is_resumable_and_preserves_original_ids(
+        self,
+    ) -> None:
+        from corpus_research.pointer_production import (
+            _new_stage,
+            _stage_path,
+            _tree_size,
+            export_pointer_production_v1,
+            production_key_universe,
+        )
+
+        with sqlite3.connect(self.db) as con:
+            for work_id in ("Dhp", "dhp"):
+                con.execute(
+                    """INSERT INTO records(
+                       corpus,language,collection_name,work_id,segment_id,title,raw_text,
+                       norm_text,folded_text,compact_text,lemma_text,source_path,source_sha,
+                       evidence_class,text_role,witness,relation_ids,sequence_no)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (
+                        "fixture-corpus",
+                        "pli",
+                        "DHP",
+                        work_id,
+                        f"{work_id}:1",
+                        work_id,
+                        f"{work_id} evidence",
+                        f"{work_id.casefold()} evidence",
+                        "",
+                        f"{work_id.casefold()}evidence",
+                        "",
+                        f"fixture/source/{work_id}.json",
+                        "a" * 40,
+                        "canonical_root",
+                        "root_text",
+                        "fixture witness",
+                        "[]",
+                        1,
+                    ),
+                )
+            con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
+
+        keys = production_key_universe(
+            self.db,
+            expected_latin_count=1,
+            expected_identifier_count=4,
+        )
+        self.assertEqual(
+            [(row["namespace"], row["key"]) for row in keys],
+            [
+                ("terms/latin", "anicca"),
+                ("ids", "Dhp"),
+                ("ids", "dhp"),
+                ("ids", "mn-fixture"),
+                ("ids", "other-work"),
+            ],
+        )
+        output = Path(self.temp.name) / "pointer-production-v1"
+        result = export_pointer_production_v1(
+            self.db,
+            output,
+            self.sources_config,
+            ROOT,
+            limit=10,
+            expected_latin_count=1,
+            expected_identifier_count=4,
+        )
+        self.assertEqual(result["total_key_count"], 5)
+        self.assertFalse(result["raw_text_exported"])
+        first_locator_digest = locator_digest(output)
+        manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+        summary = json.loads(
+            (output / "production-summary.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["artifact_kind"], "pointer_production_v1")
+        self.assertFalse(manifest["proof_of_concept"])
+        self.assertFalse(manifest["raw_text_exported"])
+        self.assertEqual(
+            manifest["namespaces"]["materialized"],
+            ["terms/latin", "ids"],
+        )
+        self.assertFalse(manifest["namespaces"]["terms_cjk"]["materialized"])
+        self.assertEqual(summary["key_counts"]["terms_latin_key_count"], 1)
+        self.assertEqual(summary["key_counts"]["identifier_key_count"], 4)
+        self.assertEqual(summary["key_counts"]["total_key_count"], 5)
+        self.assertEqual(summary["raw_text_field_count"], 0)
+        self.assertEqual(
+            summary["duplicate_query_corpus_work_source_count"],
+            0,
+        )
+        self.assertEqual(summary["artifact"]["total_bytes"], _tree_size(output))
+        rows = [
+            json.loads(line)
+            for path in (output / "locator").rglob("*.jsonl")
+            for line in path.read_text(encoding="utf-8").splitlines()
+        ]
+        by_pair = {(row["query_kind"], row["key"]): row for row in rows}
+        self.assertIn(("identifier", "Dhp"), by_pair)
+        self.assertIn(("identifier", "dhp"), by_pair)
+        self.assertEqual(
+            by_pair[("term", "anicca")]["pointers"][0]["record_id"],
+            3,
+        )
+        self.assertEqual(
+            by_pair[("term", "anicca")]["pointers"][0]["score"],
+            275,
+        )
+        self.assertEqual(
+            by_pair[("term", "anicca")]["pointers"][0]["match_reasons"],
+            ["exact", "corpus-lemma"],
+        )
+        payload = b"".join(
+            path.read_bytes() for path in (output / "locator").rglob("*.jsonl")
+        )
+        self.assertNotIn(b"raw_text", payload)
+
+        # A marked incomplete stage must not overwrite a prior final artifact.
+        stage = _stage_path(output)
+        _new_stage(stage, keys)
+        with patch(
+            "corpus_research.pointer_production._term_rows",
+            side_effect=RuntimeError("simulated interrupted generation"),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "simulated interrupted"):
+                export_pointer_production_v1(
+                    self.db,
+                    output,
+                    self.sources_config,
+                    ROOT,
+                    limit=10,
+                    expected_latin_count=1,
+                    expected_identifier_count=4,
+                )
+        self.assertEqual(first_locator_digest, locator_digest(output))
+        self.assertTrue(stage.is_dir())
+        self.assertFalse((stage / "manifest.json").exists())
+
+        export_pointer_production_v1(
+            self.db,
+            output,
+            self.sources_config,
+            ROOT,
+            limit=10,
+            expected_latin_count=1,
+            expected_identifier_count=4,
+        )
+        self.assertEqual(first_locator_digest, locator_digest(output))
+
+        parallel_output = Path(self.temp.name) / "pointer-production-v1-parallel"
+        export_pointer_production_v1(
+            self.db,
+            parallel_output,
+            self.sources_config,
+            ROOT,
+            limit=10,
+            workers=2,
+            expected_latin_count=1,
+            expected_identifier_count=4,
+        )
+        self.assertEqual(
+            locator_digest(output),
+            locator_digest(parallel_output),
         )
 
 
