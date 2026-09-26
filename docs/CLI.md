@@ -78,6 +78,11 @@ bin/buddhist-corpus analyze-pointer-repetition \
 # It does not generate a production locator or create a remote artifact.
 bin/buddhist-corpus analyze-pointer-key-universe \
   --benchmark remote/pointer-benchmark
+
+# Read the existing CJK FTS5 trigram vocabulary through a TEMP fts5vocab table.
+# It never persists a vocabulary table, scans raw text, or creates a locator.
+bin/buddhist-corpus analyze-cjk-fts-vocabulary \
+  --benchmark remote/pointer-benchmark
 ```
 
 Without `--context` or `--with-provenance`, `search` keeps its previous output
@@ -125,6 +130,21 @@ from `lemmas.lemma` and identifiers from `records.work_id`. The current CJK
 runtime index is a contentless FTS5 trigram index without a vocabulary table, so
 the command reports that its finite CJK key universe is unavailable rather than
 scanning text or creating a vocabulary index. It never generates a locator.
+
+`analyze-cjk-fts-vocabulary` uses this SQLite TEMP-only statement:
+
+```sql
+CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
+USING fts5vocab(main, records_cjk_fts, 'row');
+```
+
+The three-argument form addresses the FTS5 table in the `main` schema; the
+virtual table itself lives only for the read-only connection. The command
+measures the current finite trigram vocabulary, document-frequency distribution,
+top tokens, and deterministic lexical sample directly from FTS5. It does not
+read `records.raw_text`, rebuild FTS, or create an artifact. “CJK token” means
+an indexed trigram containing at least one character in the runtime CJK ranges;
+such a trigram can also contain non-CJK characters.
 
 Returned records and `provenance` expose both `evidence_class` and `text_role`.
 The first describes source authority; the second distinguishes root text, main

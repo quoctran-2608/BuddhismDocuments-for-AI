@@ -1,17 +1,17 @@
 # HỒ SƠ TIẾN ĐỘ VÀ BÀN GIAO DỰ ÁN
 
-> Ngày chốt hồ sơ: **25/09/2026**<br>
+> Ngày chốt hồ sơ: **26/09/2026**<br>
 > GitHub repository chính: `quoctran-2608/BuddhismDocuments-for-AI`<br>
 > GitHub repository artefact Connector: `quoctran-2608/BuddhismDocuments-for-AI-remote`<br>
 > Thư mục checkout đang làm việc: `Buddhism-forAI-Documents/raw`<br>
-> Commit mã ước tính production key universe: `cdea23167d88f7962b024f1e4635e3889a37e929`<br>
+> Commit mã CJK FTS vocabulary measurement: *sẽ cập nhật sau khi commit*<br>
 > Nhánh đang mở: `feat/github-connector-research-access`<br>
 > Trạng thái với `main`: nhánh đang mở, `main` và `origin/main` cùng trỏ tới commit trên.
 
 Tài liệu này giúp một AI hoặc người phát triển mới tiếp nhận repository mà không
 phải tự dựng lại toàn bộ lịch sử. Nội dung được tổng hợp từ mã nguồn, tài liệu,
 lịch sử Git, cơ sở dữ liệu cục bộ, các bản export (xuất dữ liệu) và kết quả kiểm
-thử thực tế tại ngày 25/09/2026.
+  thử thực tế tại ngày 26/09/2026.
 
 ---
 
@@ -42,7 +42,8 @@ Trạng thái hiện tại:
   `source_state`.
 - File SQLite hiện tại khoảng **42,94 GiB** và được đặt ngoài repository; đường
   `derived/corpus.sqlite3` chỉ là symbolic link (liên kết tượng trưng).
-- Bộ kiểm thử hiện tại qua **43/43 test**.
+- Bộ kiểm thử hiện tại qua **44/44 test** sau khi thêm kiểm thử CJK FTS
+  vocabulary TEMP/read-only.
 - Proof of concept (POC, bản chứng minh ý tưởng) pointer-only hiện có 11 key:
   `anicca`, `dukkha`, `jhāna`, `nibbāna`, `Mahākassapa`, `無常`, `如是我聞`,
   `苦`, `空`, `T02n0099`, `T01n0001`.
@@ -987,7 +988,7 @@ PYTHONPATH=tools python3 -m unittest discover -s tests -v
 Kết quả:
 
 ```text
-Ran 43 tests in 12.503s
+Ran 44 tests in 20.899s
 OK
 ```
 
@@ -1901,8 +1902,148 @@ gồm CJK vì universe CJK chưa enumerable.
 - **Known Latin + identifier**: kích thước central khoảng 447,9 MB (427,1 MiB),
   khoảng 16 giờ 56 phút generation theo linear extrapolation. Đây có vẻ khả thi
   về storage và batch time nếu chỉ xét hai namespace này.
-- **Full production gồm CJK**: chưa thể kết luận là khả thi vì index hiện tại
-  không cho số universe CJK hữu hạn mà không thay kiến trúc. CJK phải được đo
-  bằng một quyết định/phạm vi riêng do ChatGPT chọn sau này.
+- **Full production gồm CJK**: mục 21 dưới đây đã đo finite runtime trigram
+  vocabulary bằng `TEMP fts5vocab`; extrapolation size/time cho thấy pipeline
+  benchmark hiện tại không thực tế để generate full locator.
 
 Không có production locator hoặc remote artifact mới được tạo trong bước này.
+
+---
+
+## 21. Đo finite CJK trigram FTS vocabulary (26/09/2026)
+
+Mục tiêu cuối trước quyết định production locator là đếm token vocabulary thực
+tế đã có trong `records_cjk_fts`, không quét `records.raw_text` và không build
+lại FTS. Lệnh read-only:
+
+```text
+bin/buddhist-corpus analyze-cjk-fts-vocabulary \
+  --benchmark remote/pointer-benchmark
+```
+
+### Cách truy cập không sửa `corpus.sqlite3`
+
+`connect_readonly(... immutable=1)` không cho SQLite tạo cả TEMP virtual table,
+nên analyzer mở connection riêng:
+
+```text
+file:/home/tran_quoc/.local/share/buddhist-corpus/corpus.sqlite3?mode=ro
+```
+
+và chỉ trong connection đó tạo:
+
+```sql
+CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
+USING fts5vocab(main, records_cjk_fts, 'row');
+```
+
+Ba argument (`main`, `records_cjk_fts`, `row`) làm `fts5vocab` đọc đúng FTS table
+ở schema `main`; bảng được tạo ở schema `temp` và biến mất khi connection đóng.
+Không có persistent vocabulary table trong corpus DB.
+
+### Kết quả vocabulary
+
+| Chỉ số | Giá trị |
+|---|---:|
+| Total FTS vocabulary rows | 45.740.699 |
+| Distinct CJK-containing tokens | **45.721.159** |
+| Minimum token length | 3 |
+| Maximum token length | 3 |
+| 1-char | 0 |
+| 2-char | 0 |
+| 3-char | 45.721.159 |
+| 4+ char | 0 |
+
+Do `records_cjk_fts` dùng tokenizer `trigram`, toàn bộ vocabulary hiện hữu dài
+đúng 3 Unicode code point. “CJK-containing token” ở đây là token có ít nhất một
+character thuộc runtime CJK range; token có thể chứa cả ký tự không CJK, ví dụ
+`00一`. Nó **không** đồng nghĩa với “một Buddhist term/topic CJK”.
+
+### Frequency sanity check
+
+| Document frequency | Giá trị |
+|---|---:|
+| Average document/token | 10,6128 |
+| Median | 3 |
+| P95 | 28 |
+| Max | 261.179 |
+| Total occurrence frequency | 492.190.079 |
+
+Top token theo document frequency bắt đầu bằng: `波羅蜜` (261.179), `摩訶薩`
+(210.862), `菩薩摩` (207.204), `薩摩訶` (206.825), `若波羅` (164.112),
+`般若波` (162.784), `一切法` (154.592), `何以故` (153.011), `諸比丘`
+(149.004), `一切眾` (147.839). Lệnh JSON có đủ top 20.
+
+Sample deterministic lexical 20 token đầu gồm `00一`, `00七`, `00丈`, `00三`,
+`00上`, `00下`, `00不`, `00且`, `00世`, `00丟`, `00並`, `00中`, `00丹`,
+`00乃`, `00久`, `00之`, `00乍`, `00乖`, `00乘`, `00乙`. Sample này chứng minh
+vocabulary là output trigram index thực tế và có token lẫn ký tự số/CJK; nó
+không phải danh sách thuật ngữ học thuật.
+
+### Extrapolation CJK từ benchmark đã verify
+
+Benchmark CJK: 200 query, average 19.183,17 locator byte/query, P95 33.884;
+average 36,37 pointer/query, P95 64. Với 45.721.159 CJK-containing trigram:
+
+| CJK estimate | Lower/Central | Upper |
+|---|---:|---:|
+| Locator bytes | 877.076.765.694 | 1.549.215.751.556 |
+| Decimal TB | 0,877 | 1,549 |
+| TiB | 0,798 | 1,409 |
+| Pointer occurrences | 1.662.878.553 | 2.926.154.176 |
+
+Lower và central trùng vì CJK benchmark average bytes/query và median đều
+19.183,17; pointer average và median đều 36,37.
+
+### Full namespace estimate (chỉ extrapolation)
+
+Kết hợp số đã verify trước đó:
+
+```text
+terms/latin normalized:       26.547
+terms/cjk trigram vocabulary: 45.721.159
+ids normalized:               32.497
+------------------------------------
+total namespace keys:         45.780.203
+```
+
+| Range | Total artifact bytes | Decimal TB | TiB | Pointer occurrences |
+|---|---:|---:|---:|---:|
+| Lower | 877.371.413.439 | 0,877 | 0,798 | 1.663.360.577 |
+| Central | 877.524.663.828 | 0,878 | 0,798 | 1.663.616.888 |
+| Upper | 1.550.378.684.544 | 1,550 | 1,410 | 2.928.113.160 |
+
+Rough linear generation time từ 516 giây / 500 benchmark query:
+
+```text
+47.245.169,496 giây
+13.123,658 giờ
+546,819 ngày
+```
+
+Đây chỉ là extrapolation tuyến tính, không phải production benchmark. Một query
+CJK dài hơn 3 character có thể cần nhiều trigram/search hypothesis; task này
+không triển khai decomposition/intersection.
+
+### Read-only proof và kết luận scale
+
+Lệnh final chạy 6 phút 18 giây; stat target SQLite trước/sau giống nhau:
+
+```text
+46.111.674.368 byte
+mtime 1790299045
+```
+
+Digest benchmark trước/sau cũng cùng:
+
+```text
+13664a832aabd119399e682a2f0a76a2c14859485aac167c9624736944c0783d
+```
+
+Không có remote artefact, production locator, persistent FTS vocabulary table,
+scan raw text hay thay đổi architecture nào được tạo.
+
+Theo size/time extrapolation thô này, full production locator **không thực tế**
+để generate theo format/pipeline benchmark hiện tại: central estimate đã khoảng
+0,878 TB và khoảng 547 ngày generation. Đây là kết luận về size/time của
+vocabulary trigram hiện có, không phải quyết định redesign.

@@ -196,6 +196,10 @@ class RemoteAccessTests(unittest.TestCase):
                 ],
             )
             con.execute("INSERT INTO records_fts(records_fts) VALUES('rebuild')")
+            con.execute(
+                """INSERT INTO records_cjk_fts(rowid,search_text)
+                   SELECT id, compact_text FROM records WHERE language='lzh'"""
+            )
         with sqlite3.connect(self.db) as con:
             con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
         self.sources_config = Path(self.temp.name) / "corpus-sources.json"
@@ -874,6 +878,69 @@ class RemoteAccessTests(unittest.TestCase):
         self.assertLessEqual(
             cjk_per_key["locator_bytes"]["central"],
             cjk_per_key["locator_bytes"]["upper"],
+        )
+
+    def test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only(self) -> None:
+        from corpus_research.pointer_benchmark import export_pointer_benchmark
+        from corpus_research.pointer_cjk_vocab import analyze_cjk_fts_vocabulary
+
+        benchmark = Path(self.temp.name) / "pointer-benchmark"
+        export_pointer_benchmark(
+            self.db,
+            benchmark,
+            self.sources_config,
+            ROOT,
+            latin_count=1,
+            cjk_count=1,
+            identifier_count=1,
+            limit=10,
+            max_total_bytes=1_000_000,
+        )
+        before_db = hashlib.sha256(self.db.read_bytes()).hexdigest()
+        before_benchmark = tree_digest(benchmark)
+        first = analyze_cjk_fts_vocabulary(self.db, benchmark)
+        second = analyze_cjk_fts_vocabulary(self.db, benchmark)
+        self.assertEqual(first, second)
+        self.assertEqual(before_db, hashlib.sha256(self.db.read_bytes()).hexdigest())
+        self.assertEqual(before_benchmark, tree_digest(benchmark))
+        with sqlite3.connect(self.db) as con:
+            self.assertIsNone(
+                con.execute(
+                    """SELECT name FROM sqlite_master
+                       WHERE name='cjk_vocab_measurement'"""
+                ).fetchone()
+            )
+        self.assertTrue(first["read_only"])
+        self.assertFalse(
+            first["fts5vocab_access"]["persistent_database_changes"]
+        )
+        vocabulary = first["vocabulary"]
+        self.assertGreater(vocabulary["total_vocabulary_rows"], 0)
+        self.assertGreater(vocabulary["distinct_cjk_tokens"], 0)
+        self.assertEqual(
+            vocabulary["distinct_cjk_tokens"],
+            sum(vocabulary["token_length_distribution"].values()),
+        )
+        self.assertLessEqual(
+            vocabulary["minimum_token_length"],
+            vocabulary["maximum_token_length"],
+        )
+        self.assertEqual(
+            len(first["deterministic_sample_tokens"]),
+            min(20, vocabulary["distinct_cjk_tokens"]),
+        )
+        estimate = first["estimates"]["cjk"]
+        self.assertEqual(
+            estimate["key_count"],
+            vocabulary["distinct_cjk_tokens"],
+        )
+        self.assertGreater(
+            estimate["estimated_locator_bytes"]["central"]["bytes"],
+            0,
+        )
+        self.assertGreater(
+            first["estimates"]["rough_generation_seconds_per_key"],
+            0,
         )
 
 

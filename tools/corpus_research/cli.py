@@ -18,6 +18,7 @@ from .pointer_benchmark import (
 from .pointer_compact import export_pointer_compact_poc
 from .pointer_repetition import analyze_pointer_repetition
 from .pointer_universe import analyze_pointer_key_universe
+from .pointer_cjk_vocab import analyze_cjk_fts_vocabulary
 from .retrieval import (
     compare,
     context,
@@ -185,6 +186,15 @@ def parser() -> argparse.ArgumentParser:
         type=Path,
         default=root_dir() / "remote/pointer-benchmark",
     )
+    cjk_vocab = sub.add_parser(
+        "analyze-cjk-fts-vocabulary",
+        help="measure CJK FTS5 trigram vocabulary with a TEMP fts5vocab table",
+    )
+    cjk_vocab.add_argument(
+        "--benchmark",
+        type=Path,
+        default=root_dir() / "remote/pointer-benchmark",
+    )
     return p
 
 
@@ -340,6 +350,12 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "analyze-pointer-key-universe":
         try:
             emit(analyze_pointer_key_universe(args.db, args.benchmark))
+        except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+    elif args.command == "analyze-cjk-fts-vocabulary":
+        try:
+            emit(analyze_cjk_fts_vocabulary(args.db, args.benchmark))
         except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

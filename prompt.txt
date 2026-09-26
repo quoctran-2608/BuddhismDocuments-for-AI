@@ -1,102 +1,99 @@
 Tiếp tục trên `main`.
 
-Các bước trước đã hoàn thành và được ChatGPT kiểm tra độc lập:
+Bước production-key-universe trước đã hoàn thành và được ChatGPT kiểm tra độc lập.
 
-- pointer-only runtime: PASS;
-- corpus-balanced selection: PASS;
-- `source_blob_sha`: PASS;
-- benchmark 500 query: PASS;
-- full-pointer compact POC: không hiệu quả;
-- source/file dedup analysis: không đáng triển khai theo ngưỡng 10%.
+Trạng thái hiện tại:
 
-Từ đây **không tối ưu serialization thêm nữa**.
+```text
+terms/latin:
+26,547 normalized keys
 
-## Mục tiêu lần này
+ids:
+32,497 normalized keys
 
-Chỉ **đếm chính xác tập search key có thể dùng cho production locator từ index hiện tại**, rồi dùng số liệu benchmark đã có để ước tính kích thước production.
+known total:
+59,044 keys
 
-Không generate production locator.
-Không tạo artefact remote mới.
+terms/cjk:
+runtime search hoạt động qua records_cjk_fts
+nhưng finite key universe chưa được đếm
+```
+
+`records_cjk_fts` hiện là FTS5 contentless trigram index với khoảng 41.855.049 search documents.
+
+Đây là blocker measurement cuối trước khi quyết định production locator.
+
+## Mục tiêu
+
+Chỉ **đếm finite vocabulary thực tế của CJK trigram FTS hiện có**, nếu SQLite FTS5 cho phép lấy vocabulary bằng `fts5vocab`.
+
+Không scan lại raw corpus.
+Không build lại CJK index.
+Không tạo production locator.
+Không tạo remote artefact.
 Không redesign.
 
-## 1. Giữ nguyên toàn bộ hệ thống hiện tại
+## 1. Chạy ở đâu
 
-Không thay:
-
-- retrieval;
-- ranking;
-- evidence model;
-- pointer format;
-- corpus balancing;
-- collapse `(work_id, source_path)`;
-- 13 pinned source SHA;
-- benchmark artefact;
-- remote repository.
-
-Không vector DB, embeddings, API, server, compression, source table, work table hay search engine mới.
-
-## 2. Đếm key universe từ dữ liệu/index hiện có
-
-Cần báo ít nhất 3 nhóm:
-
-### A. Latin / Pāli / Sanskrit / romanized terms
-
-Dùng nguồn vocabulary/search-key phù hợp hiện có trong index.
-
-Ưu tiên:
+Task chạy trên local checkout của:
 
 ```text
-lemmas.lemma
+quoctran-2608/BuddhismDocuments-for-AI
 ```
 
-Đếm:
+với SQLite hiện có:
 
 ```text
-total rows
-distinct non-empty keys
-distinct normalized keys
+/home/tran_quoc/.local/share/buddhist-corpus/corpus.sqlite3
 ```
 
-Loại key CJK khỏi nhóm này.
-
-Không tự tạo dictionary mới.
-
-### B. Identifier keys
-
-Dùng identifier thực tế hiện có, ưu tiên:
+Không làm việc trong repository:
 
 ```text
-records.work_id
+BuddhismDocuments-for-AI-remote
 ```
 
-Đếm:
+ngoại trừ đọc benchmark nếu cần.
+
+## 2. Dùng chính FTS index hiện tại
+
+Nguồn:
 
 ```text
-distinct original work_id
-distinct normalized work_id
+records_cjk_fts
 ```
 
-Nếu cùng identifier xuất hiện ở nhiều corpus thì báo thêm:
+Ưu tiên thử FTS5 vocabulary theo cách **không persist thay đổi vào corpus.sqlite3**.
+
+Ví dụ dùng TEMP / transient `fts5vocab` nếu SQLite hỗ trợ phù hợp với database hiện tại.
+
+Mục tiêu logic:
 
 ```text
-distinct (corpus, work_id)
+records_cjk_fts
+→ fts5vocab
+→ distinct indexed trigram/token vocabulary
 ```
 
-Nhưng production key count chính vẫn cần một con số distinct key rõ ràng.
+Không được tạo persistent vocabulary table trong corpus DB.
 
-### C. CJK search keys
+Nếu TEMP `fts5vocab` không hoạt động trực tiếp với cấu trúc hiện tại, dùng cách đơn giản nhất vẫn đảm bảo:
 
-Dùng **index CJK hiện có**, không lấy lại sample 5.000 record như benchmark.
+- không scan `records.raw_text`;
+- không rebuild FTS;
+- không sửa corpus DB;
+- không tạo index/search architecture mới.
 
-Mục tiêu là đếm toàn bộ key CJK thực tế mà runtime locator có thể hỗ trợ.
+Nếu không thể thực hiện an toàn, báo rõ và dừng. Không tự nghĩ workaround phức tạp.
 
-Nếu CJK index hiện tại có bảng/index vocabulary rõ ràng, dùng trực tiếp.
+## 3. Đếm
 
-Báo:
+Báo tối thiểu:
 
 ```text
-distinct CJK keys
-key length distribution
+total vocabulary rows
+distinct CJK tokens
+token length distribution
 ```
 
 Tối thiểu:
@@ -108,184 +105,197 @@ Tối thiểu:
 4+ char
 ```
 
-Nếu index hiện tại chỉ chứa trigram hoặc một representation cụ thể thì ghi rõ chính xác.
+Vì đây là trigram FTS, cần kiểm tra thực tế có phải gần như toàn bộ token dài 3 CJK character hay không.
 
-**Không scan/generate một index CJK mới.**
+Báo thêm:
 
-Nếu không thể lấy một “production CJK key universe” có ý nghĩa từ index hiện tại mà không làm kiến trúc mới, hãy báo rõ và dừng phần CJK ở số liệu khả dụng nhất.
+```text
+minimum token length
+maximum token length
+```
 
-## 3. Dedupe giữa các nhóm
+## 4. Frequency statistics
+
+Nếu `fts5vocab` cung cấp document/count frequency mà không cần scan thêm, báo:
+
+```text
+average documents/token
+median documents/token
+p95 documents/token
+max documents/token
+```
+
+Và top 20 token phổ biến nhất.
+
+Đây chỉ là sanity check.
+
+Không dùng frequency để thay ranking hiện tại.
+
+## 5. Deterministic samples
+
+Xuất trong JSON report khoảng:
+
+```text
+20 CJK vocabulary tokens
+```
+
+chọn deterministic, ví dụ stable hash.
+
+Chỉ để ChatGPT kiểm tra rằng vocabulary là token thật.
+
+Không tạo file artefact remote.
+
+## 6. Ước tính production CJK locator
+
+Dùng CJK benchmark đã verify:
+
+```text
+200 CJK benchmark queries
+
+average locator bytes/query:
+19,183.17
+
+p95:
+33,884
+
+average pointer/query:
+36.37
+
+p95 pointer/query:
+64
+```
+
+Sau khi biết số CJK vocabulary tokens thật, tính:
+
+```text
+CJK key count
+
+central locator bytes
+upper locator bytes
+
+central pointer occurrences
+upper pointer occurrences
+```
+
+Có thể báo thêm lower nếu dùng cùng convention hiện tại.
+
+Sau đó cộng với known Latin + identifier estimate:
+
+```text
+59,044 keys
+```
+
+để đưa ra một **production namespace estimate hoàn chỉnh**:
+
+```text
+Latin
+CJK trigram
+Identifier
+----------------
+total keys
+
+estimated total bytes
+estimated pointer occurrences
+```
+
+Dùng category-specific benchmark, không dùng một average chung.
+
+## 7. Generation time estimate
+
+Dùng benchmark hiện tại:
+
+```text
+500 query = 516 seconds
+```
+
+Ngoại suy tuyến tính thô cho:
+
+```text
+Latin + CJK + Identifier total keys
+```
 
 Báo:
 
 ```text
-Latin distinct normalized keys
-CJK distinct keys
-Identifier distinct normalized keys
+seconds
+hours
+days nếu cần
 ```
 
-Sau đó tính:
+Ghi rõ đây chỉ là rough extrapolation.
+
+## 8. Rất quan trọng về semantics
+
+Không được tuyên bố rằng:
 
 ```text
-union total production keys
+CJK trigram vocabulary
+=
+mọi Buddhist term/topic CJK có thể hỏi
 ```
 
-Nếu namespace khác nhau nên không dedupe xuyên nhóm, ghi rõ:
+Trigram vocabulary chỉ là **finite indexed token universe của runtime CJK hiện tại**.
+
+Một query CJK dài hơn 3 ký tự có thể cần nhiều trigram/search hypothesis.
+
+Task này chỉ đo scale của vocabulary hiện tại.
+
+Không triển khai logic query decomposition/intersection trong task này.
+
+## 9. Read-only guarantee
+
+Phải chứng minh task không sửa:
 
 ```text
-production key namespace total
+corpus.sqlite3
+remote/pointer-benchmark/
 ```
 
-thay vì gộp sai semantics.
+Nếu thêm analyzer command, test:
 
-Ví dụ:
+- deterministic;
+- DB unchanged;
+- benchmark unchanged;
+- vocabulary count tự nhất quán;
+- estimate formulas đúng.
 
-```text
-terms/latin
-terms/cjk
-ids
-```
+Không tạo persistent FTS vocabulary table.
 
-## 4. Đếm key usability
-
-Không cần chạy retrieval cho toàn bộ universe.
-
-Nhưng báo tối thiểu các sanity checks:
-
-- empty keys;
-- keys normalize thành empty;
-- duplicate normalized keys;
-- identifier bị mất punctuation nếu normalize;
-- số key có độ dài bất thường.
-
-Không tự sửa dữ liệu trong task này.
-
-## 5. Ước tính production locator size
-
-Dùng **benchmark thực tế đã verify**:
-
-```text
-500 query
-6,935,403 bytes
-```
-
-Nhưng không chỉ lấy một average duy nhất nếu có breakdown theo category.
-
-Ưu tiên dùng category-specific bytes/query từ benchmark:
-
-```text
-Latin/romanized
-CJK
-Identifier
-```
-
-để estimate:
-
-```text
-estimated Latin bytes
-estimated CJK bytes
-estimated identifier bytes
-estimated total production bytes
-```
-
-Báo cả:
-
-```text
-decimal MB
-MiB
-GiB nếu cần
-```
-
-Ngoài ra báo một range đơn giản:
-
-```text
-lower estimate
-central estimate
-upper estimate
-```
-
-Có thể dùng median / average / p95 benchmark để tạo range, miễn cách tính rõ ràng.
-
-Không gọi đây là size chắc chắn.
-
-## 6. Ước tính pointer count
-
-Dùng benchmark category-specific pointer/query để ước tính:
-
-```text
-Latin pointer occurrences
-CJK pointer occurrences
-Identifier pointer occurrences
-total pointer occurrences
-```
-
-Đây chỉ là extrapolation.
-
-## 7. Ước tính generation cost đơn giản
-
-Nếu có thể từ benchmark trước, dùng số đo generation:
-
-```text
-500 query
-8 phút 36 giây
-```
-
-để ngoại suy tuyến tính thô:
-
-```text
-estimated generation time
-```
-
-Nhưng ghi rõ đây chỉ là rough extrapolation, không phải benchmark production thật.
-
-Không tối ưu performance trong task này.
-
-## 8. Không tạo production artefact
+## 10. Không làm thêm
 
 Không:
 
-- export full locator;
-- commit remote artefact;
-- tạo source/work table;
-- tạo compression;
-- tạo binary format;
-- thay repository layout.
+- scan `records.raw_text`;
+- rebuild corpus;
+- rebuild CJK FTS;
+- production locator generation;
+- remote artefact;
+- compression;
+- vector DB;
+- embeddings;
+- source/work table;
+- new search engine;
+- CJK semantic tokenizer;
+- word segmentation architecture.
 
-Đây chỉ là measurement.
-
-## 9. Tests
-
-Nếu thêm command/tool phân tích mới, test tối thiểu:
-
-- deterministic;
-- read-only;
-- không thay DB;
-- không thay benchmark;
-- counts tự nhất quán;
-- category totals tự nhất quán;
-- estimate formulas đúng.
-
-Giữ toàn bộ test hiện tại PASS.
-
-## 10. Output cần báo
-
-Khi xong chỉ báo:
+## 11. Khi xong chỉ báo
 
 1. main commit SHA;
 2. file đã sửa;
-3. Latin distinct original/normalized key count;
-4. CJK distinct key count + length distribution;
-5. Identifier distinct original/normalized key count;
-6. production namespace total;
-7. duplicate/normalization anomalies;
-8. estimated production bytes theo từng category;
-9. estimated total size;
-10. lower / central / upper estimate;
-11. estimated pointer occurrences;
-12. rough generation time estimate;
+3. cách truy cập `fts5vocab` mà không sửa DB;
+4. CJK vocabulary token count;
+5. token length distribution;
+6. frequency statistics;
+7. 20 deterministic sample tokens;
+8. CJK locator size estimate;
+9. CJK pointer occurrence estimate;
+10. full Latin + CJK + Identifier key total;
+11. full production size estimate;
+12. rough full generation time;
 13. tests đã chạy;
-14. theo số liệu này, production locator có thực tế để generate không — chỉ trả lời theo size/time, không redesign.
+14. SQLite DB có thay đổi hay không;
+15. theo size/time đo được, full production locator có thực tế để generate không.
 
 Sau đó dừng.
 
-**Không generate production locator. Không tự đổi kiến trúc. ChatGPT sẽ kiểm tra độc lập rồi mới quyết định bước production cuối.**
+**Không generate production locator. Không tự redesign. ChatGPT sẽ kiểm tra độc lập trước khi cho phép bước production cuối.**

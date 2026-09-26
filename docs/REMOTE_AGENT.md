@@ -212,3 +212,23 @@ it does not generate a production locator.
 Consequently, the command reports a known Latin-plus-identifier estimate and a
 CJK per-key formula, not a false complete production total. Treat the generation
 time as a rough linear extrapolation from the prior 500-query run only.
+
+## Read-only CJK FTS vocabulary measurement
+
+`analyze-cjk-fts-vocabulary --benchmark remote/pointer-benchmark` measures the
+finite token universe already stored by `records_cjk_fts`. It creates only:
+
+```sql
+CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
+USING fts5vocab(main, records_cjk_fts, 'row');
+```
+
+The table is in SQLite's `temp` schema and disappears when the read-only
+connection closes; it is not stored in `corpus.sqlite3`. The analysis reports
+CJK-containing indexed trigram tokens, their document frequencies, and a
+deterministic lexical sample. It does not scan `records.raw_text`, rebuild the
+FTS index, alter ranking, or create a production locator.
+
+The resulting token universe is a finite runtime-token count, **not** a list of
+all Buddhist CJK concepts or a query parser. A longer CJK phrase may involve
+more than one trigram; no decomposition/intersection behavior is added here.

@@ -257,12 +257,31 @@ records_cjk_fts    → CJK runtime representation/status
 benchmark summary  → category-specific size, pointer, and time extrapolation
 ```
 
-The CJK runtime is deliberately not treated as an enumerable key vocabulary:
-`records_cjk_fts` is an FTS5 contentless trigram index and no `fts5vocab` table
-exists. Counting all possible CJK trigrams would need either a text scan or a
-new vocabulary structure. The measurement therefore reports CJK cost per
-potential key and leaves the full cross-namespace production total unknown,
-rather than silently changing the system to obtain a number.
+At the time this measurement was introduced, no persistent vocabulary table
+existed. The later CJK vocabulary measurement uses SQLite's built-in
+`fts5vocab(main, records_cjk_fts, 'row')` module through a TEMP virtual table,
+not a persisted index or a raw-text scan.
+
+### CJK FTS vocabulary measurement
+
+`analyze-cjk-fts-vocabulary` reads the existing `records_cjk_fts` FTS5
+contentless trigram index through:
+
+```text
+main.records_cjk_fts
+→ temp.fts5vocab(main, records_cjk_fts, 'row')
+→ aggregate vocabulary/frequency measurements
+```
+
+The connection uses `mode=ro`, which permits a TEMP virtual table but prevents
+persistent changes to the corpus database. Aggregates, a frequency histogram,
+top tokens, and a small lexical sample run inside SQLite, so the tool does not
+scan `records.raw_text` or copy the full vocabulary into Python.
+
+This finite universe is specifically the current indexed CJK-containing trigram
+vocabulary. It is neither term segmentation nor a claim about all searchable
+Buddhist concepts. A longer CJK phrase can involve more than one trigram; this
+measurement does not add query decomposition or intersection behavior.
 
 ## 5. Answer / Provenance Layer
 
