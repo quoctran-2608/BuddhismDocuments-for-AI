@@ -30,7 +30,8 @@ Trạng thái:
 
 - **HIỆN HÀNH**: đã là yêu cầu của hệ thống đang chạy;
 - **MỤC TIÊU**: đã chấp thuận về hướng nhưng chưa triển khai đầy đủ;
-- **NGOÀI PHẠM VI V1**: không phải mục tiêu của vòng nâng cấp đầu.
+- **TƯƠNG LAI**: hướng có điều kiện, chưa phải requirement v1 cho tới khi được nâng trạng thái;
+- **NGOÀI PHẠM VI V1**: chủ động không thuộc vòng nâng cấp đầu.
 
 ---
 
