@@ -2,12 +2,12 @@
 
 - **Trạng thái:** Chấp nhận
 - **Ngày ghi ADR:** 2026-10-06
-- **Phạm vi:** ranking và lựa chọn candidate
+- **Phạm vi:** xếp hạng và lựa chọn ứng viên
 - **Liên quan:** REQ-RET-001, REQ-RET-002, REQ-RET-006, REQ-CON-010
 
 ## Bối cảnh
 
-Local search và production pointer generation đều phải quyết định candidate nào
+Tìm kiếm local và quá trình sinh production pointer đều phải quyết định ứng viên nào
 nên được mở trước. Nếu remote tự phát minh một score khác, cùng query có thể dẫn
 đến ưu tiên nguồn khác nhau chỉ vì execution mode.
 
@@ -20,12 +20,12 @@ như witness nào cổ hơn, truyền thống nào đúng hay hai thuật ngữ 
 Local retrieval và pointer generation dùng chung ngữ nghĩa xếp hạng cốt lõi
 (`score_record_match` và quy tắc phá hòa ổn định).
 
-Production selection được phép cân bằng theo corpus và gộp candidate trùng theo
+Khâu chọn production được phép cân bằng theo corpus và gộp ứng viên trùng theo
 identity đã định nghĩa để một corpus/file không chiếm toàn bộ result set.
 
 Tuy nhiên:
 
-> **Rank chỉ quyết định thứ tự nên mở candidate, không quyết định giá trị học
+> **Rank chỉ quyết định thứ tự nên mở ứng viên, không quyết định giá trị học
 > thuật của kết luận.**
 
 Claim cuối vẫn phải dựa vào evidence hierarchy, text role, witness, context,
@@ -35,9 +35,9 @@ quan hệ nguồn và phạm vi câu hỏi.
 
 - tránh hai hệ xếp hạng khó đồng bộ;
 - giữ hành vi local/remote dễ kiểm thử;
-- candidate phù hợp hơn được mở trước;
+- ứng viên phù hợp hơn được mở trước;
 - vẫn bảo vệ ranh giới giữa retrieval quality và scholarly verification;
-- cho phép nghiên cứu đa corpus mà không để corpus lớn chiếm hết candidate set.
+- cho phép nghiên cứu đa corpus mà không để corpus lớn chiếm hết tập ứng viên.
 
 ## Phương án đã không chọn
 
@@ -63,6 +63,6 @@ record hơn hoặc dễ match hơn.
 
 ## Khi nào xem xét lại
 
-Xem xét cách ranking khi test thực tế cho thấy candidate quality kém. Không được
+Xem xét cách xếp hạng khi kiểm thử thực tế cho thấy chất lượng ứng viên kém. Không được
 đổi nguyên tắc “rank ≠ scholarly authority” trừ khi khái niệm rank được thay
 bằng một mô hình evidence verification khác có hợp đồng rõ ràng.
