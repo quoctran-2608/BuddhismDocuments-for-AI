@@ -324,7 +324,8 @@ Gate và Research Run đang là **MỤC TIÊU — chưa triển khai đầy đ�
 
 Không giả vờ skill hiện tại đã có các gate đó.
 
-Khi lớp này được triển khai, yêu cầu chuẩn nằm trong:
+Khi lớp này được triển khai, thiết kế/yêu cầu chuẩn nằm trong:
 
+- `docs/RESEARCH_VERIFICATION_DESIGN.md`;
 - `docs/REQUIREMENTS.md`;
 - `docs/ACCEPTANCE.md`.
