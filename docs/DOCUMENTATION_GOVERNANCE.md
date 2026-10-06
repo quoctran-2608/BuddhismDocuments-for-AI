@@ -29,10 +29,11 @@ Thẩm quyền được xác định theo miền thông tin:
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
 | Lịch sử phát triển | `progress.md` + lịch sử Git |
 | Yêu cầu có mã | `docs/REQUIREMENTS.md` |
+| Thiết kế lớp kiểm chứng nghiên cứu MỤC TIÊU | `docs/RESEARCH_VERIFICATION_DESIGN.md` |
 | Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
 | Lý do quyết định kiến trúc | `docs/adr/` |
 
-## 2. Ba trạng thái bắt buộc
+## 2. Bốn trạng thái bắt buộc
 
 ### HIỆN HÀNH
 
@@ -43,12 +44,17 @@ artefact.
 
 Đã được chấp thuận về hướng hoặc đang được đặc tả nhưng chưa triển khai đầy đủ.
 
+### TƯƠNG LAI
+
+Ý tưởng hoặc hướng có điều kiện, chưa thuộc phạm vi triển khai đã cam kết. Không
+được xem như requirement v1 cho tới khi được chủ động nâng thành MỤC TIÊU.
+
 ### LỊCH SỬ
 
 Mô tả khảo sát, benchmark, POC, quyết định hoặc trạng thái ở một thời điểm trước.
 
-Không được mô tả MỤC TIÊU như HIỆN HÀNH. Không được dùng LỊCH SỬ để phủ định
-runtime HIỆN HÀNH.
+Không được mô tả MỤC TIÊU/TƯƠNG LAI như HIỆN HÀNH. Không được dùng LỊCH SỬ để
+phủ định runtime HIỆN HÀNH.
 
 ## 3. Một sự thật quan trọng chỉ có một nơi chuẩn
 
