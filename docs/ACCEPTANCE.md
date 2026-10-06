@@ -199,7 +199,7 @@ REQ-FAIL-003 đạt khi query không có evidence trả trạng thái fail-close
 | Requirement | Mức | Cách nghiệm thu |
 |---|---|---|
 | REQ-DOC-001 | CẤU TRÚC | `docs/DOCUMENTATION_GOVERNANCE.md` tồn tại và có authority matrix |
-| REQ-DOC-002 | CẤU TRÚC + RÀ SOÁT | Project Spec và Requirements tách HIỆN HÀNH/MỤC TIÊU/LỊCH SỬ |
+| REQ-DOC-002 | CẤU TRÚC + RÀ SOÁT | Project Spec và Requirements tách HIỆN HÀNH/MỤC TIÊU/TƯƠNG LAI/LỊCH SỬ |
 | REQ-DOC-003 | RÀ SOÁT | README sau giai đoạn đồng bộ phải là cửa vào, không tuyên bố chi tiết trái config/schema |
 | REQ-DOC-004 | RÀ SOÁT | progress/survey phải được gắn đúng vai trò lịch sử, không giả làm trạng thái hiện tại |
 
@@ -329,7 +329,7 @@ Semantics mục tiêu chi tiết nằm trong `docs/RESEARCH_VERIFICATION_DESIGN.
 | REQ-CTR-002 | CHƯA TRIỂN KHAI | “no counterevidence” phải kèm scope |
 | REQ-CTR-003 | CHƯA TRIỂN KHAI | nguồn phụ thuộc không được tính như độc lập |
 | REQ-CTR-004 | CHƯA TRIỂN KHAI | counterevidence có thể downgrade/reject claim |
-| REQ-RUN-001 | CHƯA TRIỂN KHAI | manifest completeness |
+| REQ-RUN-001 | CHƯA TRIỂN KHAI | Research mode thiếu main commit, locator repo/commit/root, source revisions hoặc các trường run bắt buộc phải fail nghiệm thu |
 | REQ-RUN-002 | CHƯA TRIỂN KHAI | retrieval/research reproducibility tách riêng |
 | REQ-RUN-003 | CHƯA TRIỂN KHAI | checked/unexamined scope |
 | REQ-RUN-004 | CHƯA TRIỂN KHAI | claim → evidence traceability |
