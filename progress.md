@@ -1,5 +1,19 @@
-# HỒ SƠ TIẾN ĐỘ VÀ BÀN GIAO DỰ ÁN
+# HỒ SƠ TIẾN ĐỘ VÀ BÀN GIAO DỰ ÁN — LỊCH SỬ
 
+> **Trạng thái: LỊCH SỬ / SNAPSHOT CHỐT NGÀY 26/09/2026**
+>
+> Tài liệu này cố ý giữ nguyên các trạng thái trung gian, POC, benchmark, commit,
+> số test và kế hoạch còn dang dở tại thời điểm chúng được ghi. Các cụm như
+> “hiện tại”, “root path hiện tại” hoặc “chưa hoàn tất” bên dưới phải được hiểu
+> **theo mốc lịch sử của đoạn tương ứng**, không phải trạng thái repository hôm nay.
+>
+> Trạng thái hiện hành phải lấy từ `docs/PROJECT_SPEC.md`,
+> `docs/ARCHITECTURE.md`, `docs/REQUIREMENTS.md`, config/schema/code/tests và
+> production manifest/summary của repo remote.
+>
+> `prompt.txt` được nhắc trong lịch sử bên dưới đã bị xóa khỏi repository vì là
+> prompt nhiệm vụ tạm; các tham chiếu còn lại chỉ có giá trị giải thích diễn tiến.
+>
 > Ngày chốt hồ sơ: **26/09/2026**<br>
 > GitHub repository chính: `quoctran-2608/BuddhismDocuments-for-AI`<br>
 > GitHub repository artefact Connector: `quoctran-2608/BuddhismDocuments-for-AI-remote`<br>
@@ -34,7 +48,7 @@ Dự án đã phát triển thành một hệ thống nghiên cứu gồm:
 5. **Tầng GitHub Connector**: cho AI không có shell/SQLite truy cập bằng con trỏ
    đến file nguồn gốc trên GitHub.
 
-Trạng thái hiện tại:
+Trạng thái tại thời điểm 26/09/2026:
 
 - 13/13 submodule tồn tại và khớp SHA trong `manifest.json`.
 - Chỉ mục cục bộ hiện có dữ liệu của cả 13 corpus, khoảng **50.028.723 bản ghi
