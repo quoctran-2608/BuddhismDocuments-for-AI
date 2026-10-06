@@ -693,8 +693,9 @@ Hệ thống phải hướng tới các thuộc tính sau:
 - thay đổi kiến trúc phải cập nhật tài liệu chuẩn tương ứng;
 - CURRENT, TARGET và HISTORY phải được phân biệt rõ.
 
-Các requirement có mã và ánh xạ kiểm thử sẽ được chuẩn hóa riêng trong
-`docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`.
+Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm thu,
+ánh xạ code/config/test và các khoảng trống kiểm thử nằm trong
+`docs/ACCEPTANCE.md`.
 
 ## 19. Tài liệu nên đọc theo nhu cầu
 
