@@ -1,147 +1,153 @@
-# Buddhist Corpus Research Rules
+# Luật nghiên cứu corpus Phật học cho AI
 
-This file is the highest-level rule set for every agent and every research task
-in this repository.
+> Trạng thái: **HIỆN HÀNH**
+>
+> Vai trò: bộ luật nghiên cứu cấp cao nhất áp dụng cho mọi tác nhân AI và mọi
+> nhiệm vụ nghiên cứu trong repository này.
+>
+> Cách vận hành cụ thể xem `.codex/skills/buddhist-corpus-research/SKILL.md`;
+> kiến trúc xem `docs/ARCHITECTURE.md`; giao thức Connector xem
+> `docs/REMOTE_AGENT.md`.
 
-## Central rule
+## 1. Luật trung tâm
 
-> Model knowledge may propose a search hypothesis; only repository evidence may establish a research finding.
+> **Kiến thức sẵn có của mô hình có thể đề xuất giả thuyết tìm kiếm; chỉ bằng
+> chứng trong repository mới được phép xác lập kết luận nghiên cứu.**
 
-Nói cách khác: kiến thức sẵn có của AI chỉ được phép gợi ý hướng tìm; chỉ bằng
-chứng trong corpus/repository mới được phép xác lập kết luận nghiên cứu.
+Kiến thức mô hình không được âm thầm trở thành “nguồn thứ 14”.
 
-## Two execution modes
+## 2. Hai chế độ thực thi
 
-### Local corpus mode — strictly offline
+### 2.1. Local mode — offline nghiêm ngặt
 
-Local building, indexing, CLI research, and Codex work inside the checkout are
-strictly offline.
+Build, lập chỉ mục, nghiên cứu bằng CLI và công việc Codex bên trong checkout
+phải hoạt động offline nghiêm ngặt.
 
-- Do not use Web Search, a browser, `curl`, `wget`, network APIs, or remote
-  scholarly sources to fill corpus gaps.
-- Do not run `git fetch`, `git pull`, `git clone`, `git submodule update`,
-  or any command that obtains missing research data from a remote.
-- Do not call the GitHub API as a substitute for local source data.
-- Do not download models, packages, dictionaries, or corpora.
-- Use only files already present in the checkout and standard installed tools.
-- If a submodule, Git object, LFS object, or expected source file is absent,
-  stop that line of inquiry and report:
-  **không đủ dữ liệu trong corpus hiện tại**.
+Không được:
 
-### GitHub Connector mode — declared read-only research path
+- dùng Web Search, trình duyệt, `curl`, `wget`, API mạng hoặc nguồn học thuật từ
+  xa để lấp khoảng trống corpus;
+- chạy `git fetch`, `git pull`, `git clone`, `git submodule update` hoặc lệnh nào
+  tải thêm dữ liệu nghiên cứu từ xa;
+- dùng GitHub API thay cho source data cục bộ;
+- tải model, package, dictionary hoặc corpus để bổ sung bằng chứng.
 
-A ChatGPT/GitHub Connector session without the local SQLite database may use
-the documented Connector path. This is a narrow research-data exception to the
-local offline rule, not permission to browse the public web.
+Chỉ dùng file đã có trong checkout và công cụ chuẩn đã cài đặt.
 
-The agent may read only:
+Nếu submodule, Git object, LFS object hoặc source file cần thiết bị thiếu, dừng
+nhánh nghiên cứu đó và báo:
 
-1. the canonical repository
-   `quoctran-2608/BuddhismDocuments-for-AI`;
-2. the remote locator repository declared by
-   `config/remote-corpus.json`;
-3. the original source repositories named by locator pointers, at each
-   pointer's pinned `source_sha` or `source_blob_sha`.
+**không đủ dữ liệu trong corpus hiện tại**
 
-In Connector mode:
+### 2.2. GitHub Connector mode — đường đọc từ xa đã khai báo
 
-- read `.codex/skills/buddhist-corpus-research/SKILL.md` and
-  `config/remote-corpus.json` first;
-- use the production locator rather than GitHub Code Search for routing;
-- treat locator rows as candidate pointers, never as textual evidence;
-- open the pinned upstream source and read the relevant context before making a
-  finding;
-- do not use general Web Search or unrelated internet sources as corpus
-  evidence;
-- if the production locator cannot establish a claim, report:
+Một phiên ChatGPT/GitHub Connector không có SQLite local được phép dùng đường
+Connector đã được tài liệu hóa. Đây là ngoại lệ đọc dữ liệu nghiên cứu có kiểm
+soát, không phải giấy phép duyệt web công khai.
+
+AI chỉ được đọc:
+
+1. repository chính `quoctran-2608/BuddhismDocuments-for-AI`;
+2. repository locator được `config/remote-corpus.json` khai báo;
+3. repository nguồn gốc mà pointer chỉ tới, đúng `source_sha` hoặc
+   `source_blob_sha` đã ghim.
+
+Trong Connector mode:
+
+- đọc `.codex/skills/buddhist-corpus-research/SKILL.md` và
+  `config/remote-corpus.json` trước;
+- dùng production locator thay vì GitHub Code Search để định tuyến;
+- coi locator row là pointer ứng viên, không phải bằng chứng câu chữ;
+- mở pinned upstream source và đọc ngữ cảnh liên quan trước khi kết luận;
+- không dùng Web Search chung hoặc internet không liên quan làm corpus evidence;
+- nếu production locator không đủ để xác lập claim, báo:
   **không đủ dữ liệu trong remote corpus export hiện tại**.
 
-This Connector exception does not authorize changing pinned source repositories
-or silently replacing missing corpus evidence with internet material.
+Ngoại lệ Connector không cho phép sửa pinned source repository hoặc thay dữ liệu
+corpus bị thiếu bằng nội dung internet.
 
-## Immutable source layer
+## 3. Tầng nguồn bất biến
 
-The 13 source repositories/submodules are immutable sources-of-origin.
+Mười ba source repository/submodule là nguồn gốc bất biến trong phạm vi nghiên
+cứu.
 
-- Never edit, normalize, format, regenerate, or commit inside a source
-  submodule/repository as part of research.
-- Put parsers, indexes, caches, reports, and derived artifacts outside sources.
-- Derived artifacts must be reproducible from pinned source commits.
-- Large generated databases belong under `derived/` and are not
-  source-of-truth.
+- Không sửa, chuẩn hóa, format, tái sinh hoặc commit vào source repository như
+  một phần của nghiên cứu.
+- Parser, index, cache, report và artefact dẫn xuất phải nằm ngoài source.
+- Artefact dẫn xuất phải có thể tái tạo từ các commit nguồn đã ghim.
+- Database lớn sinh ra phải nằm dưới `derived/` và không phải nguồn chuẩn của
+  câu chữ.
 
-In local mode, before research run:
+Trong local mode, trước khi nghiên cứu chạy:
 
 ```bash
 bin/buddhist-corpus status
 ```
 
-Treat a missing source or SHA mismatch as a provenance failure.
+Nguồn bị thiếu hoặc SHA không khớp phải được coi là lỗi provenance.
 
-## Evidence hierarchy
+## 4. Phân cấp bằng chứng
 
-Use the strongest available witness. A discovery source must not silently
-replace a primary witness.
+Ưu tiên nhân chứng mạnh nhất hiện có. Nguồn phục vụ khám phá không được âm thầm
+thay thế nhân chứng chính.
 
-1. **Canonical/root textual witnesses** — source-language root texts and
-   identifiable edition witnesses, such as SuttaCentral Bilara roots and
-   individual Pāli witnesses.
-2. **Authoritative structured editions** — editions preserving stable textual
-   structure and apparatus, such as CBETA TEI P5 and 84000 TEI.
-3. **Metadata/relationship data** — SuttaCentral parallels and structure,
-   84000 RDF/Toh. metadata. These establish relationships, not textual wording.
-4. **Parallel/alignment corpora** — 84000 Translation Memory and OpenPecha.
-   Use for alignment evidence and discovery; verify wording in an available
-   source edition.
-5. **Computationally segmented corpora** — BuddhaNexus. Use for candidate
-   discovery. Return to CBETA, SuttaCentral, or another appropriate source
-   witness whenever one is available.
-6. **Derived critical/lemmatized data** — `third-party/pali-canon`. Use lemma,
-   morphology, collation, and variant data as derived analysis. Name its base
-   witnesses and do not present a reconstructed or selected reading as an
-   unqualified primary witness.
-7. **Auxiliary/reference data** — PTS archive and other noisy reference
-   exports. State known quality limits.
+1. **Bản văn gốc/canonical/root có nhân chứng xác định** — ví dụ SuttaCentral
+   Bilara roots và các nhân chứng Pāli riêng biệt.
+2. **Ấn bản có cấu trúc, thẩm quyền cao** — ví dụ CBETA TEI P5 và 84000 TEI.
+3. **Metadata/quan hệ** — ví dụ SuttaCentral parallels, 84000 RDF/Toh. metadata.
+   Chúng chứng minh quan hệ, không tự chứng minh câu chữ.
+4. **Corpus song hành/căn chỉnh** — 84000 Translation Memory và OpenPecha. Dùng
+   cho bằng chứng căn chỉnh và khám phá; khi có thể phải kiểm wording ở source
+   edition phù hợp.
+5. **Corpus phân đoạn bằng tính toán** — BuddhaNexus. Dùng để tìm ứng viên; khi
+   có nhân chứng mạnh hơn phải quay lại CBETA, SuttaCentral hoặc nguồn phù hợp.
+6. **Dữ liệu khảo dị/lemma dẫn xuất** — `third-party/pali-canon`. Dùng lemma,
+   morphology, collation và variant data như phân tích dẫn xuất; phải nêu base
+   witnesses và không trình bày reconstructed/selected reading như primary
+   witness không điều kiện.
+7. **Nguồn tham khảo phụ trợ** — PTS archive và các export nhiễu tương tự; phải
+   nêu giới hạn chất lượng đã biết.
 
-When evidence classes conflict, show the conflict. Do not promote the lower
-class merely because it is easier to search.
+Khi evidence classes xung đột, phải trình bày xung đột. Không nâng nguồn lớp thấp
+lên chỉ vì dễ tìm hơn.
 
-## Required provenance
+## 5. Provenance bắt buộc
 
-Every research finding must be traceable to:
+Mỗi kết luận nghiên cứu quan trọng phải truy được về các trường phù hợp:
 
-- corpus/source name;
-- repository-relative source path;
+- corpus/source;
+- source path tương đối trong repository;
 - work/text identifier;
-- segment, line, folio, Toh., CBETA, or equivalent identifier when present;
+- segment, line, folio, Toh., CBETA hoặc định danh tương đương khi có;
 - pinned source commit SHA;
-- evidence class, text role, and witness/edition when relevant.
+- `evidence_class`;
+- `text_role`;
+- witness/edition khi liên quan.
 
-`evidence_class` describes source authority/provenance.
-`text_role` describes what the indexed text is within that source.
+`evidence_class` mô tả thẩm quyền/nguồn gốc của nguồn.
 
-Do not quote or synthesize a translator comment or translation note as though
-it were root/scriptural text. If variants differ, state which witness says
-what. If provenance is incomplete, label the statement as a hypothesis or omit
-it.
+`text_role` mô tả đoạn được lập chỉ mục đóng vai trò gì trong nguồn.
 
-## Cross-language and cross-tradition guardrails
+Không trích hoặc tổng hợp translator comment/translation note như thể đó là
+root/scriptural text. Nếu dị bản khác nhau, phải nói rõ nhân chứng nào có reading
+nào. Nếu provenance không đủ, hạ thành giả thuyết hoặc bỏ claim đó.
 
-- Do not invent Pāli ↔ Sanskrit ↔ Chinese ↔ Tibetan equivalence from model
-  memory.
-- Model knowledge may generate cross-language terms to test, but those terms
-  remain search hypotheses until repository evidence supports the relation.
-- A cross-language equation becomes evidence only when an alignment,
-  relationship record, dictionary, shared canonical identifier, or other
-  repository evidence supports it.
-- Do not harmonize different traditions automatically. Report similarities,
-  differences, variants, witness scope, and uncertainty.
+## 6. Rào chắn đa ngôn ngữ và đa truyền thống
 
-## Required research workflow
+- Không tự tạo tương đương Pāli ↔ Sanskrit ↔ Hán ↔ Tạng từ trí nhớ mô hình.
+- Kiến thức mô hình được phép đề xuất thuật ngữ đa ngôn ngữ để thử, nhưng chúng
+  vẫn chỉ là giả thuyết tìm kiếm cho tới khi repository evidence hỗ trợ.
+- Một quan hệ đa ngôn ngữ chỉ trở thành bằng chứng khi alignment, relationship
+  record, dictionary, shared canonical identifier hoặc repository evidence khác
+  hỗ trợ nó.
+- Không tự hòa hợp các truyền thống khác nhau. Phải nêu tương đồng, khác biệt,
+  dị bản, phạm vi nhân chứng và độ bất định.
 
-### Local mode
+## 7. Quy trình nghiên cứu bắt buộc
 
-Use the CLI before recursively scanning raw files:
+### 7.1. Local mode
+
+Dùng CLI trước khi quét đệ quy raw file:
 
 ```bash
 bin/buddhist-corpus search "query"
@@ -154,70 +160,83 @@ bin/buddhist-corpus compare ID1 ID2
 bin/buddhist-corpus provenance --record-id ID
 ```
 
-Read raw files after retrieval when checking context, markup, apparatus, or
-source fidelity.
+Sau bước truy xuất, mở raw source khi cần kiểm ngữ cảnh, markup, apparatus hoặc
+độ trung thành với nguồn.
 
-### Connector mode
+### 7.2. Connector mode
 
-Follow the production routing protocol in
-`.codex/skills/buddhist-corpus-research/SKILL.md`:
+Theo giao thức production trong
+`.codex/skills/buddhist-corpus-research/SKILL.md` và `docs/REMOTE_AGENT.md`:
 
 ```text
-question
-→ supported search hypotheses
+câu hỏi
+→ giả thuyết tìm kiếm có căn cứ
 → production locator
-→ ranked source pointers
+→ pointer nguồn đã xếp hạng
 → pinned upstream source
-→ context/provenance
-→ relations/variants when needed
-→ witness-separated synthesis
+→ ngữ cảnh / provenance
+→ quan hệ / dị bản khi cần
+→ tổng hợp nhưng giữ riêng nhân chứng
 ```
 
-Do not recursively browse locator shards or substitute GitHub Code Search for
-the declared hash-bucket routing.
+Không duyệt đệ quy locator shards và không thay hash-bucket routing bằng GitHub
+Code Search.
 
-For SuttaCentral Chinese parallels, keep three evidence steps separate:
-SuttaCentral parallel relation → SuttaCentral-to-CBETA identifier bridge →
-resolved CBETA textual witness. A bridge is metadata, not proof of textual
-identity.
+Với SuttaCentral ↔ CBETA, giữ ba bước bằng chứng riêng:
 
-### Term research
+```text
+SuttaCentral parallel relation
+→ SuttaCentral-to-CBETA identifier bridge
+→ resolved CBETA textual witness
+```
 
-Use this order:
+Bridge là metadata, không phải bằng chứng textual identity.
+
+### 7.3. Nghiên cứu thuật ngữ
+
+Dùng thứ tự:
 
 1. exact form;
-2. Unicode-normalized/case-normalized form;
-3. corpus-provided lemma and morphology;
-4. internally attested spelling variants;
-5. context around occurrences;
-6. aligned or parallel texts.
+2. dạng chuẩn hóa Unicode/case;
+3. lemma/morphology do corpus cung cấp;
+4. spelling variant đã được corpus chứng thực;
+5. ngữ cảnh quanh các lần xuất hiện;
+6. văn bản căn chỉnh/song hành.
 
-Do not infer unattested variants.
+Không suy ra biến thể chưa được chứng thực.
 
-### Topic/concept research
+### 7.4. Nghiên cứu chủ đề/khái niệm
 
-Never stop at one semantic or keyword hit. Iterate:
+Không dừng ở một kết quả semantic/keyword đơn lẻ. Lặp:
 
-`seed evidence → internal terminology → occurrences → context → structure →
-parallels → variants → independent witnesses → synthesis`
+```text
+bằng chứng mồi
+→ thuật ngữ nội bộ
+→ các lần xuất hiện
+→ ngữ cảnh
+→ cấu trúc
+→ song hành
+→ dị bản
+→ nhân chứng độc lập
+→ tổng hợp
+```
 
-Record which step supplied each claim.
+Phải biết bằng chứng nào hỗ trợ mỗi kết luận.
 
-### Candidate discovery
+### 7.5. Khám phá ứng viên
 
-BuddhaNexus, OpenPecha, and Translation Memory normally produce candidates,
-not final textual proof. Resolve candidate identifiers back to stronger source
-witnesses when possible. If that resolution is unavailable, state the limit.
+BuddhaNexus, OpenPecha và Translation Memory thường tạo ứng viên, không phải
+textual proof cuối cùng. Khi có thể, giải identifier về nhân chứng mạnh hơn. Nếu
+không giải được, phải nêu giới hạn.
 
-## Answer contract
+## 8. Hợp đồng câu trả lời
 
-A research answer must:
+Một câu trả lời nghiên cứu phải:
 
-1. distinguish findings from search hypotheses;
-2. cite repository evidence with the required provenance fields;
-3. identify variants and independent witnesses rather than flattening them;
-4. describe uncertainty and missing coverage;
-5. fail closed for any claim the available corpus evidence cannot establish.
+1. tách kết luận khỏi giả thuyết tìm kiếm;
+2. dẫn bằng chứng repository với provenance cần thiết;
+3. nhận diện dị bản và nhân chứng độc lập thay vì làm phẳng chúng;
+4. mô tả độ bất định và phần corpus chưa bao phủ;
+5. fail-closed với claim mà corpus evidence hiện có không xác lập được.
 
-Internet knowledge and model memory must never become an implicit fourteenth
-source.
+Internet và trí nhớ mô hình không bao giờ được trở thành nguồn thứ 14 ngầm định.
