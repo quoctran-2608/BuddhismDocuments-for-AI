@@ -1,9 +1,18 @@
-# Local Corpus Survey
+# Khảo sát corpus cục bộ — hồ sơ lịch sử
 
-Survey date: 2026-09-22. The survey used only the checked-out files and pinned
-Git objects. No remote source was consulted.
+> **Trạng thái: LỊCH SỬ / SNAPSHOT NGÀY 22/09/2026**
+>
+> Tài liệu này ghi lại tình trạng corpus tại thời điểm khảo sát ban đầu. Những
+> câu như “repository chưa có chỉ mục xuyên corpus” mô tả đúng thời điểm
+> 22/09/2026, **không phải trạng thái hệ thống hiện tại**.
+>
+> Muốn biết trạng thái hiện hành, xem `docs/PROJECT_SPEC.md`,
+> `docs/ARCHITECTURE.md`, config/schema/code/tests tương ứng.
 
-## Global finding
+Khảo sát ngày 22/09/2026 chỉ dùng các file đã checkout và Git object đã ghim;
+không dùng nguồn từ xa.
+
+## Kết luận tại thời điểm khảo sát
 
 The repository had no global cross-corpus search index. It contained a few
 source-specific indexes and tools, chiefly under `third-party/pali-canon` and
