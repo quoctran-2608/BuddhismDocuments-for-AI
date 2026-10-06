@@ -13,6 +13,7 @@
 - **TỰ ĐỘNG**: có test hiện hữu kiểm hành vi chính;
 - **CẤU TRÚC**: có thể kiểm bằng config/schema/manifest/code tĩnh;
 - **QUY TRÌNH**: là luật vận hành/AI behavior, hiện chưa có test máy đầy đủ;
+- **RÀ SOÁT**: cần kiểm bằng đối chiếu tài liệu hoặc kiểm tra thủ công có chủ đích;
 - **CHƯA TRIỂN KHAI**: requirement MỤC TIÊU, chưa được nghiệm thu.
 
 Repo hiện có 45 test method trong 6 file test chính:
@@ -33,7 +34,7 @@ Con số này mô tả test hiện có trong repo; tài liệu này không tuyê
 
 | Requirement | Mức | Bằng chứng / cách nghiệm thu |
 |---|---|---|
-| REQ-SRC-001 | CẤU TRÚC + TỰ ĐỘNG một phần | `manifest.json`; `cli.py::source_status`; acceptance/local source checks trong workflow |
+| REQ-SRC-001 | CẤU TRÚC + TỰ ĐỘNG một phần | `manifest.json`; `cli.py::source_status`; acceptance/local source checks trong quy trình |
 | REQ-SRC-002 | QUY TRÌNH | `AGENTS.md` immutable source layer; kiểm review thay đổi không ghi vào submodule |
 | REQ-SRC-003 | CẤU TRÚC | `bin/buddhist-corpus status` so manifest SHA với local SHA và trả lỗi nếu mismatch |
 | REQ-SRC-004 | CẤU TRÚC | `config/corpus-sources.json` phải có mapping cho toàn bộ corpus được hỗ trợ |
@@ -58,7 +59,7 @@ REQ-SRC-003 không đạt nếu source contract mismatch nhưng command vẫn b�
 | REQ-DER-001 | CẤU TRÚC | `.gitignore`, docs, schema/build path; DB nằm dưới `derived/` và không được dùng như source-of-origin |
 | REQ-DER-002 | TỰ ĐỘNG + CẤU TRÚC | schema có `source_path/source_sha`; `test_evidence_bundles_record_context_provenance_and_variants`; text-role/provenance tests |
 | REQ-DER-003 | TỰ ĐỘNG | `test_profile_sensitive_parser_state`; parser/search index version state |
-| REQ-DER-004 | TỰ ĐỘNG + TÀI LIỆU | `test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only`; CJK vocabulary docs/manifest |
+| REQ-DER-004 | TỰ ĐỘNG + CẤU TRÚC | `test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only`; CJK vocabulary docs/manifest |
 
 REQ-DER-002 đạt khi một record có thể truy về file và SHA nguồn, không chỉ về DB
 row ID.
@@ -122,7 +123,7 @@ REQ-WIT-002 đạt khi prose của note không còn nằm trong
 
 | Requirement | Mức | Bằng chứng / test |
 |---|---|---|
-| REQ-REL-001 | QUY TRÌNH + TỰ ĐỘNG gián tiếp | data model tách relations khỏi records; SC↔CBETA workflow tests |
+| REQ-REL-001 | QUY TRÌNH + TỰ ĐỘNG gián tiếp | data model tách relations khỏi records; các test quy trình SC↔CBETA |
 | REQ-REL-002 | TỰ ĐỘNG | `test_nikaya_agama_parallel_relation`; `test_nikaya_agama_resolves_through_local_cbeta_bridge` |
 | REQ-REL-003 | TỰ ĐỘNG | 10 resolver tests, đặc biệt non-overlap/reversed/malformed cases |
 | REQ-REL-004 | QUY TRÌNH | AGENTS cross-language guardrails; chưa có Golden Research Test |
@@ -198,9 +199,9 @@ REQ-FAIL-003 đạt khi query không có evidence trả trạng thái fail-close
 | Requirement | Mức | Cách nghiệm thu |
 |---|---|---|
 | REQ-DOC-001 | CẤU TRÚC | `docs/DOCUMENTATION_GOVERNANCE.md` tồn tại và có authority matrix |
-| REQ-DOC-002 | CẤU TRÚC/REVIEW | Project Spec và Requirements tách HIỆN HÀNH/MỤC TIÊU/LỊCH SỬ |
-| REQ-DOC-003 | REVIEW | README sau giai đoạn đồng bộ phải là cửa vào, không tuyên bố chi tiết trái config/schema |
-| REQ-DOC-004 | REVIEW | progress/survey phải được gắn đúng vai trò lịch sử, không giả làm current status |
+| REQ-DOC-002 | CẤU TRÚC + RÀ SOÁT | Project Spec và Requirements tách HIỆN HÀNH/MỤC TIÊU/LỊCH SỬ |
+| REQ-DOC-003 | RÀ SOÁT | README sau giai đoạn đồng bộ phải là cửa vào, không tuyên bố chi tiết trái config/schema |
+| REQ-DOC-004 | RÀ SOÁT | progress/survey phải được gắn đúng vai trò lịch sử, không giả làm trạng thái hiện tại |
 
 Hiện REQ-DOC-003 và REQ-DOC-004 **chưa được xem là hoàn tất về mặt làm sạch
 docs**, vì README/progress sẽ được sửa ở giai đoạn đồng bộ tài liệu hiện hữu.
@@ -311,11 +312,11 @@ Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa đư�
 | REQ-VER-001 | CHƯA TRIỂN KHAI | pointer/title/relation không được nâng thành Evidence Record |
 | REQ-VER-002 | CHƯA TRIỂN KHAI | Evidence Record thiếu provenance phải bị reject |
 | REQ-VER-003 | CHƯA TRIỂN KHAI | sai SHA/path/segment phải fail gate |
-| REQ-VER-004 | CHƯA TRIỂN KHAI | finding phức hợp phải được tách claim kiểm được |
+| REQ-VER-004 | CHƯA TRIỂN KHAI | kết luận phức hợp phải được tách thành claim có thể kiểm |
 | REQ-VER-005 | CHƯA TRIỂN KHAI | claim không evidence bị reject |
 | REQ-VER-006 | CHƯA TRIỂN KHAI | support status chỉ dùng taxonomy định tính |
 | REQ-VER-007 | CHƯA TRIỂN KHAI | UNSUPPORTED không qua final gate |
-| REQ-VER-008 | CHƯA TRIỂN KHAI | CONTRADICTED không được xuất như established finding |
+| REQ-VER-008 | CHƯA TRIỂN KHAI | CONTRADICTED không được xuất như kết luận đã được xác lập |
 | REQ-VER-009 | CHƯA TRIỂN KHAI | retrieval score không tự biến thành support level |
 | REQ-VER-010 | CHƯA TRIỂN KHAI | synthesis không sinh claim mới ngoài accepted set |
 | REQ-QTE-001 | CHƯA TRIỂN KHAI | exact/normalized/paraphrase/unverified/mismatch classification |
@@ -360,7 +361,7 @@ Tối thiểu phải có fixtures cố ý sai cho:
 7. claim mạnh hơn evidence;
 8. research mode bỏ counterevidence pass;
 9. AI tự tạo phương trình Pāli ↔ Chinese không có repository evidence;
-10. synthesis sinh finding mới chưa qua claim gate.
+10. phần tổng hợp sinh kết luận mới chưa qua claim gate.
 
 ---
 
@@ -391,7 +392,7 @@ Vòng nâng cấp verification v1 chỉ được coi là hoàn thành khi tối 
 - Evidence Record có provenance đầy đủ;
 - quote sai bị phát hiện;
 - claim không evidence bị reject;
-- UNSUPPORTED/CONTRADICTED không lọt final finding;
+- UNSUPPORTED/CONTRADICTED không lọt vào kết luận cuối;
 - research mode có counterevidence pass;
 - claim → evidence traceable;
 - Research Run review được;
