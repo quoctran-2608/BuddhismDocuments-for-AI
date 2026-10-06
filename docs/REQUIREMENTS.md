@@ -409,11 +409,11 @@ lookup.
 
 Quy tắc nằm ở `docs/DOCUMENTATION_GOVERNANCE.md`.
 
-### REQ-DOC-002 — Tài liệu phải phân biệt HIỆN HÀNH / MỤC TIÊU / LỊCH SỬ
+### REQ-DOC-002 — Tài liệu phải phân biệt HIỆN HÀNH / MỤC TIÊU / TƯƠNG LAI / LỊCH SỬ
 
 **Trạng thái:** HIỆN HÀNH.
 
-Một đặc tả chưa triển khai không được trình bày như runtime hiện tại.
+Một đặc tả MỤC TIÊU hoặc TƯƠNG LAI chưa triển khai không được trình bày như runtime hiện tại.
 
 ### REQ-DOC-003 — README chỉ là cửa vào, không phải nguồn chuẩn mọi chi tiết
 
