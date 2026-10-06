@@ -433,6 +433,9 @@ hiểu là snapshot/hồ sơ lịch sử, không phải trạng thái vận hàn
 
 > Toàn bộ mục này là **MỤC TIÊU**. Chỉ chuyển sang HIỆN HÀNH khi có code,
 > schema/format phù hợp và kiểm thử nghiệm thu.
+>
+> Semantics và data contract chi tiết của lớp này nằm trong
+> `docs/RESEARCH_VERIFICATION_DESIGN.md`.
 
 ## 11.1. Evidence Record
 
@@ -491,6 +494,21 @@ Không dùng rank/score của retrieval làm support level của claim.
 
 Phần tổng hợp cuối không được tự thêm một kết luận quan trọng chưa qua claim gate.
 
+### REQ-VER-011 — Atomic Claim phải khai báo loại claim
+
+Mỗi claim quan trọng phải khai báo tối thiểu một `claim_type` thuộc taxonomy v1:
+
+- `textual`;
+- `historical`;
+- `relationship`;
+- `comparative`;
+- `interpretive`;
+- `empirical`;
+- `metaphysical`.
+
+Verifier phải dùng loại claim để tránh coi một loại evidence là đủ cho một mệnh
+đề thuộc loại khác.
+
 ---
 
 ## 11.3. Kiểm chứng trích dẫn
@@ -547,8 +565,9 @@ Counterevidence không chỉ là phần trang trí ở cuối answer.
 
 ### REQ-RUN-001 — Research mode phải tạo Research Run Manifest
 
-Manifest phải đủ để biết câu hỏi, thời điểm, mode, scope, repo/version nguồn,
-queries, evidence IDs, claim IDs, counterevidence status và limitations.
+Manifest phải đủ để biết câu hỏi, thời điểm, mode, scope, commit repo chính,
+repo/commit/root của locator khi dùng Connector, source revisions, queries,
+evidence IDs, claim IDs, counterevidence status và limitations.
 
 ### REQ-RUN-002 — Phải phân biệt reproducibility truy xuất và reproducibility nghiên cứu
 
@@ -568,7 +587,17 @@ Counterevidence pass phải có trạng thái có thể kiểm.
 
 ---
 
-# 12. Ngoài phạm vi v1 của lớp nâng cấp
+# 12. TƯƠNG LAI — chưa phải requirement v1
+
+Deep Connector fallback, remote retrieval job hoặc GitHub Action để xử lý các
+trường hợp locator hữu hạn không đủ chỉ là hướng **TƯƠNG LAI**. Chúng chưa có
+mã requirement và không được triển khai như một phần v1 nếu chưa được chủ động
+nâng thành MỤC TIÊU.
+
+Nếu được xem xét sau này, worker từ xa chỉ được làm retrieval/test/sinh artefact
+có provenance; không được trở thành “AI brain” bỏ qua Evidence/Claim gates.
+
+# 13. Ngoài phạm vi v1 của lớp nâng cấp
 
 Các hạng mục sau **không phải yêu cầu v1**:
 
@@ -587,7 +616,7 @@ riêng.
 
 ---
 
-# 13. Quy tắc thay đổi requirement
+# 14. Quy tắc thay đổi requirement
 
 Một requirement chỉ được sửa khi:
 
