@@ -501,6 +501,9 @@ có vượt quá nguồn hay không vẫn còn phụ thuộc nhiều vào quy tr
 ## 14. Hướng nâng cấp đã được chấp thuận — MỤC TIÊU
 
 > Trạng thái phần này: **MỤC TIÊU — CHƯA TRIỂN KHAI ĐẦY ĐỦ**
+>
+> Thiết kế chi tiết và data contract mục tiêu nằm trong
+> `docs/RESEARCH_VERIFICATION_DESIGN.md`.
 
 Không thay thế hệ retrieval hiện tại.
 
@@ -661,7 +664,22 @@ Dự án hiện hành và hướng nâng cấp cùng giữ các nguyên tắc:
 - AI đề xuất phương trình Pāli–Chinese ≠ phương trình đã được corpus chứng minh;
 - một nghiên cứu khoa học hỗ trợ một hiệu ứng ≠ chứng minh một mệnh đề siêu hình.
 
-## 17. Ngoài phạm vi v1 của hướng nâng cấp
+## 17. TƯƠNG LAI — sau v1
+
+> Trạng thái: **TƯƠNG LAI — chưa phải requirement triển khai**
+
+Nếu production locator hữu hạn sau này trở thành nút thắt đã được đo lường, có
+thể xem xét một đường truy xuất sâu từ xa bằng job/worker xác định (ví dụ GitHub
+Action) để tạo artefact truy xuất có provenance. Worker này chỉ làm retrieval,
+kiểm thử hoặc sinh artefact; nó không phải “AI brain” và không được bỏ qua
+Evidence/Claim gates.
+
+Đặc biệt, đây mới là nơi xem xét giải pháp cho arbitrary remote CJK retrieval;
+không được âm thầm materialize toàn bộ trigram vocabulary thành `terms/cjk`.
+
+Chi tiết: `docs/RESEARCH_VERIFICATION_DESIGN.md`.
+
+## 18. Ngoài phạm vi v1 của hướng nâng cấp
 
 Không ưu tiên trong v1:
 
@@ -677,7 +695,7 @@ Không ưu tiên trong v1:
 
 V1 ưu tiên lớp kiểm chứng nhỏ, có thể kiểm thử và không phá fast path hiện tại.
 
-## 18. Tiêu chí chất lượng cấp dự án
+## 19. Tiêu chí chất lượng cấp dự án
 
 Hệ thống phải hướng tới các thuộc tính sau:
 
@@ -697,7 +715,7 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 ánh xạ code/config/test và các khoảng trống kiểm thử nằm trong
 `docs/ACCEPTANCE.md`.
 
-## 19. Tài liệu nên đọc theo nhu cầu
+## 20. Tài liệu nên đọc theo nhu cầu
 
 ### Muốn hiểu dự án
 
@@ -734,6 +752,12 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 
 - `docs/SC_CBETA_BRIDGE.md`.
 
+### Muốn hiểu thiết kế lớp kiểm chứng MỤC TIÊU
+
+- `docs/RESEARCH_VERIFICATION_DESIGN.md`;
+- `docs/REQUIREMENTS.md`;
+- `docs/ACCEPTANCE.md`.
+
 ### Muốn hiểu vì sao kiến trúc chọn như hiện tại
 
 - `docs/adr/README.md`;
@@ -744,9 +768,9 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 - `progress.md`;
 - lịch sử Git.
 
-## 20. Quy tắc về trạng thái tài liệu
+## 21. Quy tắc về trạng thái tài liệu
 
-Mọi đặc tả quan trọng phải được hiểu theo ba trạng thái:
+Mọi đặc tả quan trọng phải được hiểu theo bốn trạng thái:
 
 ### HIỆN HÀNH
 
@@ -756,15 +780,19 @@ Mọi đặc tả quan trọng phải được hiểu theo ba trạng thái:
 
 Đã chấp thuận về hướng hoặc đang được đặc tả, nhưng chưa được triển khai đầy đủ.
 
+### TƯƠNG LAI
+
+Ý tưởng hoặc hướng có điều kiện, chưa thuộc phạm vi triển khai cam kết.
+
 ### LỊCH SỬ
 
 Mô tả khảo sát, benchmark, POC, quyết định hoặc trạng thái ở một thời điểm trước.
 
 Không được lấy nội dung LỊCH SỬ để phủ định runtime HIỆN HÀNH.
 
-Không được mô tả MỤC TIÊU như thể đã có implementation.
+Không được mô tả MỤC TIÊU hoặc TƯƠNG LAI như thể đã có implementation.
 
-## 21. Kết luận định hướng
+## 22. Kết luận định hướng
 
 Có thể tóm tắt sự tiến hóa của dự án bằng hai câu:
 
