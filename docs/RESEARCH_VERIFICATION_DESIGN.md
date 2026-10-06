@@ -61,7 +61,7 @@ Hệ thống hiện hành đã làm tốt:
 - tách `evidence_class`, `text_role`, `witness`;
 - mở source upstream;
 - đọc context;
-- relation/variant workflows;
+- quy trình quan hệ/dị bản;
 - fail-closed khi không đủ corpus evidence.
 
 Nhưng vẫn còn một khoảng trống sau khi source đã được đọc:
@@ -210,7 +210,7 @@ Các artefact sau **không tự động** trở thành Evidence Record:
 - title/TOC chưa được kiểm trong source;
 - relation row;
 - bridge row;
-- metadata discovery candidate.
+- ứng viên metadata dùng cho khám phá.
 
 Pointer không bao giờ là bằng chứng chỉ vì nó tồn tại trong locator.
 
@@ -539,7 +539,7 @@ optional trong Research mode.
 
 Phải phân biệt:
 
-- **tái tạo truy xuất**: cùng source/index/query cho candidate tương tự;
+- **tái tạo truy xuất**: cùng source/index/query cho các ứng viên tương tự;
 - **tái tạo nghiên cứu**: biết source nào đã mở, claim nào được tạo, evidence nào
   hỗ trợ/chống, claim nào bị loại.
 
