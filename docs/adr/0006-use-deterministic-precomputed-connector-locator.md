@@ -8,7 +8,7 @@
 ## Bối cảnh
 
 GitHub Connector không có SQLite local để chạy FTS như CLI. Nếu agent phải tìm
-candidate bằng cách duyệt repository hoặc GitHub Code Search thì coverage và độ
+ứng viên bằng cách duyệt repository hoặc GitHub Code Search thì độ bao phủ và độ
 ổn định phụ thuộc vào việc GitHub đã index file nào, vào thời điểm nào.
 
 GitHub Code Search không phải một hợp đồng runtime đảm bảo toàn bộ artefact sinh
