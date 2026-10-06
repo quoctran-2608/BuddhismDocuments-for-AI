@@ -52,7 +52,7 @@ Không có cơ sở và vi phạm provenance-first research.
 ## Hệ quả
 
 - data model phải giữ relation riêng khỏi record text;
-- tài liệu và AI workflow phải mô tả đúng loại bằng chứng;
+- tài liệu và quy trình AI phải mô tả đúng loại bằng chứng;
 - compare/parallel output không được tự tuyên bố textual identity.
 
 ## Khi nào xem xét lại
