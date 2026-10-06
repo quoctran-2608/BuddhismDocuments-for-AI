@@ -12,63 +12,74 @@
 Khảo sát ngày 22/09/2026 chỉ dùng các file đã checkout và Git object đã ghim;
 không dùng nguồn từ xa.
 
-## Kết luận tại thời điểm khảo sát
+## 1. Kết luận tại thời điểm khảo sát
 
-The repository had no global cross-corpus search index. It contained a few
-source-specific indexes and tools, chiefly under `third-party/pali-canon` and
-`pts/pts-archive`, but no common record schema or retrieval interface spanning
-all 13 submodules.
+Tại thời điểm đó, repository chưa có chỉ mục tìm kiếm chung xuyên corpus. Một số
+nguồn có chỉ mục/công cụ riêng, chủ yếu dưới `third-party/pali-canon` và
+`pts/pts-archive`, nhưng chưa có schema record chung hoặc giao diện truy xuất
+thống nhất cho cả 13 submodule.
 
-SQLite 3.45.1 with FTS5 is available locally. The implemented layer therefore
-uses Python's standard library and SQLite FTS5; it needs no package download.
+Môi trường local có SQLite 3.45.1 với FTS5. Vì vậy tầng được triển khai sau khảo
+sát chọn Python standard library và SQLite FTS5, không cần tải thêm package.
 
-## Source observations
+## 2. Quan sát từng nguồn
 
-| Source | Observed schema/IDs | Role | Limits found locally |
+| Nguồn | Schema/định danh quan sát được | Vai trò | Giới hạn thấy trong dữ liệu local |
 |---|---|---|---|
-| SuttaCentral Bilara | JSON maps `segment_id → string`; cognate root, translation, comment, variant files; e.g. `mn1:1.1` | Canonical/root and structured translations | Comments may contain external links; variants use a compact human-readable syntax |
-| SuttaCentral sc-data | `new_parallels.json`, structure, language, school, editions, dictionaries | Relationship and metadata graph | A parallel edge does not establish wording; some documented structure files are deprecated |
-| CBETA XML P5 | TEI, root `xml:id` such as `T01n0001`, `lb @n`, `pb`, `mulu`, `app/lem/rdg`, witness sigla | Authoritative structured Chinese edition | Large files; gaiji and apparatus require source-aware parsing |
-| CBETA BM_u8 | Plain lines beginning with CBETA work/page/line IDs | Fast plain-text witness | Markup is compact legacy syntax; XML P5 is richer for verification |
-| 84000 TEI | TEI titles, publication `idno`, `bibl @key=toh...`, milestones and folio metadata | Authoritative structured English translation | Some files are placeholders with little/no body text |
-| 84000 RDF | One RDF file per Toh. work; work, instance, translation, sameAs, labels | Metadata/relationship data | Metadata only; not a textual witness |
-| 84000 Translation Memory | TMX and JSON `tus`; Tibetan/English, folio, passage ID, creation method | Alignment/discovery | Documented v3 machine alignment is approximate; v4 is manually corrected |
-| OpenPecha C0A2DD042 | Line-aligned `WORK-lang.txt` pairs and CSV catalogs | Multilingual Tibetan alignment/discovery | Mixed upstream sources; line alignment is not an independent canonical edition |
-| BuddhaNexus Pāli | Segment maps; original and computationally cut forms; SC-compatible IDs for canonical material | Discovery/segmentation | Commentary sources differ; cut segments are computational derivatives |
-| BuddhaNexus Chinese | gzipped JSON sentence segments with CBETA-like line IDs | Discovery/segmentation | Derived from CBETA; verify against CBETA XML where available |
-| BuddhaNexus Sanskrit | JSON machine segmentation, with a small checked subset | Discovery/segmentation | README explicitly warns of many errors |
-| PTS archive | 53 page-marked text exports; optional recovered SQLite and apparatus | Auxiliary/reference | README warns of typos, mojibake, missing/mislabelled volumes, and ROTA-vs-PTS page distinctions |
-| pali-canon | Canonical JSON, token lemmas/morphology, five-witness critical apparatus | Derived lemma/critical evidence | Critical text is editorial/derived; lemmatization can contain wrong analyses and must not replace witnesses |
+| SuttaCentral Bilara | JSON map `segment_id → string`; file root, translation, comment, variant cùng họ; ví dụ `mn1:1.1` | Root/canonical và bản dịch có cấu trúc | Comment có thể chứa link ngoài; variant dùng cú pháp compact cho người đọc |
+| SuttaCentral sc-data | `new_parallels.json`, structure, language, school, editions, dictionaries | Đồ thị quan hệ và metadata | Một parallel edge không chứng minh câu chữ; một số structure file được tài liệu upstream đánh dấu deprecated |
+| CBETA XML P5 | TEI, root `xml:id` như `T01n0001`, `lb @n`, `pb`, `mulu`, `app/lem/rdg`, witness sigla | Ấn bản Hán văn có cấu trúc, thẩm quyền cao | File lớn; gaiji và apparatus cần parser hiểu nguồn |
+| CBETA BM_u8 | Dòng plain text mở đầu bằng CBETA work/page/line ID | Nhân chứng plain-text nhanh | Markup là cú pháp legacy compact; XML P5 giàu thông tin hơn khi cần kiểm chứng |
+| 84000 TEI | TEI title, publication `idno`, `bibl @key=toh...`, milestone và folio metadata | Bản dịch Anh ngữ có cấu trúc, thẩm quyền cao | Một số file là placeholder, ít hoặc không có body text |
+| 84000 RDF | Một RDF file cho mỗi Toh. work; work, instance, translation, sameAs, label | Dữ liệu metadata/quan hệ | Chỉ là metadata; không phải textual witness |
+| 84000 Translation Memory | TMX và JSON `tus`; Tibetan/English, folio, passage ID, creation method | Căn chỉnh/khám phá | v3 machine alignment theo tài liệu upstream là gần đúng; v4 được sửa thủ công |
+| OpenPecha C0A2DD042 | Cặp `WORK-lang.txt` căn theo dòng và CSV catalog | Căn chỉnh đa ngôn ngữ Tây Tạng/khám phá | Trộn nhiều nguồn upstream; line alignment không phải canonical edition độc lập |
+| BuddhaNexus Pāli | Segment map; dạng gốc và dạng cắt bằng tính toán; canonical material có ID tương thích SC | Khám phá/phân đoạn | Commentary source khác nhau; cut segment là dữ liệu dẫn xuất tính toán |
+| BuddhaNexus Chinese | JSON gzip chứa sentence segment với CBETA-like line ID | Khám phá/phân đoạn | Dẫn xuất từ CBETA; khi có thể phải kiểm lại bằng CBETA XML |
+| BuddhaNexus Sanskrit | JSON machine segmentation, có một tập nhỏ được kiểm thủ công | Khám phá/phân đoạn | README upstream cảnh báo có nhiều lỗi |
+| PTS archive | 53 text export có page mark; có thể có SQLite/apparatus khôi phục | Tham khảo phụ trợ | README cảnh báo typo, mojibake, volume thiếu/sai nhãn và khác biệt page ROTA-vs-PTS |
+| pali-canon | Canonical JSON, token lemma/morphology, critical apparatus năm witness | Bằng chứng lemma/khảo dị dẫn xuất | Critical text là editorial/derived; lemmatization có thể phân tích sai và không được thay nhân chứng |
 
-## Tokenization decision
+## 3. Quyết định tokenization sau khảo sát
 
-One tokenizer is not enough for all scripts.
+Một tokenizer duy nhất không đủ cho mọi hệ chữ.
 
-- FTS5 `unicode61 remove_diacritics 0` preserves Pāli/Sanskrit diacritics and
-  provides token search for space-delimited scripts.
-- A diacritic-folded representation supports explicit fallback searches but is
-  ranked below exact Unicode matches.
-- A separate FTS5 trigram index over `compact(raw_text)` supplies Chinese
-  middle-substring candidates for `lzh`/`zh` records, including long CBETA
-  chunks whose stored normalized/compact columns are intentionally blank.
-  Queries shorter than three usable CJK characters do not have guaranteed
-  arbitrary middle-substring coverage. Tibetan substring behavior is not
-  established by this index.
-- Lemmas are stored in a separate table and copied into a searchable lemma
-  representation. Only corpus-provided lemmas count as lemma evidence.
-- Relations and alignments live in separate tables; they are not concatenated
-  into text.
+- FTS5 `unicode61 remove_diacritics 0` giữ dấu Pāli/Sanskrit và cung cấp token
+  search cho các hệ chữ phân cách bằng khoảng trắng.
+- Một biểu diễn bỏ dấu riêng hỗ trợ fallback search có chủ đích nhưng phải xếp
+  thấp hơn exact Unicode match.
+- Một FTS5 trigram index riêng trên `compact(raw_text)` sinh ứng viên chuỗi con
+  Hán văn cho record `lzh`/`zh`, kể cả CBETA chunk dài mà cột
+  normalized/compact được cố ý để trống. Truy vấn ngắn hơn ba ký tự CJK hữu dụng
+  không có bảo đảm arbitrary middle-substring coverage. Index này chưa thiết
+  lập hành vi substring cho tiếng Tạng.
+- Lemma được lưu trong bảng riêng và đưa vào biểu diễn có thể tìm kiếm. Chỉ lemma
+  do corpus cung cấp mới được tính là lemma evidence.
+- Relation và alignment nằm trong bảng riêng; không nối chúng vào text.
 
-## Evidence classification
+## 4. Phân loại bằng chứng
 
-The implementation uses:
+Implementation sau khảo sát dùng các lớp:
 
-- `canonical_root`
-- `authoritative_structured`
-- `metadata_relationship`
-- `parallel_alignment`
-- `computational_segmented`
-- `derived_critical_lemma`
-- `auxiliary_reference`
+- `canonical_root`;
+- `authoritative_structured`;
+- `metadata_relationship`;
+- `parallel_alignment`;
+- `computational_segmented`;
+- `derived_critical_lemma`;
+- `auxiliary_reference`.
 
-These names are carried into every indexed record and provenance response.
+Các tên này được giữ trong indexed record và provenance response.
+
+## 5. Cách đọc tài liệu này hôm nay
+
+Tài liệu này có giá trị vì nó ghi lại **vì sao** dự án đi tới kiến trúc hiện tại,
+nhưng không phải nguồn chuẩn cho trạng thái hôm nay.
+
+Nếu cần biết:
+
+- kiến trúc hiện hành → `docs/ARCHITECTURE.md`;
+- nguồn/SHA hiện hành → `manifest.json`;
+- corpus/evidence class hiện hành → `config/corpus-sources.json`;
+- schema hiện hành → `schema/corpus-index.sql`;
+- lý do các quyết định kiến trúc đã chưng cất → `docs/adr/`.
