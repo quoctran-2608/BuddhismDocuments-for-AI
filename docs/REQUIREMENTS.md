@@ -55,7 +55,7 @@ Dự án phải duy trì đúng 13 nguồn upstream được quản lý và ghim
 **Trạng thái:** HIỆN HÀNH.
 
 Không được sửa, normalize, regenerate hoặc commit dữ liệu nghiên cứu vào bên
-trong source repository/submodule như một phần của workflow nghiên cứu.
+trong repository/submodule nguồn như một phần của quy trình nghiên cứu.
 
 ### REQ-SRC-003 — Nguồn thiếu hoặc sai SHA là lỗi provenance
 
@@ -87,7 +87,7 @@ Nguồn chuẩn: `config/corpus-sources.json`.
 **Trạng thái:** HIỆN HÀNH.
 
 `derived/corpus.sqlite3` và các index liên quan phải có thể hiểu là dữ liệu sinh
-ra từ pinned sources; không được nâng database thành source-of-truth của câu chữ.
+ra từ các nguồn đã ghim; không được nâng database thành nguồn chuẩn của câu chữ.
 
 ### REQ-DER-002 — Artefact dẫn xuất phải có provenance về source SHA
 
@@ -107,7 +107,7 @@ source/parser/index version thay đổi.
 
 **Trạng thái:** HIỆN HÀNH.
 
-`records_cjk_fts` dùng trigram phải được coi là candidate-generation index,
+`records_cjk_fts` dùng trigram phải được coi là chỉ mục sinh ứng viên,
 không được mô tả như một từ điển thuật ngữ Phật học.
 
 ---
@@ -140,9 +140,9 @@ Primary normalization phải bảo toàn dấu; diacritic folding là bước ri
 **Trạng thái:** HIỆN HÀNH.
 
 Hệ thống phải có thể dùng lemma/morphology đã được corpus/index cung cấp để mở
-rộng candidate mà không tự bịa biến thể.
+rộng tập ứng viên mà không tự bịa biến thể.
 
-### REQ-RET-005 — Truy vấn CJK chuỗi con dài phải có candidate path phù hợp
+### REQ-RET-005 — Truy vấn CJK chuỗi con dài phải có đường sinh ứng viên phù hợp
 
 **Trạng thái:** HIỆN HÀNH.
 
@@ -172,11 +172,11 @@ Score/rank không được dùng để tự suy ra:
 Không được trích hoặc tổng hợp câu chữ từ pointer metadata. Trong Connector mode,
 phải mở pinned upstream source trước khi dùng wording làm bằng chứng.
 
-### REQ-EVD-002 — Finding phải truy nguyên về nguồn
+### REQ-EVD-002 — Kết luận nghiên cứu phải truy nguyên về nguồn
 
 **Trạng thái:** HIỆN HÀNH.
 
-Mỗi finding nghiên cứu quan trọng phải truy được về các trường provenance phù
+Mỗi kết luận nghiên cứu quan trọng phải truy được về các trường provenance phù
 hợp, gồm:
 
 - corpus/source;
@@ -192,14 +192,14 @@ hợp, gồm:
 
 **Trạng thái:** HIỆN HÀNH.
 
-Một hit truy xuất không đủ để trở thành finding. Workflow phải có khả năng đọc
+Một kết quả truy xuất không đủ để trở thành kết luận nghiên cứu. Quy trình phải có khả năng đọc
 context trước/sau hoặc mở raw source khi cần để xác minh ý nghĩa.
 
 ### REQ-EVD-004 — Discovery source không được âm thầm thay primary witness
 
 **Trạng thái:** HIỆN HÀNH.
 
-BuddhaNexus, alignment corpus hoặc nguồn discovery tương tự chỉ nên tạo candidate
+BuddhaNexus, corpus căn chỉnh hoặc nguồn phục vụ khám phá tương tự chỉ nên tạo ứng viên
 khi có witness mạnh hơn để mở. Nếu không resolve được, phải nêu giới hạn.
 
 ### REQ-EVD-005 — Evidence hierarchy phải được giữ khi tổng hợp
@@ -355,11 +355,11 @@ Production v1 hiện materialize:
 
 Không được giả định tồn tại `terms/cjk`.
 
-### REQ-CON-010 — Candidate production phải cân bằng theo corpus và collapse nguồn
+### REQ-CON-010 — Ứng viên production phải cân bằng theo corpus và gộp nguồn trùng
 
 **Trạng thái:** HIỆN HÀNH.
 
-Generation phải hạn chế việc một corpus/work/source chiếm toàn bộ candidate set,
+Quá trình sinh artefact phải hạn chế việc một corpus/work/source chiếm toàn bộ tập ứng viên,
 và phải collapse theo identity được production design định nghĩa.
 
 ### REQ-CON-011 — Generation phải deterministic và có thể resume
@@ -425,7 +425,7 @@ README có thể tóm tắt nhưng không được ghi đè config/schema/code.
 **Trạng thái:** HIỆN HÀNH.
 
 `progress.md`, benchmark và corpus survey có thể giữ số liệu cũ nhưng phải được
-hiểu là snapshot/hồ sơ lịch sử, không phải current runtime.
+hiểu là snapshot/hồ sơ lịch sử, không phải trạng thái vận hành hiện tại.
 
 ---
 
@@ -438,7 +438,7 @@ hiểu là snapshot/hồ sơ lịch sử, không phải current runtime.
 
 ### REQ-VER-001 — Chỉ nguồn đã mở và đọc mới được tạo Evidence Record
 
-Pointer, title, TOC, relation row, bridge row hoặc candidate discovery không tự
+Pointer, tiêu đề, mục lục, dòng quan hệ, dòng cầu nối hoặc ứng viên khám phá không tự
 động là Evidence Record.
 
 ### REQ-VER-002 — Evidence Record phải có provenance đầy đủ
@@ -454,13 +454,13 @@ trí văn bản phù hợp.
 
 ## 11.2. Atomic Claim
 
-### REQ-VER-004 — Finding quan trọng phải tách thành Atomic Claim
+### REQ-VER-004 — Kết luận quan trọng phải tách thành Atomic Claim
 
 Claim phải đủ nhỏ để đánh giá riêng support/counterevidence.
 
 ### REQ-VER-005 — Claim phải nối tới supporting evidence
 
-Claim không có evidence phù hợp không được trở thành accepted finding.
+Claim không có evidence phù hợp không được trở thành kết luận được chấp nhận.
 
 ### REQ-VER-006 — Claim verification phải dùng trạng thái định tính
 
@@ -474,7 +474,7 @@ Tối thiểu:
 
 Không dùng một xác suất giả tạo làm thay thế.
 
-### REQ-VER-007 — UNSUPPORTED bị chặn khỏi finding cuối
+### REQ-VER-007 — UNSUPPORTED bị chặn khỏi kết luận cuối
 
 Không được “làm mềm câu chữ” để lén đưa claim thiếu bằng chứng vào kết luận.
 
@@ -489,7 +489,7 @@ Không dùng rank/score của retrieval làm support level của claim.
 
 ### REQ-VER-010 — Synthesis chỉ dùng accepted claim set
 
-Final synthesis không được tự thêm một finding quan trọng chưa qua claim gate.
+Phần tổng hợp cuối không được tự thêm một kết luận quan trọng chưa qua claim gate.
 
 ---
 
