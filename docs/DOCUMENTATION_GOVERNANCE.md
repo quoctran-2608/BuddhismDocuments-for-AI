@@ -27,10 +27,10 @@ Thẩm quyền được xác định theo miền thông tin:
 | Connector chuyên biệt | `docs/REMOTE_AGENT.md` |
 | SC ↔ CBETA | `docs/SC_CBETA_BRIDGE.md` + resolver tests |
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
-| Lịch sử phát triển | `progress.md` + Git history |
+| Lịch sử phát triển | `progress.md` + lịch sử Git |
 | Yêu cầu có mã | `docs/REQUIREMENTS.md` |
 | Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
-| Lý do quyết định kiến trúc | `docs/adr/` (sẽ tạo) |
+| Lý do quyết định kiến trúc | `docs/adr/` (dự kiến tạo ở Giai đoạn 5) |
 
 ## 2. Ba trạng thái bắt buộc
 
