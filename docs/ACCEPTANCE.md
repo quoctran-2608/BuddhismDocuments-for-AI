@@ -203,8 +203,9 @@ REQ-FAIL-003 đạt khi query không có evidence trả trạng thái fail-close
 | REQ-DOC-003 | RÀ SOÁT | README sau giai đoạn đồng bộ phải là cửa vào, không tuyên bố chi tiết trái config/schema |
 | REQ-DOC-004 | RÀ SOÁT | progress/survey phải được gắn đúng vai trò lịch sử, không giả làm trạng thái hiện tại |
 
-Hiện REQ-DOC-003 và REQ-DOC-004 **chưa được xem là hoàn tất về mặt làm sạch
-docs**, vì README/progress sẽ được sửa ở giai đoạn đồng bộ tài liệu hiện hữu.
+REQ-DOC-003 và REQ-DOC-004 đã được xử lý trong Giai đoạn 6: README đã được
+viết lại thành cửa vào hiện hành; `progress.md` và `CORPUS_SURVEY.md` đã được
+gắn nhãn LỊCH SỬ rõ ràng. Giai đoạn 8 sẽ kiểm toán chéo lần cuối.
 
 ---
 
