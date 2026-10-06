@@ -157,7 +157,7 @@ Nó không quyết định:
 - nhân chứng nào cổ hơn;
 - nguồn nào có thẩm quyền giáo lý cao hơn;
 - hai thuật ngữ đa ngôn ngữ có thực sự tương đương;
-- một finding có đủ bằng chứng hay chưa.
+- một kết luận nghiên cứu có đủ bằng chứng hay chưa.
 
 ## 5. Cấu trúc repository
 
@@ -314,7 +314,7 @@ Nó dùng:
 - diacritic folding;
 - compact Unicode matching;
 - corpus-provided lemma;
-- CJK trigram candidate generation;
+- sinh ứng viên bằng CJK trigram;
 - evidence-class weighting;
 - deterministic tie-break.
 
@@ -325,7 +325,7 @@ Nó dùng:
 
 Local index có `records_cjk_fts` dùng trigram cho `lzh`/`zh`.
 
-Mục đích là sinh candidate cho chuỗi con Hán văn dài.
+Mục đích là sinh ứng viên cho chuỗi con Hán văn dài.
 
 Đây là hạ tầng truy xuất, không phải một từ điển thuật ngữ Phật học CJK.
 
@@ -470,7 +470,7 @@ Connector vẫn có thể tới nguồn Hán văn qua:
 
 Nếu route hiện có không xác lập được claim, phải báo giới hạn.
 
-### 13.2. Retrieval hit chưa đủ để trở thành finding
+### 13.2. Một kết quả truy xuất chưa đủ để trở thành kết luận nghiên cứu
 
 Một kết quả truy xuất chỉ là ứng viên.
 
@@ -481,7 +481,7 @@ AI vẫn phải đọc context và phân biệt:
 - note;
 - metadata;
 - alignment;
-- computational candidate.
+- ứng viên do xử lý tính toán tạo ra.
 
 ### 13.3. Claim verification chưa được máy hóa đầy đủ
 
@@ -514,7 +514,7 @@ Mục tiêu là bổ sung một tầng kiểm chứng nghiên cứu:
 question
 → scope
 → search hypotheses
-→ current retrieval
+→ truy xuất hiện hành
 → pinned source
 → context
 → Evidence Record
@@ -552,7 +552,7 @@ Quote mismatch không được xuất như trích dẫn trực tiếp.
 
 ### 14.3. Atomic Claim
 
-Mỗi finding quan trọng được tách thành mệnh đề có thể kiểm.
+Mỗi kết luận nghiên cứu quan trọng được tách thành mệnh đề có thể kiểm.
 
 Một claim phải nối được tới supporting evidence và, khi phù hợp, counterevidence.
 
@@ -566,7 +566,7 @@ Các mức mục tiêu:
 - UNSUPPORTED;
 - CONTRADICTED.
 
-UNSUPPORTED không được đi vào finding cuối.
+UNSUPPORTED không được đi vào kết luận cuối.
 
 CONTRADICTED không được trình bày như kết luận đã xác lập.
 
@@ -588,7 +588,7 @@ truy vấn đã kiểm.
 
 Chỉ claim được chấp nhận mới được đi vào synthesis.
 
-Synthesis không được tự sinh thêm finding lớn chưa qua kiểm.
+Phần tổng hợp không được tự sinh thêm kết luận quan trọng chưa qua kiểm.
 
 ### 14.7. Research Run Manifest
 
@@ -691,7 +691,7 @@ Hệ thống phải hướng tới các thuộc tính sau:
 - production Connector không phụ thuộc GitHub Code Search;
 - thay đổi retrieval không âm thầm phá ranking semantics;
 - thay đổi kiến trúc phải cập nhật tài liệu chuẩn tương ứng;
-- CURRENT, TARGET và HISTORY phải được phân biệt rõ.
+- HIỆN HÀNH, MỤC TIÊU và LỊCH SỬ phải được phân biệt rõ.
 
 Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm thu,
 ánh xạ code/config/test và các khoảng trống kiểm thử nằm trong
@@ -737,7 +737,7 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 ### Muốn xem lịch sử phát triển và benchmark
 
 - `progress.md`;
-- Git history.
+- lịch sử Git.
 
 ## 20. Quy tắc về trạng thái tài liệu
 
