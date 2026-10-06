@@ -161,7 +161,7 @@ Mỗi thay đổi quan trọng phải tự kiểm:
 3. config/schema/code nào thay đổi;
 4. test nào chứng minh;
 5. tài liệu nào chỉ cần dẫn link;
-6. trạng thái là HIỆN HÀNH, MỤC TIÊU hay LỊCH SỬ;
+6. trạng thái là HIỆN HÀNH, MỤC TIÊU, TƯƠNG LAI hay LỊCH SỬ;
 7. có cần ADR không.
 
 Một thay đổi chưa hoàn tất nếu implementation đã đổi nhưng nguồn chuẩn liên quan
