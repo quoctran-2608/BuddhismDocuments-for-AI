@@ -1,12 +1,18 @@
-# CLI Guide
+# Hướng dẫn CLI
 
-All CLI commands are local-only. Build progress/errors go to stderr; primary
-results are emitted as JSON to stdout.
+> Trạng thái: **HIỆN HÀNH**
+>
+> Tất cả lệnh CLI là local-only. Tiến độ/lỗi build đi ra stderr; kết quả chính
+> được xuất JSON ra stdout.
 
-## Normal local research
+Kiến trúc tổng thể: `docs/ARCHITECTURE.md`.
+
+Luật nghiên cứu: `AGENTS.md`.
+
+## 1. Nghiên cứu cục bộ thông thường
 
 ```bash
-# Verify 13 local sources and index state
+# Kiểm 13 nguồn local và trạng thái index
 bin/buddhist-corpus status
 
 # Build
@@ -14,10 +20,10 @@ bin/buddhist-corpus build --profile core
 bin/buddhist-corpus build --profile discovery
 bin/buddhist-corpus build --profile all
 
-# Checkpoint one expensive source without rebuilding FTS yet
+# Build riêng một nguồn nặng và hoãn rebuild FTS
 bin/buddhist-corpus build --profile core --source cbeta-bm --defer-fts
 
-# Search and inspect
+# Tìm kiếm và kiểm nguồn
 bin/buddhist-corpus search "sutaṃ" --language pli
 bin/buddhist-corpus search "如是我聞" --language lzh
 bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
@@ -33,13 +39,53 @@ bin/buddhist-corpus compare mn1 T01n0001
 bin/buddhist-corpus provenance --record-id 123
 ```
 
-Without `--context` or `--with-provenance`, `search` keeps its normal output
-shape and ranking. Context stays inside the same corpus, work ID, and source
-path, ordered by `sequence_no`.
+Nếu không dùng `--context` hoặc `--with-provenance`, `search` giữ output
+mặc định và thứ tự xếp hạng hiện hành.
 
-## Production GitHub Connector artifact
+Context được giới hạn trong cùng corpus, work ID và source path, sắp theo
+`sequence_no`.
 
-Generate/resume production v1 locally:
+## 2. Build profile
+
+### `core`
+
+Nguồn cốt lõi/thẩm quyền chính cùng dữ liệu lemma cần thiết.
+
+### `discovery`
+
+Nguồn alignment/segmentation phục vụ phát hiện ứng viên.
+
+### `all`
+
+Toàn bộ 13 nguồn được hỗ trợ.
+
+### `acceptance`
+
+Mẫu thật, nhỏ và xác định dùng cho kiểm thử.
+
+Có thể chọn database dẫn xuất khác bằng option toàn cục:
+
+```bash
+bin/buddhist-corpus --db /tmp/corpus.sqlite3 build --profile acceptance
+```
+
+Không đặt database bên trong source submodule.
+
+## 3. Ghi chú về index
+
+Build thông thường tạo/cập nhật:
+
+- FTS Unicode thông thường;
+- CJK trigram index có phiên bản.
+
+Local Chinese substring search cần ít nhất ba ký tự CJK hữu dụng để dùng đường
+trigram.
+
+Coverage local này không được hiểu là coverage của Connector production.
+
+## 4. Production GitHub Connector artefact
+
+Sinh hoặc tiếp tục production v1 cục bộ:
 
 ```bash
 bin/buddhist-corpus export-pointer-production-v1 \
@@ -48,7 +94,7 @@ bin/buddhist-corpus export-pointer-production-v1 \
   --workers 4
 ```
 
-The exporter validates:
+Exporter hiện hành kiểm production key universe dự kiến:
 
 ```text
 terms/latin: 26,547 normalized non-CJK lemma keys
@@ -56,38 +102,59 @@ ids:         32,498 exact original work_id keys
 total:       59,045
 ```
 
-It keeps exact identifier spelling (`Dhp` and `dhp` are distinct), reuses the
-existing search/ranking/corpus-balancing/collapse semantics, writes no
-`raw_text`, and publishes only after the complete staged artifact is valid.
+Đây là invariant của production v1 hiện tại và được kiểm trong exporter/tests.
 
-The production artifact is the normal GitHub Connector runtime. See
-[GitHub Connector Research Access](REMOTE_AGENT.md).
+Exporter:
 
-### Production bucket protocol
+- giữ nguyên spelling của identifier;
+- dùng logic truy xuất/xếp hạng chung;
+- cân bằng theo corpus;
+- gộp nguồn trùng theo identity đã định;
+- không ghi `raw_text`;
+- chỉ publish sau khi staged artefact hợp lệ;
+- hỗ trợ tiếp tục/tái tạo sau khi generation bị gián đoạn.
 
-Connector agents should not use this CLI section as a substitute for the skill,
-but the storage rule is:
+Runtime Connector không đọc phần này để hard-code đường dẫn. Nó phải đọc
+`config/remote-corpus.json`.
+
+Hướng dẫn runtime: `docs/REMOTE_AGENT.md`.
+
+## 5. Quy tắc bucket production
+
+Term key:
 
 ```text
-term key:
-NFC → casefold → collapse whitespace
+NFC
+→ casefold
+→ collapse whitespace
+```
 
-identifier:
-exact original spelling
+Identifier:
 
-bucket:
-first 2 lowercase hex chars of SHA-256(exact UTF-8 production key)
+```text
+giữ nguyên spelling gốc
+```
 
-paths:
+Bucket:
+
+```text
+SHA-256(exact UTF-8 production key)
+→ hai ký tự hex thường đầu tiên
+```
+
+Path:
+
+```text
 locator/terms/latin/<bucket>/part-000001.jsonl
 locator/ids/<bucket>/part-000001.jsonl
 ```
 
-There is no production `terms/cjk` namespace.
+Production v1 không có `terms/cjk`.
 
-## Historical/development pointer export
+## 6. Lệnh pointer POC lịch sử
 
-The small pointer POC is retained only for development history:
+Lệnh này được giữ để tái tạo/kiểm lịch sử, không phải runtime production hiện
+hành:
 
 ```bash
 bin/buddhist-corpus export-remote-pointers \
@@ -105,76 +172,127 @@ bin/buddhist-corpus export-remote-pointers \
   --output remote/pointer-poc
 ```
 
-Do not use `pointer-poc` for ordinary Connector research when
-`config/remote-corpus.json` declares production v1.
+Không dùng `pointer-poc` cho nghiên cứu thông thường khi
+`config/remote-corpus.json` khai báo `pointer_production_v1`.
 
-## Benchmark and measurement commands
+## 7. Benchmark và phép đo
+
+### Benchmark pointer xác định
 
 ```bash
-# Deterministic 500-key measurement
 bin/buddhist-corpus export-pointer-benchmark \
   --latin-keys 200 \
   --cjk-keys 200 \
   --identifier-keys 100 \
   --output remote/pointer-benchmark
+```
 
-# Historical compact serialization experiment
+### POC compact serialization lịch sử
+
+```bash
 bin/buddhist-corpus export-pointer-compact-poc \
   --benchmark remote/pointer-benchmark \
   --output remote/pointer-compact-poc
+```
 
-# Read-only repetition analysis
+### Phân tích mức lặp — chỉ đọc
+
+```bash
 bin/buddhist-corpus analyze-pointer-repetition \
   --benchmark remote/pointer-benchmark
+```
 
-# Read-only production key-universe measurement
+### Đo production key universe — chỉ đọc
+
+```bash
 bin/buddhist-corpus analyze-pointer-key-universe \
   --benchmark remote/pointer-benchmark
+```
 
-# Read-only CJK FTS vocabulary measurement
+### Đo CJK FTS vocabulary — chỉ đọc
+
+```bash
 bin/buddhist-corpus analyze-cjk-fts-vocabulary \
   --benchmark remote/pointer-benchmark
 ```
 
-The CJK vocabulary analyzer uses only a TEMP FTS5 vocabulary view:
+Analyzer CJK chỉ tạo TEMP FTS5 vocabulary view:
 
 ```sql
 CREATE VIRTUAL TABLE temp.cjk_vocab_measurement
 USING fts5vocab(main, records_cjk_fts, 'row');
 ```
 
-The CJK result is a low-level trigram token universe, not a Buddhist
-terminology dictionary. It is not materialized in production v1.
+Kết quả là vocabulary token trigram cấp thấp của chỉ mục, không phải từ điển
+thuật ngữ Phật học.
 
-## Legacy export
+Nó không được materialize thành production `terms/cjk`.
+
+Lý do kiến trúc xem ADR-0008 trong `docs/adr/`.
+
+## 8. Legacy full-record export
 
 ```bash
 bin/buddhist-corpus export-remote --output remote/corpus
 ```
 
-This full-record export is legacy and is **not** the production Connector path.
+Lệnh này được giữ cho tương thích/lịch sử.
 
-## Build/index notes
+Nó **không phải** đường production Connector hiện hành.
 
-`core` uses bounded source chunks where appropriate. For Chinese it indexes
-CBETA BM_u8 for broad local retrieval. `all` includes the more granular CBETA
-XML P5 apparatus and all supported sources.
+Không dùng output của lệnh này thay cho pointer production v1.
 
-Normal builds rebuild both the ordinary Unicode FTS index and the versioned CJK
-trigram candidate index. Chinese local substring search requires at least three
-usable CJK characters. This local behavior must not be confused with Connector
-production coverage.
+## 9. Hợp đồng các lệnh nghiên cứu chính
 
-Use another derived database with the global `--db` option:
+### `status`
 
-```bash
-bin/buddhist-corpus --db /tmp/corpus.sqlite3 build --profile acceptance
-```
+Kiểm source contract và trạng thái index.
 
-Do not place a database inside a source submodule.
+### `search`
 
-## Test suite
+Tìm record có xếp hạng; có thể kèm context/provenance bằng option tương ứng.
+
+### `context`
+
+Lấy cửa sổ record trước/sau trong cùng work/source.
+
+### `work`
+
+Lấy metadata và record theo work ID.
+
+### `parallels`
+
+Lấy relation/song hành/căn chỉnh theo work hoặc segment.
+
+### `resolve`
+
+Giải định danh SuttaCentral/CBETA hoặc range phù hợp về witness cục bộ.
+
+### `variants`
+
+Lấy dữ liệu dị bản.
+
+### `compare`
+
+So sánh record/witness nhưng không tự tạo bản hòa hợp.
+
+### `provenance`
+
+Trả hợp đồng nguồn của record.
+
+### `evidence`
+
+Gói record, context, provenance và variants liên quan.
+
+## 10. Kiểm thử
+
+Chạy toàn bộ test suite:
 
 ```bash
 PYTHONPATH=tools python3 -m unittest discover -s tests -v
 ```
+
+Số test hiện hữu và ánh xạ requirement → test được theo dõi trong
+`docs/ACCEPTANCE.md`.
+
+Tài liệu này không dùng một con số test cố định làm nguồn chuẩn lâu dài.
