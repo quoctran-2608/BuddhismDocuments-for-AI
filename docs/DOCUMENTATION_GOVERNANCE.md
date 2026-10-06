@@ -28,8 +28,8 @@ Thẩm quyền được xác định theo miền thông tin:
 | SC ↔ CBETA | `docs/SC_CBETA_BRIDGE.md` + resolver tests |
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
 | Lịch sử phát triển | `progress.md` + Git history |
-| Yêu cầu có mã | `docs/REQUIREMENTS.md` (sẽ tạo) |
-| Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` (sẽ tạo) |
+| Yêu cầu có mã | `docs/REQUIREMENTS.md` |
+| Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
 | Lý do quyết định kiến trúc | `docs/adr/` (sẽ tạo) |
 
 ## 2. Ba trạng thái bắt buộc
