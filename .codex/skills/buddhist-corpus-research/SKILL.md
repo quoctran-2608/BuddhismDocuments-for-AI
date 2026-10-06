@@ -1,330 +1,163 @@
 ---
 name: buddhist-corpus-research
-description: Provenance-first Buddhist corpus research in local SQLite mode or GitHub Connector production mode.
+description: Nghiên cứu corpus Phật học ưu tiên provenance, dùng local SQLite hoặc GitHub Connector production.
 ---
 
-# Buddhist Corpus Research
+# Kỹ năng nghiên cứu corpus Phật học
 
-Read and obey the repository root `AGENTS.md` before using this skill.
+Đọc và tuân thủ `AGENTS.md` trước khi dùng kỹ năng này.
 
-## Goal
+Tài liệu này mô tả **AI phải hành động như thế nào** khi nhận yêu cầu nghiên cứu.
+Nó không thay thế:
 
-Turn a short user request about a Buddhist term, passage, work ID, or topic into
-a repository-evidenced answer without requiring the user to know the corpus
-layout.
+- kiến trúc: `docs/ARCHITECTURE.md`;
+- giao thức Connector chi tiết: `docs/REMOTE_AGENT.md`;
+- runtime config: `config/remote-corpus.json`;
+- yêu cầu/tiêu chí nghiệm thu: `docs/REQUIREMENTS.md`,
+  `docs/ACCEPTANCE.md`.
 
-The core contract is:
+## 1. Hợp đồng cốt lõi
 
 ```text
-model knowledge → search hypothesis only
-repository evidence → research finding
+kiến thức mô hình → chỉ được tạo giả thuyết tìm kiếm
+bằng chứng repository → mới được xác lập kết luận nghiên cứu
 ```
 
-A locator pointer is never evidence by itself.
+Pointer locator không phải bằng chứng.
 
-## Choose the execution mode automatically
+Không dùng web chung hoặc trí nhớ mô hình như một “nguồn thứ 14” để lấp khoảng
+trống corpus.
+
+## 2. Tự chọn chế độ thực thi
 
 ### Local mode
 
-Use local mode when the CLI and SQLite index are available.
+Dùng khi có shell và SQLite index cục bộ.
 
-Start with:
+Bắt đầu bằng:
 
 ```bash
 bin/buddhist-corpus status
 ```
 
-Then use the CLI workflow documented below.
+Nếu source thiếu hoặc SHA sai, coi là lỗi provenance và dừng nhánh nghiên cứu đó.
 
 ### GitHub Connector mode
 
-Use Connector mode when GitHub repositories are connected but local
-shell/SQLite access is unavailable.
+Dùng khi có GitHub Connector nhưng không có shell/SQLite local.
 
-Do **not** ask the user to explain how the two project repositories fit
-together. Discover the runtime from the repository:
+Không hỏi người dùng repo nào là repo chính hay repo remote. Tự đọc:
 
-1. open `config/remote-corpus.json` in
-   `quoctran-2608/BuddhismDocuments-for-AI`;
-2. use its `repository`, `branch`, `root_path`, and `mode`;
-3. open `<root_path>/manifest.json` and
-   `<root_path>/locator/manifest.json` in the declared remote repository;
-4. use the production locator to find candidate source pointers;
-5. open the original upstream repository named by each pointer at the pinned
-   `source_sha` / `source_blob_sha`;
-6. read the relevant source context before making a finding.
+1. `config/remote-corpus.json` trong repo chính;
+2. manifest của production root được config khai báo;
+3. locator production;
+4. pinned upstream source mà pointer chỉ tới.
 
-The current production config points to:
+Giao thức định tuyến chi tiết nằm trong `docs/REMOTE_AGENT.md`.
+
+## 3. Quy trình chung
 
 ```text
-main repo:
-quoctran-2608/BuddhismDocuments-for-AI
-
-remote locator repo:
-quoctran-2608/BuddhismDocuments-for-AI-remote
-
-production root:
-remote/pointer-production-v1
+câu hỏi người dùng
+→ xác định phạm vi
+→ tạo giả thuyết tìm kiếm có căn cứ
+→ truy xuất ứng viên
+→ chọn nguồn/nhân chứng phù hợp
+→ mở bằng chứng thật
+→ đọc ngữ cảnh
+→ kiểm provenance + text role + witness
+→ xem relations/variants khi cần
+→ tổng hợp nhưng giữ nhân chứng riêng
+→ nêu giới hạn
 ```
 
-Always read the config rather than hardcoding these values in case a later
-version changes them.
+Không dừng ở một kết quả tìm kiếm nếu câu hỏi mang tính chủ đề, so sánh hoặc
+đa nguồn.
 
-## Production Connector routing protocol
+## 4. Giả thuyết tìm kiếm
 
-Production v1 materializes exactly two namespaces:
+Kiến thức mô hình được phép đề xuất:
 
-```text
-terms/latin  → normalized non-CJK lemma keys
-ids          → exact original work_id spelling
-```
+- dạng Pāli/Sanskrit/romanized có khả năng liên quan;
+- work ID có khả năng liên quan;
+- thuật ngữ nội bộ cần thử;
+- nhánh corpus có khả năng chứa dữ liệu.
 
-It does **not** materialize a general `terms/cjk` namespace. The local CJK
-FTS trigram index is build/retrieval infrastructure, not a production dictionary
-of Buddhist terms.
+Nhưng giả thuyết không được trình bày như kết luận.
 
-### 1. Decide whether the lookup is an identifier or a term
+Đặc biệt, phương trình Pāli ↔ Sanskrit ↔ Hán ↔ Tạng chỉ trở thành bằng chứng khi
+repository có alignment, relation, dictionary, shared identifier hoặc dữ liệu
+khác hỗ trợ.
 
-Use `ids` for an exact work/text identifier such as a canonical work ID.
-Preserve its original spelling exactly. Do not casefold identifiers; e.g.
-`Dhp` and `dhp` are distinct production keys.
+## 5. Nghiên cứu thuật ngữ
 
-Use `terms/latin` for Pāli, Sanskrit, romanized, and other non-CJK term
-hypotheses that can be expressed as production lemma keys.
+Ưu tiên theo thứ tự:
 
-For Vietnamese/English/CJK topic questions, the model may propose likely
-Pāli/Sanskrit/romanized terms as **search hypotheses only**. Do not present
-those cross-language equations as findings until repository evidence supports
-them.
+1. dạng chính xác;
+2. chuẩn hóa Unicode/case;
+3. lemma/morphology do corpus cung cấp;
+4. biến thể chính tả đã được corpus chứng thực;
+5. ngữ cảnh các lần xuất hiện;
+6. parallel/alignment khi có.
 
-### 2. Normalize a term key exactly
+Không tự bịa dạng từ.
 
-For `terms/latin`, apply the production normalization used by
-`corpus_research.model.normalize()`:
+### Local
 
-```text
-Unicode NFC
-→ Unicode casefold
-→ split on whitespace
-→ join with one ASCII space
-```
-
-Do not strip diacritics for bucket routing.
-
-For `ids`, use the exact original identifier string with no normalization.
-
-### 3. Calculate the bucket
-
-The manifest declares:
-
-```text
-SHA-256 of exact UTF-8 production key
-→ first two lowercase hex characters
-```
-
-Then open:
-
-```text
-<root_path>/locator/terms/latin/<bucket>/part-000001.jsonl
-```
-
-or:
-
-```text
-<root_path>/locator/ids/<bucket>/part-000001.jsonl
-```
-
-Find the JSONL row whose `key` exactly equals the production key.
-
-Do not recursively scan all locator shards. Do not depend on GitHub Code Search;
-generated JSONL may not be indexed there.
-
-Verified production example:
-
-```text
-key: anicca
-SHA-256 bucket prefix: 45
-
-remote/pointer-production-v1/
-  locator/terms/latin/45/part-000001.jsonl
-```
-
-### 4. If a shard is too large for a normal file fetch
-
-Use the Git blob for that shard when the Connector exposes its blob SHA.
-This is normal for production JSONL files and does not change the research
-method.
-
-### 5. Read the locator row
-
-A row contains:
-
-```text
-key
-query_kind
-pointer_count
-pointers[]
-```
-
-Each pointer includes ranking fields plus source provenance such as:
-
-```text
-rank
-score
-match_reasons
-record_id
-corpus
-repository
-source_sha
-source_blob_sha
-source_path
-indexed_source_path
-work_id
-segment_id
-sequence_no
-evidence_class
-text_role
-witness
-```
-
-The production exporter already balances candidates by corpus and collapses
-duplicate `(corpus, work_id, source_path)` groups. Preserve pointer order
-within each corpus when selecting files to open.
-
-### 6. Open source evidence, not just the pointer
-
-For every claim you want to use:
-
-1. open `repository` at the pointer's `source_sha`;
-2. open `source_path`, or fetch `source_blob_sha` when appropriate;
-3. locate `work_id` / `segment_id` / `sequence_no`;
-4. read enough surrounding source context to interpret the passage;
-5. check `evidence_class`, `text_role`, and `witness`;
-6. only then treat the wording as evidence.
-
-If a compressed or binary discovery source cannot be rendered in Connector
-mode, do not claim unseen wording from it. Prefer a stronger readable witness
-when available.
-
-### 7. Topic and comparative research
-
-For a topic, do not stop at one hypothesis or one corpus.
-
-Use this loop:
-
-```text
-user topic
-→ 2–6 plausible supported hypotheses
-→ production locator rows
-→ group pointers by relevant corpus
-→ open strong source witnesses
-→ collect terminology actually attested in source
-→ test additional supported hypotheses when useful
-→ inspect parallels/variants/independent witnesses
-→ synthesize agreements, differences, and limits
-```
-
-Do not spend the entire candidate budget on the first globally ranked corpus.
-
-Where relevant, prefer primary/authoritative witnesses such as SuttaCentral
-Bilara roots, CBETA BM/TEI, and 84000 TEI over discovery-only corpora. Use
-BuddhaNexus, Translation Memory, OpenPecha, and similar corpora mainly to locate
-or relate evidence, then return to a stronger source witness when possible.
-
-### 8. User-restricted scope
-
-If the user asks for only a Nikāya, CBETA, T99, one Vinaya, one language, or
-another explicit scope, respect that scope. Do not broaden it without
-permission.
-
-### 9. Unsupported or missing production key
-
-If a production key is absent:
-
-- try other justified supported hypotheses;
-- use terminology found in already-opened evidence to refine hypotheses;
-- do not scan all shards;
-- do not invent a CJK production namespace;
-- do not silently switch to general internet research.
-
-If the available production locator cannot establish the requested claim,
-state:
-
-**không đủ dữ liệu trong remote corpus export hiện tại**
-
-and explain the coverage limitation briefly.
-
-## Ranking interpretation
-
-Pointer rank decides which source files to open first. It does not decide:
-
-- which tradition is correct;
-- which witness is historically earlier;
-- which source is doctrinally authoritative;
-- whether one witness is enough;
-- whether a cross-language equation is true.
-
-Those judgments follow evidence hierarchy, user scope, source context, text
-role, witness separation, and explicit repository relationships.
-
-GitHub Connector routing is not a byte-for-byte reproduction of SQLite FTS
-candidate generation. It is a deterministic production access path to selected
-source candidates.
-
-## Research modes
-
-### Term research
-
-Local mode:
+Ví dụ:
 
 ```bash
 bin/buddhist-corpus search "sutaṃ" --language pli
-bin/buddhist-corpus context --record-id RECORD_ID
+bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
 bin/buddhist-corpus variants mn1
 ```
 
-Connector mode follows the production routing protocol above.
+### Connector
 
-In either mode:
+Dùng exact ID hoặc `terms/latin` theo giao thức trong
+`docs/REMOTE_AGENT.md`.
 
-1. exact/normalized form;
-2. corpus-provided lemma or attested spelling;
-3. context;
-4. variants;
-5. parallels/alignment only after evidence is anchored.
+## 6. Nghiên cứu đoạn văn
 
-### Passage research
-
-Local mode:
+### Local
 
 ```bash
 bin/buddhist-corpus search "如是我聞" --language lzh
+bin/buddhist-corpus context --record-id RECORD_ID --window 3
 bin/buddhist-corpus provenance --record-id RECORD_ID
 ```
 
-In Connector mode, there is no arbitrary CJK production locator. Use a supported
-identifier or justified romanized/Indic hypothesis to reach candidate sources.
-If that route cannot establish the passage, state the production coverage
-limit instead of pretending exhaustive Chinese search.
+### Connector
 
-### Concept/topic research
+Production v1 không có arbitrary `terms/cjk`.
 
-Never synthesize from one keyword hit. Iterate:
+Nếu có exact work ID hoặc giả thuyết Latin/Indic được hỗ trợ, dùng chúng để đi
+tới nguồn Hán văn. Nếu route hiện có không đủ để xác lập đoạn cần tìm, báo rõ
+giới hạn thay vì giả vờ đã tìm hết Hán tạng.
+
+## 7. Nghiên cứu chủ đề/khái niệm
+
+Không tổng hợp từ một keyword hit.
+
+Dùng vòng lặp:
 
 ```text
-seed evidence
-→ internally attested terminology
-→ occurrences
-→ context/work structure
-→ parallels
-→ variants
-→ independent witnesses
-→ synthesis
+bằng chứng mồi
+→ thuật ngữ thực sự xuất hiện trong nguồn
+→ các lần xuất hiện
+→ ngữ cảnh/cấu trúc tác phẩm
+→ song hành
+→ dị bản
+→ nhân chứng độc lập
+→ tổng hợp
 ```
 
-### Parallel-text research
+Với Connector, thử nhiều giả thuyết có căn cứ thay vì tiêu hết ngân sách vào
+một corpus đầu tiên.
 
-Local mode:
+## 8. Nghiên cứu song hành
+
+### Local
 
 ```bash
 bin/buddhist-corpus parallels an1.1-5
@@ -333,74 +166,165 @@ bin/buddhist-corpus resolve ea9.7
 bin/buddhist-corpus compare ID1 ID2
 ```
 
-Keep SuttaCentral relation evidence, identifier bridges, and resolved CBETA
-textual witnesses separate.
+Với SuttaCentral ↔ CBETA phải giữ ba bước riêng:
 
-### Variant research
+```text
+SuttaCentral parallel relation
+→ SuttaCentral-to-CBETA identifier bridge
+→ resolved CBETA textual witness
+```
 
-Local mode:
+Relation/bridge là metadata, không phải bằng chứng câu chữ.
+
+## 9. Nghiên cứu dị bản
+
+### Local
 
 ```bash
 bin/buddhist-corpus variants T01n0001
 bin/buddhist-corpus variants mn1
 ```
 
-Keep lemma, reading, witness sigla, confidence, and source path distinct.
+Giữ riêng:
 
-### Cross-tradition comparison
+- lemma;
+- reading;
+- witness sigla;
+- confidence nếu nguồn có;
+- source path/SHA.
 
-Keep witnesses separate. Establish cross-language equivalence only from
-repository alignment/relationship evidence; model-generated equivalents remain
-hypotheses until confirmed.
+Không tự tạo bản hòa hợp.
 
-## Local CLI quick reference
+## 10. Dùng nguồn discovery
 
-If the index is absent:
+BuddhaNexus, OpenPecha và Translation Memory thường dùng để:
+
+- phát hiện ứng viên;
+- phát hiện quan hệ/căn chỉnh;
+- tìm identifier hoặc vị trí đáng mở.
+
+Khi có witness mạnh hơn, quay lại:
+
+- SuttaCentral Bilara;
+- CBETA;
+- 84000 TEI;
+- hoặc nguồn phù hợp khác.
+
+Nếu không resolve được về witness mạnh hơn, nêu giới hạn của nguồn discovery.
+
+## 11. Tách đúng loại bằng chứng
+
+Luôn đọc:
+
+- `evidence_class`;
+- `text_role`;
+- `witness`.
+
+Ví dụ:
+
+- `translation_note` không phải `root_text`;
+- `metadata_relationship` không phải textual witness;
+- `computational_segmented` không tự động là bản văn cuối cùng.
+
+## 12. Local CLI — lối tắt
+
+Nếu chưa có index:
 
 ```bash
 bin/buddhist-corpus build --profile core
 ```
 
-Use `--profile discovery` for alignment/segmented sources and `--profile all`
-for all supported sources.
-
-Useful commands:
+Các lệnh thường dùng:
 
 ```bash
-bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
-bin/buddhist-corpus evidence --record-id RECORD_ID --context 2
-bin/buddhist-corpus context --record-id RECORD_ID --window 3
+bin/buddhist-corpus search "QUERY"
+bin/buddhist-corpus context --record-id ID --window 3
+bin/buddhist-corpus evidence --record-id ID --context 2
 bin/buddhist-corpus work WORK_ID
 bin/buddhist-corpus parallels WORK_OR_SEGMENT_ID
-bin/buddhist-corpus resolve CBETA_WORK_OR_TAISHO_RANGE
+bin/buddhist-corpus resolve CBETA_OR_SC_ID
 bin/buddhist-corpus variants WORK_OR_SEGMENT_ID
 bin/buddhist-corpus compare ID1 ID2
-bin/buddhist-corpus provenance --record-id RECORD_ID
+bin/buddhist-corpus provenance --record-id ID
 ```
 
-## Historical/measurement artifacts
+Chi tiết đầy đủ xem `docs/CLI.md`.
 
-These are not the normal Connector runtime:
+## 13. Connector — các nguyên tắc không được vi phạm
 
-- `remote/pointer-poc/` — historical proof of concept;
-- `remote/pointer-benchmark/` — 500-key scale measurement;
-- `remote/pointer-compact-poc/` — serialization experiment.
+Trong Connector mode:
 
-Do not route ordinary research through them when
-`config/remote-corpus.json` declares `pointer_production_v1`.
+- đọc `config/remote-corpus.json`, không hard-code runtime;
+- dùng production locator, không dùng GitHub Code Search làm router;
+- không quét toàn bộ 256 bucket;
+- pointer chỉ là ứng viên;
+- mở pinned upstream source trước khi trích dẫn;
+- giữ source SHA/path/work/segment/text role/witness;
+- không giả định tồn tại `terms/cjk`;
+- không dùng benchmark/POC lịch sử như production;
+- source không mở được thì không tuyên bố đã đọc wording đó.
 
-## Answer contract
+Chi tiết hash, normalization, namespace và pointer format nằm trong
+`docs/REMOTE_AGENT.md`.
 
-Answer in the user's requested language and clearly separate:
+## 14. Phạm vi người dùng
 
-1. **Finding** — what the source evidence supports.
-2. **Evidence by witness/corpus** — do not merge independent witnesses.
-3. **Parallels/variants** — relationship type and meaningful differences.
-4. **Interpretation** — your synthesis, clearly distinguished from quotation.
-5. **Confidence and limits**.
-6. **Provenance** for every cited item:
-   `corpus | repository | source_path | work_id | segment_id | source_sha | evidence_class | text_role | witness`.
+Nếu người dùng giới hạn:
 
-Do not present pointer metadata as a quotation. Quote only text actually opened
-in the original source. If the source evidence cannot establish a claim, fail
-closed rather than completing it from model memory.
+- một Nikāya;
+- một bộ A-hàm;
+- một work ID;
+- CBETA;
+- một Vinaya;
+- một ngôn ngữ;
+- một witness;
+
+thì giữ đúng phạm vi đó.
+
+Không tự mở rộng sang truyền thống/corpus khác nếu không cần thiết.
+
+## 15. Fail-closed
+
+### Local mode
+
+Nếu corpus local không đủ:
+
+**không đủ dữ liệu trong corpus hiện tại**
+
+### Connector mode
+
+Nếu production route/nguồn được phép không đủ:
+
+**không đủ dữ liệu trong remote corpus export hiện tại**
+
+Sau câu này có thể giải thích ngắn coverage nào thiếu.
+
+Không chuyển sang web chung để lấp chỗ trống nếu nhiệm vụ đang ở chế độ corpus
+research.
+
+## 16. Hợp đồng câu trả lời
+
+Câu trả lời nghiên cứu phải tách rõ:
+
+1. **Kết luận** — điều nguồn thực sự hỗ trợ;
+2. **Bằng chứng theo corpus/nhân chứng** — không hòa nhiều witness thành một;
+3. **Song hành/dị bản** — nêu loại quan hệ và khác biệt quan trọng;
+4. **Diễn giải** — phần tổng hợp của AI, tách khỏi trích dẫn;
+5. **Mức chắc chắn và giới hạn**;
+6. **Provenance** cho item được dùng:
+   `corpus | repository | source_path | work_id | segment_id | source_sha |
+   evidence_class | text_role | witness`.
+
+Chỉ trích câu chữ đã thực sự mở trong source.
+
+## 17. Quan hệ với lớp kiểm chứng MỤC TIÊU
+
+Evidence Record, quote verification, Atomic Claim, counterevidence, Final Claim
+Gate và Research Run đang là **MỤC TIÊU — chưa triển khai đầy đủ**.
+
+Không giả vờ skill hiện tại đã có các gate đó.
+
+Khi lớp này được triển khai, yêu cầu chuẩn nằm trong:
+
+- `docs/REQUIREMENTS.md`;
+- `docs/ACCEPTANCE.md`.
