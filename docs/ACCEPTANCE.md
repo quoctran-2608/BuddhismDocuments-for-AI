@@ -396,8 +396,10 @@ Vòng nâng cấp verification v1 chỉ được coi là hoàn thành khi tối 
 - Evidence Record có provenance đầy đủ;
 - quote sai bị phát hiện;
 - claim không evidence bị reject;
+- `claim_type` được bắt buộc và kiểm đúng loại evidence;
 - UNSUPPORTED/CONTRADICTED không lọt vào kết luận cuối;
 - research mode có counterevidence pass;
+- dependency/độc lập giữa nguồn được biểu diễn;
 - claim → evidence traceable;
 - Research Run có thể được rà soát;
 - biết corpus/source revisions của run;
