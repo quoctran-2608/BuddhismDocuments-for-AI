@@ -107,7 +107,7 @@ biểu diễn bằng production lemma key.
 
 Với câu hỏi tiếng Việt/Anh/Hán, mô hình được phép đề xuất Pāli/Sanskrit/romanized
 như **giả thuyết tìm kiếm**, nhưng không được trình bày phương trình đa ngôn ngữ
-đó như finding trước khi repository hỗ trợ.
+đó như kết luận trước khi repository hỗ trợ.
 
 ## 5. Chuẩn hóa term key
 
@@ -202,9 +202,9 @@ Không suy câu chữ từ các trường này.
 Production exporter đã:
 
 - dùng ranking cốt lõi chung với local retrieval;
-- tìm candidate theo corpus;
+- tìm ứng viên theo corpus;
 - gộp `(corpus, work_id, source_path)`;
-- giới hạn số candidate theo corpus;
+- giới hạn số ứng viên theo corpus;
 - áp dụng thứ tự ổn định sau cùng.
 
 Khi nghiên cứu:
