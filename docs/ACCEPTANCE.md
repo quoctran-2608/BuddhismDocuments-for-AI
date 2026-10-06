@@ -35,7 +35,7 @@ Con số này mô tả test hiện có trong repo; tài liệu này không tuyê
 | Requirement | Mức | Bằng chứng / cách nghiệm thu |
 |---|---|---|
 | REQ-SRC-001 | CẤU TRÚC + TỰ ĐỘNG một phần | `manifest.json`; `cli.py::source_status`; acceptance/local source checks trong quy trình |
-| REQ-SRC-002 | QUY TRÌNH | `AGENTS.md` immutable source layer; kiểm review thay đổi không ghi vào submodule |
+| REQ-SRC-002 | QUY TRÌNH | `AGENTS.md` quy định tầng nguồn bất biến; rà soát để xác nhận submodule nguồn không bị chỉnh sửa |
 | REQ-SRC-003 | CẤU TRÚC | `bin/buddhist-corpus status` so manifest SHA với local SHA và trả lỗi nếu mismatch |
 | REQ-SRC-004 | CẤU TRÚC | `config/corpus-sources.json` phải có mapping cho toàn bộ corpus được hỗ trợ |
 
@@ -395,7 +395,7 @@ Vòng nâng cấp verification v1 chỉ được coi là hoàn thành khi tối 
 - UNSUPPORTED/CONTRADICTED không lọt vào kết luận cuối;
 - research mode có counterevidence pass;
 - claim → evidence traceable;
-- Research Run review được;
+- Research Run có thể được rà soát;
 - biết corpus/source revisions của run;
 - biết checked/unexamined scope;
 - Golden Research Tests ổn định;
