@@ -168,6 +168,7 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 | Kiến trúc kỹ thuật hiện hành | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Yêu cầu có mã | [REQUIREMENTS.md](docs/REQUIREMENTS.md) |
 | Tiêu chí nghiệm thu / ánh xạ test | [ACCEPTANCE.md](docs/ACCEPTANCE.md) |
+| Thiết kế lớp kiểm chứng MỤC TIÊU | [RESEARCH_VERIFICATION_DESIGN.md](docs/RESEARCH_VERIFICATION_DESIGN.md) |
 | Lý do các quyết định kiến trúc | [ADR index](docs/adr/README.md) |
 | CLI | [CLI.md](docs/CLI.md) |
 | GitHub Connector | [REMOTE_AGENT.md](docs/REMOTE_AGENT.md) |
@@ -205,9 +206,15 @@ Evidence Record
 ```
 
 Chi tiết nằm trong
+[RESEARCH_VERIFICATION_DESIGN.md](docs/RESEARCH_VERIFICATION_DESIGN.md),
 [PROJECT_SPEC.md](docs/PROJECT_SPEC.md),
 [REQUIREMENTS.md](docs/REQUIREMENTS.md) và
 [ACCEPTANCE.md](docs/ACCEPTANCE.md).
+
+### TƯƠNG LAI — chưa thuộc v1
+
+Chỉ sau v1 mới xem xét deep Connector fallback/job từ xa khi có số liệu chứng
+minh locator hiện tại không đủ. Đây không phải runtime hay requirement hiện hành.
 
 ## 8. Nguyên tắc không được hiểu sai
 
