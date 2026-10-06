@@ -30,7 +30,7 @@ Thẩm quyền được xác định theo miền thông tin:
 | Lịch sử phát triển | `progress.md` + lịch sử Git |
 | Yêu cầu có mã | `docs/REQUIREMENTS.md` |
 | Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
-| Lý do quyết định kiến trúc | `docs/adr/` (dự kiến tạo ở Giai đoạn 5) |
+| Lý do quyết định kiến trúc | `docs/adr/` |
 
 ## 2. Ba trạng thái bắt buộc
 
