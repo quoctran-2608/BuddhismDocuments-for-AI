@@ -391,8 +391,8 @@ hiện tại:
 - Final Claim Gate;
 - Research Run Manifest.
 
-Đặc tả mục tiêu nằm trong `docs/PROJECT_SPEC.md`,
-`docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`.
+Đặc tả mục tiêu nằm trong `docs/RESEARCH_VERIFICATION_DESIGN.md`,
+`docs/PROJECT_SPEC.md`, `docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`.
 
 ## 15. Luồng dữ liệu tổng thể
 
