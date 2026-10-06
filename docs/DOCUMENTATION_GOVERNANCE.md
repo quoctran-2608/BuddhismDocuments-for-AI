@@ -104,6 +104,14 @@ hiện hành, giới hạn và hướng nâng cấp.
 
 Nó không thay thế nguồn chuyên biệt.
 
+### RESEARCH_VERIFICATION_DESIGN
+
+Nguồn chuẩn cho semantics và data contract của lớp kiểm chứng **MỤC TIÊU**:
+Evidence Record, quotation status, Atomic Claim, support status, độc lập nguồn,
+phản chứng, Final Claim Gate, Research Run và ranh giới TƯƠNG LAI.
+
+Nó không phải bằng chứng rằng các tính năng đó đã được triển khai.
+
 ### AGENTS
 
 Luật nghiên cứu bắt buộc: evidence, provenance, witness separation,
