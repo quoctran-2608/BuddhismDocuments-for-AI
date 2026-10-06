@@ -34,7 +34,7 @@ Chỉ chứa artefact dẫn xuất phục vụ Connector và không phải corpu
 
 ## Lý do
 
-- giữ repository mã nguồn gọn và dễ review;
+- giữ repository mã nguồn gọn và dễ rà soát;
 - cho phép artefact production thay đổi vòng đời độc lập;
 - làm rõ remote repo có thể tái tạo;
 - tránh AI hiểu locator/shard là nguồn học thuật;
@@ -60,5 +60,5 @@ Tạo corpus thứ hai, tăng chi phí storage và nguy cơ lệch với upstrea
 ## Khi nào xem xét lại
 
 Xem xét nếu GitHub không còn là kênh runtime hoặc cơ chế phân phối artefact thay
-đổi căn bản. Dù vậy, ranh giới “control/source-of-method” và “derived access
-artefact” vẫn nên được giữ.
+đổi căn bản. Dù vậy, ranh giới giữa “nơi điều khiển/phương pháp” và “artefact truy cập
+dẫn xuất” vẫn nên được giữ.
