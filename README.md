@@ -176,7 +176,7 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 | Khảo sát corpus tại mốc 22/09/2026 | [CORPUS_SURVEY.md](docs/CORPUS_SURVEY.md) |
 | Lịch sử phát triển và benchmark | [progress.md](progress.md) |
 
-## 7. Trạng thái: hiện hành và mục tiêu
+## 7. Trạng thái phát triển
 
 ### HIỆN HÀNH
 
