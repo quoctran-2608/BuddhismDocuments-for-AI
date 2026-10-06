@@ -203,19 +203,25 @@ Research mode bắt buộc:
 
 Evidence Record là biểu diễn có cấu trúc của **nguồn đã thực sự được mở và đọc**.
 
-Nó không phải:
+Các artefact sau **không tự động** trở thành Evidence Record:
 
 - pointer;
 - search hit chưa mở;
-- title;
-- TOC;
+- title/TOC chưa được kiểm trong source;
 - relation row;
 - bridge row;
 - metadata discovery candidate.
 
+Pointer không bao giờ là bằng chứng chỉ vì nó tồn tại trong locator.
+
+Relation/bridge/metadata **có thể** trở thành bằng chứng cho một claim
+`relationship` nếu nguồn metadata thực sự đã được mở, provenance được xác minh
+và Evidence Record ghi đúng loại bằng chứng. Chúng vẫn không được dùng như bằng
+chứng câu chữ của một claim `textual`.
+
 ### 6.2. Trường MỤC TIÊU
 
-Một Evidence Record v1 cần tối thiểu:
+Data contract v1 gồm:
 
 ```text
 evidence_id
@@ -242,12 +248,21 @@ relation_ids
 limitations
 ```
 
-Không phải mọi trường locator đều bắt buộc có giá trị, nhưng:
+Quy tắc bắt buộc/điều kiện:
 
-- repository/source SHA/path phải đủ để truy ngược;
-- work/segment/sequence phải được giữ khi nguồn có;
-- `evidence_class`, `text_role`, `witness` phải giữ riêng;
-- quotation/context phải phản ánh source đã mở, không lấy từ pointer.
+- `evidence_id`, corpus, repository, source SHA/path và provenance cốt lõi phải
+  đủ để truy ngược source;
+- `run_id` bắt buộc trong Research mode; ở Quick mode có thể để trống nếu
+  chưa tạo Research Run;
+- `source_blob_sha`, `indexed_source_path`, work/segment/sequence,
+  relation IDs và witness có thể để trống khi source không cung cấp hoặc không
+  áp dụng;
+- `evidence_class` phải có; `text_role` và `witness` phải được giữ riêng
+  khi loại evidence/source có khái niệm tương ứng;
+- `quotation` không bắt buộc cho evidence chỉ chứng minh metadata/relationship;
+- nếu dùng direct quote hoặc paraphrase, `quotation`/`context` phải phản ánh
+  source đã mở và `quote_verification_status` phải được gán phù hợp;
+- không lấy quotation/context từ pointer.
 
 ### 6.3. Evidence Gate
 
@@ -257,8 +272,8 @@ Trước khi Evidence Record được dùng:
 2. source SHA/blob phải phù hợp;
 3. source path phải tồn tại;
 4. vị trí work/segment phải có thể giải thích được;
-5. text role/witness không được bị đánh tráo;
-6. nếu có direct quote, trạng thái quote phải được kiểm.
+5. text role/witness phải đúng với source khi các trường này áp dụng;
+6. nếu có direct quote hoặc paraphrase, trạng thái quote phải được kiểm.
 
 Nếu gate thất bại, Evidence Record không được dùng như bằng chứng đã xác minh.
 
@@ -332,6 +347,15 @@ verification_status
 independence_status
 limitations
 ```
+
+`status` mô tả vòng đời của claim, tối thiểu:
+
+- `candidate` — đang được kiểm;
+- `accepted` — đã qua Final Claim Gate;
+- `rejected` — không được phép đi vào accepted claim set.
+
+`verification_status` là mức hỗ trợ bằng chứng (DIRECT/STRONG/WEAK/
+UNSUPPORTED/CONTRADICTED), không phải vòng đời của claim.
 
 ### 8.2. Loại claim
 
