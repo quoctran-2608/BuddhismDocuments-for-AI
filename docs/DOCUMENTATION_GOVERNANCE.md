@@ -75,7 +75,7 @@ Khi hai nguồn nói khác nhau:
 
 1. xác định câu hỏi thuộc miền nào;
 2. tìm nguồn chuẩn của miền đó;
-3. xác định mỗi tài liệu là HIỆN HÀNH, MỤC TIÊU hay LỊCH SỬ;
+3. xác định mỗi tài liệu là HIỆN HÀNH, MỤC TIÊU, TƯƠNG LAI hay LỊCH SỬ;
 4. nếu hỏi hành vi thực tế, kiểm code + tests + runtime artefact;
 5. nếu hỏi hệ thống phải làm gì, kiểm Project Spec/Requirements/Acceptance;
 6. ghi nhận sai lệch thay vì tự hòa giải.
