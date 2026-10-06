@@ -734,6 +734,11 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 
 - `docs/SC_CBETA_BRIDGE.md`.
 
+### Muốn hiểu vì sao kiến trúc chọn như hiện tại
+
+- `docs/adr/README.md`;
+- các ADR tương ứng trong `docs/adr/`.
+
 ### Muốn xem lịch sử phát triển và benchmark
 
 - `progress.md`;
