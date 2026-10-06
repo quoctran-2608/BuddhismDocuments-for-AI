@@ -1,98 +1,255 @@
-# Offline Buddhist Corpus Research Architecture
+# Kiến trúc hiện hành của hệ thống nghiên cứu corpus Phật học
 
-## 1. Source Layer
+> Trạng thái: **HIỆN HÀNH**
+>
+> Phạm vi: mô tả kiến trúc kỹ thuật đang được triển khai. Tài liệu này không mô
+> tả roadmap tương lai và không dùng các benchmark lịch sử làm trạng thái hiện
+> tại.
 
-The 13 pinned source repositories/submodules are immutable sources-of-origin.
-Pinned SHAs and local source state form the source contract. A missing source
-or SHA mismatch fails closed.
+Nguồn chuẩn liên quan:
 
-`config/corpus-sources.json` records source roles and evidence classes.
+- đặc tả cấp dự án: `docs/PROJECT_SPEC.md`;
+- luật nghiên cứu: `AGENTS.md`;
+- yêu cầu: `docs/REQUIREMENTS.md`;
+- runtime Connector: `config/remote-corpus.json`;
+- schema: `schema/corpus-index.sql`;
+- lý do quyết định kiến trúc: `docs/adr/`.
 
-## 2. Index Layer
+## 1. Tổng quan
 
-`bin/buddhist-corpus build` creates `derived/corpus.sqlite3`.
-
-The schema stores:
-
-- text records with corpus, language, collection, work/segment ID, text,
-  normalized/folded/compact representations, source path/SHA, evidence class,
-  text role, witness, sequence, and relation IDs;
-- work metadata;
-- relation edges;
-- variant readings;
-- corpus-provided lemmas and morphology;
-- per-source build state;
-- derived-search-index compatibility state.
-
-FTS5 `unicode61` handles ordinary Unicode token search. A separate contentless
-FTS5 `trigram` index stores compact Chinese text for `lzh`/`zh` candidate
-generation. The CJK trigram index is local search infrastructure and is not a
-remote terminology dictionary.
-
-Generated databases are derived artifacts, never source-of-truth.
-
-### Incrementality
-
-Each parser/build component is keyed by source component, pinned SHA, parser
-version, and indexing scope. Unchanged components are skipped.
-
-Profiles:
-
-- `core`: primary/authoritative core sources and lemma data;
-- `discovery`: alignment/segmented candidate sources;
-- `all`: all 13 supported sources;
-- `acceptance`: deterministic real local samples for tests.
-
-## 3. Retrieval Layer
-
-The CLI exposes:
-
-- `status`
-- `build`
-- `search`
-- `context`
-- `work`
-- `parallels`
-- `variants`
-- `compare`
-- `provenance`
-- `evidence`
-- pointer export/measurement commands
-
-Search ranking combines exactness, Unicode normalization, explicit
-diacritic-folding, compact matching, corpus-provided lemma matches, evidence
-class, stable IDs, and provenance quality.
-
-The shared ranking implementation is reused by production pointer generation.
-The Connector does not invent a second scholarly ranking.
-
-`evidence_class` describes source authority/provenance.
-`text_role` describes what the indexed content is, such as root text, main
-translation, heading, translator comment, translation note, alignment text, or
-another explicit role.
-
-## 4. Research Skill
-
-`.codex/skills/buddhist-corpus-research/SKILL.md` maps a user's research
-question to either:
-
-- local CLI/SQLite research; or
-- GitHub Connector production routing.
-
-The same evidence hierarchy, witness separation, provenance contract, and
-fail-closed behavior apply in both modes.
-
-## 5. GitHub Connector Production Access Layer
-
-### Repository roles
+Hệ thống có hai đường thực thi dùng chung một hợp đồng bằng chứng:
 
 ```text
-main repo
+13 upstream repositories ở pinned SHA
+          │
+          ▼
+deterministic parsers
+          │
+          ▼
+SQLite + FTS + relations + variants + lemmas
+          │
+          ├──────────────► local CLI research
+          │
+          └──────────────► production pointer export
+                                   │
+                                   ▼
+                         remote locator repository
+                                   │
+                                   ▼
+                           GitHub Connector
+                                   │
+                                   ▼
+                           pinned upstream source
+                                   │
+                                   ▼
+                      câu trả lời có provenance
+```
+
+Local mode và Connector mode khác nhau ở cơ chế truy xuất, nhưng cùng giữ:
+
+- tầng nguồn được ghim;
+- phân cấp bằng chứng;
+- tách nhân chứng;
+- provenance;
+- pointer không phải bằng chứng;
+- fail-closed khi dữ liệu không đủ.
+
+## 2. Tầng nguồn
+
+Hệ thống quản lý 13 repository/submodule upstream làm nguồn gốc bất biến trong
+phạm vi một build/nghiên cứu.
+
+Nguồn chuẩn:
+
+- danh sách repo và commit SHA: `manifest.json`;
+- corpus, repository GitHub, `evidence_class`, vai trò và build profile:
+  `config/corpus-sources.json`.
+
+Một nguồn thiếu hoặc SHA không khớp là lỗi provenance.
+
+Không sửa dữ liệu bên trong source repository như một phần của pipeline nghiên
+cứu.
+
+## 3. Tầng chỉ mục cục bộ
+
+`bin/buddhist-corpus build` tạo database dẫn xuất tại
+`derived/corpus.sqlite3`.
+
+Schema hiện có:
+
+- `source_state`;
+- `search_index_state`;
+- `works`;
+- `records`;
+- `relations`;
+- `variants`;
+- `lemmas`;
+- `records_fts`;
+- `records_cjk_fts`.
+
+Database là artefact dẫn xuất, không phải nguồn chuẩn của câu chữ.
+
+### 3.1. Record và provenance
+
+Record văn bản giữ tối thiểu các trường phục vụ nghiên cứu:
+
+- corpus;
+- ngôn ngữ;
+- work/segment ID;
+- nội dung;
+- các dạng normalized/folded/compact khi phù hợp;
+- source path;
+- source SHA;
+- `evidence_class`;
+- `text_role`;
+- `witness`;
+- sequence;
+- relation IDs.
+
+### 3.2. Build gia tăng
+
+Trạng thái build gắn với:
+
+- source component;
+- pinned source SHA;
+- parser version;
+- phạm vi build/profile;
+- phiên bản chỉ mục tìm kiếm.
+
+Component không đổi được bỏ qua.
+
+Profiles hiện hành:
+
+- `core`: nguồn cốt lõi/thẩm quyền chính và dữ liệu lemma;
+- `discovery`: alignment/segmented corpora;
+- `all`: toàn bộ 13 nguồn;
+- `acceptance`: mẫu thật cố định dùng cho kiểm thử.
+
+## 4. Tầng truy xuất
+
+Hệ thống hiện tại dùng truy xuất từ vựng, không phải vector/embedding semantic
+search.
+
+Các tín hiệu chính:
+
+- exact match;
+- chuẩn hóa Unicode/case;
+- bỏ dấu có chủ đích;
+- compact Unicode matching;
+- SQLite FTS5;
+- lemma do corpus cung cấp;
+- evidence-class weighting;
+- stable identifiers;
+- provenance quality;
+- deterministic tie-break.
+
+Logic xếp hạng cốt lõi được dùng chung cho local retrieval và production pointer
+generation.
+
+Rank chỉ quyết định ứng viên nào nên mở trước; không quyết định giá trị học
+thuật của kết luận.
+
+## 5. Truy xuất CJK
+
+`records_cjk_fts` là FTS5 contentless trigram index cho `lzh`/`zh`.
+
+Mục tiêu:
+
+- sinh ứng viên cho chuỗi con nằm giữa đoạn Hán văn dài;
+- tránh phụ thuộc tokenizer theo từ cho CJK;
+- vẫn đưa ứng viên qua kiểm tra/xếp hạng chung.
+
+Giới hạn:
+
+- truy vấn cần ít nhất ba ký tự CJK hữu dụng để có đường trigram này;
+- không hứa hẹn arbitrary middle-substring coverage cho truy vấn 1–2 ký tự;
+- vocabulary trigram là hạ tầng index, không phải từ điển thuật ngữ.
+
+## 6. Mô hình bằng chứng
+
+### 6.1. `evidence_class`
+
+Mô tả thẩm quyền/nguồn gốc của corpus.
+
+Các lớp hiện hành:
+
+1. `canonical_root`;
+2. `authoritative_structured`;
+3. `metadata_relationship`;
+4. `parallel_alignment`;
+5. `computational_segmented`;
+6. `derived_critical_lemma`;
+7. `auxiliary_reference`.
+
+### 6.2. `text_role`
+
+Mô tả bản chất nội dung của record, ví dụ:
+
+- `root_text`;
+- `translation_main`;
+- `translation_heading`;
+- `translator_comment`;
+- `translation_note`;
+- `alignment_text`;
+- `computational_text`;
+- `derived_text`;
+- `auxiliary_text`.
+
+### 6.3. `witness`
+
+Mô tả edition/nhân chứng cụ thể.
+
+Ba khái niệm trên không được gộp thành một “độ tin cậy” duy nhất.
+
+## 7. Quan hệ, song hành và dị bản
+
+Relations được lưu riêng khỏi text records.
+
+Một relation chỉ chứng minh loại quan hệ mà dữ liệu biểu diễn; nó không tự xác
+nhận câu chữ.
+
+Ví dụ SuttaCentral ↔ CBETA:
+
+```text
+SuttaCentral parallel relation
+→ SuttaCentral-to-CBETA identifier bridge
+→ resolved CBETA textual witness
+```
+
+Ba bước này phải giữ riêng.
+
+Variants được lưu riêng, có thể mang lemma/reading/witnesses/type/confidence và
+provenance của nguồn khảo dị.
+
+## 8. CLI cục bộ
+
+Các lệnh nghiên cứu chính:
+
+- `status`;
+- `build`;
+- `search`;
+- `context`;
+- `work`;
+- `parallels`;
+- `resolve`;
+- `variants`;
+- `compare`;
+- `provenance`;
+- `evidence`.
+
+Chi tiết giao diện nằm trong `docs/CLI.md`.
+
+## 9. Tầng GitHub Connector
+
+### 9.1. Vai trò repository
+
+```text
+repo chính
 quoctran-2608/BuddhismDocuments-for-AI
     │
     │ config/remote-corpus.json
     ▼
-remote locator repo
+repo locator dẫn xuất
 quoctran-2608/BuddhismDocuments-for-AI-remote
     │
     │ production pointers
@@ -100,164 +257,147 @@ quoctran-2608/BuddhismDocuments-for-AI-remote
 pinned upstream source repositories
 ```
 
-The current production root is discovered from config and is presently:
+Vai trò:
+
+- repo chính: kiến trúc, phương pháp, config, schema, code, tests, docs;
+- repo remote: artefact định tuyến dẫn xuất;
+- upstream repos: bằng chứng thực sự.
+
+Repo remote không phải corpus thứ 14.
+
+### 9.2. Runtime
+
+Runtime hiện hành phải được đọc từ `config/remote-corpus.json`.
+
+Ở thời điểm tài liệu này được đồng bộ, config khai báo:
 
 ```text
-remote/pointer-production-v1/
+repository: quoctran-2608/BuddhismDocuments-for-AI-remote
+branch: main
+root_path: remote/pointer-production-v1
+mode: pointer_production_v1
 ```
 
-The main repo is canonical architecture.
-The remote repo is a derived locator artifact.
-The upstream pinned repositories contain the source evidence.
+Nếu config thay đổi, config là nguồn chuẩn chứ không phải giá trị sao chép trong
+tài liệu này.
 
-### Production namespaces
+## 10. Production locator
 
-Production v1 contains:
+Production v1 materialize:
 
 ```text
-terms/latin  → normalized non-CJK lemma keys
-ids          → exact original work_id spelling
+terms/latin
+ids
 ```
 
-Counts at production-v1 generation:
+Không materialize `terms/cjk`.
+
+### 10.1. Term key
 
 ```text
-terms/latin  26,547
-ids          32,498
-total        59,045
+Unicode NFC
+→ casefold
+→ collapse whitespace
 ```
 
-`Dhp` and `dhp` remain distinct exact identifier keys.
+Không bỏ dấu khi tính bucket.
 
-There is no production `terms/cjk` namespace. The measured local CJK FTS
-vocabulary contains tens of millions of low-level trigram tokens; exporting
-them as if they were Buddhist concepts was rejected as both semantically wrong
-and impractical.
+### 10.2. Identifier key
 
-### Deterministic routing
+Giữ nguyên spelling gốc; không casefold.
 
-For a term, use the same normalization as
-`corpus_research.model.normalize()`:
+### 10.3. Bucket
 
 ```text
-NFC → casefold → collapse whitespace
-```
-
-For identifiers, preserve the exact original spelling.
-
-For either production key:
-
-```text
-SHA-256(exact UTF-8 key)
-→ first 2 lowercase hex chars
+SHA-256(exact UTF-8 production key)
+→ hai ký tự hex thường đầu tiên
 → locator/<namespace>/<bucket>/part-000001.jsonl
-→ exact JSONL key row
 ```
 
-GitHub Code Search is not required and should not be the routing mechanism.
+Không phụ thuộc GitHub Code Search để định tuyến.
 
-Verified example:
+### 10.4. Pointer
 
-```text
-anicca
-→ bucket 45
-→ locator/terms/latin/45/part-000001.jsonl
-```
+Pointer production giữ metadata cần để mở nguồn, gồm các trường như:
 
-### Pointer selection
+- rank/score/match reasons;
+- record/corpus;
+- repository;
+- source SHA;
+- source blob SHA;
+- source path;
+- indexed source path;
+- work/segment/sequence;
+- `evidence_class`;
+- `text_role`;
+- `witness`.
 
-Generation reuses the existing retrieval/ranking semantics. For each key it
-collects ranked candidates per corpus, collapses
-`(corpus, work_id, source_path)`, keeps a bounded per-corpus set, and applies
-the existing stable final order.
+Pointer production không chứa `raw_text`.
 
-This prevents one corpus or one source file from monopolizing a result set
-without creating a second score.
-
-Each pointer preserves:
-
-```text
-repository
-source_sha
-source_blob_sha
-source_path
-work_id
-segment_id
-sequence_no
-evidence_class
-text_role
-witness
-rank / score / match_reasons
-```
-
-### Evidence path
+## 11. Đường bằng chứng trong Connector
 
 ```text
-question
-→ supported hypotheses
+câu hỏi
+→ giả thuyết tìm kiếm có căn cứ
 → production locator
-→ source pointers
-→ open pinned upstream file/blob
-→ read context
-→ provenance / relations / variants
-→ witness-separated synthesis
+→ pointer
+→ mở pinned upstream file/blob
+→ đọc đủ context
+→ provenance / relations / variants khi cần
+→ tổng hợp tách nhân chứng
 ```
 
-The pointer itself is not evidence.
+Pointer không được dùng như quotation.
 
-If a source file is too large for a normal Connector file fetch, the agent can
-use the pointer's `source_blob_sha` or the shard/source Git blob when supported.
+Nếu source không thể mở hoặc route không đủ coverage, Connector phải fail-closed
+thay vì hoàn thiện câu trả lời bằng trí nhớ mô hình.
 
-### Coverage
+## 12. Coverage Connector hiện hành
 
-Connector production v1 gives broad finite routing for Latin/romanized lemma
-keys and exact work identifiers. It can still reach CBETA and other Chinese
-sources when those sources are pointers for a supported term or exact ID.
+Production v1 có coverage hữu hạn cho:
 
-It does not claim exhaustive arbitrary Chinese-substring lookup. Missing remote
-coverage must be reported rather than filled from model memory.
+- Latin/romanized lemma keys được materialize;
+- exact original work IDs.
 
-## 6. Historical measurement artifacts
+Nó có thể dẫn tới CBETA hoặc nguồn Hán văn khi source đó xuất hiện trong pointer
+của một term/ID được hỗ trợ.
 
-These remain for reproducibility/auditing, not ordinary production routing:
+Nó **không** tuyên bố arbitrary exhaustive Chinese-substring lookup.
 
-- `remote/pointer-poc/` — historical proof of concept;
-- `remote/pointer-benchmark/` — 500-query scale benchmark;
-- `remote/pointer-compact-poc/` — compact-serialization experiment.
+Lý do không materialize CJK trigram vocabulary được ghi trong
+`docs/adr/0008-do-not-materialize-cjk-trigram-vocabulary-in-production.md`.
 
-Measurements established that:
+## 13. Quan hệ với Research Skill
 
-- full-pointer compact dedup was larger than the benchmark;
-- source/work metadata tables did not clear the project's storage-benefit
-  threshold;
-- exporting the full CJK trigram vocabulary would be impractical and
-  semantically inappropriate.
+`.codex/skills/buddhist-corpus-research/SKILL.md` là quy trình hành động của AI.
 
-Those experiments are closed unless a future real acceptance failure justifies
-reopening them.
+Nó không phải đặc tả kiến trúc thứ hai. Khi cần chi tiết về:
 
-## 7. Answer / Provenance Layer
+- kiến trúc → tài liệu này;
+- luật nghiên cứu → `AGENTS.md`;
+- Connector runtime → `docs/REMOTE_AGENT.md`;
+- config hiện hành → `config/remote-corpus.json`.
 
-Every research finding should carry:
+## 14. Những gì chưa thuộc kiến trúc hiện hành
 
-`corpus | repository | source_path | work_id | segment_id | source_sha |
-evidence_class | text_role | witness`
+Các năng lực sau đang ở trạng thái MỤC TIÊU, chưa được mô tả như implementation
+hiện tại:
 
-Answers keep witnesses separate, distinguish quotation from interpretation, and
-state uncertainty.
+- Evidence Record chuẩn hóa;
+- quote verification có trạng thái;
+- Atomic Claim;
+- claim–evidence verification;
+- counterevidence pass bắt buộc;
+- Final Claim Gate;
+- Research Run Manifest.
 
-Local failure:
+Đặc tả mục tiêu nằm trong `docs/PROJECT_SPEC.md`,
+`docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`.
 
-**không đủ dữ liệu trong corpus hiện tại**
-
-Connector failure:
-
-**không đủ dữ liệu trong remote corpus export hiện tại**
-
-## Data flow
+## 15. Luồng dữ liệu tổng thể
 
 ```text
-Pinned immutable source repositories
+Pinned upstream repositories
           │
           ▼
 Deterministic local parsers
@@ -265,7 +405,7 @@ Deterministic local parsers
           ▼
 SQLite records + FTS + relations + variants + lemmas
           │
-          ├──────── Local CLI research
+          ├──────── Local CLI
           │
           └──────── Production pointer export
                          │
@@ -279,5 +419,5 @@ SQLite records + FTS + relations + variants + lemmas
               Pinned upstream source
                          │
                          ▼
-          Provenance-first research answer
+            Provenance-first answer
 ```
