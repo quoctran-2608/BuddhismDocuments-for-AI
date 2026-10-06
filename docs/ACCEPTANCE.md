@@ -306,7 +306,8 @@ Bảo vệ REQ-WIT-001/002:
 
 # 12. Yêu cầu MỤC TIÊU: trạng thái nghiệm thu hiện tại
 
-Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa được coi là pass:
+Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa được coi là pass.
+Semantics mục tiêu chi tiết nằm trong `docs/RESEARCH_VERIFICATION_DESIGN.md`:
 
 | Requirement | Trạng thái nghiệm thu hiện tại | Test mục tiêu cần có |
 |---|---|---|
@@ -320,6 +321,7 @@ Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa đư�
 | REQ-VER-008 | CHƯA TRIỂN KHAI | CONTRADICTED không được xuất như kết luận đã được xác lập |
 | REQ-VER-009 | CHƯA TRIỂN KHAI | retrieval score không tự biến thành support level |
 | REQ-VER-010 | CHƯA TRIỂN KHAI | synthesis không sinh claim mới ngoài accepted set |
+| REQ-VER-011 | CHƯA TRIỂN KHAI | claim thiếu `claim_type` bị reject; loại evidence không phù hợp không được nâng support |
 | REQ-QTE-001 | CHƯA TRIỂN KHAI | exact/normalized/paraphrase/unverified/mismatch classification |
 | REQ-QTE-002 | CHƯA TRIỂN KHAI | quote sai một từ không được xuất direct quote |
 | REQ-QTE-003 | CHƯA TRIỂN KHAI | paraphrase không được gắn ngoặc kép |
@@ -360,9 +362,10 @@ Tối thiểu phải có fixtures cố ý sai cho:
 5. parallel metadata giả làm textual proof;
 6. hai nguồn phụ thuộc giả làm hai witness độc lập;
 7. claim mạnh hơn evidence;
-8. research mode bỏ counterevidence pass;
-9. AI tự tạo phương trình Pāli ↔ Chinese không có repository evidence;
-10. phần tổng hợp sinh kết luận mới chưa qua claim gate.
+8. claim historical/empirical/metaphysical bị kiểm bằng sai loại evidence;
+9. research mode bỏ counterevidence pass;
+10. AI tự tạo phương trình Pāli ↔ Chinese không có repository evidence;
+11. phần tổng hợp sinh kết luận mới chưa qua claim gate.
 
 ---
 
