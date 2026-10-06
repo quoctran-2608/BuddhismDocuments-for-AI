@@ -709,7 +709,7 @@ Hệ thống phải hướng tới các thuộc tính sau:
 - production Connector không phụ thuộc GitHub Code Search;
 - thay đổi retrieval không âm thầm phá ranking semantics;
 - thay đổi kiến trúc phải cập nhật tài liệu chuẩn tương ứng;
-- HIỆN HÀNH, MỤC TIÊU và LỊCH SỬ phải được phân biệt rõ.
+- HIỆN HÀNH, MỤC TIÊU, TƯƠNG LAI và LỊCH SỬ phải được phân biệt rõ.
 
 Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm thu,
 ánh xạ code/config/test và các khoảng trống kiểm thử nằm trong
