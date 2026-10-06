@@ -187,7 +187,7 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 - truy xuất theo ngôn ngữ;
 - provenance;
 - `evidence_class`, `text_role`, `witness`;
-- relation/parallel/variant workflows;
+- quy trình quan hệ/song hành/dị bản;
 - GitHub Connector production locator;
 - fail-closed khi corpus không đủ dữ liệu.
 
