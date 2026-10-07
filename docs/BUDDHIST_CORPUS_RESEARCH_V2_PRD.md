@@ -211,7 +211,7 @@ V2 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
 
 Các tài sản của 1.0 phải được bảo toàn:
 
-### 7.1. Nguồn và provenance
+### 6.1. Nguồn và provenance
 
 - 13 upstream repositories được ghim bằng commit SHA;
 - source path / source SHA / source blob SHA;
@@ -220,7 +220,7 @@ Các tài sản của 1.0 phải được bảo toàn:
 - `text_role`;
 - `witness`.
 
-### 7.2. Local mode
+### 6.2. Local mode
 
 ```text
 SQLite + FTS + CLI
@@ -228,7 +228,7 @@ SQLite + FTS + CLI
 
 Không thay bằng một hạ tầng nặng hơn chỉ vì thêm verification.
 
-### 7.3. GitHub Connector mode
+### 6.3. GitHub Connector mode
 
 Giữ đường nhanh hiện tại:
 
@@ -246,7 +246,7 @@ Không quét toàn repository.
 
 Không xuất raw corpus vào locator.
 
-### 7.4. Luật nghiên cứu cốt lõi
+### 6.4. Luật nghiên cứu cốt lõi
 
 Giữ nguyên:
 
@@ -262,7 +262,7 @@ Giữ fail-closed khi dữ liệu không đủ.
 
 Giữ nhân chứng riêng; không tự hòa các truyền thống thành một tiếng nói chung.
 
-### 7.5. Tương thích ngược
+### 6.5. Tương thích ngược
 
 Các lệnh và hành vi 1.0 đang được dùng như `search`, `context`, `work`,
 `parallels`, `resolve`, `variants`, `compare`, `provenance` và
@@ -275,12 +275,12 @@ Không thay ranking hiện tại chỉ vì thêm lớp kiểm chứng.
 
 V2 tập trung vào tám năng lực chính.
 
-### 6.1. Evidence Record
+### 7.1. Evidence Record
 
 Chuẩn hóa bằng chứng **đã thực sự được mở và đọc**, thay vì coi search hit hoặc
 pointer là evidence.
 
-### 6.2. Evidence Gate
+### 7.2. Evidence Gate
 
 Kiểm trước khi một kết quả được dùng làm bằng chứng:
 
@@ -290,7 +290,7 @@ Kiểm trước khi một kết quả được dùng làm bằng chứng:
 - vai trò văn bản có phù hợp không;
 - đã đọc đủ ngữ cảnh chưa.
 
-### 6.3. Quote Verification
+### 7.3. Quote Verification
 
 Phân biệt tối thiểu:
 
@@ -302,14 +302,14 @@ Phân biệt tối thiểu:
 
 Một câu trích sai không được xuất như nguyên văn.
 
-### 6.4. Atomic Claim
+### 7.4. Atomic Claim
 
 Kết luận quan trọng được tách thành các luận điểm nhỏ đủ để kiểm độc lập.
 
 Không viết một đoạn tổng hợp dài rồi gắn vài citation ở cuối và coi như toàn bộ
 đoạn đã được chứng minh.
 
-### 6.5. Claim ↔ Evidence Verification
+### 7.5. Claim ↔ Evidence Verification
 
 Mỗi claim phải được đánh giá quan hệ với evidence, ít nhất theo các mức:
 
