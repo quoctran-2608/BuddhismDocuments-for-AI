@@ -19,7 +19,8 @@ Tài liệu giữ nguyên các mã đã được dùng từ trước để khôn
 - `REQ-QTE`: kiểm chứng câu trích;
 - `REQ-CTR`: phản chứng và độc lập nguồn;
 - `REQ-RUN`: hồ sơ lần nghiên cứu;
-- `REQ-TST`: kiểm thử chất lượng nghiên cứu.
+- `REQ-TST`: kiểm thử chất lượng nghiên cứu;
+- `REQ-ENV`: tương thích môi trường thực thi.
 
 Toàn bộ yêu cầu trong file này đang là **MỤC TIÊU** cho tới khi có mã nguồn và
 bằng chứng nghiệm thu tương ứng.
@@ -330,7 +331,39 @@ lỗi cũ xuất hiện trở lại sau thay đổi mã nguồn.
 
 ---
 
-## 8. Hướng TƯƠNG LAI — chưa phải yêu cầu 2.0 phiên bản đầu
+## 8. Tương thích môi trường thực thi
+
+### REQ-ENV-001 — Lõi kiểm chứng phải dùng chung trên Codex và ChatGPT Work
+
+Lõi kiểm chứng 2.0 phải nhận và trả dữ liệu máy đọc theo cùng một hợp đồng,
+không phụ thuộc bắt buộc vào:
+
+- SQLite cục bộ;
+- lệnh shell;
+- đường dẫn tuyệt đối của một máy;
+- trạng thái chỉ tồn tại trong một phiên chat.
+
+Các cấu trúc Bản ghi bằng chứng, Luận điểm và Hồ sơ lần nghiên cứu phải chuyển
+được sang JSON mà không mất ý nghĩa.
+
+Codex và ChatGPT Work phải dùng cùng tên trường, cùng mã trạng thái và cùng luật
+đóng khi thiếu dữ liệu.
+
+### REQ-ENV-002 — Đường GitHub plugin phải dùng được khi công cụ cung cấp đủ dữ liệu
+
+Thiết kế không được chặn việc ChatGPT thực hiện quy trình 2.0 qua GitHub plugin
+khi plugin có thể đọc kho, commit, đường dẫn và nội dung nguồn cần thiết.
+
+Các phép kiểm phụ thuộc môi trường, ví dụ kiểm Git blob bằng working copy cục bộ,
+phải tách khỏi logic học thuật cốt lõi.
+
+Nếu GitHub plugin hoặc môi trường từ xa không cung cấp đủ dữ liệu cho một phép
+kiểm bắt buộc, kết quả phải là **chưa xác minh** và hệ thống phải đóng khi thiếu
+dữ liệu. Không được coi việc “không kiểm được” là “đã đạt”.
+
+---
+
+## 9. Hướng TƯƠNG LAI — chưa phải yêu cầu 2.0 phiên bản đầu
 
 Đường truy xuất Connector sâu, tác vụ truy xuất từ xa hoặc cơ chế riêng cho tìm
 Hán văn tùy ý chỉ là **TƯƠNG LAI**.
@@ -342,7 +375,7 @@ kiểm.
 Không cấp mã yêu cầu cho hạng mục TƯƠNG LAI cho tới khi nó được chủ động nâng
 thành MỤC TIÊU.
 
-## 9. Ngoài phạm vi 2.0 phiên bản đầu
+## 10. Ngoài phạm vi 2.0 phiên bản đầu
 
 Không đưa vào chỉ vì kiến trúc trông hiện đại hơn:
 
@@ -357,7 +390,7 @@ Không đưa vào chỉ vì kiến trúc trông hiện đại hơn:
 - một điểm tin cậy phần trăm giả như xác suất chân lý;
 - kho dữ liệu đám mây mới chỉ để phục vụ lớp kiểm chứng.
 
-## 10. Quy tắc thay đổi yêu cầu 2.0
+## 11. Quy tắc thay đổi yêu cầu 2.0
 
 Một yêu cầu chỉ được sửa khi:
 
