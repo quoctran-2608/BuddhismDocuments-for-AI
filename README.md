@@ -52,11 +52,11 @@ Runtime Connector hiện hành phải luôn được đọc từ
 [`config/remote-corpus.json`](config/remote-corpus.json), không hard-code từ
 README.
 
-## 2. Hai chế độ nghiên cứu
+## 2. Hai chế độ thực thi hiện hành
 
-### Local mode
+### Chế độ cục bộ (`Local mode`)
 
-Local mode hoạt động offline nghiêm ngặt.
+Chế độ cục bộ hoạt động hoàn toàn ngoại tuyến.
 
 ```bash
 # Kiểm nguồn và trạng thái chỉ mục
@@ -79,9 +79,9 @@ bin/buddhist-corpus compare mn1 T01n0001
 
 Chi tiết: [Hướng dẫn CLI](docs/CLI.md).
 
-### GitHub Connector mode
+### Chế độ GitHub Connector
 
-Khi AI không có SQLite local:
+Khi AI không có SQLite cục bộ:
 
 ```text
 câu hỏi
@@ -200,13 +200,13 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 Hướng nâng cấp tiếp theo bổ sung:
 
 ```text
-Evidence Record
-→ kiểm chứng trích dẫn
-→ Atomic Claim
-→ kiểm chứng claim–evidence
+Bản ghi bằng chứng
+→ kiểm chứng câu trích
+→ Luận điểm nguyên tử
+→ kiểm chứng luận điểm ↔ bằng chứng
 → phản chứng
-→ Final Claim Gate
-→ Research Run
+→ Cửa kiểm luận điểm cuối
+→ Hồ sơ lần nghiên cứu
 ```
 
 Chi tiết nằm trong
@@ -216,10 +216,11 @@ Chi tiết nằm trong
 [Yêu cầu 2.0](docs/v2/REQUIREMENTS.md) và
 [Nghiệm thu 2.0](docs/v2/ACCEPTANCE.md).
 
-### TƯƠNG LAI — chưa thuộc v1
+### TƯƠNG LAI — chưa thuộc 2.0 phiên bản đầu
 
-Chỉ sau v1 mới xem xét deep Connector fallback/job từ xa khi có số liệu chứng
-minh locator hiện tại không đủ. Đây không phải runtime hay requirement hiện hành.
+Chỉ sau 2.0 phiên bản đầu mới xem xét đường dự phòng Connector sâu hoặc tác vụ
+từ xa khi có số liệu chứng minh locator hiện tại không đủ. Đây không phải chức
+năng đang vận hành hay yêu cầu hiện hành.
 
 ## 8. Nguyên tắc không được hiểu sai
 
