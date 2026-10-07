@@ -1,12 +1,12 @@
-# Yêu cầu dự án
+# Yêu cầu hiện hành của dự án
 
 > Trạng thái tài liệu: **HIỆN HÀNH**
 >
-> Vai trò: đặc tả các yêu cầu có mã của dự án.
+> Vai trò: nguồn chuẩn cho các yêu cầu có mã của **hệ thống hiện hành**.
 >
-> Nguyên tắc: yêu cầu **HIỆN HÀNH** mô tả những gì hệ thống hiện phải bảo toàn;
-> yêu cầu **MỤC TIÊU** mô tả lớp nâng cấp đã được chấp thuận nhưng chưa được
-> xem là triển khai xong.
+> Yêu cầu riêng của Buddhist Corpus Research 2.0 được tách hoàn toàn sang
+> `docs/v2/REQUIREMENTS.md` để tránh lẫn giữa phiên bản đang chạy và phiên bản
+> đang nâng cấp.
 
 ## 1. Cách đọc mã yêu cầu
 
@@ -20,18 +20,11 @@ Các nhóm mã:
 - `REQ-REL`: quan hệ, song hành và cầu nối;
 - `REQ-CON`: GitHub Connector và production locator;
 - `REQ-FAIL`: đóng thất bại và giới hạn;
-- `REQ-DOC`: quản trị tài liệu;
-- `REQ-VER`: kiểm chứng claim — MỤC TIÊU;
-- `REQ-QTE`: kiểm chứng trích dẫn — MỤC TIÊU;
-- `REQ-CTR`: phản chứng — MỤC TIÊU;
-- `REQ-RUN`: hồ sơ lần nghiên cứu — MỤC TIÊU.
+- `REQ-DOC`: quản trị tài liệu.
 
-Trạng thái:
-
-- **HIỆN HÀNH**: đã là yêu cầu của hệ thống đang chạy;
-- **MỤC TIÊU**: đã chấp thuận về hướng nhưng chưa triển khai đầy đủ;
-- **TƯƠNG LAI**: hướng có điều kiện, chưa phải requirement v1 cho tới khi được nâng trạng thái;
-- **NGOÀI PHẠM VI V1**: chủ động không thuộc vòng nâng cấp đầu.
+Tất cả mã trong file này đều là **HIỆN HÀNH**. Các nhóm mã
+`REQ-VER`, `REQ-QTE`, `REQ-CTR`, `REQ-RUN`, `REQ-TST` thuộc riêng
+Buddhist Corpus Research 2.0 và được quản lý trong `docs/v2/REQUIREMENTS.md`.
 
 ---
 
@@ -430,201 +423,29 @@ hiểu là snapshot/hồ sơ lịch sử, không phải trạng thái vận hàn
 
 ---
 
-# 11. Yêu cầu MỤC TIÊU — lớp kiểm chứng nghiên cứu
-
-> Toàn bộ mục này là **MỤC TIÊU**. Chỉ chuyển sang HIỆN HÀNH khi có code,
-> schema/format phù hợp và kiểm thử nghiệm thu.
->
-> Semantics và data contract chi tiết của lớp này nằm trong
-> `docs/v2/DESIGN.md`.
-
-## 11.1. Evidence Record
-
-### REQ-VER-001 — Chỉ nguồn đã mở và đọc mới được tạo Evidence Record
-
-Pointer, tiêu đề, mục lục, dòng quan hệ, dòng cầu nối hoặc ứng viên khám phá không tự
-động là Evidence Record.
-
-### REQ-VER-002 — Evidence Record phải có provenance đầy đủ
-
-Record mục tiêu phải chứa tối thiểu các trường cần để truy ngược nguồn và lần
-nghiên cứu, gồm corpus, repository, source SHA/path, work/segment, language,
-evidence class, text role, witness, quotation/context và research run ID khi có.
-
-### REQ-VER-003 — Evidence Gate phải kiểm source locator
-
-Trước khi evidence được chấp nhận, hệ thống phải kiểm được source/path/SHA và vị
-trí văn bản phù hợp.
-
-## 11.2. Atomic Claim
-
-### REQ-VER-004 — Kết luận quan trọng phải tách thành Atomic Claim
-
-Claim phải đủ nhỏ để đánh giá riêng support/counterevidence.
-
-### REQ-VER-005 — Claim phải nối tới supporting evidence
-
-Claim không có evidence phù hợp không được trở thành kết luận được chấp nhận.
-
-### REQ-VER-006 — Claim verification phải dùng trạng thái định tính
-
-Tối thiểu:
-
-- DIRECT;
-- STRONG;
-- WEAK;
-- UNSUPPORTED;
-- CONTRADICTED.
-
-Không dùng một xác suất giả tạo làm thay thế.
-
-### REQ-VER-007 — UNSUPPORTED bị chặn khỏi kết luận cuối
-
-Không được “làm mềm câu chữ” để lén đưa claim thiếu bằng chứng vào kết luận.
-
-### REQ-VER-008 — CONTRADICTED không được trình bày như kết luận đã xác lập
-
-Nếu claim còn được nhắc, phải trình bày đúng là bị phản bác/xung đột trong phạm
-vi evidence đã kiểm.
-
-### REQ-VER-009 — Retrieval rank và claim verification phải là hai lớp riêng
-
-Không dùng rank/score của retrieval làm support level của claim.
-
-### REQ-VER-010 — Synthesis chỉ dùng accepted claim set
-
-Phần tổng hợp cuối không được tự thêm một kết luận quan trọng chưa qua claim gate.
-
-### REQ-VER-011 — Atomic Claim phải khai báo loại claim
-
-Mỗi claim quan trọng phải khai báo tối thiểu một `claim_type` thuộc taxonomy v1:
-
-- `textual`;
-- `historical`;
-- `relationship`;
-- `comparative`;
-- `interpretive`;
-- `empirical`;
-- `metaphysical`.
-
-Verifier phải dùng loại claim để tránh coi một loại evidence là đủ cho một mệnh
-đề thuộc loại khác.
-
 ---
 
-## 11.3. Kiểm chứng trích dẫn
+## 11. Quan hệ với Buddhist Corpus Research 2.0
 
-### REQ-QTE-001 — Direct quote phải có trạng thái kiểm chứng
+Tài liệu này chỉ sở hữu các yêu cầu **HIỆN HÀNH** của hệ thống đang chạy.
 
-Các trạng thái mục tiêu:
+Các yêu cầu riêng của chương trình nâng cấp 2.0 nằm tại:
 
-- VERIFIED_EXACT;
-- VERIFIED_NORMALIZED;
-- PARAPHRASE;
-- UNVERIFIED;
-- QUOTE_MISMATCH.
+- `docs/v2/REQUIREMENTS.md` — yêu cầu có mã của 2.0;
+- `docs/v2/ACCEPTANCE.md` — cách nghiệm thu các yêu cầu 2.0.
 
-### REQ-QTE-002 — QUOTE_MISMATCH không được xuất như direct quote
+Không sao chép các yêu cầu 2.0 trở lại file này. Khi một năng lực 2.0 thật sự
+được triển khai và nghiệm thu, tài liệu hiện hành sẽ được cập nhật theo thay đổi
+thực tế lúc đó.
 
-Nếu khác nguồn, phải sửa quote, hạ thành paraphrase có căn cứ, hoặc loại bỏ.
+## 12. Quy tắc thay đổi yêu cầu hiện hành
 
-### REQ-QTE-003 — Paraphrase phải được nhận diện là paraphrase
-
-Không đặt paraphrase trong ngoặc kép như thể là nguyên văn.
-
----
-
-## 11.4. Phản chứng và độc lập nguồn
-
-### REQ-CTR-001 — Research mode phải có counterevidence pass
-
-Phải chủ động tìm ngoại lệ, witness khác, variant, nguồn cùng cấp xung đột hoặc
-điều kiện giới hạn claim.
-
-### REQ-CTR-002 — “Không có phản chứng” phải giới hạn theo phạm vi đã kiểm
-
-Không được chuyển “không tìm thấy trong lần chạy này” thành “không tồn tại phản
-chứng”.
-
-### REQ-CTR-003 — Nhiều citation không tự động là nhiều nguồn độc lập
-
-Hệ thống mục tiêu phải có khả năng phân biệt tối thiểu:
-
-- independent;
-- partially_dependent;
-- same_source_family;
-- derived_from;
-- uncertain.
-
-### REQ-CTR-004 — Counterevidence phải có thể làm claim bị sửa/hạ/reject
-
-Counterevidence không chỉ là phần trang trí ở cuối answer.
-
----
-
-## 11.5. Research Run
-
-### REQ-RUN-001 — Research mode phải tạo Research Run Manifest
-
-Manifest phải đủ để biết câu hỏi, thời điểm, mode, scope, commit repo chính,
-repo/commit/root của locator khi dùng Connector, source revisions, queries,
-evidence IDs, claim IDs, counterevidence status và limitations.
-
-### REQ-RUN-002 — Phải phân biệt reproducibility truy xuất và reproducibility nghiên cứu
-
-Có thể tái tạo retrieval không đồng nghĩa có thể tái tạo toàn bộ reasoning path.
-
-### REQ-RUN-003 — Run phải ghi phần đã kiểm và phần chưa kiểm
-
-Không được để người đọc hiểu phạm vi đã kiểm rộng hơn thực tế.
-
-### REQ-RUN-004 — Run phải cho phép trả lời “claim X dựa vào evidence nào?”
-
-Traceability claim → evidence là yêu cầu bắt buộc.
-
-### REQ-RUN-005 — Run phải cho phép trả lời “đã tìm phản chứng chưa?”
-
-Counterevidence pass phải có trạng thái có thể kiểm.
-
----
-
-# 12. TƯƠNG LAI — chưa phải requirement v1
-
-Deep Connector fallback, remote retrieval job hoặc GitHub Action để xử lý các
-trường hợp locator hữu hạn không đủ chỉ là hướng **TƯƠNG LAI**. Chúng chưa có
-mã requirement và không được triển khai như một phần v1 nếu chưa được chủ động
-nâng thành MỤC TIÊU.
-
-Nếu được xem xét sau này, worker từ xa chỉ được làm retrieval/test/sinh artefact
-có provenance; không được trở thành “AI brain” bỏ qua Evidence/Claim gates.
-
-# 13. Ngoài phạm vi v1 của lớp nâng cấp
-
-Các hạng mục sau **không phải yêu cầu v1**:
-
-- vector database;
-- embeddings toàn corpus;
-- knowledge graph toàn diện;
-- Kubernetes;
-- microservices;
-- distributed database;
-- autonomous multi-agent research;
-- semantic search phổ quát;
-- universal numeric confidence score.
-
-Chúng chỉ được đưa vào requirement mới khi có nhu cầu và quyết định kiến trúc
-riêng.
-
----
-
-# 14. Quy tắc thay đổi requirement
-
-Một requirement chỉ được sửa khi:
+Một yêu cầu hiện hành chỉ được sửa khi:
 
 1. lý do thay đổi được ghi rõ;
 2. tài liệu cấp dự án liên quan được đối chiếu;
-3. acceptance criterion được cập nhật;
-4. test/code/config/schema liên quan được xem xét;
-5. nếu là quyết định kiến trúc lớn, ADR được tạo hoặc cập nhật.
+3. tiêu chí nghiệm thu tương ứng được cập nhật;
+4. mã nguồn, cấu hình, schema và kiểm thử liên quan được xem xét;
+5. nếu là quyết định kiến trúc bền vững, ADR được tạo hoặc cập nhật.
 
-Không được âm thầm đổi requirement chỉ để hợp thức hóa implementation hiện tại.
+Không được âm thầm sửa yêu cầu chỉ để hợp thức hóa cách triển khai hiện tại.
