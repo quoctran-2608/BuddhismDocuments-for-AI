@@ -1,10 +1,10 @@
-# Buddhist Corpus Research 2.0 — PRD nâng cấp hệ thống nghiên cứu có kiểm chứng
+# Buddhist Corpus Research 2.0 — Đặc tả yêu cầu sản phẩm (PRD) cho hệ thống nghiên cứu có kiểm chứng
 
 > Trạng thái: **MỤC TIÊU**
 >
 > Vai trò: tài liệu trung tâm mô tả **đề bài nâng cấp từ hệ hiện hành lên
-> Buddhist Corpus Research 2.0**: vì sao cần nâng cấp, V2 phải làm được gì,
-> những gì phải giữ nguyên, những gì không thuộc V2 và khi nào V2 được coi là
+> Buddhist Corpus Research 2.0**: vì sao cần nâng cấp, 2.0 phải làm được gì,
+> những gì phải giữ nguyên, những gì không thuộc 2.0 và khi nào 2.0 được coi là
 > thành công.
 >
 > Tài liệu này **không phải thiết kế mã nguồn**. Chi tiết kỹ thuật nằm trong
@@ -19,10 +19,15 @@ Trong chương trình nâng cấp này:
   lớp kiểm chứng luận điểm;
 - **Buddhist Corpus Research 2.0** là phiên bản mục tiêu của lần nâng cấp này.
 
-Đây là quy ước sản phẩm để giúp tài liệu dễ hiểu. Nó không khẳng định repository
-trước đây đã phát hành một release semantic-version chính thức tên `1.0`.
+Đây là quy ước sản phẩm để giúp tài liệu dễ hiểu. Nó không khẳng định kho Git
+trước đây đã từng phát hành chính thức phiên bản `1.0` theo quy ước phiên bản
+ngữ nghĩa.
 
 ### Quy ước thuật ngữ trong tài liệu
+
+**PRD** là viết tắt của *Product Requirements Document*, trong tài liệu này hiểu
+là **đặc tả yêu cầu sản phẩm**: tài liệu trả lời vì sao cần nâng cấp, cần đạt gì,
+không làm gì và khi nào được coi là thành công.
 
 Tài liệu ưu tiên cách gọi tiếng Việt. Một số thuật ngữ kỹ thuật được giữ tên
 tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên để đối chiếu với mã nguồn và tài
@@ -44,7 +49,7 @@ Sau phần định nghĩa này, văn xuôi ưu tiên dùng cách gọi tiếng V
 mã trạng thái hoặc tên giao diện máy có thể giữ nguyên tiếng Anh khi cần đối
 chiếu chính xác với mã nguồn.
 
-## 2. Một câu mô tả V2
+## 2. Một câu mô tả 2.0
 
 Buddhist Corpus Research 1.0 đã làm tốt việc:
 
@@ -54,9 +59,9 @@ Buddhist Corpus Research 2.0 phải bổ sung khả năng:
 
 > **Không cho AI đi xa hơn những gì nguồn thực sự cho phép kết luận.**
 
-V2 không nhằm làm repo “biết nhiều Phật học hơn”.
+2.0 không nhằm làm repo “biết nhiều Phật học hơn”.
 
-V2 nhằm làm quá trình nghiên cứu:
+2.0 nhằm làm quá trình nghiên cứu:
 
 - khó suy diễn quá mức hơn;
 - khó trích sai hơn;
@@ -71,11 +76,11 @@ Hệ 1.0 đã làm tốt chuỗi:
 ```text
 câu hỏi
 → tìm ứng viên
-→ mở đúng repository
+→ mở đúng kho Git
 → đúng commit
 → đúng file/đoạn
 → đọc ngữ cảnh
-→ provenance
+→ nguồn gốc truy nguyên
 ```
 
 Khoảng trống còn lại nằm **sau khi nguồn đã được đọc**.
@@ -83,14 +88,14 @@ Khoảng trống còn lại nằm **sau khi nguồn đã được đọc**.
 Một nguồn hoàn toàn thật vẫn có thể bị AI dùng sai mức, ví dụ:
 
 - nguồn nói “một số” nhưng AI viết “luôn luôn”;
-- metadata song hành bị dùng như bằng chứng câu chữ;
+- siêu dữ liệu song hành bị dùng như bằng chứng câu chữ;
 - bản dịch/chú thích bị trình bày như nguyên văn;
 - một tuyên bố trong văn bản bị nâng thành sự thật lịch sử;
 - nhiều citation phụ thuộc cùng một nguồn bị hiểu là nhiều xác nhận độc lập;
 - AI chỉ tìm bằng chứng thuận mà không tìm ngoại lệ;
 - phần tổng hợp tự sinh thêm kết luận chưa được kiểm.
 
-Vấn đề trung tâm của V2 là:
+Vấn đề trung tâm của 2.0 là:
 
 ```text
 có bằng chứng thật
@@ -100,7 +105,7 @@ luận điểm của AI tự động đúng
 
 ## 4. Mục tiêu sản phẩm
 
-Sau V2, đối với một nghiên cứu đủ sâu, hệ thống phải có khả năng trả lời có cấu
+Sau 2.0, đối với một nghiên cứu đủ sâu, hệ thống phải có khả năng trả lời có cấu
 trúc các câu hỏi:
 
 - Kết luận này dựa trên bằng chứng nào?
@@ -108,13 +113,13 @@ trúc các câu hỏi:
 - Câu trích có khớp nguồn thật không?
 - Có nhân chứng độc lập nào không?
 - Có phản chứng hoặc dữ liệu làm yếu kết luận không?
-- Claim nào đã bị loại và vì sao?
+- luận điểm nào đã bị loại và vì sao?
 - Lần nghiên cứu này dùng phiên bản corpus nào?
-- Có thể rà soát lại đường từ claim → evidence → pinned source không?
+- Có thể rà soát lại đường từ luận điểm → bằng chứng → pinned nguồn không?
 
-## 5. Phương pháp cốt lõi của V2
+## 5. Phương pháp cốt lõi của 2.0
 
-V2 không chỉ thêm vài trường dữ liệu. Nó thay đổi cách một kết luận được phép đi
+2.0 không chỉ thêm vài trường dữ liệu. Nó thay đổi cách một kết luận được phép đi
 từ nguồn tới câu trả lời.
 
 ### 5.1. Từ “quy tắc AI nên nhớ” thành “đối tượng + trạng thái + cửa kiểm”
@@ -122,7 +127,7 @@ từ nguồn tới câu trả lời.
 Ở 1.0, nhiều nguyên tắc nghiên cứu đúng đã tồn tại dưới dạng luật mà AI phải tự
 tuân thủ.
 
-V2 phải đưa các điểm quan trọng nhất thành cấu trúc có thể kiểm:
+2.0 phải đưa các điểm quan trọng nhất thành cấu trúc có thể kiểm:
 
 ```text
 bằng chứng đã đọc
@@ -131,61 +136,61 @@ bằng chứng đã đọc
 luận điểm
 → có trạng thái
 
-quan hệ claim ↔ evidence
+quan hệ luận điểm ↔ bằng chứng
 → có mức hỗ trợ
 
 phản chứng
 → có dấu vết
 
-claim cuối
+luận điểm cuối
 → phải qua cửa kiểm
 ```
 
 Mục tiêu không phải loại AI khỏi nghiên cứu, mà không để một lần suy luận tự do
-vừa tạo claim vừa tự xác nhận claim đó.
+vừa tạo luận điểm vừa tự xác nhận luận điểm đó.
 
 ### 5.2. Giữ bốn tầng dữ liệu riêng
 
-V2 phải giữ rõ:
+2.0 phải giữ rõ:
 
 ```text
-Pointer
+con trỏ
 → chỉ nơi cần đọc
 
-Evidence
+bằng chứng
 → điều đã thực sự mở và đọc
 
-Claim
+luận điểm
 → điều AI muốn khẳng định
 
-Synthesis
-→ cách trình bày các claim đã được kiểm
+tổng hợp
+→ cách trình bày các luận điểm đã được kiểm
 ```
 
 Không gộp bốn tầng này thành một đối tượng chung.
 
-### 5.3. Phân biệt “nguồn mạnh” và “nguồn có hỗ trợ claim này không”
+### 5.3. Phân biệt “nguồn mạnh” và “nguồn có hỗ trợ luận điểm này không”
 
-V2 phải luôn tách hai câu hỏi:
+2.0 phải luôn tách hai câu hỏi:
 
 1. **Nguồn này thuộc loại nào, có thẩm quyền ra sao?**
 2. **Nguồn này thực sự hỗ trợ luận điểm cụ thể này đến mức nào?**
 
-Một nguồn rất mạnh vẫn có thể không chứng minh claim đang xét.
+Một nguồn rất mạnh vẫn có thể không chứng minh luận điểm đang xét.
 
-Ngược lại, điểm retrieval cao chỉ giúp quyết định nên mở nguồn nào trước; nó
+Ngược lại, điểm truy xuất cao chỉ giúp quyết định nên mở nguồn nào trước; nó
 không phải mức xác nhận học thuật.
 
 ### 5.4. Việc máy kiểm được thì ưu tiên kiểm bằng máy
 
 Các việc xác định như:
 
-- source/path/SHA có hợp lệ không;
+- nguồn/path/SHA có hợp lệ không;
 - vị trí có tồn tại không;
 - quotation có khớp không;
-- provenance có đủ không;
-- claim có evidence không;
-- claim bị cấm có lọt qua Final Claim Gate không;
+- nguồn gốc truy nguyên có đủ không;
+- luận điểm có bằng chứng không;
+- luận điểm bị cấm có lọt qua Cửa kiểm luận điểm cuối không;
 
 nên được kiểm bằng quy tắc máy khi có thể.
 
@@ -193,7 +198,7 @@ AI chỉ nên đảm nhiệm phần thật sự cần suy luận ngôn ngữ nh�
 
 - tạo giả thuyết tìm kiếm;
 - tách luận điểm;
-- đánh giá quan hệ ngữ nghĩa claim ↔ evidence khi quy tắc máy không đủ;
+- đánh giá quan hệ ngữ nghĩa luận điểm ↔ bằng chứng khi quy tắc máy không đủ;
 - đề xuất hướng tìm phản chứng;
 - tổng hợp câu trả lời.
 
@@ -205,23 +210,23 @@ Luồng đúng là:
 
 ```text
 corpus lớn
-→ retrieval hiện hành thu hẹp ứng viên
-→ mở một tập evidence nhỏ
-→ verification trên tập evidence đó
+→ truy xuất hiện hành thu hẹp ứng viên
+→ mở một tập bằng chứng nhỏ
+→ verification trên tập bằng chứng đó
 ```
 
-Đây là cách giữ V2 đơn giản và không phá hiệu năng của 1.0.
+Đây là cách giữ 2.0 đơn giản và không phá hiệu năng của 1.0.
 
 ### 5.6. Tách nguyên văn, bản dịch và diễn giải
 
-Khi có liên quan, V2 phải phân biệt rõ:
+Khi có liên quan, 2.0 phải phân biệt rõ:
 
 ```text
-SOURCE TEXT
-PUBLISHED TRANSLATION
-AI WORKING TRANSLATION
-INTERPRETATION
-SYNTHESIS
+nguồn TEXT
+BẢN DỊCH ĐÃ XUẤT BẢN
+BẢN DỊCH LÀM VIỆC CỦA AI
+DIỄN GIẢI
+tổng hợp
 ```
 
 Bản dịch do AI tạo không được trình bày như bản dịch học thuật đã xuất bản.
@@ -282,7 +287,7 @@ Nguyên tắc này nhằm bảo đảm:
 - biết kết luận nào từng được dùng ở thời điểm nào;
 - không làm lịch sử nghiên cứu thay đổi âm thầm.
 
-V2 chưa cần xây một hệ thống quản lý phiên bản phức tạp. Chỉ cần mô hình dữ liệu
+2.0 chưa cần xây một hệ thống quản lý phiên bản phức tạp. Chỉ cần mô hình dữ liệu
 không chặn khả năng truy ngược này.
 
 ### 5.10. “Chưa xác định” là một kết quả hợp lệ
@@ -326,22 +331,22 @@ thì sau khi sửa, tình huống đó phải trở thành **bài kiểm thử h
 Các bài kiểm thử nghiên cứu chuẩn nên ưu tiên dùng những lỗi thật từng xảy ra,
 không chỉ những tình huống giả định.
 
-## 6. Những gì V2 phải giữ nguyên
+## 6. Những gì 2.0 phải giữ nguyên
 
-V2 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
+2.0 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
 
 Các tài sản của 1.0 phải được bảo toàn:
 
-### 6.1. Nguồn và provenance
+### 6.1. Nguồn và nguồn gốc truy nguyên
 
-- 13 upstream repositories được ghim bằng commit SHA;
-- source path / source SHA / source blob SHA;
+- 13 các kho nguồn gốc bên ngoài được ghim bằng commit SHA;
+- nguồn path / nguồn SHA / nguồn blob SHA;
 - work ID / segment ID / sequence;
 - `evidence_class`;
 - `text_role`;
 - `witness`.
 
-### 6.2. Local mode
+### 6.2. chế độ cục bộ
 
 ```text
 SQLite + FTS + CLI
@@ -349,21 +354,21 @@ SQLite + FTS + CLI
 
 Không thay bằng một hạ tầng nặng hơn chỉ vì thêm verification.
 
-### 6.3. GitHub Connector mode
+### 6.3. chế độ GitHub Connector
 
 Giữ đường nhanh hiện tại:
 
 ```text
-production key
+khóa của locator chính thức
 → SHA-256 bucket
 → locator shard
-→ ranked pointer
-→ pinned upstream source
+→ con trỏ đã xếp hạng
+→ pinned upstream nguồn
 ```
 
 Không thay bằng GitHub Code Search.
 
-Không quét toàn repository.
+Không quét toàn kho Git.
 
 Không xuất raw corpus vào locator.
 
@@ -375,7 +380,7 @@ Giữ nguyên:
 kiến thức mô hình
 → chỉ tạo giả thuyết tìm kiếm
 
-bằng chứng repository
+bằng chứng trong kho nguồn
 → mới được xác lập kết luận nghiên cứu
 ```
 
@@ -392,26 +397,26 @@ ràng.
 
 Không thay ranking hiện tại chỉ vì thêm lớp kiểm chứng.
 
-## 7. Năng lực mới của V2
+## 7. Năng lực mới của 2.0
 
-V2 tập trung vào tám năng lực chính.
+2.0 tập trung vào tám năng lực chính.
 
-### 7.1. Evidence Record
+### 7.1. Bản ghi bằng chứng
 
 Chuẩn hóa bằng chứng **đã thực sự được mở và đọc**, thay vì coi search hit hoặc
-pointer là evidence.
+con trỏ là bằng chứng.
 
-### 7.2. Evidence Gate
+### 7.2. bằng chứng Gate
 
 Kiểm trước khi một kết quả được dùng làm bằng chứng:
 
-- source có mở được không;
-- provenance có đúng không;
+- nguồn có mở được không;
+- nguồn gốc truy nguyên có đúng không;
 - vị trí có khớp không;
 - vai trò văn bản có phù hợp không;
 - đã đọc đủ ngữ cảnh chưa.
 
-### 7.3. Quote Verification
+### 7.3. Kiểm chứng câu trích
 
 Phân biệt tối thiểu:
 
@@ -423,32 +428,32 @@ Phân biệt tối thiểu:
 
 Một câu trích sai không được xuất như nguyên văn.
 
-### 7.4. Atomic Claim
+### 7.4. Luận điểm nguyên tử
 
 Kết luận quan trọng được tách thành các luận điểm nhỏ đủ để kiểm độc lập.
 
 Không viết một đoạn tổng hợp dài rồi gắn vài citation ở cuối và coi như toàn bộ
 đoạn đã được chứng minh.
 
-### 7.5. Claim ↔ Evidence Verification
+### 7.5. Kiểm chứng luận điểm ↔ bằng chứng
 
-Mỗi claim phải được đánh giá quan hệ với evidence, ít nhất theo các mức:
+Mỗi luận điểm phải được đánh giá quan hệ với bằng chứng, ít nhất theo các mức:
 
 ```text
 DIRECT
 STRONG
 WEAK
-UNSUPPORTED
+UNmức hỗ trợED
 CONTRADICTED
 ```
 
-Khi một claim dựa trên nhiều nguồn, V2 cũng phải biểu diễn được các nguồn đó là
+Khi một luận điểm dựa trên nhiều nguồn, 2.0 cũng phải biểu diễn được các nguồn đó là
 độc lập, phụ thuộc một phần, cùng họ nguồn, dẫn xuất từ nhau hay chưa xác định.
 Nhiều citation không tự động được tính là nhiều xác nhận độc lập.
 
-Điểm retrieval/rank không được dùng thay cho đánh giá này.
+Điểm truy xuất/rank không được dùng thay cho đánh giá này.
 
-### 7.6. Counterevidence
+### 7.6. phản chứng
 
 Trong chế độ nghiên cứu sâu, hệ thống phải chủ động tìm:
 
@@ -458,61 +463,61 @@ Trong chế độ nghiên cứu sâu, hệ thống phải chủ động tìm:
 - song hành không khớp;
 - nguồn cùng tầng nói khác;
 - quan hệ phụ thuộc làm yếu “nhiều nguồn”;
-- điều kiện giới hạn phạm vi claim.
+- điều kiện giới hạn phạm vi luận điểm.
 
-Phản chứng phải có khả năng làm claim bị sửa, thu hẹp, hạ mức hoặc loại.
+Phản chứng phải có khả năng làm luận điểm bị sửa, thu hẹp, hạ mức hoặc loại.
 
-### 7.7. Final Claim Gate và kiểm tra cuối
+### 7.7. Cửa kiểm luận điểm cuối và kiểm tra cuối
 
-Chỉ claim đủ điều kiện mới được đi vào phần tổng hợp cuối.
+Chỉ luận điểm đủ điều kiện mới được đi vào phần tổng hợp cuối.
 
 `UNSUPPORTED` và `CONTRADICTED` không được trình bày như kết luận đã xác lập.
 
-Nếu synthesis cần thêm một claim quan trọng mới, claim đó phải quay lại quy
+Nếu tổng hợp cần thêm một luận điểm quan trọng mới, luận điểm đó phải quay lại quy
 trình kiểm chứng.
 
 Sau khi tổng hợp, hệ thống phải có một bước kiểm tra cuối để bắt các lỗi kiểu:
 
-- claim quan trọng không có evidence;
+- luận điểm quan trọng không có bằng chứng;
 - câu trích trực tiếp chưa được kiểm;
-- pointer/metadata bị trình bày như câu chữ nguồn;
+- con trỏ/siêu dữ liệu bị trình bày như câu chữ nguồn;
 - translation note bị trình bày như root text;
 - quan hệ song hành bị biến thành textual identity;
-- equivalence đa ngôn ngữ không có bằng chứng repository;
-- phần tổng hợp vô tình làm claim mạnh hơn trạng thái đã được chấp nhận;
+- equivalence đa ngôn ngữ không có bằng chứng trong kho nguồn;
+- phần tổng hợp vô tình làm luận điểm mạnh hơn trạng thái đã được chấp nhận;
 - giới hạn phạm vi quan trọng bị bỏ mất.
 
 Nếu kiểm tra cuối thất bại, câu trả lời không được xuất như một kết luận đã xác
 lập.
 
-### 7.8. Research Run
+### 7.8. Hồ sơ lần nghiên cứu
 
 Với nghiên cứu sâu, hệ thống lưu đủ dấu vết để biết:
 
 - câu hỏi và phạm vi;
 - phiên bản repo/corpus/locator;
 - các truy vấn và giả thuyết tìm kiếm;
-- evidence đã dùng;
-- claim đã tạo;
-- claim được chấp nhận hoặc loại;
+- bằng chứng đã dùng;
+- luận điểm đã tạo;
+- luận điểm được chấp nhận hoặc loại;
 - phản chứng đã tìm;
 - giới hạn của lần nghiên cứu.
 
 Mục tiêu là kiểm toán và tái lập nền bằng chứng, **không phải lưu chain-of-thought
 nội bộ của mô hình**.
 
-V2 phải phân biệt:
+2.0 phải phân biệt:
 
 - **tái lập truy xuất**: cùng corpus/locator/phạm vi/truy vấn phải lấy lại được
-  nền evidence chính tương tự;
-- **tái lập nghiên cứu**: biết evidence nào đã dùng, claim nào được chấp nhận hay
+  nền bằng chứng chính tương tự;
+- **tái lập nghiên cứu**: biết bằng chứng nào đã dùng, luận điểm nào được chấp nhận hay
   loại, phản chứng nào đã được kiểm và vì sao.
 
 Không đặt mục tiêu bắt AI phải viết lại từng chữ giống hệt lần trước.
 
 ## 8. Hai cấp sử dụng
 
-V2 không được biến mọi câu hỏi thành một quy trình nặng.
+2.0 không được biến mọi câu hỏi thành một quy trình nặng.
 
 ### 8.1. Quick
 
@@ -527,9 +532,9 @@ Dành cho:
 Luồng tối thiểu:
 
 ```text
-retrieval
-→ pinned source
-→ context/provenance
+truy xuất
+→ pinned nguồn
+→ context/nguồn gốc truy nguyên
 → quote check khi cần
 → answer
 ```
@@ -543,21 +548,21 @@ Dành cho:
 - lịch sử;
 - tổng hợp nhiều nguồn;
 - nội dung dùng cho sách/bài nghiên cứu;
-- câu hỏi có tranh luận hoặc claim tổng quát.
+- câu hỏi có tranh luận hoặc luận điểm tổng quát.
 
 Luồng:
 
 ```text
-Evidence
-→ Claim
+bằng chứng
+→ luận điểm
 → Verification
-→ Counterevidence
-→ Final Claim Gate
-→ Synthesis
-→ Research Run
+→ phản chứng
+→ Cửa kiểm luận điểm cuối
+→ tổng hợp
+→ Hồ sơ lần nghiên cứu
 ```
 
-## 9. Ví dụ cho thấy V2 khác 1.0 ở đâu
+## 9. Ví dụ cho thấy 2.0 khác 1.0 ở đâu
 
 Giả sử hệ thống mở được ba đoạn thật có `anicca` và `nibbidā`.
 
@@ -567,39 +572,39 @@ AI muốn viết:
 
 ### Với 1.0
 
-Hệ thống có thể xác nhận ba citation đều có thật và provenance đều đúng.
+Hệ thống có thể xác nhận ba citation đều có thật và nguồn gốc truy nguyên đều đúng.
 
 Nhưng chữ **“luôn”** vẫn có thể vượt quá dữ liệu.
 
 ### Với 2.0
 
-Câu đó trở thành một claim riêng.
+Câu đó trở thành một luận điểm riêng.
 
 Hệ thống phải hỏi:
 
-- ba evidence có đủ để chứng minh “luôn” không;
+- ba bằng chứng có đủ để chứng minh “luôn” không;
 - có trường hợp `anicca` không đi cùng `nibbidā` không;
-- witness khác có cấu trúc khác không;
+- nhân chứng khác có cấu trúc khác không;
 - phạm vi “kinh tạng sớm” có rộng hơn corpus đã kiểm không.
 
 Kết quả có thể là:
 
-- sửa claim;
+- sửa luận điểm;
 - thu hẹp phạm vi;
 - hạ xuống `WEAK`;
 - hoặc `UNSUPPORTED`.
 
-V2 chấp nhận một câu trả lời ít mạnh hơn nếu nó trung thực hơn với evidence.
+2.0 chấp nhận một câu trả lời ít mạnh hơn nếu nó trung thực hơn với bằng chứng.
 
-## 10. Loại claim cần phân biệt
+## 10. Loại luận điểm cần phân biệt
 
-V2 phải ít nhất phân biệt:
+2.0 phải ít nhất phân biệt:
 
 - `textual` — văn bản nói gì;
 - `historical` — điều gì có thể suy ra về lịch sử;
-- `relationship` — các văn bản/ID/witness liên hệ thế nào;
-- `comparative` — các truyền thống/witness giống và khác gì;
-- `interpretive` — cách hiểu từ evidence;
+- `relationship` — các văn bản/ID/nhân chứng liên hệ thế nào;
+- `comparative` — các truyền thống/nhân chứng giống và khác gì;
+- `interpretive` — cách hiểu từ bằng chứng;
 - `empirical` — mệnh đề thực nghiệm;
 - `metaphysical` — mệnh đề về thực tại tối hậu.
 
@@ -630,22 +635,22 @@ Hệ thống tự xử lý:
 ```text
 phạm vi
 → giả thuyết tìm kiếm
-→ retrieval
-→ source
-→ evidence
-→ claim
+→ truy xuất
+→ nguồn
+→ bằng chứng
+→ luận điểm
 → verification
-→ counterevidence
-→ synthesis
+→ phản chứng
+→ tổng hợp
 ```
 
-Không hỏi người dùng về bucket, namespace, repository hay query kỹ thuật trừ khi
+Không hỏi người dùng về bucket, namespace, kho Git hay query kỹ thuật trừ khi
 phạm vi thực sự không thể suy ra.
 
 Câu trả lời cuối vẫn phải dễ đọc với người nghiên cứu; các cấu trúc kỹ thuật
 chỉ hiện ra khi cần kiểm toán hoặc hỏi sâu.
 
-Với Research mode, câu trả lời phải thể hiện đủ để người đọc biết:
+Với chế độ Nghiên cứu, câu trả lời phải thể hiện đủ để người đọc biết:
 
 - kết luận chính;
 - bằng chứng theo corpus/nhân chứng;
@@ -656,7 +661,7 @@ Với Research mode, câu trả lời phải thể hiện đủ để người �
 Không được viết một mệnh đề rộng như “trong Phật giáo...” nếu lần nghiên cứu chỉ
 kiểm một phạm vi hẹp hơn.
 
-## 12. Những gì không thuộc V2 phiên bản đầu
+## 12. Những gì không thuộc 2.0 phiên bản đầu
 
 Không đưa vào chỉ để làm kiến trúc “hoành tráng” hơn:
 
@@ -669,36 +674,36 @@ Không đưa vào chỉ để làm kiến trúc “hoành tráng” hơn:
 - autonomous research agents;
 - universal semantic search;
 - điểm tin cậy phần trăm giả như `93.7% đúng`;
-- viết lại production locator;
+- viết lại locator chính thức;
 - thay local SQLite/FTS;
 - biến GitHub Actions thành “bộ não nghiên cứu”.
 
 ### Deep Connector fallback
 
 Một đường truy xuất sâu từ xa cho arbitrary CJK hoặc các trường hợp locator hữu
-hạn không đủ là **TƯƠNG LAI**, không phải phạm vi V2 v1.
+hạn không đủ là **TƯƠNG LAI**, không phải phạm vi 2.0 phiên bản đầu.
 
 Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
 
-## 13. Tiêu chí thành công của V2
+## 13. Tiêu chí thành công của 2.0
 
-V2 chỉ được coi là thành công khi tối thiểu chứng minh được:
+2.0 chỉ được coi là thành công khi tối thiểu chứng minh được:
 
-1. retrieval và CLI hiện tại không bị hồi quy;
-2. production locator vẫn deterministic;
-3. Connector vẫn mở pinned upstream source;
-4. pointer vẫn không bị dùng như evidence;
-5. Evidence Record truy nguyên được về source;
+1. truy xuất và CLI hiện tại không bị hồi quy;
+2. locator chính thức vẫn deterministic;
+3. Connector vẫn mở pinned upstream nguồn;
+4. con trỏ vẫn không bị dùng như bằng chứng;
+5. Bản ghi bằng chứng truy nguyên được về nguồn;
 6. câu trích sai bị phát hiện;
-7. claim không có evidence bị chặn;
+7. luận điểm không có bằng chứng bị chặn;
 8. `UNSUPPORTED` không lọt vào kết luận cuối;
 9. `CONTRADICTED` không được trình bày như fact;
-10. Research mode thực sự thực hiện counterevidence pass;
-11. claim truy ngược được về evidence;
-12. evidence truy ngược được về pinned source;
-13. một Research Run có thể được xem lại;
-14. có thể hỏi “claim này dựa trên bằng chứng nào?” và trả lời được;
-15. có thể hỏi “có phản chứng nào cho claim này?” và trả lời được;
+10. chế độ Nghiên cứu thực sự thực hiện bước tìm phản chứng;
+11. luận điểm truy ngược được về bằng chứng;
+12. bằng chứng truy ngược được về pinned nguồn;
+13. một Hồ sơ lần nghiên cứu có thể được xem lại;
+14. có thể hỏi “luận điểm này dựa trên bằng chứng nào?” và trả lời được;
+15. có thể hỏi “có phản chứng nào cho luận điểm này?” và trả lời được;
 16. biết phạm vi nào đã kiểm và chưa kiểm;
 17. phân biệt được nguồn độc lập với nguồn dẫn xuất/phụ thuộc;
 18. một luận điểm đã sửa có thể truy ngược về bản trước và lý do thay đổi;
@@ -738,7 +743,7 @@ Tài liệu này là **PRD của chương trình nâng cấp 2.0**.
 
 Nó trả lời:
 
-> Tại sao nâng cấp? V2 phải làm được gì? Không làm gì? Khi nào thành công?
+> Tại sao nâng cấp? 2.0 phải làm được gì? Không làm gì? Khi nào thành công?
 
 Các tài liệu chuyên biệt:
 
@@ -747,34 +752,34 @@ Các tài liệu chuyên biệt:
 - `docs/v2/DESIGN.md` — thiết kế chi tiết của lớp kiểm chứng;
 - `docs/v2/REQUIREMENTS.md` — yêu cầu có mã của 2.0;
 - `docs/v2/ACCEPTANCE.md` — cách chứng minh yêu cầu 2.0 đã được đáp ứng;
-- `docs/ARCHITECTURE.md` — kiến trúc **HIỆN HÀNH**, không phải kiến trúc V2 chưa
+- `docs/ARCHITECTURE.md` — kiến trúc **HIỆN HÀNH**, không phải kiến trúc 2.0 chưa
   triển khai;
 - `docs/adr/` — lý do của các quyết định kiến trúc bền vững.
 
-PRD không sở hữu schema, tên module, class, API hay format lưu trữ cụ thể.
+PRD không sở hữu lược đồ, tên module, class, API hay định dạng lưu trữ cụ thể.
 Những quyết định đó chỉ được đưa ra sau khi đọc code hiện hành và khi thật sự
-cần cho implementation.
+cần cho triển khai.
 
 ## 16. Điều kiện bắt đầu viết mã
 
-Trước khi code V2, cần xác nhận ba điều:
+Trước khi code 2.0, cần xác nhận ba điều:
 
 1. PRD này đã mô tả đúng đề bài;
-2. các invariants của 1.0 cần giữ đã rõ;
-3. lát cắt đầu tiên của V2 được chọn đủ nhỏ để triển khai và kiểm thử độc lập.
+2. các điều bất biến của 1.0 cần giữ đã rõ;
+3. lát cắt đầu tiên của 2.0 được chọn đủ nhỏ để triển khai và kiểm thử độc lập.
 
 Sau đó phải đọc code hiện hành và làm **một bản phân tích triển khai ngắn** trước
 khi sửa mã. Bản này chỉ cần trả lời:
 
 - data flow hiện tại thực sự đi qua đâu;
-- module/schema/tests nào liên quan;
+- mô-đun, lược đồ dữ liệu và bài kiểm thử nào liên quan;
 - khoảng trống nào cần lấp;
-- chỗ nào nên thêm lớp V2;
+- chỗ nào nên thêm lớp 2.0;
 - test nào phải có trước và sau thay đổi;
 - rủi ro hồi quy chính;
 - phần nào chưa nên triển khai.
 
-Mục đích là để quyết định implementation dựa trên code thật, không suy đoán từ
+Mục đích là để quyết định triển khai dựa trên mã nguồn thật, không suy đoán từ
 PRD.
 
 Không cần thiết kế lại toàn hệ thống trước khi bắt đầu.
