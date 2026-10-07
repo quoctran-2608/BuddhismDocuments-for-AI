@@ -64,7 +64,7 @@ trị giả.
 ### REQ-VER-003 — Cửa kiểm bằng chứng phải xác minh vị trí nguồn
 
 Trước khi một Bản ghi bằng chứng được dùng như bằng chứng đã xác minh, hệ thống
-phải kiểm các thông tin có thể kiểm bằng máy, gồm repository, SHA/blob, đường
+phải kiểm các thông tin có thể kiểm bằng máy, gồm kho Git, SHA nguồn/SHA tệp, đường
 dẫn và vị trí đoạn khi áp dụng.
 
 Sai nguồn, sai SHA, sai đường dẫn hoặc sai vị trí phải làm cửa kiểm thất bại.
@@ -364,7 +364,7 @@ Một yêu cầu chỉ được sửa khi:
 1. lý do thay đổi được ghi rõ;
 2. PRD và Design 2.0 liên quan được đối chiếu;
 3. tiêu chí nghiệm thu tương ứng được cập nhật;
-4. mã nguồn/cấu hình/schema/kiểm thử liên quan được xem xét;
+4. mã nguồn, cấu hình, lược đồ dữ liệu và kiểm thử liên quan được xem xét;
 5. nếu là quyết định kiến trúc bền vững, ADR được tạo hoặc cập nhật.
 
 Không được âm thầm sửa yêu cầu để hợp thức hóa cách triển khai đang có.
