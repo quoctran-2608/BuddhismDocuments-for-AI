@@ -104,6 +104,23 @@ luận điểm tự động đúng
 - **Đóng khi thiếu dữ liệu** (`fail-closed`): thiếu bằng chứng thì dừng và nói
   rõ giới hạn, không tự điền bằng suy đoán.
 
+Các thuật ngữ kỹ thuật kế thừa từ hệ 1.0:
+
+- **corpus**: kho ngữ liệu có cấu trúc;
+- **repository**: kho mã hoặc dữ liệu được quản lý bằng Git;
+- **upstream source**: kho nguồn gốc bên ngoài mà dự án ghim theo một phiên bản
+  cụ thể;
+- **SHA**: mã băm dùng để định danh và kiểm tra đúng phiên bản;
+- **locator**: chỉ dẫn giúp tìm đúng tệp hoặc đoạn cần mở;
+- **metadata**: siêu dữ liệu mô tả văn bản, quan hệ hoặc nguồn;
+- **witness**: nhân chứng văn bản, tức một bản/ấn bản/truyền bản cụ thể;
+- **FTS** (Full-Text Search): chỉ mục tìm kiếm toàn văn;
+- **production**: bản đang được dùng chính thức, phân biệt với bản thử hoặc bản
+  đang xây;
+- **work / segment**: tác phẩm / đoạn định danh trong nguồn;
+- **provenance**: nguồn gốc truy nguyên, tức thông tin đủ để lần ngược về
+  repository, phiên bản và vị trí nguồn.
+
 ## 4. Nguyên tắc thiết kế
 
 ### 4.1. Bổ sung, không thay thế
