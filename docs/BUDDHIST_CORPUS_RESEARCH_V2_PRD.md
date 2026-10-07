@@ -211,7 +211,7 @@ V2 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
 
 Các tài sản của 1.0 phải được bảo toàn:
 
-### 6.1. Nguồn và provenance
+### 7.1. Nguồn và provenance
 
 - 13 upstream repositories được ghim bằng commit SHA;
 - source path / source SHA / source blob SHA;
@@ -220,7 +220,7 @@ Các tài sản của 1.0 phải được bảo toàn:
 - `text_role`;
 - `witness`.
 
-### 6.2. Local mode
+### 7.2. Local mode
 
 ```text
 SQLite + FTS + CLI
@@ -228,7 +228,7 @@ SQLite + FTS + CLI
 
 Không thay bằng một hạ tầng nặng hơn chỉ vì thêm verification.
 
-### 6.3. GitHub Connector mode
+### 7.3. GitHub Connector mode
 
 Giữ đường nhanh hiện tại:
 
@@ -246,7 +246,7 @@ Không quét toàn repository.
 
 Không xuất raw corpus vào locator.
 
-### 6.4. Luật nghiên cứu cốt lõi
+### 7.4. Luật nghiên cứu cốt lõi
 
 Giữ nguyên:
 
@@ -262,7 +262,7 @@ Giữ fail-closed khi dữ liệu không đủ.
 
 Giữ nhân chứng riêng; không tự hòa các truyền thống thành một tiếng nói chung.
 
-### 6.5. Tương thích ngược
+### 7.5. Tương thích ngược
 
 Các lệnh và hành vi 1.0 đang được dùng như `search`, `context`, `work`,
 `parallels`, `resolve`, `variants`, `compare`, `provenance` và
@@ -321,9 +321,13 @@ UNSUPPORTED
 CONTRADICTED
 ```
 
+Khi một claim dựa trên nhiều nguồn, V2 cũng phải biểu diễn được các nguồn đó là
+độc lập, phụ thuộc một phần, cùng họ nguồn, dẫn xuất từ nhau hay chưa xác định.
+Nhiều citation không tự động được tính là nhiều xác nhận độc lập.
+
 Điểm retrieval/rank không được dùng thay cho đánh giá này.
 
-### 6.6. Counterevidence
+### 7.6. Counterevidence
 
 Trong chế độ nghiên cứu sâu, hệ thống phải chủ động tìm:
 
@@ -337,7 +341,7 @@ Trong chế độ nghiên cứu sâu, hệ thống phải chủ động tìm:
 
 Phản chứng phải có khả năng làm claim bị sửa, thu hẹp, hạ mức hoặc loại.
 
-### 6.7. Final Claim Gate
+### 7.7. Final Claim Gate và kiểm tra cuối
 
 Chỉ claim đủ điều kiện mới được đi vào phần tổng hợp cuối.
 
@@ -346,7 +350,21 @@ Chỉ claim đủ điều kiện mới được đi vào phần tổng hợp cu�
 Nếu synthesis cần thêm một claim quan trọng mới, claim đó phải quay lại quy
 trình kiểm chứng.
 
-### 6.8. Research Run
+Sau khi tổng hợp, hệ thống phải có một bước kiểm tra cuối để bắt các lỗi kiểu:
+
+- claim quan trọng không có evidence;
+- câu trích trực tiếp chưa được kiểm;
+- pointer/metadata bị trình bày như câu chữ nguồn;
+- translation note bị trình bày như root text;
+- quan hệ song hành bị biến thành textual identity;
+- equivalence đa ngôn ngữ không có bằng chứng repository;
+- phần tổng hợp vô tình làm claim mạnh hơn trạng thái đã được chấp nhận;
+- giới hạn phạm vi quan trọng bị bỏ mất.
+
+Nếu kiểm tra cuối thất bại, câu trả lời không được xuất như một kết luận đã xác
+lập.
+
+### 7.8. Research Run
 
 Với nghiên cứu sâu, hệ thống lưu đủ dấu vết để biết:
 
@@ -614,13 +632,25 @@ cần cho implementation.
 
 ## 16. Điều kiện bắt đầu viết mã
 
-Trước khi code V2, nhóm triển khai chỉ cần xác nhận ba điều:
+Trước khi code V2, cần xác nhận ba điều:
 
 1. PRD này đã mô tả đúng đề bài;
 2. các invariants của 1.0 cần giữ đã rõ;
 3. lát cắt đầu tiên của V2 được chọn đủ nhỏ để triển khai và kiểm thử độc lập.
 
-Sau đó mới đọc code để chọn vị trí triển khai phù hợp.
+Sau đó phải đọc code hiện hành và làm **một bản phân tích triển khai ngắn** trước
+khi sửa mã. Bản này chỉ cần trả lời:
+
+- data flow hiện tại thực sự đi qua đâu;
+- module/schema/tests nào liên quan;
+- khoảng trống nào cần lấp;
+- chỗ nào nên thêm lớp V2;
+- test nào phải có trước và sau thay đổi;
+- rủi ro hồi quy chính;
+- phần nào chưa nên triển khai.
+
+Mục đích là để quyết định implementation dựa trên code thật, không suy đoán từ
+PRD.
 
 Không cần thiết kế lại toàn hệ thống trước khi bắt đầu.
 
