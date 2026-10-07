@@ -12,10 +12,10 @@
    làm gì.
 2. [DESIGN.md](DESIGN.md) — **Thiết kế 2.0**: bằng chứng, luận điểm, phản chứng,
    cửa kiểm, lịch sử sửa đổi và hồ sơ lần nghiên cứu.
-3. `REQUIREMENTS.md` — sẽ được tạo trong Giai đoạn 3 để chứa các yêu cầu có mã
-   dành riêng cho 2.0.
-4. `ACCEPTANCE.md` — sẽ được tạo trong Giai đoạn 3 để chứa tiêu chí nghiệm thu
-   dành riêng cho 2.0.
+3. [REQUIREMENTS.md](REQUIREMENTS.md) — **Yêu cầu 2.0**: 29 yêu cầu có mã,
+   tách khỏi yêu cầu của hệ hiện hành.
+4. [ACCEPTANCE.md](ACCEPTANCE.md) — **Nghiệm thu 2.0**: cách chứng minh từng
+   yêu cầu đã thật sự được triển khai.
 5. Tài liệu triển khai — chỉ tạo sau khi đọc mã nguồn hiện hành và thật sự cần.
 
 ## Ranh giới với tài liệu hiện hành
