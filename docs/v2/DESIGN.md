@@ -825,9 +825,10 @@ Không đưa vào nếu chưa có yêu cầu mới:
 
 - `docs/v2/PRD.md`: đề bài, mục tiêu và ranh giới sản phẩm 2.0;
 - `docs/PROJECT_SPEC.md`: đặc tả cấp toàn dự án;
-- `docs/REQUIREMENTS.md`: yêu cầu có mã của toàn dự án; Giai đoạn tiếp theo sẽ
-  tách phần 2.0 ra khu vực riêng để tránh lẫn trạng thái;
-- `docs/ACCEPTANCE.md`: tiêu chí nghiệm thu hiện tại và mục tiêu;
+- `docs/v2/REQUIREMENTS.md`: 29 yêu cầu có mã dành riêng cho 2.0;
+- `docs/v2/ACCEPTANCE.md`: cách nghiệm thu các yêu cầu 2.0;
+- `docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`: yêu cầu và nghiệm thu của
+  hệ thống hiện hành;
 - `docs/ARCHITECTURE.md`: kiến trúc đã triển khai;
 - `AGENTS.md`: luật nghiên cứu luôn áp dụng;
 - `.codex/skills/buddhist-corpus-research/SKILL.md`: hành vi AI hiện hành;
