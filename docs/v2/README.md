@@ -12,7 +12,7 @@
    làm gì.
 2. [DESIGN.md](DESIGN.md) — **Thiết kế 2.0**: bằng chứng, luận điểm, phản chứng,
    cửa kiểm, lịch sử sửa đổi và hồ sơ lần nghiên cứu.
-3. [REQUIREMENTS.md](REQUIREMENTS.md) — **Yêu cầu 2.0**: 29 yêu cầu có mã,
+3. [REQUIREMENTS.md](REQUIREMENTS.md) — **Yêu cầu 2.0**: 31 yêu cầu có mã,
    tách khỏi yêu cầu của hệ hiện hành.
 4. [ACCEPTANCE.md](ACCEPTANCE.md) — **Nghiệm thu 2.0**: cách chứng minh từng
    yêu cầu đã thật sự được triển khai.
