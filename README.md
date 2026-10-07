@@ -168,7 +168,9 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 | Kiến trúc kỹ thuật hiện hành | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Yêu cầu có mã | [REQUIREMENTS.md](docs/REQUIREMENTS.md) |
 | Tiêu chí nghiệm thu / ánh xạ test | [ACCEPTANCE.md](docs/ACCEPTANCE.md) |
-| Thiết kế lớp kiểm chứng MỤC TIÊU | [RESEARCH_VERIFICATION_DESIGN.md](docs/RESEARCH_VERIFICATION_DESIGN.md) |
+| Bộ tài liệu nâng cấp 2.0 | [docs/v2/README.md](docs/v2/README.md) |
+| Đề bài / PRD 2.0 | [docs/v2/PRD.md](docs/v2/PRD.md) |
+| Thiết kế kiểm chứng 2.0 | [docs/v2/DESIGN.md](docs/v2/DESIGN.md) |
 | Lý do các quyết định kiến trúc | [ADR index](docs/adr/README.md) |
 | CLI | [CLI.md](docs/CLI.md) |
 | GitHub Connector | [REMOTE_AGENT.md](docs/REMOTE_AGENT.md) |
@@ -206,7 +208,7 @@ Evidence Record
 ```
 
 Chi tiết nằm trong
-[RESEARCH_VERIFICATION_DESIGN.md](docs/RESEARCH_VERIFICATION_DESIGN.md),
+[Thiết kế 2.0](docs/v2/DESIGN.md),
 [PROJECT_SPEC.md](docs/PROJECT_SPEC.md),
 [REQUIREMENTS.md](docs/REQUIREMENTS.md) và
 [ACCEPTANCE.md](docs/ACCEPTANCE.md).
