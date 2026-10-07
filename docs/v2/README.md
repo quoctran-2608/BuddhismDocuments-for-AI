@@ -16,7 +16,7 @@
    tách khỏi yêu cầu của hệ hiện hành.
 4. [ACCEPTANCE.md](ACCEPTANCE.md) — **Nghiệm thu 2.0**: cách chứng minh từng
    yêu cầu đã thật sự được triển khai.
-5. Tài liệu triển khai — chỉ tạo sau khi đọc mã nguồn hiện hành và thật sự cần.
+5. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — **Kế hoạch triển khai ngắn**: điểm chèn vào mã hiện hành, phần giữ nguyên, lát cắt đầu tiên và thứ tự làm.
 
 ## Ranh giới với tài liệu hiện hành
 
