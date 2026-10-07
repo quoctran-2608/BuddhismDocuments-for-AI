@@ -1,8 +1,12 @@
-# Tiêu chí nghiệm thu và ánh xạ kiểm chứng
+# Tiêu chí nghiệm thu hệ hiện hành
 
 > Trạng thái tài liệu: **HIỆN HÀNH**
 >
-> Vai trò: nối requirement có mã tới cách kiểm chứng, mã nguồn, cấu hình và test.
+> Vai trò: nối các yêu cầu **HIỆN HÀNH** trong `docs/REQUIREMENTS.md` tới
+> cách kiểm chứng, mã nguồn, cấu hình và kiểm thử.
+>
+> Nghiệm thu Buddhist Corpus Research 2.0 được tách riêng tại
+> `docs/v2/ACCEPTANCE.md`.
 >
 > Lưu ý quan trọng: tài liệu này phân biệt **có bằng chứng tự động** với
 > **mới có bằng chứng cấu trúc/quy trình**. Không được hiểu “có dòng trong bảng”
@@ -14,7 +18,6 @@
 - **CẤU TRÚC**: có thể kiểm bằng config/schema/manifest/code tĩnh;
 - **QUY TRÌNH**: là luật vận hành/AI behavior, hiện chưa có test máy đầy đủ;
 - **RÀ SOÁT**: cần kiểm bằng đối chiếu tài liệu hoặc kiểm tra thủ công có chủ đích;
-- **CHƯA TRIỂN KHAI**: requirement MỤC TIÊU, chưa được nghiệm thu.
 
 Repo hiện có 45 test method trong 6 file test chính:
 
@@ -304,107 +307,17 @@ Bảo vệ REQ-WIT-001/002:
 
 ---
 
-# 12. Yêu cầu MỤC TIÊU: trạng thái nghiệm thu hiện tại
-
-Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa được coi là pass.
-Semantics mục tiêu chi tiết nằm trong `docs/v2/DESIGN.md`:
-
-| Requirement | Trạng thái nghiệm thu hiện tại | Test mục tiêu cần có |
-|---|---|---|
-| REQ-VER-001 | CHƯA TRIỂN KHAI | pointer/title/relation không được nâng thành Evidence Record |
-| REQ-VER-002 | CHƯA TRIỂN KHAI | Evidence Record thiếu provenance phải bị reject |
-| REQ-VER-003 | CHƯA TRIỂN KHAI | sai SHA/path/segment phải fail gate |
-| REQ-VER-004 | CHƯA TRIỂN KHAI | kết luận phức hợp phải được tách thành claim có thể kiểm |
-| REQ-VER-005 | CHƯA TRIỂN KHAI | claim không evidence bị reject |
-| REQ-VER-006 | CHƯA TRIỂN KHAI | support status chỉ dùng taxonomy định tính |
-| REQ-VER-007 | CHƯA TRIỂN KHAI | UNSUPPORTED không qua final gate |
-| REQ-VER-008 | CHƯA TRIỂN KHAI | CONTRADICTED không được xuất như kết luận đã được xác lập |
-| REQ-VER-009 | CHƯA TRIỂN KHAI | retrieval score không tự biến thành support level |
-| REQ-VER-010 | CHƯA TRIỂN KHAI | synthesis không sinh claim mới ngoài accepted set |
-| REQ-VER-011 | CHƯA TRIỂN KHAI | claim thiếu `claim_type` bị reject; loại evidence không phù hợp không được nâng support |
-| REQ-QTE-001 | CHƯA TRIỂN KHAI | exact/normalized/paraphrase/unverified/mismatch classification |
-| REQ-QTE-002 | CHƯA TRIỂN KHAI | quote sai một từ không được xuất direct quote |
-| REQ-QTE-003 | CHƯA TRIỂN KHAI | paraphrase không được gắn ngoặc kép |
-| REQ-CTR-001 | CHƯA TRIỂN KHAI | research mode thiếu counter-pass phải fail |
-| REQ-CTR-002 | CHƯA TRIỂN KHAI | “no counterevidence” phải kèm scope |
-| REQ-CTR-003 | CHƯA TRIỂN KHAI | nguồn phụ thuộc không được tính như độc lập |
-| REQ-CTR-004 | CHƯA TRIỂN KHAI | counterevidence có thể downgrade/reject claim |
-| REQ-RUN-001 | CHƯA TRIỂN KHAI | Research mode thiếu main commit, locator repo/commit/root, source revisions hoặc các trường run bắt buộc phải fail nghiệm thu |
-| REQ-RUN-002 | CHƯA TRIỂN KHAI | retrieval/research reproducibility tách riêng |
-| REQ-RUN-003 | CHƯA TRIỂN KHAI | checked/unexamined scope |
-| REQ-RUN-004 | CHƯA TRIỂN KHAI | claim → evidence traceability |
-| REQ-RUN-005 | CHƯA TRIỂN KHAI | counterevidence status queryable |
-
 ---
 
-# 13. Golden Research Tests cần bổ sung ở giai đoạn nâng cấp
+# 12. Quan hệ với nghiệm thu 2.0
 
-Các test hiện tại chủ yếu kiểm engine/software. Lớp nâng cấp phải có một bộ
-Golden Research Tests kiểm chất lượng nghiên cứu.
+File này chỉ nghiệm thu các yêu cầu **HIỆN HÀNH** trong
+`docs/REQUIREMENTS.md`.
 
-Mỗi golden case nên có:
+Nghiệm thu riêng cho Buddhist Corpus Research 2.0 nằm tại:
 
-- câu hỏi;
-- scope được phép;
-- evidence mong đợi/được chấp nhận;
-- nguồn không được dùng như primary evidence;
-- counterevidence đã biết;
-- forbidden claims;
-- claim pattern mong đợi;
-- giới hạn cần xuất.
+- `docs/v2/REQUIREMENTS.md`;
+- `docs/v2/ACCEPTANCE.md`.
 
-Tối thiểu phải có fixtures cố ý sai cho:
-
-1. quote đổi một từ;
-2. source SHA sai;
-3. segment sai;
-4. translation note giả làm root text;
-5. parallel metadata giả làm textual proof;
-6. hai nguồn phụ thuộc giả làm hai witness độc lập;
-7. claim mạnh hơn evidence;
-8. claim historical/empirical/metaphysical bị kiểm bằng sai loại evidence;
-9. research mode bỏ counterevidence pass;
-10. AI tự tạo phương trình Pāli ↔ Chinese không có repository evidence;
-11. phần tổng hợp sinh kết luận mới chưa qua claim gate.
-
----
-
-# 14. Điều kiện để chuyển requirement MỤC TIÊU sang HIỆN HÀNH
-
-Một requirement verification/counterevidence/run chỉ được đổi trạng thái khi:
-
-1. có implementation thực;
-2. data model/format đã xác định nếu cần;
-3. có unit/integration test phù hợp;
-4. có ít nhất một Golden Research Test nếu requirement liên quan hành vi nghiên cứu;
-5. `PROJECT_SPEC.md` được cập nhật trạng thái;
-6. `REQUIREMENTS.md` và file này được cập nhật;
-7. không làm regression retrieval/Connector hiện tại.
-
-Không được đổi trạng thái chỉ vì code skeleton hoặc tài liệu đã được viết.
-
----
-
-# 15. Điều kiện nghiệm thu toàn bộ vòng nâng cấp v1
-
-Vòng nâng cấp verification v1 chỉ được coi là hoàn thành khi tối thiểu:
-
-- retrieval hiện tại không regression;
-- production locator vẫn deterministic;
-- Connector vẫn mở pinned source;
-- pointer vẫn không phải evidence;
-- Evidence Record có provenance đầy đủ;
-- quote sai bị phát hiện;
-- claim không evidence bị reject;
-- `claim_type` được bắt buộc và kiểm đúng loại evidence;
-- UNSUPPORTED/CONTRADICTED không lọt vào kết luận cuối;
-- research mode có counterevidence pass;
-- dependency/độc lập giữa nguồn được biểu diễn;
-- claim → evidence traceable;
-- Research Run có thể được rà soát;
-- biết corpus/source revisions của run;
-- biết checked/unexamined scope;
-- Golden Research Tests ổn định;
-- fail-closed vẫn được bảo toàn.
-
-Đây là tiêu chí **MỤC TIÊU**, không phải tuyên bố trạng thái hiện tại.
+Các yêu cầu 2.0 đang ở trạng thái MỤC TIÊU không được ghi là đã đạt chỉ vì đã có
+tài liệu thiết kế.
