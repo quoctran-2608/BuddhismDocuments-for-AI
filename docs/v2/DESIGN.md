@@ -216,6 +216,89 @@ Không tự điền để dữ liệu trông đầy đủ.
 Nguyên tắc này đặc biệt áp dụng cho độc lập nguồn, quan hệ nhân chứng, tác giả,
 niên đại, người dịch và tương đương đa ngôn ngữ.
 
+### 4.7. Một lõi kiểm chứng, nhiều môi trường thực thi
+
+Lõi kiểm chứng phải tách khỏi cách lấy dữ liệu.
+
+Nó nhận các đối tượng/dữ liệu máy đọc đã chuẩn hóa và trả kết quả máy đọc, thay
+vì tự giả định luôn có:
+
+- SQLite cục bộ;
+- lệnh shell;
+- một đường dẫn máy cụ thể;
+- một phiên ChatGPT cụ thể;
+- một công cụ GitHub cụ thể.
+
+Kiến trúc mục tiêu:
+
+```text
+                 ┌─ Codex / working copy cục bộ
+nguồn dữ liệu ───┼─ ChatGPT Work
+                 └─ ChatGPT + GitHub plugin
+                         ↓
+                hợp đồng dữ liệu chung
+                         ↓
+                 lõi kiểm chứng 2.0
+                         ↓
+              trạng thái / kết quả JSON
+```
+
+#### Codex
+
+Codex là đường triển khai đầy đủ nhất:
+
+- đọc/sửa repository;
+- chạy Python và kiểm thử;
+- dùng Git cục bộ để kiểm SHA/tệp khi working copy đầy đủ.
+
+#### ChatGPT Work
+
+Work phải dùng được cùng hợp đồng dữ liệu.
+
+Khi có thư mục dự án cục bộ, có thể dùng đường tương tự Codex. Khi làm việc trên
+đám mây hoặc qua nguồn đã kết nối, Work có thể lấy dữ liệu qua plugin/trình
+duyệt rồi đưa về cùng cấu trúc Bản ghi bằng chứng.
+
+Không được tạo một loại Bản ghi bằng chứng riêng chỉ dành cho Work.
+
+#### ChatGPT qua GitHub plugin
+
+Đây là đường tương thích ưu tiên.
+
+Nếu plugin đọc được:
+
+- repository;
+- commit;
+- đường dẫn;
+- nội dung tệp;
+- và thông tin nguồn cần thiết;
+
+thì quy trình phải có thể tạo cùng Bản ghi bằng chứng và áp dụng cùng các cửa
+kiểm không phụ thuộc máy cục bộ.
+
+Những phép kiểm chỉ có thể thực hiện bằng Git cục bộ phải được biểu diễn như một
+khả năng của **bộ cung cấp nguồn** chứ không được viết cứng vào logic học thuật.
+
+Nếu môi trường không cung cấp đủ dữ liệu để xác minh một phép kiểm:
+
+```text
+không đủ khả năng kiểm
+→ UNVERIFIED / chưa xác minh
+→ đóng khi thiếu dữ liệu
+```
+
+Không được suy từ “không chạy được phép kiểm” thành “phép kiểm đã đạt”.
+
+#### Hợp đồng dữ liệu chung
+
+Các cấu trúc 2.0 phải:
+
+- chuyển được sang JSON mà không mất nghĩa;
+- không chứa đối tượng kết nối SQLite hoặc handle tệp đang mở;
+- không phụ thuộc đường dẫn tuyệt đối của một máy;
+- dùng repository + commit/SHA + source path làm định danh nguồn;
+- giữ tên trạng thái giống nhau giữa Codex, Work và GitHub plugin.
+
 ## 5. Luồng mục tiêu của 2.0
 
 ```text
@@ -825,7 +908,7 @@ Không đưa vào nếu chưa có yêu cầu mới:
 
 - `docs/v2/PRD.md`: đề bài, mục tiêu và ranh giới sản phẩm 2.0;
 - `docs/PROJECT_SPEC.md`: đặc tả cấp toàn dự án;
-- `docs/v2/REQUIREMENTS.md`: 29 yêu cầu có mã dành riêng cho 2.0;
+- `docs/v2/REQUIREMENTS.md`: yêu cầu có mã dành riêng cho 2.0;
 - `docs/v2/ACCEPTANCE.md`: cách nghiệm thu các yêu cầu 2.0;
 - `docs/v2/IMPLEMENTATION_PLAN.md`: kế hoạch triển khai ngắn dựa trên mã nguồn hiện hành;
 - `docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`: yêu cầu và nghiệm thu của
