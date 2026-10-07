@@ -48,13 +48,13 @@ Bản ghi bằng chứng phải chứa các thông tin nguồn gốc cần thi�
 nguồn đã đọc, tối thiểu theo khả năng nguồn cung cấp:
 
 - corpus;
-- repository;
-- source SHA và đường dẫn;
+- kho nguồn Git (`repository`);
+- SHA nguồn và đường dẫn;
 - vị trí tác phẩm/đoạn;
 - ngôn ngữ;
 - `evidence_class`;
 - `text_role`;
-- `witness` khi áp dụng;
+- nhân chứng văn bản (`witness`) khi áp dụng;
 - câu trích/ngữ cảnh khi dùng câu chữ;
 - mã hồ sơ lần nghiên cứu trong chế độ Nghiên cứu.
 
@@ -254,8 +254,8 @@ Hồ sơ phải đủ để biết tối thiểu:
 
 - câu hỏi và thời điểm;
 - chế độ và phạm vi;
-- commit của repository chính;
-- repository/commit/root của locator khi dùng Connector;
+- commit của kho dự án chính;
+- kho, commit và thư mục gốc của locator khi dùng Connector;
 - phiên bản các nguồn;
 - truy vấn và giả thuyết tìm kiếm;
 - mã bằng chứng;
@@ -303,13 +303,13 @@ quan hệ truy ngược về hồ sơ trước và lý do thay đổi, ví dụ
 
 ### REQ-TST-001 — Bộ kiểm thử nghiên cứu chuẩn phải chạy được trên mọi môi trường
 
-Các mẫu kiểm thử chuẩn phải nằm trong repository hoặc trong một nguồn kiểm thử
+Các mẫu kiểm thử chuẩn phải nằm trong kho dự án hoặc trong một nguồn kiểm thử
 được ghim, không phụ thuộc đường dẫn cá nhân của một máy.
 
 Bộ tối thiểu phải bao phủ 11 lỗi:
 
 1. câu trích đổi một từ;
-2. source SHA sai;
+2. SHA nguồn sai;
 3. đoạn nguồn sai;
 4. chú thích bản dịch giả làm văn bản gốc;
 5. siêu dữ liệu song hành giả làm bằng chứng câu chữ;
@@ -317,7 +317,7 @@ Bộ tối thiểu phải bao phủ 11 lỗi:
 7. luận điểm mạnh hơn bằng chứng;
 8. luận điểm lịch sử/thực nghiệm/siêu hình dùng sai loại bằng chứng;
 9. chế độ Nghiên cứu bỏ tìm phản chứng;
-10. tự tạo tương đương Pāli ↔ Hán không có bằng chứng repository;
+10. tự tạo tương đương Pāli ↔ Hán không có bằng chứng trong kho nguồn;
 11. phần tổng hợp sinh luận điểm mới chưa qua cửa kiểm.
 
 ### REQ-TST-002 — Lỗi nghiên cứu nghiêm trọng đã sửa phải trở thành kiểm thử hồi quy
