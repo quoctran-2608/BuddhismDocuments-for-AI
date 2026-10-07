@@ -166,11 +166,13 @@ Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
 | Biết tài liệu nào có thẩm quyền về việc gì | [DOCUMENTATION_GOVERNANCE.md](docs/DOCUMENTATION_GOVERNANCE.md) |
 | Luật nghiên cứu bắt buộc | [AGENTS.md](AGENTS.md) |
 | Kiến trúc kỹ thuật hiện hành | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Yêu cầu có mã | [REQUIREMENTS.md](docs/REQUIREMENTS.md) |
-| Tiêu chí nghiệm thu / ánh xạ test | [ACCEPTANCE.md](docs/ACCEPTANCE.md) |
+| Yêu cầu hiện hành | [REQUIREMENTS.md](docs/REQUIREMENTS.md) |
+| Nghiệm thu hiện hành | [ACCEPTANCE.md](docs/ACCEPTANCE.md) |
 | Bộ tài liệu nâng cấp 2.0 | [docs/v2/README.md](docs/v2/README.md) |
 | Đề bài / PRD 2.0 | [docs/v2/PRD.md](docs/v2/PRD.md) |
 | Thiết kế kiểm chứng 2.0 | [docs/v2/DESIGN.md](docs/v2/DESIGN.md) |
+| Yêu cầu 2.0 | [docs/v2/REQUIREMENTS.md](docs/v2/REQUIREMENTS.md) |
+| Nghiệm thu 2.0 | [docs/v2/ACCEPTANCE.md](docs/v2/ACCEPTANCE.md) |
 | Lý do các quyết định kiến trúc | [ADR index](docs/adr/README.md) |
 | CLI | [CLI.md](docs/CLI.md) |
 | GitHub Connector | [REMOTE_AGENT.md](docs/REMOTE_AGENT.md) |
@@ -208,10 +210,11 @@ Evidence Record
 ```
 
 Chi tiết nằm trong
+[Bộ tài liệu 2.0](docs/v2/README.md),
+[PRD 2.0](docs/v2/PRD.md),
 [Thiết kế 2.0](docs/v2/DESIGN.md),
-[PROJECT_SPEC.md](docs/PROJECT_SPEC.md),
-[REQUIREMENTS.md](docs/REQUIREMENTS.md) và
-[ACCEPTANCE.md](docs/ACCEPTANCE.md).
+[Yêu cầu 2.0](docs/v2/REQUIREMENTS.md) và
+[Nghiệm thu 2.0](docs/v2/ACCEPTANCE.md).
 
 ### TƯƠNG LAI — chưa thuộc v1
 
