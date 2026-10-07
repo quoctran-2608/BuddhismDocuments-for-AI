@@ -90,13 +90,128 @@ trúc các câu hỏi:
 - Lần nghiên cứu này dùng phiên bản corpus nào?
 - Có thể rà soát lại đường từ claim → evidence → pinned source không?
 
-## 5. Những gì V2 phải giữ nguyên
+## 5. Phương pháp cốt lõi của V2
+
+V2 không chỉ thêm vài trường dữ liệu. Nó thay đổi cách một kết luận được phép đi
+từ nguồn tới câu trả lời.
+
+### 5.1. Từ “quy tắc AI nên nhớ” thành “đối tượng + trạng thái + cửa kiểm”
+
+Ở 1.0, nhiều nguyên tắc nghiên cứu đúng đã tồn tại dưới dạng luật mà AI phải tự
+tuân thủ.
+
+V2 phải đưa các điểm quan trọng nhất thành cấu trúc có thể kiểm:
+
+```text
+bằng chứng đã đọc
+→ có trạng thái
+
+luận điểm
+→ có trạng thái
+
+quan hệ claim ↔ evidence
+→ có mức hỗ trợ
+
+phản chứng
+→ có dấu vết
+
+claim cuối
+→ phải qua cửa kiểm
+```
+
+Mục tiêu không phải loại AI khỏi nghiên cứu, mà không để một lần suy luận tự do
+vừa tạo claim vừa tự xác nhận claim đó.
+
+### 5.2. Giữ bốn tầng dữ liệu riêng
+
+V2 phải giữ rõ:
+
+```text
+Pointer
+→ chỉ nơi cần đọc
+
+Evidence
+→ điều đã thực sự mở và đọc
+
+Claim
+→ điều AI muốn khẳng định
+
+Synthesis
+→ cách trình bày các claim đã được kiểm
+```
+
+Không gộp bốn tầng này thành một đối tượng chung.
+
+### 5.3. Phân biệt “nguồn mạnh” và “nguồn có hỗ trợ claim này không”
+
+V2 phải luôn tách hai câu hỏi:
+
+1. **Nguồn này thuộc loại nào, có thẩm quyền ra sao?**
+2. **Nguồn này thực sự hỗ trợ luận điểm cụ thể này đến mức nào?**
+
+Một nguồn rất mạnh vẫn có thể không chứng minh claim đang xét.
+
+Ngược lại, điểm retrieval cao chỉ giúp quyết định nên mở nguồn nào trước; nó
+không phải mức xác nhận học thuật.
+
+### 5.4. Việc máy kiểm được thì ưu tiên kiểm bằng máy
+
+Các việc xác định như:
+
+- source/path/SHA có hợp lệ không;
+- vị trí có tồn tại không;
+- quotation có khớp không;
+- provenance có đủ không;
+- claim có evidence không;
+- claim bị cấm có lọt qua Final Claim Gate không;
+
+nên được kiểm bằng quy tắc máy khi có thể.
+
+AI chỉ nên đảm nhiệm phần thật sự cần suy luận ngôn ngữ như:
+
+- tạo giả thuyết tìm kiếm;
+- tách luận điểm;
+- đánh giá quan hệ ngữ nghĩa claim ↔ evidence khi quy tắc máy không đủ;
+- đề xuất hướng tìm phản chứng;
+- tổng hợp câu trả lời.
+
+### 5.5. Truy xuất trước, kiểm chứng sau
+
+Không chạy verifier trên corpus khổng lồ.
+
+Luồng đúng là:
+
+```text
+corpus lớn
+→ retrieval hiện hành thu hẹp ứng viên
+→ mở một tập evidence nhỏ
+→ verification trên tập evidence đó
+```
+
+Đây là cách giữ V2 đơn giản và không phá hiệu năng của 1.0.
+
+### 5.6. Tách nguyên văn, bản dịch và diễn giải
+
+Khi có liên quan, V2 phải phân biệt rõ:
+
+```text
+SOURCE TEXT
+PUBLISHED TRANSLATION
+AI WORKING TRANSLATION
+INTERPRETATION
+SYNTHESIS
+```
+
+Bản dịch do AI tạo không được trình bày như bản dịch học thuật đã xuất bản.
+Diễn giải không được đặt trong ngoặc kép như nguyên văn.
+
+## 6. Những gì V2 phải giữ nguyên
 
 V2 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
 
 Các tài sản của 1.0 phải được bảo toàn:
 
-### 5.1. Nguồn và provenance
+### 6.1. Nguồn và provenance
 
 - 13 upstream repositories được ghim bằng commit SHA;
 - source path / source SHA / source blob SHA;
@@ -105,7 +220,7 @@ Các tài sản của 1.0 phải được bảo toàn:
 - `text_role`;
 - `witness`.
 
-### 5.2. Local mode
+### 6.2. Local mode
 
 ```text
 SQLite + FTS + CLI
@@ -113,7 +228,7 @@ SQLite + FTS + CLI
 
 Không thay bằng một hạ tầng nặng hơn chỉ vì thêm verification.
 
-### 5.3. GitHub Connector mode
+### 6.3. GitHub Connector mode
 
 Giữ đường nhanh hiện tại:
 
@@ -131,7 +246,7 @@ Không quét toàn repository.
 
 Không xuất raw corpus vào locator.
 
-### 5.4. Luật nghiên cứu cốt lõi
+### 6.4. Luật nghiên cứu cốt lõi
 
 Giữ nguyên:
 
@@ -147,7 +262,16 @@ Giữ fail-closed khi dữ liệu không đủ.
 
 Giữ nhân chứng riêng; không tự hòa các truyền thống thành một tiếng nói chung.
 
-## 6. Năng lực mới của V2
+### 6.5. Tương thích ngược
+
+Các lệnh và hành vi 1.0 đang được dùng như `search`, `context`, `work`,
+`parallels`, `resolve`, `variants`, `compare`, `provenance` và
+`evidence` không được phá nếu không có lý do bắt buộc và đường chuyển đổi rõ
+ràng.
+
+Không thay ranking hiện tại chỉ vì thêm lớp kiểm chứng.
+
+## 7. Năng lực mới của V2
 
 V2 tập trung vào tám năng lực chính.
 
@@ -238,11 +362,20 @@ Với nghiên cứu sâu, hệ thống lưu đủ dấu vết để biết:
 Mục tiêu là kiểm toán và tái lập nền bằng chứng, **không phải lưu chain-of-thought
 nội bộ của mô hình**.
 
-## 7. Hai cấp sử dụng
+V2 phải phân biệt:
+
+- **tái lập truy xuất**: cùng corpus/locator/phạm vi/truy vấn phải lấy lại được
+  nền evidence chính tương tự;
+- **tái lập nghiên cứu**: biết evidence nào đã dùng, claim nào được chấp nhận hay
+  loại, phản chứng nào đã được kiểm và vì sao.
+
+Không đặt mục tiêu bắt AI phải viết lại từng chữ giống hệt lần trước.
+
+## 8. Hai cấp sử dụng
 
 V2 không được biến mọi câu hỏi thành một quy trình nặng.
 
-### 7.1. Quick
+### 8.1. Quick
 
 Dành cho:
 
@@ -262,7 +395,7 @@ retrieval
 → answer
 ```
 
-### 7.2. Research
+### 8.2. Research
 
 Dành cho:
 
@@ -285,7 +418,7 @@ Evidence
 → Research Run
 ```
 
-## 8. Ví dụ cho thấy V2 khác 1.0 ở đâu
+## 9. Ví dụ cho thấy V2 khác 1.0 ở đâu
 
 Giả sử hệ thống mở được ba đoạn thật có `anicca` và `nibbidā`.
 
@@ -319,7 +452,7 @@ Kết quả có thể là:
 
 V2 chấp nhận một câu trả lời ít mạnh hơn nếu nó trung thực hơn với evidence.
 
-## 9. Loại claim cần phân biệt
+## 10. Loại claim cần phân biệt
 
 V2 phải ít nhất phân biệt:
 
@@ -345,7 +478,7 @@ văn bản khẳng định tái sinh
 → tái sinh đã được chứng minh thực nghiệm
 ```
 
-## 10. Trải nghiệm người dùng
+## 11. Trải nghiệm người dùng
 
 Người dùng vẫn chỉ cần hỏi tự nhiên.
 
@@ -373,7 +506,18 @@ phạm vi thực sự không thể suy ra.
 Câu trả lời cuối vẫn phải dễ đọc với người nghiên cứu; các cấu trúc kỹ thuật
 chỉ hiện ra khi cần kiểm toán hoặc hỏi sâu.
 
-## 11. Những gì không thuộc V2 phiên bản đầu
+Với Research mode, câu trả lời phải thể hiện đủ để người đọc biết:
+
+- kết luận chính;
+- bằng chứng theo corpus/nhân chứng;
+- phản chứng hoặc giới hạn;
+- phần diễn giải của AI;
+- phạm vi **đã kiểm** và **chưa kiểm**.
+
+Không được viết một mệnh đề rộng như “trong Phật giáo...” nếu lần nghiên cứu chỉ
+kiểm một phạm vi hẹp hơn.
+
+## 12. Những gì không thuộc V2 phiên bản đầu
 
 Không đưa vào chỉ để làm kiến trúc “hoành tráng” hơn:
 
@@ -397,7 +541,7 @@ hạn không đủ là **TƯƠNG LAI**, không phải phạm vi V2 v1.
 
 Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
 
-## 12. Tiêu chí thành công của V2
+## 13. Tiêu chí thành công của V2
 
 V2 chỉ được coi là thành công khi tối thiểu chứng minh được:
 
@@ -414,11 +558,14 @@ V2 chỉ được coi là thành công khi tối thiểu chứng minh được:
 11. claim truy ngược được về evidence;
 12. evidence truy ngược được về pinned source;
 13. một Research Run có thể được xem lại;
-14. biết phạm vi nào đã kiểm và chưa kiểm;
-15. Golden Research Tests chạy ổn định;
-16. khi không đủ dữ liệu, hệ thống vẫn fail-closed.
+14. có thể hỏi “claim này dựa trên bằng chứng nào?” và trả lời được;
+15. có thể hỏi “có phản chứng nào cho claim này?” và trả lời được;
+16. biết phạm vi nào đã kiểm và chưa kiểm;
+17. phân biệt được nguồn độc lập với nguồn dẫn xuất/phụ thuộc;
+18. Golden Research Tests chạy ổn định;
+19. khi không đủ dữ liệu, hệ thống vẫn fail-closed.
 
-## 13. Nguyên tắc ưu tiên khi phải lựa chọn
+## 14. Nguyên tắc ưu tiên khi phải lựa chọn
 
 Khi có nhiều phương án triển khai, ưu tiên theo thứ tự:
 
@@ -434,7 +581,15 @@ Khi có nhiều phương án triển khai, ưu tiên theo thứ tự:
 
 Không hy sinh độ tin cậy nghiên cứu để đổi lấy kiến trúc đẹp hoặc phức tạp.
 
-## 14. Ranh giới với các tài liệu khác
+Một nguyên tắc bổ sung:
+
+> **Không thêm một tầng mới nếu tầng đó không giải quyết một rủi ro nghiên cứu
+> cụ thể.**
+
+Nếu một thành phần của 1.0 đã giải quyết tốt vấn đề, phải tái sử dụng thay vì
+tạo một hệ thống thứ hai song song.
+
+## 15. Ranh giới với các tài liệu khác
 
 Tài liệu này là **PRD của chương trình nâng cấp 2.0**.
 
@@ -457,7 +612,7 @@ PRD không sở hữu schema, tên module, class, API hay format lưu trữ cụ
 Những quyết định đó chỉ được đưa ra sau khi đọc code hiện hành và khi thật sự
 cần cho implementation.
 
-## 15. Điều kiện bắt đầu viết mã
+## 16. Điều kiện bắt đầu viết mã
 
 Trước khi code V2, nhóm triển khai chỉ cần xác nhận ba điều:
 
@@ -469,7 +624,7 @@ Sau đó mới đọc code để chọn vị trí triển khai phù hợp.
 
 Không cần thiết kế lại toàn hệ thống trước khi bắt đầu.
 
-## 16. Kết luận
+## 17. Kết luận
 
 Buddhist Corpus Research 2.0 không phải một hệ thống thứ hai.
 
