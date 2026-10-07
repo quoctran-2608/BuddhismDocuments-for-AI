@@ -32,9 +32,9 @@ tên.
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
 |---|---|---|
-| REQ-VER-001 | CHƯA TRIỂN KHAI | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; metadata quan hệ chỉ được dùng đúng loại luận điểm |
+| REQ-VER-001 | CHƯA TRIỂN KHAI | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm |
 | REQ-VER-002 | CHƯA TRIỂN KHAI | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả |
-| REQ-VER-003 | CHƯA TRIỂN KHAI | Tự động: sai repository/SHA/path/segment làm Cửa kiểm bằng chứng thất bại |
+| REQ-VER-003 | CHƯA TRIỂN KHAI | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại |
 | REQ-VER-004 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập |
 | REQ-VER-005 | CHƯA TRIỂN KHAI | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận |
 | REQ-VER-006 | CHƯA TRIỂN KHAI | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa |
@@ -43,22 +43,22 @@ tên.
 | REQ-VER-009 | CHƯA TRIỂN KHAI | Tự động: thay đổi điểm truy xuất không tự thay đổi mức hỗ trợ của luận điểm |
 | REQ-VER-010 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: phần tổng hợp sinh luận điểm mới ngoài tập đã chấp nhận phải thất bại kiểm tra cuối |
 | REQ-VER-011 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ |
-| REQ-VER-012 | CHƯA TRIỂN KHAI | Tự động: caller/AI không thể tự ghi accepted; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
+| REQ-VER-012 | CHƯA TRIỂN KHAI | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
 | REQ-VER-013 | CHƯA TRIỂN KHAI | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan |
-| REQ-VER-014 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ giữ unknown/uncertain/unverified, không tự suy đoán thành giá trị xác định |
-| REQ-QTE-001 | CHƯA TRIỂN KHAI | Tự động: phân loại exact/normalized/paraphrase/unverified/mismatch đúng hợp đồng |
+| REQ-VER-014 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
+| REQ-QTE-001 | CHƯA TRIỂN KHAI | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
 | REQ-QTE-002 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
 | REQ-QTE-003 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
 | REQ-CTR-001 | CHƯA TRIỂN KHAI | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt |
 | REQ-CTR-002 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
 | REQ-CTR-003 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
 | REQ-CTR-004 | CHƯA TRIỂN KHAI | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế |
-| REQ-RUN-001 | CHƯA TRIỂN KHAI | Tự động: chế độ Nghiên cứu thiếu commit repo chính, locator repo/commit/root, source revisions hoặc trường bắt buộc phải không đạt |
+| REQ-RUN-001 | CHƯA TRIỂN KHAI | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt |
 | REQ-RUN-002 | CHƯA TRIỂN KHAI | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ |
 | REQ-RUN-003 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi |
 | REQ-RUN-004 | CHƯA TRIỂN KHAI | Tự động: từ mã luận điểm truy ra được toàn bộ mã bằng chứng liên quan |
 | REQ-RUN-005 | CHƯA TRIỂN KHAI | Tự động: trạng thái tìm phản chứng và tóm tắt kết quả có thể truy vấn |
-| REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ finalized không sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
+| REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
 | REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
 | REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
 
@@ -80,7 +80,7 @@ Mỗi tình huống chuẩn phải có tối thiểu:
 Bộ tối thiểu gồm 11 trường hợp:
 
 1. **Câu trích đổi một từ** — phải phát hiện không khớp.
-2. **Sai source SHA** — Bản ghi bằng chứng phải bị từ chối.
+2. **Sai SHA nguồn** — Bản ghi bằng chứng phải bị từ chối.
 3. **Sai đoạn nguồn** — vị trí không hợp lệ phải làm cửa kiểm thất bại.
 4. **Chú thích giả làm văn bản gốc** — phải chặn sai vai trò văn bản.
 5. **Siêu dữ liệu song hành giả làm bằng chứng câu chữ** — phải chặn.
@@ -88,7 +88,7 @@ Bộ tối thiểu gồm 11 trường hợp:
 7. **Luận điểm mạnh hơn bằng chứng** — phải thu hẹp, hạ mức hoặc loại.
 8. **Sai loại bằng chứng** — luận điểm lịch sử/thực nghiệm/siêu hình không được xác nhận chỉ vì văn bản nói như vậy.
 9. **Bỏ tìm phản chứng** — chế độ Nghiên cứu phải không đạt.
-10. **Tự tạo tương đương Pāli ↔ Hán** — không có bằng chứng repository thì không được xác lập.
+10. **Tự tạo tương đương Pāli ↔ Hán** — không có bằng chứng trong kho nguồn thì không được xác lập.
 11. **Phần tổng hợp sinh luận điểm mới** — luận điểm chưa qua cửa kiểm phải bị phát hiện.
 
 Các mẫu phải nhỏ, ổn định và có thể chạy trên mọi máy. Không dùng một đường dẫn
