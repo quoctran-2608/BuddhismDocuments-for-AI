@@ -30,7 +30,7 @@ docs/v2/
 
 Không tạo một bộ `docs/v1/` mới. Hệ hiện hành đã có các nguồn chuẩn của chính
 nó như `PROJECT_SPEC.md`, `ARCHITECTURE.md`, `CLI.md`,
-`REMOTE_AGENT.md`, cấu hình, schema, mã nguồn và kiểm thử.
+`REMOTE_AGENT.md`, cấu hình, lược đồ dữ liệu, mã nguồn và kiểm thử.
 
 Khi 2.0 được triển khai từng phần, trạng thái chỉ được chuyển từ **MỤC TIÊU**
 sang **HIỆN HÀNH** sau khi có mã nguồn và kiểm thử/đối chiếu nghiệm thu tương
