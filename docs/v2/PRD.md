@@ -222,7 +222,7 @@ corpus lớn
 Khi có liên quan, 2.0 phải phân biệt rõ:
 
 ```text
-nguồn TEXT
+VĂN BẢN NGUỒN
 BẢN DỊCH ĐÃ XUẤT BẢN
 BẢN DỊCH LÀM VIỆC CỦA AI
 DIỄN GIẢI
@@ -406,7 +406,7 @@ Không thay ranking hiện tại chỉ vì thêm lớp kiểm chứng.
 Chuẩn hóa bằng chứng **đã thực sự được mở và đọc**, thay vì coi search hit hoặc
 con trỏ là bằng chứng.
 
-### 7.2. bằng chứng Gate
+### 7.2. Cửa kiểm bằng chứng
 
 Kiểm trước khi một kết quả được dùng làm bằng chứng:
 
@@ -443,7 +443,7 @@ Mỗi luận điểm phải được đánh giá quan hệ với bằng chứng,
 DIRECT
 STRONG
 WEAK
-UNmức hỗ trợED
+UNSUPPORTED
 CONTRADICTED
 ```
 
@@ -661,6 +661,35 @@ Với chế độ Nghiên cứu, câu trả lời phải thể hiện đủ đ�
 
 Không được viết một mệnh đề rộng như “trong Phật giáo...” nếu lần nghiên cứu chỉ
 kiểm một phạm vi hẹp hơn.
+
+### 11.1. Phải dùng được trên Codex và ChatGPT Work
+
+2.0 không được thiết kế chỉ cho một máy cục bộ hoặc chỉ cho một cách gọi lệnh.
+
+Yêu cầu bắt buộc:
+
+- **Codex** phải có thể làm việc trực tiếp với mã nguồn, chạy các kiểm tra và dùng
+  cùng hợp đồng Bản ghi bằng chứng / luận điểm / Hồ sơ lần nghiên cứu;
+- **ChatGPT Work** phải có thể thực hiện cùng quy trình nghiên cứu khi làm việc
+  với thư mục dự án, tệp được cung cấp hoặc nguồn GitHub đã kết nối;
+- dữ liệu trao đổi giữa các bước phải có dạng máy đọc được, ưu tiên đối tượng
+  Python có thể chuyển thẳng sang JSON;
+- không được để ý nghĩa của một trạng thái chỉ tồn tại trong bộ nhớ của một
+  phiên chat hay trong một đường dẫn máy cá nhân.
+
+Đường qua **GitHub plugin** cũng phải được giữ tương thích khi plugin cung cấp đủ
+thao tác đọc kho, commit và tệp nguồn. Nếu một phép kiểm chỉ có ở môi trường cục
+bộ mà plugin không thực hiện được, hệ thống phải ghi **chưa xác minh** và đóng
+khi thiếu dữ liệu; không được tự coi là đã đạt.
+
+Mục tiêu là:
+
+```text
+một hợp đồng nghiên cứu
+→ nhiều môi trường thực thi
+→ cùng ý nghĩa trạng thái
+→ cùng nguyên tắc đóng khi thiếu dữ liệu
+```
 
 ## 12. Những gì không thuộc 2.0 phiên bản đầu
 
