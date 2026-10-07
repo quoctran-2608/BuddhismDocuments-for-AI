@@ -29,7 +29,8 @@ Thẩm quyền được xác định theo miền thông tin:
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
 | Lịch sử phát triển | `progress.md` + lịch sử Git |
 | Yêu cầu có mã | `docs/REQUIREMENTS.md` |
-| Thiết kế lớp kiểm chứng nghiên cứu MỤC TIÊU | `docs/RESEARCH_VERIFICATION_DESIGN.md` |
+| Đề bài nâng cấp Buddhist Corpus Research 2.0 | `docs/v2/PRD.md` |
+| Thiết kế lớp kiểm chứng nghiên cứu 2.0 | `docs/v2/DESIGN.md` |
 | Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
 | Lý do quyết định kiến trúc | `docs/adr/` |
 
@@ -104,13 +105,17 @@ hiện hành, giới hạn và hướng nâng cấp.
 
 Nó không thay thế nguồn chuyên biệt.
 
-### RESEARCH_VERIFICATION_DESIGN
+### Bộ tài liệu Buddhist Corpus Research 2.0
 
-Nguồn chuẩn cho semantics và data contract của lớp kiểm chứng **MỤC TIÊU**:
-Evidence Record, quotation status, Atomic Claim, support status, độc lập nguồn,
-phản chứng, Final Claim Gate, Research Run và ranh giới TƯƠNG LAI.
+`docs/v2/` là khu vực riêng cho chương trình nâng cấp **MỤC TIÊU** 2.0:
 
-Nó không phải bằng chứng rằng các tính năng đó đã được triển khai.
+- `docs/v2/PRD.md` sở hữu đề bài, mục tiêu, phạm vi và tiêu chí thành công;
+- `docs/v2/DESIGN.md` sở hữu ngữ nghĩa và hợp đồng dữ liệu của lớp kiểm chứng;
+- các tài liệu 2.0 bổ sung về sau phải nằm cùng thư mục nếu chúng chỉ áp dụng cho
+  chương trình nâng cấp này.
+
+Các tài liệu trong `docs/v2/` không phải bằng chứng rằng tính năng đã được
+triển khai. Tài liệu chung/hiện hành tiếp tục nằm ở cấp `docs/`.
 
 ### AGENTS
 
