@@ -28,7 +28,7 @@ tên.
 
 ---
 
-## 2. Ma trận nghiệm thu 29 yêu cầu
+## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
 |---|---|---|
@@ -61,6 +61,8 @@ tên.
 | REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
 | REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
 | REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
+| REQ-ENV-001 | CHƯA TRIỂN KHAI | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
+| REQ-ENV-002 | CHƯA TRIỂN KHAI | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
 
 ---
 
@@ -134,7 +136,7 @@ Không chuyển trạng thái vì có mã khung, bản mô phỏng hoặc tài l
 
 Chỉ coi 2.0 phiên bản đầu hoàn thành khi tối thiểu:
 
-- 29 yêu cầu trong tài liệu này đã có bằng chứng nghiệm thu phù hợp;
+- 31 yêu cầu trong tài liệu này đã có bằng chứng nghiệm thu phù hợp;
 - truy xuất và CLI hiện hành không hồi quy;
 - locator chính thức vẫn tất định;
 - Connector vẫn mở nguồn gốc bên ngoài đã ghim;
@@ -152,6 +154,8 @@ Chỉ coi 2.0 phiên bản đầu hoàn thành khi tối thiểu:
 - biết phạm vi đã kiểm/chưa kiểm;
 - 11 tình huống nghiên cứu chuẩn chạy ổn định;
 - sự cố nghiên cứu đã sửa có kiểm thử hồi quy;
+- lõi kiểm chứng dùng cùng hợp đồng dữ liệu trên Codex và ChatGPT Work;
+- đường GitHub plugin không bị thiết kế chặn và đóng khi thiếu khả năng xác minh;
 - khi thiếu dữ liệu, hệ thống vẫn đóng và nêu giới hạn.
 
 Đây là tiêu chí **MỤC TIÊU**, không phải tuyên bố trạng thái hiện tại.
