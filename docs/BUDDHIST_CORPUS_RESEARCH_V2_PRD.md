@@ -22,6 +22,28 @@ Trong chương trình nâng cấp này:
 Đây là quy ước sản phẩm để giúp tài liệu dễ hiểu. Nó không khẳng định repository
 trước đây đã phát hành một release semantic-version chính thức tên `1.0`.
 
+### Quy ước thuật ngữ trong tài liệu
+
+Tài liệu ưu tiên cách gọi tiếng Việt. Một số thuật ngữ kỹ thuật được giữ tên
+tiếng Anh trong ngoặc ở lần xuất hiện đầu tiên để đối chiếu với mã nguồn và tài
+liệu kỹ thuật:
+
+- **luận điểm** (`claim`): điều hệ thống muốn khẳng định;
+- **bằng chứng** (`evidence`): nội dung đã thực sự được mở, đọc và truy nguyên
+  về nguồn;
+- **phản chứng** (`counterevidence`): bằng chứng hoặc dữ liệu có thể làm yếu,
+  thu hẹp hoặc bác bỏ một luận điểm;
+- **cửa kiểm cuối** (`Final Claim Gate`): bước kiểm tra bắt buộc trước khi một
+  luận điểm được phép đi vào phần tổng hợp;
+- **hồ sơ lần nghiên cứu** (`Research Run`): dấu vết có cấu trúc của một lần
+  nghiên cứu;
+- **đóng khi thiếu dữ liệu** (`fail-closed`): khi không đủ bằng chứng thì dừng
+  và nói rõ giới hạn, không tự điền bằng suy đoán.
+
+Sau phần định nghĩa này, văn xuôi ưu tiên dùng cách gọi tiếng Việt. Tên trường,
+mã trạng thái hoặc tên giao diện máy có thể giữ nguyên tiếng Anh khi cần đối
+chiếu chính xác với mã nguồn.
+
 ## 2. Một câu mô tả V2
 
 Buddhist Corpus Research 1.0 đã làm tốt việc:
@@ -204,6 +226,105 @@ SYNTHESIS
 
 Bản dịch do AI tạo không được trình bày như bản dịch học thuật đã xuất bản.
 Diễn giải không được đặt trong ngoặc kép như nguyên văn.
+
+### 5.7. Trạng thái phải do cửa kiểm quyết định
+
+Một bài học quan trọng từ hệ thống trước đây là: **trạng thái không được chỉ là
+một nhãn do AI hoặc chương trình gọi tự gán**.
+
+Ví dụ, một luận điểm không được coi là “đã chấp nhận” chỉ vì nơi tạo luận điểm
+ghi như vậy. Trạng thái cuối phải là kết quả của các điều kiện kiểm tra thực tế:
+
+```text
+luận điểm đề nghị
+→ kiểm bằng chứng
+→ kiểm mức hỗ trợ
+→ kiểm phản chứng
+→ kiểm giới hạn
+→ cửa kiểm quyết định trạng thái
+```
+
+Nguyên tắc bắt buộc:
+
+> **Trạng thái công bố là kết quả của cửa kiểm, không phải ý kiến tự khai của
+> AI hay của chương trình gọi.**
+
+### 5.8. Luận điểm phải có lịch sử sửa đổi
+
+Khi một luận điểm bị phản chứng, bị thu hẹp hoặc cần viết lại, hệ thống không
+được âm thầm sửa đè rồi làm mất lịch sử.
+
+Phải giữ được ít nhất:
+
+- luận điểm cũ là gì;
+- luận điểm mới thay thế nó là gì;
+- lý do thay đổi;
+- bằng chứng hoặc phản chứng nào dẫn tới thay đổi.
+
+Có thể dùng quan hệ “bản mới thay thế bản cũ” (`supersedes`) trong dữ liệu.
+Tên trường cụ thể sẽ do tài liệu thiết kế và mã nguồn quyết định sau.
+
+Mục tiêu là để sau này có thể trả lời:
+
+> “Kết luận này đã thay đổi như thế nào và vì sao?”
+
+### 5.9. Hồ sơ nghiên cứu đã chốt không được sửa âm thầm
+
+Một hồ sơ lần nghiên cứu đã được chốt để làm căn cứ cho câu trả lời không nên bị
+sửa đè như chưa từng có phiên bản cũ.
+
+Nếu có bằng chứng mới làm thay đổi kết quả, hệ thống nên tạo bản sửa đổi hoặc
+lần nghiên cứu mới có quan hệ rõ với bản trước.
+
+Nguyên tắc này nhằm bảo đảm:
+
+- có thể kiểm toán lại kết quả cũ;
+- biết kết luận nào từng được dùng ở thời điểm nào;
+- không làm lịch sử nghiên cứu thay đổi âm thầm.
+
+V2 chưa cần xây một hệ thống quản lý phiên bản phức tạp. Chỉ cần mô hình dữ liệu
+không chặn khả năng truy ngược này.
+
+### 5.10. “Chưa xác định” là một kết quả hợp lệ
+
+Khi chưa có bằng chứng đủ để xác định một thông tin, hệ thống phải cho phép giữ
+trạng thái:
+
+```text
+chưa xác định
+không chắc
+chưa kiểm
+```
+
+thay vì tự điền cho đủ trường.
+
+Nguyên tắc này đặc biệt quan trọng với:
+
+- mức độc lập giữa các nguồn;
+- quan hệ giữa các nhân chứng;
+- tác giả, niên đại hoặc người dịch khi nguồn không nói rõ;
+- tương đương giữa Pāli, Sanskrit, Hán và Tạng;
+- loại bằng chứng hoặc loại luận điểm khi chưa đủ căn cứ.
+
+“Chưa xác định” trung thực hơn một giá trị có vẻ đầy đủ nhưng không có nguồn.
+
+### 5.11. Lỗi nghiên cứu thật phải trở thành bài kiểm thử lâu dài
+
+Nếu hệ thống từng cho một lỗi nghiên cứu nghiêm trọng lọt qua, ví dụ:
+
+- câu trích sai vẫn được xuất như nguyên văn;
+- chú thích của người dịch bị coi là văn bản gốc;
+- luận điểm quá mạnh vẫn được chấp nhận;
+- hai nguồn phụ thuộc bị tính như hai xác nhận độc lập;
+- luận điểm bị phản chứng vẫn lọt vào kết luận;
+
+thì sau khi sửa, tình huống đó phải trở thành **bài kiểm thử hồi quy**.
+
+> **Kiểm thử hồi quy** là bài kiểm tra được giữ lại để bảo đảm một lỗi đã sửa
+> không quay trở lại ở các phiên bản sau.
+
+Các bài kiểm thử nghiên cứu chuẩn nên ưu tiên dùng những lỗi thật từng xảy ra,
+không chỉ những tình huống giả định.
 
 ## 6. Những gì V2 phải giữ nguyên
 
@@ -580,8 +701,12 @@ V2 chỉ được coi là thành công khi tối thiểu chứng minh được:
 15. có thể hỏi “có phản chứng nào cho claim này?” và trả lời được;
 16. biết phạm vi nào đã kiểm và chưa kiểm;
 17. phân biệt được nguồn độc lập với nguồn dẫn xuất/phụ thuộc;
-18. Golden Research Tests chạy ổn định;
-19. khi không đủ dữ liệu, hệ thống vẫn fail-closed.
+18. một luận điểm đã sửa có thể truy ngược về bản trước và lý do thay đổi;
+19. hồ sơ nghiên cứu đã chốt không bị sửa đè âm thầm;
+20. trạng thái chấp nhận luận điểm do cửa kiểm quyết định, không do AI tự khai;
+21. lỗi nghiên cứu nghiêm trọng đã phát hiện có bài kiểm thử hồi quy tương ứng;
+22. các bài kiểm thử nghiên cứu chuẩn chạy ổn định;
+23. khi không đủ dữ liệu, hệ thống vẫn đóng khi thiếu dữ liệu (`fail-closed`).
 
 ## 14. Nguyên tắc ưu tiên khi phải lựa chọn
 
