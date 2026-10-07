@@ -20,11 +20,11 @@
 Hệ thống hiện đã có:
 
 ```text
-13 nguồn upstream được ghim theo commit
+13 nguồn gốc bên ngoài được ghim theo commit
 → bộ phân tích tất định
 → SQLite / FTS / quan hệ / dị bản / lemma
-→ truy xuất cục bộ hoặc locator production
-→ mở nguồn upstream đã ghim
+→ truy xuất cục bộ hoặc locator chính thức
+→ mở nguồn gốc bên ngoài đã ghim
 → ngữ cảnh + nguồn gốc
 → câu trả lời theo AGENTS/SKILL
 ```
@@ -53,7 +53,7 @@ Bản ghi bằng chứng
 Chỉ xem xét sau khi 2.0 ổn định và có nhu cầu thực tế được đo:
 
 - đường truy xuất Connector sâu hơn khi locator hữu hạn không đủ;
-- hỗ trợ tìm Hán văn từ xa tùy ý bằng một cơ chế khác production `terms/cjk`;
+- hỗ trợ tìm Hán văn từ xa tùy ý bằng một cơ chế khác với bản chính thức `terms/cjk`;
 - tác vụ từ xa tất định để chạy truy xuất nặng rồi trả kết quả có nguồn gốc.
 
 Các ý này **không phải yêu cầu 2.0 phiên bản đầu**.
@@ -107,8 +107,8 @@ luận điểm tự động đúng
 Các thuật ngữ kỹ thuật kế thừa từ hệ 1.0:
 
 - **corpus**: kho ngữ liệu có cấu trúc;
-- **repository**: kho mã hoặc dữ liệu được quản lý bằng Git;
-- **upstream source**: kho nguồn gốc bên ngoài mà dự án ghim theo một phiên bản
+- **repository**: kho mã hoặc dữ liệu được quản lý bằng Git; trong văn xuôi gọi là **kho Git**;
+- **upstream source**: nguồn gốc bên ngoài mà dự án ghim theo một phiên bản
   cụ thể;
 - **SHA**: mã băm dùng để định danh và kiểm tra đúng phiên bản;
 - **locator**: chỉ dẫn giúp tìm đúng tệp hoặc đoạn cần mở;
@@ -119,7 +119,7 @@ Các thuật ngữ kỹ thuật kế thừa từ hệ 1.0:
   đang xây;
 - **work / segment**: tác phẩm / đoạn định danh trong nguồn;
 - **provenance**: nguồn gốc truy nguyên, tức thông tin đủ để lần ngược về
-  repository, phiên bản và vị trí nguồn.
+  kho Git, phiên bản và vị trí nguồn.
 
 ## 4. Nguyên tắc thiết kế
 
@@ -130,7 +130,7 @@ Lớp kiểm chứng nằm **sau** hệ truy xuất và mở nguồn hiện hàn
 Không:
 
 - viết lại SQLite/FTS chỉ vì thêm kiểm chứng;
-- thay production locator;
+- thay locator chính thức;
 - đưa cơ sở dữ liệu véc-tơ vào khi chưa có nhu cầu;
 - biến GitHub Actions thành “bộ não suy luận”;
 - tạo một điểm số duy nhất giả làm thước đo chân lý học thuật.
@@ -186,7 +186,7 @@ Không ánh xạ trực tiếp điểm truy xuất sang `DIRECT`, `STRONG` hay `
 
 Ưu tiên quy tắc tất định cho:
 
-- nguồn/path/SHA có hợp lệ không;
+- nguồn, đường dẫn và SHA có hợp lệ không;
 - vị trí có tồn tại không;
 - câu trích có khớp không;
 - nguồn gốc có đủ không;
@@ -306,10 +306,10 @@ Các thứ sau **không tự động** trở thành bằng chứng:
 - tiêu đề/mục lục chưa được kiểm trong nguồn;
 - dòng quan hệ;
 - dòng cầu nối;
-- ứng viên metadata dùng để khám phá.
+- ứng viên siêu dữ liệu dùng để khám phá.
 
-Quan hệ/cầu nối/metadata **có thể** trở thành bằng chứng cho luận điểm loại
-`relationship` nếu nguồn metadata thực sự đã được mở, nguồn gốc được xác minh
+Quan hệ, cầu nối hoặc siêu dữ liệu **có thể** trở thành bằng chứng cho luận điểm loại
+`relationship` nếu nguồn siêu dữ liệu thực sự đã được mở, nguồn gốc được xác minh
 và loại bằng chứng được ghi đúng. Chúng không được dùng như bằng chứng câu chữ
 cho luận điểm `textual`.
 
@@ -344,7 +344,7 @@ limitations
 
 Quy tắc:
 
-- `evidence_id`, corpus, repository, SHA/path và nguồn gốc cốt lõi phải đủ để
+- `evidence_id`, corpus, kho Git, SHA/đường dẫn và nguồn gốc cốt lõi phải đủ để
   truy ngược nguồn;
 - `run_id` bắt buộc trong chế độ Nghiên cứu; chế độ Nhanh có thể để trống nếu
   chưa tạo Hồ sơ lần nghiên cứu;
@@ -353,7 +353,7 @@ Quy tắc:
   không áp dụng;
 - `evidence_class` bắt buộc;
 - `text_role` và `witness` phải giữ riêng khi áp dụng;
-- `quotation` không bắt buộc với bằng chứng chỉ chứng minh metadata/quan hệ;
+- `quotation` không bắt buộc với bằng chứng chỉ chứng minh siêu dữ liệu/quan hệ;
 - nếu dùng trích dẫn nguyên văn hoặc diễn đạt lại, nội dung và ngữ cảnh phải đến
   từ nguồn đã mở;
 - không lấy câu trích/ngữ cảnh từ con trỏ.
@@ -362,8 +362,8 @@ Quy tắc:
 
 Trước khi được dùng như bằng chứng đã xác minh:
 
-1. repository phải đúng;
-2. source SHA/blob phải phù hợp;
+1. kho Git phải đúng;
+2. SHA nguồn/SHA tệp phải phù hợp;
 3. đường dẫn nguồn phải tồn tại;
 4. vị trí work/segment phải giải thích được khi áp dụng;
 5. vai trò văn bản/nhân chứng phải đúng khi áp dụng;
@@ -493,7 +493,7 @@ Nhiều trích dẫn không tự động là nhiều nguồn độc lập.
 - `uncertain`.
 
 Ví dụ, dữ liệu BuddhaNexus Chinese dẫn xuất từ CBETA không được tính như một
-nhân chứng độc lập với chính CBETA chỉ vì nằm ở repository khác.
+nhân chứng độc lập với chính CBETA chỉ vì nằm ở kho Git khác.
 
 Nếu chưa xác định được quan hệ phụ thuộc, dùng `uncertain`, không tự nâng thành
 `independent`.
@@ -605,8 +605,8 @@ revision_reason
 ```
 
 `model_identifier` và `verification_config` có thể không bắt buộc trong 2.0
-phiên bản đầu nếu môi trường không cung cấp ổn định. Nguồn gốc repository,
-commit và source revisions không được thiếu trong chế độ Nghiên cứu.
+phiên bản đầu nếu môi trường không cung cấp ổn định. Nguồn gốc kho Git,
+commit và phiên bản nguồn không được thiếu trong chế độ Nghiên cứu.
 
 ### 14.3. Vòng đời hồ sơ nghiên cứu
 
@@ -642,10 +642,10 @@ Sau khi viết câu trả lời tự nhiên, hệ thống phải kiểm ít nh�
 - không có `UNSUPPORTED` lọt vào;
 - không có `CONTRADICTED` được viết như sự thật;
 - câu trích trực tiếp đã được kiểm;
-- con trỏ/metadata không bị trích như văn bản;
+- con trỏ/siêu dữ liệu không bị trích như văn bản;
 - chú thích bản dịch không bị trình bày như văn bản gốc;
 - quan hệ song hành không bị biến thành đồng nhất câu chữ;
-- tương đương đa ngôn ngữ có bằng chứng repository;
+- tương đương đa ngôn ngữ có bằng chứng trong kho nguồn;
 - không trộn kiến thức mô hình vào kết luận;
 - giới hạn phạm vi quan trọng không bị bỏ mất;
 - phần tổng hợp không làm luận điểm mạnh hơn trạng thái đã được duyệt.
@@ -686,11 +686,11 @@ văn bản và nhân chứng.
 
 ### 17.2. GitHub Connector
 
-Không đổi production locator:
+Không đổi locator chính thức:
 
 ```text
 production pointer
-→ mở nguồn upstream đã ghim
+→ mở nguồn gốc bên ngoài đã ghim
 → Bản ghi bằng chứng
 → kiểm chứng
 → lớp luận điểm
@@ -732,15 +732,15 @@ nghiên cứu cố ý sai.
 Tối thiểu 11 trường hợp:
 
 1. câu trích bị đổi một từ;
-2. source SHA sai;
+2. SHA nguồn sai;
 3. segment sai;
 4. chú thích bản dịch giả làm văn bản gốc;
-5. metadata song hành giả làm bằng chứng câu chữ;
+5. siêu dữ liệu song hành giả làm bằng chứng câu chữ;
 6. hai nguồn phụ thuộc giả làm hai nhân chứng độc lập;
 7. luận điểm mạnh hơn bằng chứng;
 8. luận điểm lịch sử/thực nghiệm/siêu hình bị kiểm bằng sai loại bằng chứng;
 9. chế độ Nghiên cứu bỏ bước tìm phản chứng;
-10. AI tự tạo tương đương Pāli ↔ Hán không có bằng chứng repository;
+10. AI tự tạo tương đương Pāli ↔ Hán không có bằng chứng trong kho nguồn;
 11. phần tổng hợp sinh kết luận mới chưa qua cửa kiểm.
 
 Mỗi trường hợp chuẩn phải ghi:
@@ -760,7 +760,7 @@ thay vì chỉ dùng ví dụ tưởng tượng.
 > **Kiểm thử hồi quy** là bài kiểm tra được giữ lại để bảo đảm một lỗi đã sửa
 > không quay trở lại.
 
-Các mẫu chuẩn phải nằm trong repository và chạy được trên mọi máy; không phụ
+Các mẫu chuẩn phải nằm trong kho dự án và chạy được trên mọi máy; không phụ
 thuộc đường dẫn cá nhân.
 
 ## 20. Tiêu chí hoàn thành 2.0 phiên bản đầu
@@ -768,7 +768,7 @@ thuộc đường dẫn cá nhân.
 Chỉ coi lớp kiểm chứng hoàn thành khi:
 
 - truy xuất hiện hành không bị hồi quy;
-- production locator vẫn tất định;
+- locator chính thức vẫn tất định;
 - con trỏ vẫn không phải bằng chứng;
 - Bản ghi bằng chứng có đủ nguồn gốc;
 - câu trích sai bị phát hiện;
