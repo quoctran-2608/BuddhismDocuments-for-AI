@@ -25,6 +25,46 @@ truy xuất hiện hành
 Nói cách khác, **2.0 nên bắt đầu sau khi 1.0 đã tìm và gom được bằng chứng**,
 không chen vào bộ phân tích nguồn, FTS, xếp hạng hoặc production locator.
 
+### 1.1. Ràng buộc bắt buộc: chạy được trên Codex và ChatGPT Work
+
+Lõi kiểm chứng không được đồng nghĩa với “một chương trình chỉ chạy trên máy có
+SQLite đầy đủ”.
+
+Cách tiếp cận:
+
+```text
+Codex / working copy cục bộ ─┐
+ChatGPT Work ────────────────┼→ dữ liệu chuẩn JSON → lõi kiểm chứng 2.0
+GitHub plugin ───────────────┘
+```
+
+**Codex** là đường đầy đủ nhất: có thể làm việc với mã nguồn, chạy Python, kiểm
+thử và Git khi working copy có đủ submodule.
+
+**ChatGPT Work** phải dùng cùng hợp đồng dữ liệu. Work có thể lấy dữ liệu từ thư
+mục dự án, tệp được cung cấp hoặc nguồn/plugin đã kết nối rồi đưa vào cùng cấu
+trúc kiểm chứng.
+
+**ChatGPT qua GitHub plugin** là đường tương thích ưu tiên. Khi plugin đọc được
+commit, tệp và nội dung nguồn, nó phải có thể tạo cùng Bản ghi bằng chứng. Nếu
+plugin thiếu một phép kiểm mà local Git có, trạng thái phải là **chưa xác minh**
+và đóng khi thiếu dữ liệu.
+
+Nguyên tắc cho mã lõi:
+
+- `verification.py` không được cần kết nối SQLite để hiểu một Bản ghi bằng
+  chứng đã được tạo;
+- không dùng đường dẫn tuyệt đối làm định danh nguồn;
+- không buộc lệnh shell vào logic kiểm chứng học thuật;
+- đầu vào/đầu ra phải chuyển được sang JSON;
+- kiểm tra phụ thuộc môi trường phải đi qua một lớp cung cấp nguồn nhỏ, không
+  được trộn vào quy tắc học thuật;
+- cùng một dữ liệu phải cho cùng ý nghĩa trạng thái ở Codex, Work và đường
+  GitHub plugin.
+
+Ở lát cắt đầu, chưa cần xây một hệ plugin riêng. Chỉ cần **không khóa thiết kế vào
+môi trường cục bộ**.
+
 ## 2. Mã nguồn hiện hành đã có gì để tái sử dụng
 
 ### 2.1. `retrieval.evidence()` là điểm bàn giao tự nhiên
@@ -164,7 +204,7 @@ Không tạo nhiều mô-đun ngay từ đầu.
 ```text
 tools/corpus_research/
 ├── retrieval.py        ← giữ nguyên trách nhiệm hiện tại
-└── verification.py     ← mới: Bản ghi bằng chứng + cửa kiểm + kiểm câu trích
+└── verification.py     ← mới: lõi thuần dữ liệu cho Bản ghi bằng chứng + cửa kiểm + kiểm câu trích
 
 tests/
 └── test_verification.py
@@ -189,7 +229,11 @@ Tối thiểu cần kiểm:
 5. chỉ khác chuẩn hóa Unicode/khoảng trắng → `VERIFIED_NORMALIZED`;
 6. đổi một từ → `QUOTE_MISMATCH`;
 7. diễn đạt lại không được coi là câu trích nguyên văn;
-8. trường không xác định được giữ trống/chưa xác định, không tự điền.
+8. trường không xác định được giữ trống/chưa xác định, không tự điền;
+9. cùng một gói JSON cho kết quả kiểm chứng giống nhau không phụ thuộc nguồn dữ
+   liệu đến từ SQLite cục bộ hay một bộ đọc GitHub giả lập;
+10. thiếu khả năng kiểm nguồn ở môi trường từ xa trả trạng thái chưa xác minh,
+    không tự coi là đạt.
 
 Sau khi lát cắt này xanh mới sang lớp luận điểm.
 
@@ -281,7 +325,9 @@ Chỉ có bốn rủi ro cần canh ngay từ đầu:
 2. coi gói `evidence()` là đã được kiểm chứng đầy đủ dù mới chỉ là dữ liệu đầu
    vào;
 3. viết lại logic SHA/đường dẫn nguồn theo cách khác locator;
-4. đưa trạng thái `accepted` cho AI tự gán thay vì để cửa kiểm quyết định.
+4. đưa trạng thái `accepted` cho AI tự gán thay vì để cửa kiểm quyết định;
+5. vô tình viết lõi kiểm chứng phụ thuộc cứng vào SQLite/shell nên không dùng
+   được trên ChatGPT Work hoặc đường GitHub plugin.
 
 Nếu giữ được bốn ranh giới này, lát cắt đầu của 2.0 có thể rất nhỏ.
 
