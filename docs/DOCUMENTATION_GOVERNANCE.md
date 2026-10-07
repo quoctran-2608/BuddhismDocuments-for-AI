@@ -28,10 +28,12 @@ Thẩm quyền được xác định theo miền thông tin:
 | SC ↔ CBETA | `docs/SC_CBETA_BRIDGE.md` + resolver tests |
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
 | Lịch sử phát triển | `progress.md` + lịch sử Git |
-| Yêu cầu có mã | `docs/REQUIREMENTS.md` |
+| Yêu cầu có mã của hệ hiện hành | `docs/REQUIREMENTS.md` |
+| Nghiệm thu hệ hiện hành | `docs/ACCEPTANCE.md` |
 | Đề bài nâng cấp Buddhist Corpus Research 2.0 | `docs/v2/PRD.md` |
-| Thiết kế lớp kiểm chứng nghiên cứu 2.0 | `docs/v2/DESIGN.md` |
-| Tiêu chí nghiệm thu | `docs/ACCEPTANCE.md` |
+| Thiết kế Buddhist Corpus Research 2.0 | `docs/v2/DESIGN.md` |
+| Yêu cầu có mã của 2.0 | `docs/v2/REQUIREMENTS.md` |
+| Nghiệm thu 2.0 | `docs/v2/ACCEPTANCE.md` |
 | Lý do quyết định kiến trúc | `docs/adr/` |
 
 ## 2. Bốn trạng thái bắt buộc
@@ -111,6 +113,8 @@ Nó không thay thế nguồn chuyên biệt.
 
 - `docs/v2/PRD.md` sở hữu đề bài, mục tiêu, phạm vi và tiêu chí thành công;
 - `docs/v2/DESIGN.md` sở hữu ngữ nghĩa và hợp đồng dữ liệu của lớp kiểm chứng;
+- `docs/v2/REQUIREMENTS.md` sở hữu 29 yêu cầu có mã của 2.0;
+- `docs/v2/ACCEPTANCE.md` sở hữu cách nghiệm thu các yêu cầu 2.0;
 - các tài liệu 2.0 bổ sung về sau phải nằm cùng thư mục nếu chúng chỉ áp dụng cho
   chương trình nâng cấp này.
 
