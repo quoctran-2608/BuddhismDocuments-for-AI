@@ -664,36 +664,37 @@ Dự án hiện hành và hướng nâng cấp cùng giữ các nguyên tắc:
 - AI đề xuất phương trình Pāli–Chinese ≠ phương trình đã được corpus chứng minh;
 - một nghiên cứu khoa học hỗ trợ một hiệu ứng ≠ chứng minh một mệnh đề siêu hình.
 
-## 17. TƯƠNG LAI — sau v1
+## 17. TƯƠNG LAI — sau 2.0 phiên bản đầu
 
-> Trạng thái: **TƯƠNG LAI — chưa phải requirement triển khai**
+> Trạng thái: **TƯƠNG LAI — chưa phải yêu cầu triển khai**
 
-Nếu production locator hữu hạn sau này trở thành nút thắt đã được đo lường, có
-thể xem xét một đường truy xuất sâu từ xa bằng job/worker xác định (ví dụ GitHub
-Action) để tạo artefact truy xuất có provenance. Worker này chỉ làm retrieval,
-kiểm thử hoặc sinh artefact; nó không phải “AI brain” và không được bỏ qua
-Evidence/Claim gates.
+Nếu locator chính thức hữu hạn sau này trở thành nút thắt đã được đo lường, có
+thể xem xét một đường truy xuất sâu từ xa bằng tác vụ tất định, ví dụ GitHub
+Actions, để tạo tệp kết quả truy xuất có nguồn gốc truy nguyên. Tác vụ này chỉ
+làm truy xuất, kiểm thử hoặc sinh tệp kết quả; nó không phải “bộ não AI” và
+không được bỏ qua các cửa kiểm Bằng chứng/Luận điểm.
 
-Đặc biệt, đây mới là nơi xem xét giải pháp cho arbitrary remote CJK retrieval;
-không được âm thầm materialize toàn bộ trigram vocabulary thành `terms/cjk`.
+Đây cũng mới là nơi xem xét giải pháp cho truy xuất Hán văn tùy ý từ xa; không
+được âm thầm tạo toàn bộ từ vựng trigram thành `terms/cjk`.
 
 Chi tiết: `docs/v2/DESIGN.md`.
 
-## 18. Ngoài phạm vi v1 của hướng nâng cấp
+## 18. Ngoài phạm vi 2.0 phiên bản đầu
 
-Không ưu tiên trong v1:
+Không ưu tiên trong 2.0 phiên bản đầu:
 
-- vector DB;
-- embeddings toàn corpus;
-- knowledge graph toàn diện;
-- Kubernetes;
-- microservices;
-- distributed DB;
-- autonomous multi-agent research;
-- semantic search phổ quát;
-- xác suất/confidence score giả tạo.
+- cơ sở dữ liệu véc-tơ;
+- biểu diễn nhúng cho toàn bộ kho ngữ liệu;
+- đồ thị tri thức toàn diện;
+- nền tảng điều phối Kubernetes;
+- kiến trúc vi dịch vụ;
+- cơ sở dữ liệu phân tán;
+- hệ nhiều tác nhân nghiên cứu tự hành;
+- tìm kiếm ngữ nghĩa phổ quát;
+- điểm tin cậy phần trăm giả như một xác suất chân lý.
 
-V1 ưu tiên lớp kiểm chứng nhỏ, có thể kiểm thử và không phá fast path hiện tại.
+2.0 phiên bản đầu ưu tiên lớp kiểm chứng nhỏ, có thể kiểm thử và không phá đường
+xử lý nhanh hiện tại.
 
 ## 19. Tiêu chí chất lượng cấp dự án
 
