@@ -711,9 +711,11 @@ Hệ thống phải hướng tới các thuộc tính sau:
 - thay đổi kiến trúc phải cập nhật tài liệu chuẩn tương ứng;
 - HIỆN HÀNH, MỤC TIÊU, TƯƠNG LAI và LỊCH SỬ phải được phân biệt rõ.
 
-Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm thu,
-ánh xạ code/config/test và các khoảng trống kiểm thử nằm trong
+Yêu cầu và nghiệm thu của hệ hiện hành nằm trong `docs/REQUIREMENTS.md` và
 `docs/ACCEPTANCE.md`.
+
+Yêu cầu và nghiệm thu riêng của Buddhist Corpus Research 2.0 nằm trong
+`docs/v2/REQUIREMENTS.md` và `docs/v2/ACCEPTANCE.md`.
 
 ## 20. Tài liệu nên đọc theo nhu cầu
 
@@ -752,11 +754,13 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 
 - `docs/SC_CBETA_BRIDGE.md`.
 
-### Muốn hiểu thiết kế lớp kiểm chứng MỤC TIÊU
+### Muốn hiểu Buddhist Corpus Research 2.0
 
-- `docs/v2/DESIGN.md`;
-- `docs/REQUIREMENTS.md`;
-- `docs/ACCEPTANCE.md`.
+1. `docs/v2/README.md`;
+2. `docs/v2/PRD.md`;
+3. `docs/v2/DESIGN.md`;
+4. `docs/v2/REQUIREMENTS.md`;
+5. `docs/v2/ACCEPTANCE.md`.
 
 ### Muốn hiểu vì sao kiến trúc chọn như hiện tại
 
