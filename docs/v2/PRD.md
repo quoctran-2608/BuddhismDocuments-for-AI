@@ -8,8 +8,8 @@
 > thành công.
 >
 > Tài liệu này **không phải thiết kế mã nguồn**. Chi tiết kỹ thuật nằm trong
-> `docs/v2/DESIGN.md`, `docs/REQUIREMENTS.md` và
-> `docs/ACCEPTANCE.md`.
+> `docs/v2/DESIGN.md`, `docs/v2/REQUIREMENTS.md` và
+> `docs/v2/ACCEPTANCE.md`.
 
 ## 1. Quy ước phiên bản
 
@@ -745,8 +745,8 @@ Các tài liệu chuyên biệt:
 - `docs/PROJECT_SPEC.md` — đặc tả toàn bộ dự án, bao gồm cả 1.0 và hướng phát
   triển;
 - `docs/v2/DESIGN.md` — thiết kế chi tiết của lớp kiểm chứng;
-- `docs/REQUIREMENTS.md` — requirement có mã;
-- `docs/ACCEPTANCE.md` — cách chứng minh requirement đã được đáp ứng;
+- `docs/v2/REQUIREMENTS.md` — yêu cầu có mã của 2.0;
+- `docs/v2/ACCEPTANCE.md` — cách chứng minh yêu cầu 2.0 đã được đáp ứng;
 - `docs/ARCHITECTURE.md` — kiến trúc **HIỆN HÀNH**, không phải kiến trúc V2 chưa
   triển khai;
 - `docs/adr/` — lý do của các quyết định kiến trúc bền vững.
