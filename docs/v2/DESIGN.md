@@ -827,6 +827,7 @@ Không đưa vào nếu chưa có yêu cầu mới:
 - `docs/PROJECT_SPEC.md`: đặc tả cấp toàn dự án;
 - `docs/v2/REQUIREMENTS.md`: 29 yêu cầu có mã dành riêng cho 2.0;
 - `docs/v2/ACCEPTANCE.md`: cách nghiệm thu các yêu cầu 2.0;
+- `docs/v2/IMPLEMENTATION_PLAN.md`: kế hoạch triển khai ngắn dựa trên mã nguồn hiện hành;
 - `docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`: yêu cầu và nghiệm thu của
   hệ thống hiện hành;
 - `docs/ARCHITECTURE.md`: kiến trúc đã triển khai;
