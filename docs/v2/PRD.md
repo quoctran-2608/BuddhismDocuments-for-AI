@@ -115,7 +115,7 @@ trúc các câu hỏi:
 - Có phản chứng hoặc dữ liệu làm yếu kết luận không?
 - luận điểm nào đã bị loại và vì sao?
 - Lần nghiên cứu này dùng phiên bản corpus nào?
-- Có thể rà soát lại đường từ luận điểm → bằng chứng → pinned nguồn không?
+- Có thể rà soát lại đường từ luận điểm → bằng chứng → nguồn gốc đã ghim không?
 
 ## 5. Phương pháp cốt lõi của 2.0
 
@@ -212,7 +212,7 @@ Luồng đúng là:
 corpus lớn
 → truy xuất hiện hành thu hẹp ứng viên
 → mở một tập bằng chứng nhỏ
-→ verification trên tập bằng chứng đó
+→ kiểm chứng trên tập bằng chứng đó
 ```
 
 Đây là cách giữ 2.0 đơn giản và không phá hiệu năng của 1.0.
@@ -339,9 +339,9 @@ Các tài sản của 1.0 phải được bảo toàn:
 
 ### 6.1. Nguồn và nguồn gốc truy nguyên
 
-- 13 các kho nguồn gốc bên ngoài được ghim bằng commit SHA;
-- nguồn path / nguồn SHA / nguồn blob SHA;
-- work ID / segment ID / sequence;
+- 13 kho nguồn gốc bên ngoài được ghim theo commit SHA;
+- đường dẫn nguồn / SHA nguồn / SHA tệp nguồn;
+- mã tác phẩm / mã đoạn / thứ tự;
 - `evidence_class`;
 - `text_role`;
 - `witness`.
@@ -352,7 +352,7 @@ Các tài sản của 1.0 phải được bảo toàn:
 SQLite + FTS + CLI
 ```
 
-Không thay bằng một hạ tầng nặng hơn chỉ vì thêm verification.
+Không thay bằng một hạ tầng nặng hơn chỉ vì thêm lớp kiểm chứng.
 
 ### 6.3. chế độ GitHub Connector
 
@@ -360,17 +360,17 @@ Giữ đường nhanh hiện tại:
 
 ```text
 khóa của locator chính thức
-→ SHA-256 bucket
-→ locator shard
+→ ô băm SHA-256
+→ mảnh locator
 → con trỏ đã xếp hạng
-→ pinned upstream nguồn
+→ nguồn gốc bên ngoài đã ghim
 ```
 
 Không thay bằng GitHub Code Search.
 
 Không quét toàn kho Git.
 
-Không xuất raw corpus vào locator.
+Không chép nguyên văn kho ngữ liệu vào locator.
 
 ### 6.4. Luật nghiên cứu cốt lõi
 
@@ -481,9 +481,9 @@ Sau khi tổng hợp, hệ thống phải có một bước kiểm tra cuối đ
 - luận điểm quan trọng không có bằng chứng;
 - câu trích trực tiếp chưa được kiểm;
 - con trỏ/siêu dữ liệu bị trình bày như câu chữ nguồn;
-- translation note bị trình bày như root text;
-- quan hệ song hành bị biến thành textual identity;
-- equivalence đa ngôn ngữ không có bằng chứng trong kho nguồn;
+- chú thích của bản dịch bị trình bày như văn bản gốc;
+- quan hệ song hành bị biến thành đồng nhất câu chữ;
+- tương đương đa ngôn ngữ không có bằng chứng trong kho nguồn;
 - phần tổng hợp vô tình làm luận điểm mạnh hơn trạng thái đã được chấp nhận;
 - giới hạn phạm vi quan trọng bị bỏ mất.
 
@@ -519,27 +519,27 @@ Không đặt mục tiêu bắt AI phải viết lại từng chữ giống hệ
 
 2.0 không được biến mọi câu hỏi thành một quy trình nặng.
 
-### 8.1. Quick
+### 8.1. Chế độ Nhanh (`Quick`)
 
 Dành cho:
 
 - tra từ;
 - tìm đoạn;
-- tìm work ID;
-- xem một parallel cụ thể;
+- tìm mã tác phẩm;
+- xem một quan hệ song hành cụ thể;
 - kiểm một câu trích nhỏ.
 
 Luồng tối thiểu:
 
 ```text
 truy xuất
-→ pinned nguồn
-→ context/nguồn gốc truy nguyên
-→ quote check khi cần
-→ answer
+→ nguồn đã ghim
+→ ngữ cảnh / nguồn gốc truy nguyên
+→ kiểm câu trích khi cần
+→ trả lời
 ```
 
-### 8.2. Research
+### 8.2. Chế độ Nghiên cứu (`Research`)
 
 Dành cho:
 
@@ -555,7 +555,7 @@ Luồng:
 ```text
 bằng chứng
 → luận điểm
-→ Verification
+→ kiểm chứng
 → phản chứng
 → Cửa kiểm luận điểm cuối
 → tổng hợp
@@ -639,12 +639,13 @@ phạm vi
 → nguồn
 → bằng chứng
 → luận điểm
-→ verification
+→ kiểm chứng
 → phản chứng
 → tổng hợp
 ```
 
-Không hỏi người dùng về bucket, namespace, kho Git hay query kỹ thuật trừ khi
+Không hỏi người dùng về ô băm (`bucket`), không gian tên (`namespace`), kho Git
+hay truy vấn kỹ thuật (`query`) trừ khi
 phạm vi thực sự không thể suy ra.
 
 Câu trả lời cuối vẫn phải dễ đọc với người nghiên cứu; các cấu trúc kỹ thuật
@@ -665,22 +666,22 @@ kiểm một phạm vi hẹp hơn.
 
 Không đưa vào chỉ để làm kiến trúc “hoành tráng” hơn:
 
-- vector database mới;
-- embeddings toàn corpus;
-- knowledge graph toàn diện;
-- Kubernetes;
-- microservices;
-- distributed database;
-- autonomous research agents;
-- universal semantic search;
+- cơ sở dữ liệu véc-tơ (`vector database`) mới;
+- biểu diễn nhúng (`embedding`) cho toàn bộ kho ngữ liệu;
+- đồ thị tri thức (`knowledge graph`) toàn diện;
+- nền tảng điều phối Kubernetes;
+- kiến trúc vi dịch vụ (`microservices`);
+- cơ sở dữ liệu phân tán;
+- các tác nhân nghiên cứu tự hành;
+- tìm kiếm ngữ nghĩa phổ quát;
 - điểm tin cậy phần trăm giả như `93.7% đúng`;
 - viết lại locator chính thức;
-- thay local SQLite/FTS;
+- thay SQLite/FTS cục bộ;
 - biến GitHub Actions thành “bộ não nghiên cứu”.
 
-### Deep Connector fallback
+### Đường dự phòng Connector sâu
 
-Một đường truy xuất sâu từ xa cho arbitrary CJK hoặc các trường hợp locator hữu
+Một đường truy xuất sâu từ xa cho truy vấn Hán văn tùy ý hoặc các trường hợp locator hữu
 hạn không đủ là **TƯƠNG LAI**, không phải phạm vi 2.0 phiên bản đầu.
 
 Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
@@ -690,17 +691,17 @@ Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
 2.0 chỉ được coi là thành công khi tối thiểu chứng minh được:
 
 1. truy xuất và CLI hiện tại không bị hồi quy;
-2. locator chính thức vẫn deterministic;
-3. Connector vẫn mở pinned upstream nguồn;
+2. locator chính thức vẫn tất định;
+3. Connector vẫn mở đúng nguồn gốc bên ngoài đã ghim;
 4. con trỏ vẫn không bị dùng như bằng chứng;
 5. Bản ghi bằng chứng truy nguyên được về nguồn;
 6. câu trích sai bị phát hiện;
 7. luận điểm không có bằng chứng bị chặn;
 8. `UNSUPPORTED` không lọt vào kết luận cuối;
-9. `CONTRADICTED` không được trình bày như fact;
+9. `CONTRADICTED` không được trình bày như sự thật đã xác lập;
 10. chế độ Nghiên cứu thực sự thực hiện bước tìm phản chứng;
 11. luận điểm truy ngược được về bằng chứng;
-12. bằng chứng truy ngược được về pinned nguồn;
+12. bằng chứng truy ngược được về nguồn đã ghim;
 13. một Hồ sơ lần nghiên cứu có thể được xem lại;
 14. có thể hỏi “luận điểm này dựa trên bằng chứng nào?” và trả lời được;
 15. có thể hỏi “có phản chứng nào cho luận điểm này?” và trả lời được;
@@ -756,26 +757,27 @@ Các tài liệu chuyên biệt:
   triển khai;
 - `docs/adr/` — lý do của các quyết định kiến trúc bền vững.
 
-PRD không sở hữu lược đồ, tên module, class, API hay định dạng lưu trữ cụ thể.
-Những quyết định đó chỉ được đưa ra sau khi đọc code hiện hành và khi thật sự
+PRD không quyết định lược đồ dữ liệu, tên mô-đun, lớp, giao diện lập trình (API)
+hay định dạng lưu trữ cụ thể.
+Những quyết định đó chỉ được đưa ra sau khi đọc mã nguồn hiện hành và khi thật sự
 cần cho triển khai.
 
 ## 16. Điều kiện bắt đầu viết mã
 
-Trước khi code 2.0, cần xác nhận ba điều:
+Trước khi viết mã cho 2.0, cần xác nhận ba điều:
 
 1. PRD này đã mô tả đúng đề bài;
 2. các điều bất biến của 1.0 cần giữ đã rõ;
 3. lát cắt đầu tiên của 2.0 được chọn đủ nhỏ để triển khai và kiểm thử độc lập.
 
-Sau đó phải đọc code hiện hành và làm **một bản phân tích triển khai ngắn** trước
+Sau đó phải đọc mã nguồn hiện hành và làm **một bản phân tích triển khai ngắn** trước
 khi sửa mã. Bản này chỉ cần trả lời:
 
-- data flow hiện tại thực sự đi qua đâu;
+- luồng dữ liệu hiện tại thực sự đi qua đâu;
 - mô-đun, lược đồ dữ liệu và bài kiểm thử nào liên quan;
 - khoảng trống nào cần lấp;
 - chỗ nào nên thêm lớp 2.0;
-- test nào phải có trước và sau thay đổi;
+- bài kiểm thử nào phải có trước và sau thay đổi;
 - rủi ro hồi quy chính;
 - phần nào chưa nên triển khai.
 
