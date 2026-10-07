@@ -18,7 +18,7 @@ chứng phù hợp.
 Các mức bằng chứng có thể dùng:
 
 - **TỰ ĐỘNG**: có bài kiểm thử chạy bằng máy;
-- **CẤU TRÚC**: có thể kiểm bằng schema, định dạng dữ liệu, cấu hình hoặc mã;
+- **CẤU TRÚC**: có thể kiểm bằng lược đồ dữ liệu, định dạng, cấu hình hoặc mã;
 - **TÍCH HỢP**: có kiểm thử qua nhiều lớp của hệ thống;
 - **NGHIÊN CỨU CHUẨN**: có tình huống nghiên cứu cố định kiểm hành vi học thuật;
 - **RÀ SOÁT**: cần kiểm thủ công có chủ đích cho phần chưa thể tự động hoàn toàn.
@@ -136,8 +136,8 @@ Chỉ coi 2.0 phiên bản đầu hoàn thành khi tối thiểu:
 
 - 29 yêu cầu trong tài liệu này đã có bằng chứng nghiệm thu phù hợp;
 - truy xuất và CLI hiện hành không hồi quy;
-- production locator vẫn tất định;
-- Connector vẫn mở nguồn upstream đã ghim;
+- locator chính thức vẫn tất định;
+- Connector vẫn mở nguồn gốc bên ngoài đã ghim;
 - con trỏ vẫn không phải bằng chứng;
 - Bản ghi bằng chứng truy nguyên được;
 - câu trích sai bị phát hiện;
