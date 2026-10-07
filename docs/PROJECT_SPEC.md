@@ -503,7 +503,7 @@ có vượt quá nguồn hay không vẫn còn phụ thuộc nhiều vào quy tr
 > Trạng thái phần này: **MỤC TIÊU — CHƯA TRIỂN KHAI ĐẦY ĐỦ**
 >
 > Thiết kế chi tiết và data contract mục tiêu nằm trong
-> `docs/RESEARCH_VERIFICATION_DESIGN.md`.
+> `docs/v2/DESIGN.md`.
 
 Không thay thế hệ retrieval hiện tại.
 
@@ -677,7 +677,7 @@ Evidence/Claim gates.
 Đặc biệt, đây mới là nơi xem xét giải pháp cho arbitrary remote CJK retrieval;
 không được âm thầm materialize toàn bộ trigram vocabulary thành `terms/cjk`.
 
-Chi tiết: `docs/RESEARCH_VERIFICATION_DESIGN.md`.
+Chi tiết: `docs/v2/DESIGN.md`.
 
 ## 18. Ngoài phạm vi v1 của hướng nâng cấp
 
@@ -754,7 +754,7 @@ Các requirement có mã nằm trong `docs/REQUIREMENTS.md`; tiêu chí nghiệm
 
 ### Muốn hiểu thiết kế lớp kiểm chứng MỤC TIÊU
 
-- `docs/RESEARCH_VERIFICATION_DESIGN.md`;
+- `docs/v2/DESIGN.md`;
 - `docs/REQUIREMENTS.md`;
 - `docs/ACCEPTANCE.md`.
 
