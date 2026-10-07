@@ -436,7 +436,7 @@ hiểu là snapshot/hồ sơ lịch sử, không phải trạng thái vận hàn
 > schema/format phù hợp và kiểm thử nghiệm thu.
 >
 > Semantics và data contract chi tiết của lớp này nằm trong
-> `docs/RESEARCH_VERIFICATION_DESIGN.md`.
+> `docs/v2/DESIGN.md`.
 
 ## 11.1. Evidence Record
 
