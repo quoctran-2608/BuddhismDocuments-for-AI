@@ -711,7 +711,7 @@ Tài liệu này **không quyết định** dùng SQLite, JSON/JSONL hay thư m�
 
 Quyết định triển khai phải:
 
-- không sửa nguồn upstream;
+- không sửa nguồn gốc bên ngoài;
 - dễ kiểm thử;
 - giữ mã định danh ổn định;
 - hỗ trợ lịch sử sửa đổi;
