@@ -307,7 +307,7 @@ Bảo vệ REQ-WIT-001/002:
 # 12. Yêu cầu MỤC TIÊU: trạng thái nghiệm thu hiện tại
 
 Toàn bộ nhóm dưới đây đang là **CHƯA TRIỂN KHAI** và chưa được coi là pass.
-Semantics mục tiêu chi tiết nằm trong `docs/RESEARCH_VERIFICATION_DESIGN.md`:
+Semantics mục tiêu chi tiết nằm trong `docs/v2/DESIGN.md`:
 
 | Requirement | Trạng thái nghiệm thu hiện tại | Test mục tiêu cần có |
 |---|---|---|
