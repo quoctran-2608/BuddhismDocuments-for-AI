@@ -15,6 +15,7 @@ from typing import Iterable
 from .index import connect_readonly
 from .model import normalize
 from .retrieval import record_rank_key, score_record_match, search
+from .verification import github_source_path as _github_source_path
 
 
 POINTER_EXPORT_VERSION = 2
@@ -81,18 +82,6 @@ def _load_sources(config_path: Path) -> dict[str, dict[str, str]]:
             "repo_path": repo_path.rstrip("/"),
         }
     return sources
-
-
-def _github_source_path(indexed_path: str, repo_path: str) -> str:
-    prefix = f"{repo_path}/"
-    if not indexed_path.startswith(prefix):
-        raise ValueError(
-            f"indexed source path is outside mapped repository: {indexed_path}"
-        )
-    source_path = indexed_path.removeprefix(prefix)
-    if not source_path:
-        raise ValueError(f"empty source path after repository prefix: {indexed_path}")
-    return source_path
 
 
 def _source_blob_sha(

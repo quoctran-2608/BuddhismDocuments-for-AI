@@ -26,15 +26,38 @@ Các mức bằng chứng có thể dùng:
 Không được chuyển trạng thái chỉ vì đã có lớp, hàm hoặc trường dữ liệu mang đúng
 tên.
 
+### Bằng chứng triển khai Giai đoạn A — 11/10/2026
+
+`tools/corpus_research/verification.py` đã có lõi Bản ghi bằng chứng, Cửa kiểm
+bằng chứng và năm trạng thái kiểm câu trích. `tests/test_verification.py` có
+32 bài kiểm thử độc lập với 13 submodule, gồm tích hợp `retrieval.evidence()`
+trên SQLite nhỏ, đọc blob Git ghim trong repo tạm và bộ đọc kiểu GitHub giả lập.
+Lõi nhận/trả dữ liệu chuyển được sang JSON; bộ đọc nguồn và đánh giá ngữ nghĩa
+diễn đạt lại là đầu vào riêng có trách nhiệm cung cấp quan sát đáng tin cậy.
+
+Kết quả trên Windows/Python 3.14: 32/32 bài mới đạt. Baseline hệ hiện hành chạy
+36 bài, báo 29 lỗi và chặn 9 bài acceptance ở `setUpClass`; sau Giai đoạn A chạy
+68 bài với cùng 29 lỗi. Nhóm lỗi không đổi: thiếu submodule/tệp/Git object và
+khóa SQLite khi dọn thư mục tạm. Không sửa hoặc bỏ qua các bài lỗi của 1.0.
+
+Chưa xác nhận toàn suite trên checkout đủ nguồn, phiên Work thực tế hoặc GitHub
+plugin thực tế. Bộ đọc nguồn còn phải giải vị trí/markup và cung cấp phạm vi
+đoạn/ngữ cảnh; lõi không tự coi metadata ứng viên là quan sát nguồn. Diễn đạt
+lại chỉ có trạng thái `PARAPHRASE` khi nhận đánh giá riêng gắn đúng nội dung,
+người kiểm và lý do; máy không tự xác nhận ý nghĩa từ việc khớp từ.
+
+Các mục A dưới đây ghi **đã có lõi, chờ nghiệm thu**, không chuyển toàn bộ yêu
+cầu sang HIỆN HÀNH. Giai đoạn B–E vẫn chưa triển khai.
+
 ---
 
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
 |---|---|---|
-| REQ-VER-001 | CHƯA TRIỂN KHAI | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm |
-| REQ-VER-002 | CHƯA TRIỂN KHAI | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả |
-| REQ-VER-003 | CHƯA TRIỂN KHAI | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại |
+| REQ-VER-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm |
+| REQ-VER-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả |
+| REQ-VER-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại |
 | REQ-VER-004 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập |
 | REQ-VER-005 | CHƯA TRIỂN KHAI | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận |
 | REQ-VER-006 | CHƯA TRIỂN KHAI | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa |
@@ -45,10 +68,10 @@ tên.
 | REQ-VER-011 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ |
 | REQ-VER-012 | CHƯA TRIỂN KHAI | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
 | REQ-VER-013 | CHƯA TRIỂN KHAI | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan |
-| REQ-VER-014 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
-| REQ-QTE-001 | CHƯA TRIỂN KHAI | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
-| REQ-QTE-002 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
-| REQ-QTE-003 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
+| REQ-VER-014 | MỘT PHẦN: DỮ LIỆU A | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
+| REQ-QTE-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
+| REQ-QTE-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
+| REQ-QTE-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
 | REQ-CTR-001 | CHƯA TRIỂN KHAI | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt |
 | REQ-CTR-002 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
 | REQ-CTR-003 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
@@ -61,8 +84,8 @@ tên.
 | REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
 | REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
 | REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
-| REQ-ENV-001 | CHƯA TRIỂN KHAI | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
-| REQ-ENV-002 | CHƯA TRIỂN KHAI | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
+| REQ-ENV-001 | MỘT PHẦN: LÕI A; CHƯA THỬ WORK | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
+| REQ-ENV-002 | MỘT PHẦN: GIẢ LẬP; CHƯA THỬ PLUGIN | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
 
 ---
 
