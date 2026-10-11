@@ -335,6 +335,150 @@ research đầy đủ; REQ-ENV-001/002 và ma trận nghiệm thu không đượ
 
 ---
 
+### Bằng chứng triển khai mã lõi Giai đoạn C — 11/10/2026
+
+Nền `main` đã fetch và xác minh tại
+`adf2daf3103bc8c6b963dc5687a2739fefad946d`; nhánh triển khai là
+`feature/bcr-v2-phase-c`. Chỉ thêm `tools/corpus_research/counterevidence.py`,
+`tests/test_counterevidence.py` và cập nhật tài liệu này. Mã và bài kiểm A/B,
+13 Gitlink nguồn, parser, SQLite/schema, FTS, ranking, locator và CLI 1.0 giữ
+nguyên. Các nhận xét “chưa triển khai C” phía trên là lịch sử tại mốc A/B.
+Kế hoạch vẫn có năm giai đoạn A–E; chưa triển khai D/E.
+
+#### Quan hệ nguồn và cách đếm bảo thủ
+
+`source_independence()` đọc các Evidence Records hiện tại qua `evidence_reader`
+của B/A, giữ nguyên nguồn ghim, ngữ cảnh, lớp nguồn, vai trò và nhân chứng.
+Hai bản ghi có cùng repository/SHA/path/work/witness được gom một họ nguồn,
+không tính hai citation thành hai xác nhận độc lập. Các quan hệ khác lấy qua
+`dependency_reader({'evidence_ids': [left, right]})` do host cấu hình, gắn đúng
+hai snapshot bằng chứng đầy đủ, căn cứ, người kiểm và lý do:
+
+| Quan hệ | Ý nghĩa và cách xử lý |
+|---|---|
+| `independent` | Có căn cứ được host chấp thuận rằng hai nguồn là xác nhận độc lập; chỉ đếm riêng khi mọi cặp giữa các nhóm đều đã xác định độc lập |
+| `partially_dependent` | Có phần phụ thuộc; giữ quan hệ nhưng không suy ra số nguồn độc lập chính xác |
+| `same_source_family` | Cùng họ nguồn; gom nhóm để không đếm lặp |
+| `derived_from` | Có căn cứ dẫn xuất, ghi rõ bản ghi dẫn xuất và gom với nguồn gốc |
+| `uncertain` | Thiếu bằng chứng, thiếu reader hoặc đánh giá sai snapshot; không tự nâng thành độc lập |
+
+`independent_source_count` là null khi còn quan hệ giữa các nhóm chưa biết
+hoặc chỉ phụ thuộc một phần. Các cạnh độc lập mâu thuẫn với chuỗi cùng họ/
+dẫn xuất và chu trình dẫn xuất bị từ chối. Một đánh giá không chắc không xóa
+được định danh cùng nguồn đã quan sát. Không có bảng kết luận hard-code theo
+tên repository, so câu chữ, điểm retrieval hoặc số citation. Tính độc lập
+nguồn tư liệu không phải tính độc lập của người/AI phản biện. Reader phải đọc
+metadata/provenance hoặc phân tích đã chấp thuận thực; một callback trả JSON
+tự tạo không chứng minh quan hệ nguồn. Chưa có adapter quan hệ cho 13 nguồn.
+
+#### Kế hoạch, thực thi và giới hạn tìm phản chứng
+
+`make_counterevidence_plan()` chỉ tạo `PLANNED`, gắn snapshot luận điểm,
+corpora, repository/SHA nguồn, giới hạn truy xuất, phạm vi quan trọng chưa kiểm
+và các bước có mã. Biểu diễn đủ bảy hướng: ngoại lệ, nhân chứng khác, dị bản,
+song hành không khớp, xung đột cùng tầng, phụ thuộc nguồn và giới hạn phạm vi.
+Mỗi bước yêu cầu một thao tác hiện hành: search, context, evidence, parallels,
+variants, resolve hoặc work. Kế hoạch không quyết định độ đầy đủ học thuật;
+host phải phê duyệt các hướng phù hợp với luận điểm và ghi phần chưa kiểm.
+
+`search_counterevidence()` gọi `search_reader(search_id)` ngoài dữ liệu đề xuất.
+Host phải nối công cụ 1.0 hoặc đọc biên nhận thực thi thật, trả đúng kế hoạch
+đã phê duyệt cùng các bước executed/failed/not_run, complete kiểu boolean,
+phạm vi thực kiểm, ứng viên và giới hạn. Lõi kiểm liên kết chính xác kế hoạch,
+truy vấn, corpus/pin và biên nhận; thiếu bước, lỗi, cắt kết quả, phạm vi kiểm
+một phần hoặc ứng viên chưa mở giữ `UNVERIFIED`. Sai pin/phạm vi, mã bước hoặc
+định danh ứng viên mâu thuẫn bị từ chối. Các cờ completed/verified trong JSON
+đề xuất không cấp quyền. `execution_complete` chỉ nói thao tác hữu hạn đã
+chạy đủ, không chứng minh đã tìm hết corpus hoặc hoàn thành Research.
+
+Kết quả giữ riêng kế hoạch, attempts, candidates và verified_evidence.
+Ứng viên phải qua reader A và thuộc phạm vi nguồn thực kiểm mới đủ điều kiện
+cho bước sau; `VERIFIED` vẫn chỉ xác minh bằng chứng, chưa xác định phản bác
+ngữ nghĩa. Không có hit chỉ cho phép câu “không tìm thấy ứng viên phản chứng
+trong các truy vấn và phạm vi đã kiểm”, không kết luận phản chứng không tồn
+tại. Phạm vi chưa kiểm không bị xóa khi thao tác hoàn tất.
+
+**Chưa tích hợp truy xuất corpus thật vào C.** Các biên nhận trong test được
+host fixture cấu hình độc lập với JSON đề xuất; chúng mô phỏng thao tác phần
+mềm, không chứng minh một lần nghiên cứu corpus đã chạy. Không có search
+engine thứ hai hoặc adapter Connector mới. Hợp đồng có thể dùng ở cục bộ và
+Work; chưa thử phiên Work/GitHub plugin thực.
+
+#### Tác động qua đánh giá và lịch sử B
+
+`assess_counterevidence()` đọc lại kết quả tìm và các bằng chứng hiện tại,
+đưa mã bằng chứng tìm thấy vào tập phản chứng tiềm năng, rồi gọi
+`assess_claim()` của B. `assessment_reader(review_id)` hiện có phải cung cấp
+đánh giá ngữ nghĩa được phê duyệt cho đúng snapshot luận điểm đã bổ sung mã
+bằng chứng. Phần `counterevidence_review` trong cùng đánh giá gắn chính xác
+kết quả search/independence, findings cho từng phản chứng (supports, irrelevant,
+limits, contradicts), quyết định và lý do. Không suy ra ngữ nghĩa từ từ khóa.
+Thay luận điểm, nguồn, kết quả thực thi hoặc quan hệ nguồn làm đánh giá cũ
+mất hiệu lực; các lần đọc bằng chứng mâu thuẫn bị từ chối.
+
+Quyết định cho phép giữ nguyên, hạ hỗ trợ, thu hẹp, viết lại, UNSUPPORTED,
+CONTRADICTED hoặc loại. Mọi thay đổi cần căn cứ limits/contradicts; hạ hỗ trợ
+còn phải đọc được phê duyệt B trước đó và chứng minh mức mới thấp hơn mức cũ.
+Quan hệ nguồn chưa rõ được giữ uncertain/null trong đánh giá, không bị biến
+thành độc lập để cấp mức hỗ trợ. Phê duyệt có thể vẫn xác nhận một giới hạn
+câu chữ trong phạm vi hẹp; không cần bịa số nguồn độc lập.
+
+Thu hẹp/viết lại trả `REVISION_REQUIRED` và một đề xuất `candidate` có mã mới,
+supersedes_claim_id, lý do và mã bằng chứng dẫn tới sửa; không ghi đè bản cũ,
+không thừa kế mức hỗ trợ/phê duyệt. Host chuyển đề xuất qua `revise_claim()`,
+lưu lịch sử, lấy phê duyệt B riêng cho bản mới và chạy lại gate với
+`history_reader`. C không cấp accepted hoặc tạo cửa công bố thứ hai.
+UNSUPPORTED/CONTRADICTED vẫn bị gate B từ chối. Research vẫn chờ D; đường
+Quick và cả ba đường gate/accepted_claim_set/verify_synthesis giữ quy tắc B
+chặn công bố lại bản superseded. Chưa có kho lịch sử hoặc cơ chế phối hợp
+đọc/ghi có thẩm quyền của D.
+
+Ví dụ tích hợp fixture: luận điểm “mọi báo cáo fixture mô tả đèn xanh” có
+bằng chứng hỗ trợ; tìm được báo cáo về đèn đỏ, kiểm qua A, rồi phê duyệt ngữ
+nghĩa xác nhận giới hạn. C đề nghị đổi thành “một báo cáo fixture mô tả đèn
+xanh”; B tạo bản thay thế, giữ phản chứng/lý do, cần đánh giá mới và chặn bản
+cũ ở cả ba đường công bố. Fixture này kiểm quy tắc phần mềm, không chứng minh
+chân lý Phật học.
+
+#### Đối chiếu bốn yêu cầu C và bằng chứng kiểm
+
+| Yêu cầu | Mã lõi và test tương ứng | Phần còn chờ D/E, chưa nghiệm thu |
+|---|---|---|
+| REQ-CTR-001 | Plan bảy hướng, search receipts có nguồn ghim; test plan-only, missing/failed/not_run/truncated, capability hỏng, giả cờ và Research vẫn chờ | D nối chính sách bắt buộc tìm với Research Run/gate; E nối truy xuất thật và kiểm bỏ bước trên ca nghiên cứu chuẩn |
+| REQ-CTR-002 | Lưu claim/corpus/pin/query/checked/unchecked scope, hits và failures; test no-hit hữu hạn, partial/missing scope, sai pin, JSON roundtrip | D lưu/truy vấn hồ sơ và buộc câu trả lời giữ phạm vi; E kiểm trên corpus và Work/Connector thực |
+| REQ-CTR-003 | Năm quan hệ, snapshot binding, gom họ/dẫn xuất, count null khi thiếu căn cứ; test cùng nguồn, derived, partial/uncertain, khác repo/cùng chữ, chu trình và mâu thuẫn | E nối metadata/provenance thực và mẫu nghiên cứu nguồn phụ thuộc; chưa có bộ phân giải quan hệ 13 nguồn |
+| REQ-CTR-004 | Reuse assessment B, bảy quyết định và đề xuất sửa; test hạ mức cần approval cũ, mới cần approval riêng, counter giữ lại, chuỗi sửa/lịch sử và ba đường chặn superseded | D lưu lịch sử có thẩm quyền/transaction và Research Run; E nối kênh phê duyệt thực, golden research và kiểm tích hợp |
+
+#### Kết quả tự động
+
+| Bộ kiểm | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Baseline main adf2daf, WSL đủ 13 nguồn ghim | 171/171 | 0/0/0 |
+| Riêng C, Windows/Python 3.14 và WSL/Python 3.12.3 | 56/56 mỗi môi trường | 0/0/0 |
+| Riêng A, Windows và WSL | 44/44 mỗi môi trường | 0/0/0 |
+| Riêng B, Windows và WSL | 82/82 mỗi môi trường | 0/0/0 |
+| Toàn suite với C, WSL cùng 13 nguồn ghim | 227/227 | 0/0/0 |
+
+WSL dùng checkout riêng ở nền adf2daf và chính 13 checkout nguồn đã ghim từ
+lần nghiệm thu A/B, đối chiếu HEAD/Gitlink và diff nguồn trước/sau. Không tải
+corpus hoặc dependency mới. Hai tệp mã/test C được chép nguyên byte sang
+checkout WSL; không sửa suite A/B/legacy để đạt. Không phát hiện hồi quy trong
+suite đã chạy; không suy ra toàn corpus/hiệu năng đã được nghiệm thu.
+
+56 test C gồm các trường hợp đúng/sai và chuỗi A→C→B có lịch sử. Tiến trình
+cô lập chặn import SQLite, subprocess và retrieval vẫn chạy đánh giá thu hẹp
+hợp lệ với reader fixture; lõi không I/O và không phụ thuộc shell/DB. Reader
+host có thể thực hiện I/O; host phải bảo vệ cấu hình capability, quyền phê
+duyệt, snapshot, độ mới và phối hợp giữa đọc/ghi/công bố.
+
+Đây là **mã lõi C có kiểm thử, chờ nghiệm thu tích hợp**, không chuyển toàn bộ
+C hoặc 2.0 sang HIỆN HÀNH. D còn kho lịch sử/Research Run và chính sách công
+bố; E còn adapter thật, 11 ca nghiên cứu chuẩn, kiểm Work/Connector và phép
+đo E1–E3 (**CHƯA ĐO**). Luồng xuất/nhập thẩm định REQ-RUN-007 chưa triển khai;
+không xây hệ AI phản biện thứ hai, không triển khai D/E trong nhánh này.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
@@ -356,10 +500,10 @@ research đầy đủ; REQ-ENV-001/002 và ma trận nghiệm thu không đượ
 | REQ-QTE-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
 | REQ-QTE-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
 | REQ-QTE-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
-| REQ-CTR-001 | CHƯA TRIỂN KHAI | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt |
-| REQ-CTR-002 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
-| REQ-CTR-003 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
-| REQ-CTR-004 | CHƯA TRIỂN KHAI | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế |
+| REQ-CTR-001 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt |
+| REQ-CTR-002 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
+| REQ-CTR-003 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
+| REQ-CTR-004 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế |
 | REQ-RUN-001 | CHƯA TRIỂN KHAI | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt |
 | REQ-RUN-002 | CHƯA TRIỂN KHAI | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ |
 | REQ-RUN-003 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi |
