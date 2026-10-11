@@ -365,9 +365,15 @@ Câu trả lời Connector phải tách:
 
 Không trích pointer metadata như lời văn nguồn.
 
-## 20. Những gì chưa thuộc runtime hiện hành
+## 20. Tích hợp kiểm chứng trên nhánh E
 
-Evidence Record, quote verification, Atomic Claim, counterevidence gate và
-Research Run là **MỤC TIÊU — chưa triển khai đầy đủ**.
+Mã lõi A/B/C/D đã có trên main; nhánh E bổ sung `ConnectorHost` portable để nối
+công cụ fetch đã được cấp quyền với production locator và pinned upstream.
+Một ca thực `ids/mn1` đã đi qua GitHub Connector đến A VERIFIED; 11 fixture
+contract kiểm JSON, missing capability và sai binding. Không có SQLite/shell
+trong adapter portable. Hướng dẫn reader/pins: [v2/USAGE.md](v2/USAGE.md).
 
-Không giả vờ Connector hiện tại đã có các lớp đó.
+Chưa nghiệm thu toàn bộ Connector/Work, thẩm định ngữ nghĩa hoặc công bố
+Research. Giữ ba bước parallel relation → identifier bridge → textual witness;
+không nâng pointer/metadata thành bằng chứng. Kết quả và giới hạn xem
+[v2/E_REPORT.md](v2/E_REPORT.md).

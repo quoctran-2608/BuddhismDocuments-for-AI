@@ -1,0 +1,557 @@
+{
+  "schema": "bcr-e-measurement-v1",
+  "legacy_commit": "f7415f574ed1510d5854ee00db6baafe2484e355",
+  "candidate_commit": "1b2d0f010ec2dab8664378516005ed2ad05e4fe6",
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "sqlite": "3.45.1",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "index_sha256": "8bb86f9f6a409e55109390f915df41e32a3b3ea6008620042ac9daf19d2742d2",
+    "index_counts": {
+      "records": 25394,
+      "relations": 3931,
+      "variants": 3646,
+      "lemmas": 1270
+    },
+    "source_state": [
+      {
+        "corpus": "84000-rdf",
+        "repo_path": "84000/data-rdf",
+        "source_sha": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "metadata_relationship",
+        "indexed_at": "2026-10-11T11:23:37.508230+00:00",
+        "record_count": 0,
+        "relation_count": 11,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "84000-tei",
+        "repo_path": "84000/data-tei",
+        "source_sha": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "parser_version": "2026-09-23.1-note-roles:acceptance",
+        "evidence_class": "authoritative_structured",
+        "indexed_at": "2026-10-11T11:23:37.487013+00:00",
+        "record_count": 1444,
+        "relation_count": 162,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "84000-tm",
+        "repo_path": "84000/data-translation-memory",
+        "source_sha": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "parallel_alignment",
+        "indexed_at": "2026-10-11T11:23:37.925931+00:00",
+        "record_count": 7222,
+        "relation_count": 3670,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "buddhanexus-chinese",
+        "repo_path": "buddhanexus/segmented-chinese",
+        "source_sha": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "computational_segmented",
+        "indexed_at": "2026-10-11T11:23:38.028970+00:00",
+        "record_count": 456,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "buddhanexus-pali",
+        "repo_path": "buddhanexus/segmented-pali",
+        "source_sha": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "computational_segmented",
+        "indexed_at": "2026-10-11T11:23:38.017346+00:00",
+        "record_count": 92,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "buddhanexus-sanskrit",
+        "repo_path": "buddhanexus/segmented-sanskrit",
+        "source_sha": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "computational_segmented",
+        "indexed_at": "2026-10-11T11:23:38.073123+00:00",
+        "record_count": 1565,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "cbeta-bm",
+        "repo_path": "cbeta/BM_u8",
+        "source_sha": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "canonical_root",
+        "indexed_at": "2026-10-11T11:23:37.291618+00:00",
+        "record_count": 81,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "cbeta-tei",
+        "repo_path": "cbeta/xml-p5",
+        "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "authoritative_structured",
+        "indexed_at": "2026-10-11T11:23:37.093462+00:00",
+        "record_count": 12853,
+        "relation_count": 0,
+        "variant_count": 3479,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "openpecha",
+        "repo_path": "openpecha/C0A2DD042",
+        "source_sha": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "parallel_alignment",
+        "indexed_at": "2026-10-11T11:23:38.009957+00:00",
+        "record_count": 123,
+        "relation_count": 82,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "pali-canon-derived",
+        "repo_path": "third-party/pali-canon",
+        "source_sha": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "derived_critical_lemma",
+        "indexed_at": "2026-10-11T11:23:38.377934+00:00",
+        "record_count": 334,
+        "relation_count": 0,
+        "variant_count": 163,
+        "lemma_count": 1270
+      },
+      {
+        "corpus": "pts-archive",
+        "repo_path": "pts/pts-archive",
+        "source_sha": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "parser_version": "2026-09-22.6:acceptance",
+        "evidence_class": "auxiliary_reference",
+        "indexed_at": "2026-10-11T11:23:38.325930+00:00",
+        "record_count": 524,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "suttacentral-bilara",
+        "repo_path": "suttacentral/bilara-data",
+        "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "parser_version": "2026-09-23.1-text-role:acceptance",
+        "evidence_class": "canonical_root",
+        "indexed_at": "2026-10-11T11:23:36.469921+00:00",
+        "record_count": 700,
+        "relation_count": 0,
+        "variant_count": 4,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "suttacentral-relations",
+        "repo_path": "suttacentral/sc-data",
+        "source_sha": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "parser_version": "2026-09-22.8-sc-cbeta-bridge:acceptance",
+        "evidence_class": "metadata_relationship",
+        "indexed_at": "2026-10-11T11:23:36.735584+00:00",
+        "record_count": 0,
+        "relation_count": 6,
+        "variant_count": 0,
+        "lemma_count": 0
+      }
+    ],
+    "cache": "warm OS cache, 1 warm-up per task; XML LRU warm; no cache flush; acceptance profile only",
+    "timing": "worker execution only; process startup/host construction and index build excluded; source subprocess CPU included",
+    "memory": "process high-water ru_maxrss KiB, not per-operation allocation; child high-water reported separately",
+    "io": "getrusage blocks self+children; /proc/self/io bytes exclude child IO; cached IO zeros are observed values"
+  },
+  "summary": {
+    "E1": [
+      {
+        "task": "pali",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0016574000000004752,
+          "min_seconds": 0.0010151000000000465,
+          "max_seconds": 0.003045199999999859,
+          "median_cpu_seconds": 0.0017719999999999958
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0009146000000002097,
+          "min_seconds": 0.0008805000000000618,
+          "max_seconds": 0.0014878999999998754,
+          "median_cpu_seconds": 0.0009860000000000008
+        }
+      },
+      {
+        "task": "latin",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0011564000000001684,
+          "min_seconds": 0.0008518999999997945,
+          "max_seconds": 0.0015672000000002129,
+          "median_cpu_seconds": 0.0012689999999999924
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0006501000000000978,
+          "min_seconds": 0.0006219000000005082,
+          "max_seconds": 0.0007201000000005564,
+          "median_cpu_seconds": 0.0007120000000000043
+        }
+      },
+      {
+        "task": "cjk",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0022282000000002355,
+          "min_seconds": 0.0014804000000001594,
+          "max_seconds": 0.0033037000000000205,
+          "median_cpu_seconds": 0.0023149999999999976
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0014708000000003274,
+          "min_seconds": 0.0014196000000001874,
+          "max_seconds": 0.0016601999999998895,
+          "median_cpu_seconds": 0.0015329999999999927
+        }
+      },
+      {
+        "task": "identifier",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0008167500000002548,
+          "min_seconds": 0.0007425000000003124,
+          "max_seconds": 0.0010950000000002902,
+          "median_cpu_seconds": 0.0009109999999999951
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0005180500000001587,
+          "min_seconds": 0.0004909999999993531,
+          "max_seconds": 0.0006676999999992717,
+          "median_cpu_seconds": 0.0005774999999999947
+        }
+      },
+      {
+        "task": "context",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0005802500000000599,
+          "min_seconds": 0.0005443999999998894,
+          "max_seconds": 0.0006383999999997059,
+          "median_cpu_seconds": 0.0006600000000000078
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0005268000000002715,
+          "min_seconds": 0.0004951999999995849,
+          "max_seconds": 0.0006208999999994802,
+          "median_cpu_seconds": 0.0005865000000000176
+        }
+      },
+      {
+        "task": "evidence",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.002121900000000121,
+          "min_seconds": 0.0019518999999998954,
+          "max_seconds": 0.002529100000000284,
+          "median_cpu_seconds": 0.0022019999999999956
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.002031549999999882,
+          "min_seconds": 0.001951799999999615,
+          "max_seconds": 0.0023279000000000494,
+          "median_cpu_seconds": 0.00210550000000001
+        }
+      },
+      {
+        "task": "provenance",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0002960999999999103,
+          "min_seconds": 0.00029250000000047294,
+          "max_seconds": 0.0003223000000005527,
+          "median_cpu_seconds": 0.0003549999999999942
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.00029910000000032966,
+          "min_seconds": 0.0002957999999999572,
+          "max_seconds": 0.00035540000000011673,
+          "median_cpu_seconds": 0.0003560000000000091
+        }
+      },
+      {
+        "task": "work",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0029023499999998315,
+          "min_seconds": 0.0027822999999997933,
+          "max_seconds": 0.003412099999999363,
+          "median_cpu_seconds": 0.002972499999999989
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.002910199999999641,
+          "min_seconds": 0.0027610000000004575,
+          "max_seconds": 0.003183800000000403,
+          "median_cpu_seconds": 0.0029789999999999955
+        }
+      },
+      {
+        "task": "parallels",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0011406999999996614,
+          "min_seconds": 0.0010905999999994975,
+          "max_seconds": 0.0012407000000003165,
+          "median_cpu_seconds": 0.00119950000000002
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.0011375000000000135,
+          "min_seconds": 0.001097600000000476,
+          "max_seconds": 0.0013513999999998916,
+          "median_cpu_seconds": 0.0011934999999999862
+        }
+      },
+      {
+        "task": "variants",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.003904149999999884,
+          "min_seconds": 0.0036889999999996093,
+          "max_seconds": 0.004188700000000267,
+          "median_cpu_seconds": 0.003981500000000027
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.003787350000000078,
+          "min_seconds": 0.0035362000000001004,
+          "max_seconds": 0.0039575999999996725,
+          "median_cpu_seconds": 0.003868499999999997
+        }
+      },
+      {
+        "task": "resolve",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.006354149999999947,
+          "min_seconds": 0.0059971000000000885,
+          "max_seconds": 0.007052299999999789,
+          "median_cpu_seconds": 0.006418000000000035
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.006082550000000353,
+          "min_seconds": 0.00593180000000082,
+          "max_seconds": 0.006758099999999878,
+          "median_cpu_seconds": 0.006148500000000029
+        }
+      },
+      {
+        "task": "compare",
+        "identical": true,
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.013988400000000123,
+          "min_seconds": 0.01346399999999992,
+          "max_seconds": 0.023265199999999986,
+          "median_cpu_seconds": 0.014069999999999971
+        },
+        "current": {
+          "n": 14,
+          "median_seconds": 0.01374170000000019,
+          "min_seconds": 0.013299700000000136,
+          "max_seconds": 0.014871300000000254,
+          "median_cpu_seconds": 0.01381950000000004
+        }
+      }
+    ],
+    "E2": [
+      {
+        "task": "suttacentral-bilara",
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0009156500000000456,
+          "min_seconds": 0.0008856000000001529,
+          "max_seconds": 0.0010535000000002626,
+          "median_cpu_seconds": 0.0009805000000000022
+        },
+        "quick": {
+          "n": 14,
+          "median_seconds": 0.018947750000000152,
+          "min_seconds": 0.01832960000000039,
+          "max_seconds": 0.02053850000000068,
+          "median_cpu_seconds": 0.015471999999999993
+        },
+        "overhead_seconds": 0.018032100000000106,
+        "ratio": 20.693223393217067,
+        "verified_evidence_count": 1,
+        "median_phases": {
+          "retrieval_seconds": 0.0011174000000000461,
+          "source_seconds": 0.017402149999999672,
+          "verification_seconds": 0.00024225000000033248,
+          "source_reads": 2.0,
+          "retrieval_calls": 1.0,
+          "total_seconds": 0.01894000000000018
+        }
+      },
+      {
+        "task": "cbeta-tei",
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.0014342499999999703,
+          "min_seconds": 0.001372800000000396,
+          "max_seconds": 0.0015524000000004534,
+          "median_cpu_seconds": 0.0015020000000000033
+        },
+        "quick": {
+          "n": 14,
+          "median_seconds": 0.07361299999999993,
+          "min_seconds": 0.06902840000000054,
+          "max_seconds": 0.08703109999999992,
+          "median_cpu_seconds": 0.07072700000000001
+        },
+        "overhead_seconds": 0.07217874999999996,
+        "ratio": 51.32508279588737,
+        "verified_evidence_count": 1,
+        "median_phases": {
+          "retrieval_seconds": 0.0017087499999997036,
+          "source_seconds": 0.05751305000000073,
+          "verification_seconds": 0.01369845000000014,
+          "source_reads": 2.0,
+          "retrieval_calls": 1.0,
+          "total_seconds": 0.07360395000000075
+        }
+      },
+      {
+        "task": "84000-tei",
+        "legacy": {
+          "n": 14,
+          "median_seconds": 0.002183299999999999,
+          "min_seconds": 0.002104099999999498,
+          "max_seconds": 0.0025967000000006735,
+          "median_cpu_seconds": 0.0022474999999999995
+        },
+        "quick": {
+          "n": 14,
+          "median_seconds": 0.037486649999999955,
+          "min_seconds": 0.03391960000000083,
+          "max_seconds": 0.041985099999999775,
+          "median_cpu_seconds": 0.03332750000000009
+        },
+        "overhead_seconds": 0.035303349999999956,
+        "ratio": 17.169720148399197,
+        "verified_evidence_count": 1,
+        "median_phases": {
+          "retrieval_seconds": 0.0025255499999996545,
+          "source_seconds": 0.02960925000000003,
+          "verification_seconds": 0.005258500000000055,
+          "source_reads": 2.0,
+          "retrieval_calls": 1.0,
+          "total_seconds": 0.03747904999999996
+        }
+      }
+    ],
+    "E3_research": {
+      "n": 14,
+      "median_seconds": 0.12884965000000026,
+      "min_seconds": 0.12266709999999925,
+      "max_seconds": 0.13314499999999896,
+      "median_cpu_seconds": 0.08947549999999994
+    },
+    "E3_golden": {
+      "n": 14,
+      "median_seconds": 0.01676735000000118,
+      "min_seconds": 0.015967799999998533,
+      "max_seconds": 0.019533100000000303,
+      "median_cpu_seconds": 0.016853000000000007
+    },
+    "real_error_rate": "CHƯA ĐO: no independent scholarly expected answers",
+    "independent_review": "CHƯA THẨM ĐỊNH ĐỘC LẬP THỰC TẾ",
+    "ai_tokens": "CHƯA ĐO: no AI service invoked",
+    "ai_cost": "CHƯA ĐO: no AI service invoked",
+    "acceptance_threshold": "CHỜ CHỐT NGƯỠNG"
+  },
+  "protected_git_blob_hashes": {
+    "manifest.json": {
+      "legacy": "5c44e5cd420afa8ae6089881c6dca55d15cfa20c",
+      "current": "5c44e5cd420afa8ae6089881c6dca55d15cfa20c"
+    },
+    "config/corpus-sources.json": {
+      "legacy": "b2a75edcfb5a03ca11803b9c3578898aeb43bd2c",
+      "current": "b2a75edcfb5a03ca11803b9c3578898aeb43bd2c"
+    },
+    "tools/corpus_research/retrieval.py": {
+      "legacy": "d056c0a54b18885b109869bb588e4839efc9573a",
+      "current": "d056c0a54b18885b109869bb588e4839efc9573a"
+    },
+    "tools/corpus_research/index.py": {
+      "legacy": "7bc792046f09b79a92c537352f7d57ec89558560",
+      "current": "7bc792046f09b79a92c537352f7d57ec89558560"
+    },
+    "tools/corpus_research/cli.py": {
+      "legacy": "e8dd0872680de6161146c254c2656e7b4c0ceca5",
+      "current": "e8dd0872680de6161146c254c2656e7b4c0ceca5"
+    },
+    "tools/corpus_research/model.py": {
+      "legacy": "02345283fc24c381f3e1f1b7d6c5899bd3bc2fc8",
+      "current": "02345283fc24c381f3e1f1b7d6c5899bd3bc2fc8"
+    }
+  },
+  "code_sha256": {
+    "tools/corpus_research/__init__.py": "d2656ce26c5ecfcf322a6a7cab4ef39c34c7106494efb1044d751db6bb826dcb",
+    "tools/corpus_research/claims.py": "6aa743bab61b986f4c1f28bfb07719b6e3ffce9dc448ed54f49dacb9de69e0c7",
+    "tools/corpus_research/cli.py": "24889f9413b7767b00a8dd2d540ac53c2743396855949a0363822cc332236363",
+    "tools/corpus_research/connector_host.py": "17eef6c031f6dcd75d543573471e886d714d5732927a4316893f765dd11a8270",
+    "tools/corpus_research/counterevidence.py": "cf476273c96d5a6f548344de24c2523416dbb253767bfd871ebad7e98390ce88",
+    "tools/corpus_research/index.py": "c0cb48fe799c56e1c23a8dcde23612d45427fce3b58a9e8cb4085e26f2e5f6d9",
+    "tools/corpus_research/local_host.py": "34ebbbf63dd5870a0cd215fbab1bf60876abdbabc98ff2e152b30bac1d32a5db",
+    "tools/corpus_research/local_research.py": "7780e94b509408e9c882cb2a57a6bcf5c8a25f0f6775684833716d0cafe1fb70",
+    "tools/corpus_research/model.py": "257820c3e03105dcb718e25f2f07ccdcfad5fce0d62556939a9c1d31a029c346",
+    "tools/corpus_research/pointer_benchmark.py": "44cc34953e7f6d51887d2cc5b5067c18adb0372ef9c7507195255386a0032fd4",
+    "tools/corpus_research/pointer_cjk_vocab.py": "774c53c7230a8e7bb249c7ff5b5bdebfb3957375bb537194ab0c8f4960a6e0b6",
+    "tools/corpus_research/pointer_compact.py": "e4caf1a4eeee67733bcfab744cfa3ac8ce19e9c7832077c7dec5d5b8bda9e791",
+    "tools/corpus_research/pointer_export.py": "834157dd90c55790728a416261e156e71926d028a80f1eccd211afb9aabd8718",
+    "tools/corpus_research/pointer_production.py": "965f468661f39b576f3116314894370d1fb17e7835acaad9e0e58d6b25283c78",
+    "tools/corpus_research/pointer_repetition.py": "60487c2e96aa0a37d330befb483a25ecc9a0adcf4b0b1ed221fcdb167fa0fdef",
+    "tools/corpus_research/pointer_universe.py": "e39159d92484d765770b29fc6f2e9e9ebe0e864848344e26138d7c53e0450bd3",
+    "tools/corpus_research/remote_export.py": "698d269acfd51c2aa1e43176c6ba0110f404526125f222e1e2757e0debe2e52d",
+    "tools/corpus_research/research_run.py": "dfa35171168acc5eea85e869996db9faed37f0e0a323a9114acfa73892002ed8",
+    "tools/corpus_research/research_store.py": "9c8b7d30f24879b7e18cfd9306e4e6c71998341a4e2230b2c7aeb77309937cef",
+    "tools/corpus_research/retrieval.py": "22ab40d82296033490e6d41d5e5dc197fd2429eddcc9ca799910c820c61f7778",
+    "tools/corpus_research/source_resolvers.py": "0f302ca616c80cbb1c728c76f3c456df8f9f5ea156d22ad5f41d850223c9acf7",
+    "tools/corpus_research/v2_benchmark.py": "94ff4331326f13dee2864cfbe10900d8c8da97051894a41db7ad8a7747d4e628",
+    "tools/corpus_research/v2_cli.py": "ad79185d34bcebf599d6145ae2a9d1a21f2c6ed252a60cbf592e94252a0ae4f7",
+    "tools/corpus_research/verification.py": "2c8a0fdddc558913b84e039bec683669197b09f545e6654bcf36abff0a1a8e94"
+  }
+}

@@ -737,41 +737,112 @@ hoặc triển khai E; các giới hạn tích hợp D đã nêu ở trên vẫn
 
 ---
 
+### Bằng chứng tích hợp Giai đoạn E — 11/10/2026
+
+Mã lõi A/B/C/D giữ nguyên. E ở nhánh `feature/bcr-v2-phase-e`, chưa merge.
+Checkpoint mã đã kiểm: `1b2d0f010ec2dab8664378516005ed2ad05e4fe6`, sau
+`1d2bf7046f78c6f58f2332f0ab033b8a23f5b5e0`. Các phần A–D phía trên là bằng
+chứng lịch sử theo từng lát cắt; trạng thái mới nhất xem ma trận và mục này.
+
+`LocalHost` tái sử dụng retrieval 1.0, kiểm index/pins/parser/profile, mở đúng
+Git blob và giải nguồn độc lập bằng resolver Bilara JSON, CBETA TEI, 84000 TEI.
+Quick riêng không gọi B/C/D hay tạo store. Research dùng `LocalResearch` + D
+để tạo candidate claims, A records thật, kế hoạch/biên nhận C và gói thẩm định.
+C có execution receipts thật cho search/evidence/context/work/resolve; nguồn
+không hỗ trợ giữ chưa xác minh. Parallels/variants có raw results nhưng chưa
+xác minh metadata/dị bản bằng A, nên incomplete. Hướng lexical chưa có semantic
+review; no-hit không chứng minh không tồn tại phản chứng.
+
+D giữ history có thẩm quyền/version/transaction. Sau revision, adapter khôi
+phục locator từ audit snapshots rồi đọc A mới; không tái dùng trạng thái A/B.
+Report nhập chỉ PROPOSED; claim C1 được thay bằng C2 không dùng approval C1.
+Research guard B giữ nguyên. Thiếu semantic approval xác thực làm assessment
+UNVERIFIED; finalized hoặc report tự khai trusted không cấp quyền công bố.
+
+| Kiểm thử E | WSL Python 3.12.3 | Windows Python 3.14 | Failure/error/skip |
+|---|---:|---:|---|
+| Baseline trước E | 318/318 | 309 chạy, 282 đạt, 29 error | Windows thiếu nguồn/khóa SQLite cũ |
+| A / B / C / D riêng | 44 / 82 / 70 / 77 đạt | 44 / 82 / 70 / 77 đạt | 0/0/0 mỗi bộ |
+| E local fixture | 40/40 | 40/40 | 0/0/0 |
+| E Connector/Work contract | 11/11 | 11/11 | 0/0/0; không phải phiên Work |
+| E golden software | 11/11 | 11/11 | 0/0/0 |
+| E corpus thật | 14/14 | 0 chạy | Windows skip cả class: thiếu 13 checkout |
+| Toàn suite | 394/394 | 371 chạy: 344 đạt, 29 error, 1 class skip | WSL 0/0/0; Windows chưa đạt |
+
+Windows full counted cuối có 29 error entries: các bài cũ thiếu nguồn/WinError
+32 cleanup SQLite, cùng các lỗi baseline. Lượt CLI trước đó có 30 entries; bài
+cleanup bổ sung được chạy riêng trên commit nền và tái hiện cùng WinError 32. Không sửa bài cũ hoặc tuyên
+bố Windows full xanh. Dữ liệu/log đầy đủ: [evidence](evidence/README.md).
+
+11 descriptors/rubric nằm trong `tests/fixtures/v2/golden-cases.json`, ánh xạ
+đúng tên method; có positive controls hợp lệ và các nhánh thiếu capability.
+Chúng kiểm quy tắc phần mềm bằng oracle khai rõ. 14 bài nguồn thật kiểm pins,
+byte trích, vai trò, sai SHA/đoạn/câu trích, C multi-corpus có binding A, D mở
+lại/xuất và Research giữ pending. Không lấy chúng làm expected answer học thuật
+độc lập cho cả 11 tình huống hay nghiệm thu đủ 13 resolver.
+
+Connector thật đã đọc production locator ghim
+`b31a154863c347f150a3bbb2df8bf269b50aeade`, lookup `ids/mn1`, mở Bilara tại
+`0914c609e49215bb1473199929ee8a2996b423c4` bằng công cụ GitHub đã cấp quyền,
+đọc upstream hai lần, A VERIFIED. Khi thử lần đầu, production pointer thiếu
+language bị từ chối nhầm; đã có regression và chỉ điền từ nguồn đã giải, vẫn
+chặn language khai sai. Không đổi locator. Chỉ một ca thực; Work chưa thử,
+chuỗi SuttaCentral → bridge → CBETA chưa nghiệm thu Connector xuyên suốt.
+
+E4 có baseline lịch sử thật `f7415f574ed1510d5854ee00db6baafe2484e355`, trước
+A (chưa có verification.py), gần nhất với main trước A đã ghi trong nghiệm thu.
+Manifest/config/index/retrieval/CLI/model khớp Git blob; dùng cùng index mẫu,
+cache warm và môi trường, lưu 14 lượt/tác vụ, output đầy đủ/hash/time/CPU/RSS/IO.
+12 tác vụ 1.0 cho kết quả/rank/provenance giống nhau. Quick và Research có đo
+chi phí thực; xem [E_REPORT.md](E_REPORT.md). Không tuyên bố không suy giảm từ
+unit tests hoặc số đo mẫu. **CHỜ CHỐT NGƯỠNG**; tỷ lệ lỗi/chặn nhầm học thuật,
+giá trị phản biện độc lập, token/chi phí AI **CHƯA ĐO** vì chưa có đáp án độc
+lập hay dịch vụ AI được cấu hình. **CHƯA THẨM ĐỊNH ĐỘC LẬP THỰC TẾ**.
+
+Lỗi E được giữ hồi quy: mọi operation bị cắt báo incomplete, missing language
+production được giải từ nguồn, blob A/pointer C giữ binding, stdout CLI UTF-8,
+và revision mở lại vẫn kiểm nguồn mới. Không sửa A/B/C/D hoặc bộ 1.0, pins,
+schema, ranking, FTS và production locator. Không PR/merge, không đổi kế hoạch
+A–E. E hoàn thành phần lớn phần khả dụng, còn approval/Work/thẩm định độc lập/
+ngưỡng và phạm vi nguồn thật chưa đáp ứng nghiệm thu đầy đủ.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
-| Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
-|---|---|---|
-| REQ-VER-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm |
-| REQ-VER-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả |
-| REQ-VER-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại |
-| REQ-VER-004 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập |
-| REQ-VER-005 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận |
-| REQ-VER-006 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa |
-| REQ-VER-007 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: UNSUPPORTED không qua Cửa kiểm luận điểm cuối |
-| REQ-VER-008 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: CONTRADICTED không được xuất như kết luận đã xác lập |
-| REQ-VER-009 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: thay đổi điểm truy xuất không tự thay đổi mức hỗ trợ của luận điểm |
-| REQ-VER-010 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: phần tổng hợp sinh luận điểm mới ngoài tập đã chấp nhận phải thất bại kiểm tra cuối |
-| REQ-VER-011 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ |
-| REQ-VER-012 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
-| REQ-VER-013 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan |
-| REQ-VER-014 | MỘT PHẦN: LÕI A/B | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
-| REQ-QTE-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
-| REQ-QTE-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
-| REQ-QTE-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
-| REQ-CTR-001 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt |
-| REQ-CTR-002 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
-| REQ-CTR-003 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
-| REQ-CTR-004 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế |
-| REQ-RUN-001 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt |
-| REQ-RUN-002 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ |
-| REQ-RUN-003 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi |
-| REQ-RUN-004 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: từ mã luận điểm truy ra được toàn bộ mã bằng chứng liên quan |
-| REQ-RUN-005 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: trạng thái tìm phản chứng và tóm tắt kết quả có thể truy vấn |
-| REQ-RUN-006 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
-| REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
-| REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
-| REQ-ENV-001 | MỘT PHẦN: LÕI A/B; CHƯA THỬ WORK | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
-| REQ-ENV-002 | MỘT PHẦN: LÕI A/B GIẢ LẬP; CHƯA THỬ PLUGIN | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
+| Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có | Bằng chứng E và giới hạn |
+|---|---|---|---|
+| REQ-VER-001 | ĐẠT MỘT PHẦN | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-002 | ĐẠT MỘT PHẦN | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-003 | ĐẠT MỘT PHẦN | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-004 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-005 | ĐẠT MỘT PHẦN | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-006 | ĐẠT MỘT PHẦN | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-007 | ĐẠT MỘT PHẦN | Tự động + nghiên cứu chuẩn: UNSUPPORTED không qua Cửa kiểm luận điểm cuối | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-008 | ĐẠT MỘT PHẦN | Tự động + nghiên cứu chuẩn: CONTRADICTED không được xuất như kết luận đã xác lập | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-009 | ĐẠT MỘT PHẦN | Tự động: thay đổi điểm truy xuất không tự thay đổi mức hỗ trợ của luận điểm | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-010 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: phần tổng hợp sinh luận điểm mới ngoài tập đã chấp nhận phải thất bại kiểm tra cuối | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-011 | ĐẠT MỘT PHẦN | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-012 | ĐẠT MỘT PHẦN | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-013 | ĐẠT MỘT PHẦN | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-VER-014 | ĐẠT MỘT PHẦN | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định | A44/B82 + golden; nguồn thật 3 resolver; semantic approval còn thiếu |
+| REQ-QTE-001 | ĐẠT MỘT PHẦN | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp | A44 + golden; exact/mismatch trên nguồn thật; paraphrase chỉ oracle |
+| REQ-QTE-002 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn | A44 + golden; exact/mismatch trên nguồn thật; paraphrase chỉ oracle |
+| REQ-QTE-003 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp | A44 + golden; exact/mismatch trên nguồn thật; paraphrase chỉ oracle |
+| REQ-CTR-001 | ĐẠT MỘT PHẦN | Tích hợp: chế độ Nghiên cứu thiếu bước tìm phản chứng phải không đạt | C70 + E40 + nguồn thật; lexical receipts; semantic/dependency review còn thiếu |
+| REQ-CTR-002 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm | C70 + E40 + nguồn thật; lexical receipts; semantic/dependency review còn thiếu |
+| REQ-CTR-003 | ĐẠT MỘT PHẦN | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain | C70 + E40 + nguồn thật; lexical receipts; semantic/dependency review còn thiếu |
+| REQ-CTR-004 | ĐẠT MỘT PHẦN | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế | C70 + E40 + nguồn thật; lexical receipts; semantic/dependency review còn thiếu |
+| REQ-RUN-001 | ĐẠT MỘT PHẦN | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-RUN-002 | ĐẠT MỘT PHẦN | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-RUN-003 | ĐẠT MỘT PHẦN | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-RUN-004 | ĐẠT MỘT PHẦN | Tự động: từ mã luận điểm truy ra được toàn bộ mã bằng chứng liên quan | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-RUN-005 | ĐẠT MỘT PHẦN | Tự động: trạng thái tìm phản chứng và tóm tắt kết quả có thể truy vấn | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-RUN-006 | ĐẠT MỘT PHẦN | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-TST-001 | ĐẠT MỘT PHẦN | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân | 11 descriptors/methods portable đạt; 14 integration thật riêng, chưa đủ expected học thuật |
+| REQ-TST-002 | ĐÃ KIỂM VÀ ĐẠT: hồi quy phần mềm | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng | Giữ toàn bộ 318 bài cũ; regression A–E và 76 bài E đạt WSL |
+| REQ-ENV-001 | ĐẠT MỘT PHẦN; WORK CHƯA KIỂM | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái | JSON + portable adapter không SQLite/shell đạt; chưa thử phiên Work |
+| REQ-ENV-002 | ĐẠT MỘT PHẦN | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu | 11 contract + 1 ca GitHub Connector thật đạt; chưa đủ scope/plugin research |
 
 ---
 
@@ -782,13 +853,13 @@ nghiệm thu **phần mã lõi** và gộp vào main tại
 `494f8584dbc7fb104466c7e0b656e2370dd6b027`; các báo cáo và số liệu phía trên
 giữ nguyên theo thời điểm ghi nhận. Điều này không nghiệm thu toàn bộ 2.0,
 không tự nâng trạng thái 31 yêu cầu gốc trong ma trận. Hai yêu cầu dưới đây
-là phần bổ sung, **CHƯA TRIỂN KHAI**, không thay hoặc làm yếu yêu cầu cũ.
+là phần bổ sung, đã có mã D/E và đạt một phần theo mục E, không thay hoặc làm yếu yêu cầu cũ.
 Nghiệm thu toàn bộ ở mục 6 còn phải đáp ứng hai yêu cầu bổ sung này.
 
-| Yêu cầu | Trạng thái hiện tại | Bằng chứng nghiệm thu cần có |
-|---|---|---|
-| REQ-RUN-007 | ĐÃ CÓ LÕI D; CHỜ TÍCH HỢP E | Tích hợp + rà soát: xuất/nhập thủ công đủ snapshot và căn cứ; lưu báo cáo khác quyết định phê duyệt; báo cáo chưa phê duyệt/sai snapshot không cấp quyền; đánh giá đã phê duyệt dùng capability host và cửa kiểm hiện có |
-| REQ-TST-003 | CHƯA ĐO; MỤC TIÊU E | Báo cáo E1–E3 có baseline so sánh được, kết quả thô, chi phí và lỗi bỏ lọt/chặn nhầm; phần thẩm định độc lập có phép đo giá trị tăng thêm khi sử dụng |
+| Yêu cầu | Trạng thái hiện tại | Bằng chứng nghiệm thu cần có | Bằng chứng E và giới hạn |
+|---|---|---|---|
+| REQ-RUN-007 | ĐẠT MỘT PHẦN | Tích hợp + rà soát: xuất/nhập thủ công đủ snapshot và căn cứ; lưu báo cáo khác quyết định phê duyệt; báo cáo chưa phê duyệt/sai snapshot không cấp quyền; đánh giá đã phê duyệt dùng capability host và cửa kiểm hiện có | D77 + E40 + nguồn thật; draft/version/trace/export; chưa approval thực |
+| REQ-TST-003 | ĐẠT MỘT PHẦN; CHỜ CHỐT NGƯỠNG | Báo cáo E1–E3 có baseline so sánh được, kết quả thô, chi phí và lỗi bỏ lọt/chặn nhầm; phần thẩm định độc lập có phép đo giá trị tăng thêm khi sử dụng | E1/E2 và chi phí E3 đã đo; raw 14 lượt; ngưỡng/ground truth/AI chưa có |
 
 Nghiệm thu REQ-RUN-007 phải đi hết một vòng xuất → phản biện → nhập → quyết
 định theo chính sách → kiểm qua gate. Gói chuyển đi phải giữ luận điểm, bằng

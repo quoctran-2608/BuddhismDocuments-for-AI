@@ -1,0 +1,507 @@
+{
+  "question": "Trong các đoạn được truy xuất bằng sutaṃ, bản ghim ghi câu nào? Phạm vi chỉ là mẫu acceptance, không xác lập một kết luận triết học.",
+  "run_id": "e-example-20261011",
+  "main_repository_commit": "1b2d0f010ec2dab8664378516005ed2ad05e4fe6",
+  "scope": {
+    "constraints": [
+      "indexed_profile:acceptance"
+    ],
+    "corpora": [
+      "suttacentral-bilara"
+    ],
+    "source_revisions": [
+      {
+        "corpus": "suttacentral-bilara",
+        "repository": "suttacentral/bilara-data",
+        "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+      }
+    ]
+  },
+  "queries": [
+    "sutaṃ"
+  ],
+  "evidence": [
+    {
+      "evidence_id": "e-8697257d6def63d106ae460f",
+      "run_id": "e-example-20261011",
+      "corpus": "suttacentral-bilara",
+      "repository": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_blob_sha": "096c49f188d43174850a5bfebdc3432789cae836",
+      "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+      "indexed_source_path": "suttacentral/bilara-data/root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+      "work_id": "mn1",
+      "segment_id": "mn1:1.1",
+      "sequence_no": 2,
+      "language": "pli",
+      "evidence_class": "canonical_root",
+      "text_role": "root_text",
+      "witness": "root:root-pli-ms",
+      "quotation": "Evaṁ me sutaṁ—",
+      "context": {
+        "before": "\"Mūlapariyāyasutta \",\n  \"mn1:1.1\": \"",
+        "text": "Evaṁ me sutaṁ—",
+        "after": "\",\n  \"mn1:1.2\": \"ekaṁ samayaṁ bhagavā ukkaṭṭhāyaṁ viharati subhagavane sālarājamūle. \""
+      },
+      "quote_verification_status": "VERIFIED_EXACT",
+      "retrieval_query": "sutaṃ",
+      "match_reasons": [
+        "diacritic-folded",
+        "corpus-lemma"
+      ],
+      "relation_ids": [],
+      "limitations": [
+        "Only the resolved contiguous source text is verified; markup/escaped text is not flattened."
+      ],
+      "state": "VERIFIED"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+      "claim_type": "textual",
+      "counter_evidence_ids": [],
+      "independence_status": "uncertain",
+      "limitations": [
+        "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+        "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+        "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized."
+      ],
+      "presentation": {
+        "certainty": "tentative",
+        "quotations": [
+          {
+            "evidence_id": "e-8697257d6def63d106ae460f",
+            "kind": "direct",
+            "text": "Evaṁ me sutaṁ—",
+            "text_role": "root_text",
+            "witness": "root:root-pli-ms"
+          }
+        ]
+      },
+      "revision_evidence_ids": [],
+      "revision_reason": null,
+      "run_id": "e-example-20261011",
+      "status": "candidate",
+      "supersedes_claim_id": null,
+      "supporting_evidence_ids": [
+        "e-8697257d6def63d106ae460f"
+      ],
+      "text": "Đoạn mn1/mn1:1.1 có câu trích: Evaṁ me sutaṁ—",
+      "verification_status": null
+    }
+  ],
+  "assessments": {
+    "c-a52fbce1271849d88b4795b74a68b344": {
+      "status": "UNVERIFIED",
+      "claim": {
+        "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+        "run_id": "e-example-20261011",
+        "text": "Đoạn mn1/mn1:1.1 có câu trích: Evaṁ me sutaṁ—",
+        "claim_type": "textual",
+        "supporting_evidence_ids": [
+          "e-8697257d6def63d106ae460f"
+        ],
+        "counter_evidence_ids": [],
+        "limitations": [
+          "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+          "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+          "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized."
+        ],
+        "supersedes_claim_id": null,
+        "revision_reason": null,
+        "revision_evidence_ids": [],
+        "presentation": {
+          "certainty": "tentative",
+          "quotations": [
+            {
+              "evidence_id": "e-8697257d6def63d106ae460f",
+              "kind": "direct",
+              "text": "Evaṁ me sutaṁ—",
+              "text_role": "root_text",
+              "witness": "root:root-pli-ms"
+            }
+          ]
+        },
+        "status": "candidate",
+        "verification_status": null,
+        "independence_status": "uncertain"
+      },
+      "evidence": [
+        {
+          "evidence_id": "e-8697257d6def63d106ae460f",
+          "run_id": "e-example-20261011",
+          "corpus": "suttacentral-bilara",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_blob_sha": "096c49f188d43174850a5bfebdc3432789cae836",
+          "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+          "indexed_source_path": "suttacentral/bilara-data/root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+          "work_id": "mn1",
+          "segment_id": "mn1:1.1",
+          "sequence_no": 2,
+          "language": "pli",
+          "evidence_class": "canonical_root",
+          "text_role": "root_text",
+          "witness": "root:root-pli-ms",
+          "quotation": "Evaṁ me sutaṁ—",
+          "context": {
+            "before": "\"Mūlapariyāyasutta \",\n  \"mn1:1.1\": \"",
+            "text": "Evaṁ me sutaṁ—",
+            "after": "\",\n  \"mn1:1.2\": \"ekaṁ samayaṁ bhagavā ukkaṭṭhāyaṁ viharati subhagavane sālarājamūle. \""
+          },
+          "quote_verification_status": "VERIFIED_EXACT",
+          "retrieval_query": "sutaṃ",
+          "match_reasons": [
+            "diacritic-folded",
+            "corpus-lemma"
+          ],
+          "relation_ids": [],
+          "limitations": [
+            "Only the resolved contiguous source text is verified; markup/escaped text is not flattened."
+          ],
+          "state": "VERIFIED"
+        }
+      ],
+      "assessment": null,
+      "checks": {
+        "claim_structure": {
+          "status": "PASS",
+          "detail": ""
+        },
+        "supporting_evidence": {
+          "status": "PASS",
+          "detail": ""
+        },
+        "evidence:e-8697257d6def63d106ae460f": {
+          "status": "PASS",
+          "detail": "requires a host-provided Phase A gate result"
+        },
+        "approved_binding": {
+          "status": "UNVERIFIED",
+          "detail": "approval must bind the exact current claim and evidence snapshots"
+        },
+        "quotation:0": {
+          "status": "PASS",
+          "detail": ""
+        }
+      }
+    }
+  },
+  "counterevidence": [
+    {
+      "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+      "result": {
+        "status": "UNVERIFIED",
+        "claim": {
+          "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+          "run_id": "e-example-20261011",
+          "text": "Đoạn mn1/mn1:1.1 có câu trích: Evaṁ me sutaṁ—",
+          "claim_type": "textual",
+          "supporting_evidence_ids": [
+            "e-8697257d6def63d106ae460f"
+          ],
+          "counter_evidence_ids": [],
+          "limitations": [
+            "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+            "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+            "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized."
+          ],
+          "supersedes_claim_id": null,
+          "revision_reason": null,
+          "revision_evidence_ids": [],
+          "presentation": {
+            "certainty": "tentative",
+            "quotations": [
+              {
+                "evidence_id": "e-8697257d6def63d106ae460f",
+                "kind": "direct",
+                "text": "Evaṁ me sutaṁ—",
+                "text_role": "root_text",
+                "witness": "root:root-pli-ms"
+              }
+            ]
+          },
+          "status": "candidate",
+          "verification_status": null,
+          "independence_status": "uncertain"
+        },
+        "search": {
+          "status": "SEARCHED",
+          "plan": {
+            "search_id": "s-264f555008c0468590fd70ffc8476881",
+            "claim": {
+              "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+              "run_id": "e-example-20261011",
+              "text": "Đoạn mn1/mn1:1.1 có câu trích: Evaṁ me sutaṁ—",
+              "claim_type": "textual",
+              "supporting_evidence_ids": [
+                "e-8697257d6def63d106ae460f"
+              ],
+              "counter_evidence_ids": [],
+              "limitations": [
+                "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+                "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+                "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized."
+              ],
+              "supersedes_claim_id": null,
+              "revision_reason": null,
+              "revision_evidence_ids": [],
+              "presentation": {
+                "certainty": "tentative",
+                "quotations": [
+                  {
+                    "evidence_id": "e-8697257d6def63d106ae460f",
+                    "text": "Evaṁ me sutaṁ—",
+                    "kind": "direct",
+                    "text_role": "root_text",
+                    "witness": "root:root-pli-ms"
+                  }
+                ]
+              }
+            },
+            "scope": {
+              "corpora": [
+                "suttacentral-bilara"
+              ],
+              "source_revisions": [
+                {
+                  "corpus": "suttacentral-bilara",
+                  "repository": "suttacentral/bilara-data",
+                  "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+                }
+              ],
+              "constraints": [
+                "indexed_profile:acceptance"
+              ]
+            },
+            "steps": [
+              {
+                "step_id": "s-0-0",
+                "direction": "other_witness",
+                "operation": "search",
+                "query": "anicca",
+                "corpus": "suttacentral-bilara",
+                "target_id": null
+              }
+            ],
+            "unchecked_scope": [
+              "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+              "Lexical directions were executed; semantic adequacy/findings await an authenticated reviewer."
+            ]
+          },
+          "attempts": [
+            {
+              "step_id": "s-0-0",
+              "status": "executed",
+              "complete": true,
+              "checked_scope": {
+                "corpora": [
+                  "suttacentral-bilara"
+                ],
+                "source_revisions": [
+                  {
+                    "corpus": "suttacentral-bilara",
+                    "repository": "suttacentral/bilara-data",
+                    "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+                  }
+                ],
+                "constraints": [
+                  "indexed_profile:acceptance"
+                ]
+              },
+              "candidates": [],
+              "limitations": []
+            }
+          ],
+          "candidates": [],
+          "verified_evidence": [],
+          "execution_complete": true,
+          "summary": "Không tìm thấy ứng viên phản chứng trong các truy vấn và phạm vi đã kiểm; không kết luận phản chứng không tồn tại.",
+          "checks": {
+            "execution_binding": "PASS",
+            "step:s-0-0": "PASS",
+            "corpus_coverage": "PASS"
+          }
+        },
+        "independence": {
+          "status": "ASSESSED",
+          "evidence": [
+            {
+              "evidence_id": "e-8697257d6def63d106ae460f",
+              "run_id": "e-example-20261011",
+              "corpus": "suttacentral-bilara",
+              "repository": "suttacentral/bilara-data",
+              "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+              "source_blob_sha": "096c49f188d43174850a5bfebdc3432789cae836",
+              "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+              "indexed_source_path": "suttacentral/bilara-data/root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+              "work_id": "mn1",
+              "segment_id": "mn1:1.1",
+              "sequence_no": 2,
+              "language": "pli",
+              "evidence_class": "canonical_root",
+              "text_role": "root_text",
+              "witness": "root:root-pli-ms",
+              "quotation": "Evaṁ me sutaṁ—",
+              "context": {
+                "before": "\"Mūlapariyāyasutta \",\n  \"mn1:1.1\": \"",
+                "text": "Evaṁ me sutaṁ—",
+                "after": "\",\n  \"mn1:1.2\": \"ekaṁ samayaṁ bhagavā ukkaṭṭhāyaṁ viharati subhagavane sālarājamūle. \""
+              },
+              "quote_verification_status": "VERIFIED_EXACT",
+              "retrieval_query": "sutaṃ",
+              "match_reasons": [
+                "diacritic-folded",
+                "corpus-lemma"
+              ],
+              "relation_ids": [],
+              "limitations": [
+                "Only the resolved contiguous source text is verified; markup/escaped text is not flattened."
+              ],
+              "state": "VERIFIED"
+            }
+          ],
+          "pairs": [],
+          "source_groups": [
+            [
+              "e-8697257d6def63d106ae460f"
+            ]
+          ],
+          "independent_source_count": 1,
+          "checks": {
+            "evidence:e-8697257d6def63d106ae460f": "PASS"
+          }
+        },
+        "assessment": {
+          "status": "UNVERIFIED",
+          "claim": {
+            "claim_id": "c-a52fbce1271849d88b4795b74a68b344",
+            "run_id": "e-example-20261011",
+            "text": "Đoạn mn1/mn1:1.1 có câu trích: Evaṁ me sutaṁ—",
+            "claim_type": "textual",
+            "supporting_evidence_ids": [
+              "e-8697257d6def63d106ae460f"
+            ],
+            "counter_evidence_ids": [],
+            "limitations": [
+              "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+              "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+              "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized."
+            ],
+            "supersedes_claim_id": null,
+            "revision_reason": null,
+            "revision_evidence_ids": [],
+            "presentation": {
+              "certainty": "tentative",
+              "quotations": [
+                {
+                  "evidence_id": "e-8697257d6def63d106ae460f",
+                  "kind": "direct",
+                  "text": "Evaṁ me sutaṁ—",
+                  "text_role": "root_text",
+                  "witness": "root:root-pli-ms"
+                }
+              ]
+            },
+            "status": "candidate",
+            "verification_status": null,
+            "independence_status": "uncertain"
+          },
+          "evidence": [
+            {
+              "evidence_id": "e-8697257d6def63d106ae460f",
+              "run_id": "e-example-20261011",
+              "corpus": "suttacentral-bilara",
+              "repository": "suttacentral/bilara-data",
+              "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+              "source_blob_sha": "096c49f188d43174850a5bfebdc3432789cae836",
+              "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+              "indexed_source_path": "suttacentral/bilara-data/root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+              "work_id": "mn1",
+              "segment_id": "mn1:1.1",
+              "sequence_no": 2,
+              "language": "pli",
+              "evidence_class": "canonical_root",
+              "text_role": "root_text",
+              "witness": "root:root-pli-ms",
+              "quotation": "Evaṁ me sutaṁ—",
+              "context": {
+                "before": "\"Mūlapariyāyasutta \",\n  \"mn1:1.1\": \"",
+                "text": "Evaṁ me sutaṁ—",
+                "after": "\",\n  \"mn1:1.2\": \"ekaṁ samayaṁ bhagavā ukkaṭṭhāyaṁ viharati subhagavane sālarājamūle. \""
+              },
+              "quote_verification_status": "VERIFIED_EXACT",
+              "retrieval_query": "sutaṃ",
+              "match_reasons": [
+                "diacritic-folded",
+                "corpus-lemma"
+              ],
+              "relation_ids": [],
+              "limitations": [
+                "Only the resolved contiguous source text is verified; markup/escaped text is not flattened."
+              ],
+              "state": "VERIFIED"
+            }
+          ],
+          "assessment": null,
+          "checks": {
+            "claim_structure": {
+              "status": "PASS",
+              "detail": ""
+            },
+            "supporting_evidence": {
+              "status": "PASS",
+              "detail": ""
+            },
+            "evidence:e-8697257d6def63d106ae460f": {
+              "status": "PASS",
+              "detail": "requires a host-provided Phase A gate result"
+            },
+            "approved_binding": {
+              "status": "UNVERIFIED",
+              "detail": "approval must bind the exact current claim and evidence snapshots"
+            },
+            "quotation:0": {
+              "status": "PASS",
+              "detail": ""
+            }
+          }
+        },
+        "decision": null,
+        "revision_proposal": null,
+        "checks": {
+          "search": "PASS",
+          "independence_inputs": "PASS",
+          "assessment": "UNVERIFIED",
+          "evidence_snapshot_binding": "PASS",
+          "counterevidence_binding": "UNVERIFIED"
+        }
+      }
+    }
+  ],
+  "run_status": "draft",
+  "accepted_claim_ids": [],
+  "counterevidence_performed": false,
+  "version": 4,
+  "review_package_id": "3ec46e94-4694-4386-abdf-15898a852921",
+  "review_snapshot_sha256": "f13e276a56efe475200c390dcf94d52af3ab793446936429b286313cf797e40a",
+  "publication_check": {
+    "status": "UNVERIFIED",
+    "publication_authorized": false,
+    "run_id": "e-example-20261011",
+    "snapshot_version": 4,
+    "gate_result": {
+      "status": "REJECTED",
+      "items": [],
+      "detail": "synthesis requires exact currently accepted structured claims"
+    },
+    "reason": "E must coordinate external publication and provider freshness; a saved check is not a publication permit"
+  },
+  "limitations": [
+    "Only the declared indexed profile and executed queries were checked; unindexed passages and other traditions remain unchecked.",
+    "Semantic claim/counterevidence assessment has not been authenticated; no Research publication is authorized.",
+    "Only the resolved contiguous source text is verified; markup/escaped text is not flattened.",
+    "Lexical directions were executed; semantic adequacy/findings await an authenticated reviewer."
+  ]
+}

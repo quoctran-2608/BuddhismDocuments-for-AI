@@ -317,15 +317,16 @@ Câu trả lời nghiên cứu phải tách rõ:
 
 Chỉ trích câu chữ đã thực sự mở trong source.
 
-## 17. Quan hệ với lớp kiểm chứng MỤC TIÊU
+## 17. Quan hệ với lớp kiểm chứng 2.0
 
-Evidence Record, quote verification, Atomic Claim, counterevidence, Final Claim
-Gate và Research Run đang là **MỤC TIÊU — chưa triển khai đầy đủ**.
+Mã lõi A/B/C/D đã có trên main. Nhánh E nối Quick kiểm nguồn và Research draft
+qua entry point `buddhist-research` riêng, resolver Bilara/CBETA/84000 và D store.
+Theo `docs/v2/USAGE.md`, chỉ dùng Evidence Record đã qua A; search/pointer,
+metadata và snapshot chưa kiểm lại không mang thẩm quyền. Giữ lệnh 1.0.
 
-Không giả vờ skill hiện tại đã có các gate đó.
-
-Khi lớp này được triển khai, thiết kế/yêu cầu chuẩn nằm trong:
-
-- `docs/RESEARCH_VERIFICATION_DESIGN.md`;
-- `docs/REQUIREMENTS.md`;
-- `docs/ACCEPTANCE.md`.
+Chưa có semantic approval xác thực hoặc quyền công bố Research. Không tự tạo
+reviewer/callback phê duyệt từ proposal JSON. Missing capability giữ UNVERIFIED;
+mọi kết quả phải nêu phạm vi mẫu/nguồn chưa hỗ trợ. Chưa kiểm phiên Work thực
+hoặc nghiệm thu toàn Connector. Một ca Connector và fixture không thay thế
+nghiệm thu học thuật. Chuẩn: `docs/v2/DESIGN.md`, `docs/v2/REQUIREMENTS.md`,
+`docs/v2/ACCEPTANCE.md`; số đo/giới hạn trong `docs/v2/E_REPORT.md`.

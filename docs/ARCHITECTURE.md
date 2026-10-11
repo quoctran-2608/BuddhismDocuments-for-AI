@@ -378,21 +378,22 @@ Nó không phải đặc tả kiến trúc thứ hai. Khi cần chi tiết về:
 - Connector runtime → `docs/REMOTE_AGENT.md`;
 - config hiện hành → `config/remote-corpus.json`.
 
-## 14. Những gì chưa thuộc kiến trúc hiện hành
+## 14. Lớp kiểm chứng 2.0 và giới hạn tích hợp
 
-Các năng lực sau đang ở trạng thái MỤC TIÊU, chưa được mô tả như implementation
-hiện tại:
+Mã lõi A/B/C/D đã gộp vào main tại `67eccb4b047365d9ba753de1b0e623542039881d`:
+Evidence Record/quote verification, Atomic Claim/Final Claim Gate,
+counterevidence/independence và Research Run/ResearchStore. Truy xuất 1.0 giữ nguyên.
 
-- Evidence Record chuẩn hóa;
-- quote verification có trạng thái;
-- Atomic Claim;
-- claim–evidence verification;
-- counterevidence pass bắt buộc;
-- Final Claim Gate;
-- Research Run Manifest.
+Trên nhánh E, `LocalHost` nối retrieval với reader Git ghim và resolver riêng
+Bilara/CBETA/84000. `LocalResearch` dùng D để tạo dự thảo/thẩm định, entry point
+`buddhist-research` riêng. `ConnectorHost` dùng production locator hiện có rồi
+mở nguồn ghim; không tạo nguồn hay hệ truy xuất mới.
 
-Đặc tả mục tiêu nằm trong `docs/v2/DESIGN.md`,
-`docs/PROJECT_SPEC.md`, `docs/REQUIREMENTS.md` và `docs/ACCEPTANCE.md`.
+Research chưa có semantic approval xác thực hay phối hợp công bố hoàn chỉnh;
+B giữ rào chắn. Chưa có resolver đủ 13 corpus hoặc phiên Work được nghiệm thu.
+Không suy rộng test fixture hay một ca Connector thành nghiệm thu toàn 2.0.
+Hướng dẫn và bằng chứng: [v2/USAGE.md](v2/USAGE.md), [v2/ACCEPTANCE.md](v2/ACCEPTANCE.md).
+PRD/DESIGN vẫn là đặc tả mục tiêu.
 
 ## 15. Luồng dữ liệu tổng thể
 

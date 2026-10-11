@@ -26,7 +26,7 @@ bin/buddhist-research --help
 ```
 
 Ví dụ dưới dùng index hiện có `derived/corpus.sqlite3`. Nếu cần index mẫu và
-đã có đủ nguồn, dựng riêng bằng CLI 1.0 (`bin/buddhist-corpus index --help`),
+đã có đủ nguồn, dựng riêng bằng CLI 1.0 (`bin/buddhist-corpus build --help`),
 không ghi đè index đang sử dụng. Các phép đo E dùng profile `acceptance`, chưa
 chứng minh hiệu năng/quy mô index đầy đủ. Có thể truyền `--db` khác.
 

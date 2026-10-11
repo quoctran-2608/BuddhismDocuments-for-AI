@@ -1,0 +1,340 @@
+{
+  "code_commit": "1b2d0f010ec2dab8664378516005ed2ad05e4fe6",
+  "baseline_commit": "67eccb4b047365d9ba753de1b0e623542039881d",
+  "baseline_wsl": {
+    "ran": 318,
+    "passed": 318,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "error_names": []
+  },
+  "baseline_windows": {
+    "ran": 309,
+    "passed": 282,
+    "failures": 0,
+    "errors": 29,
+    "skipped": 0,
+    "error_names": [
+      "setUpClass (test_acceptance.AcceptanceTests)",
+      "test_all_bm_line_uses_segment_id_as_single_line_interval (test_cbeta_resolver.CbetaResolverShapeTests.test_all_bm_line_uses_segment_id_as_single_line_interval)",
+      "test_cbeta_tei_line_uses_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_cbeta_tei_line_uses_segment_id)",
+      "test_core_chunk_uses_first_and_last_relation_ids (test_cbeta_resolver.CbetaResolverShapeTests.test_core_chunk_uses_first_and_last_relation_ids)",
+      "test_granular_record_after_5000_rows_is_not_truncated (test_cbeta_resolver.CbetaResolverShapeTests.test_granular_record_after_5000_rows_is_not_truncated)",
+      "test_invalid_relation_ids_fall_back_to_valid_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_invalid_relation_ids_fall_back_to_valid_segment_id)",
+      "test_malformed_input_identifier_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_malformed_input_identifier_remains_fail_closed)",
+      "test_malformed_record_locator_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_malformed_record_locator_remains_fail_closed)",
+      "test_non_overlapping_segment_range_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_non_overlapping_segment_range_remains_fail_closed)",
+      "test_reversed_input_range_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_reversed_input_range_remains_fail_closed)",
+      "test_valid_relation_ids_take_precedence_over_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_valid_relation_ids_take_precedence_over_segment_id)",
+      "test_middle_substring_uses_trigram_candidates_for_long_cbeta_text (test_cjk_substring_search.CjkSubstringSearchTest.test_middle_substring_uses_trigram_candidates_for_long_cbeta_text)",
+      "test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only (test_remote_access.RemoteAccessTests.test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only)",
+      "test_compact_pointer_poc_reconstructs_benchmark_exactly (test_remote_access.RemoteAccessTests.test_compact_pointer_poc_reconstructs_benchmark_exactly)",
+      "test_evidence_bundles_record_context_provenance_and_variants (test_remote_access.RemoteAccessTests.test_evidence_bundles_record_context_provenance_and_variants)",
+      "test_pointer_benchmark_is_deterministic_and_reports_pointer_invariants (test_remote_access.RemoteAccessTests.test_pointer_benchmark_is_deterministic_and_reports_pointer_invariants)",
+      "test_pointer_key_universe_analysis_is_read_only_and_consistent (test_remote_access.RemoteAccessTests.test_pointer_key_universe_analysis_is_read_only_and_consistent)",
+      "test_pointer_poc_is_deterministic_and_never_exports_raw_text (test_remote_access.RemoteAccessTests.test_pointer_poc_is_deterministic_and_never_exports_raw_text)",
+      "test_pointer_production_v1_is_resumable_and_preserves_original_ids (test_remote_access.RemoteAccessTests.test_pointer_production_v1_is_resumable_and_preserves_original_ids)",
+      "test_pointer_selection_keeps_best_distinct_work_file_per_corpus (test_remote_access.RemoteAccessTests.test_pointer_selection_keeps_best_distinct_work_file_per_corpus)",
+      "test_remote_export_includes_committed_wal_rows (test_remote_access.RemoteAccessTests.test_remote_export_includes_committed_wal_rows)",
+      "test_remote_export_is_deterministic_and_preserves_evidence (test_remote_access.RemoteAccessTests.test_remote_export_is_deterministic_and_preserves_evidence)",
+      "test_remote_export_refuses_to_replace_unrelated_directory (test_remote_access.RemoteAccessTests.test_remote_export_refuses_to_replace_unrelated_directory)",
+      "test_search_defaults_stay_plain_and_options_add_evidence (test_remote_access.RemoteAccessTests.test_search_defaults_stay_plain_and_options_add_evidence)",
+      "test_source_blob_sha_matches_pinned_local_source_file (test_remote_access.RemoteAccessTests.test_source_blob_sha_matches_pinned_local_source_file)",
+      "test_source_blob_sha_matches_pinned_local_source_file (test_remote_access.RemoteAccessTests.test_source_blob_sha_matches_pinned_local_source_file)",
+      "test_term_pointer_candidates_reuse_search_per_corpus (test_remote_access.RemoteAccessTests.test_term_pointer_candidates_reuse_search_per_corpus)",
+      "test_84000_note_isolation_parent_relation_and_provenance (test_text_roles.TextRoleTests.test_84000_note_isolation_parent_relation_and_provenance)",
+      "test_legacy_migration_and_bilara_roles (test_text_roles.TextRoleTests.test_legacy_migration_and_bilara_roles)"
+    ],
+    "skipped_names": [],
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "sqlite": "3.50.4",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "extra_windows_cleanup_on_baseline": {
+    "ran": 1,
+    "passed": 0,
+    "failures": 0,
+    "errors": 1,
+    "skipped": 0,
+    "error_names": [
+      "test_pointer_repetition_analysis_is_deterministic_and_read_only (test_remote_access.RemoteAccessTests.test_pointer_repetition_analysis_is_deterministic_and_read_only)"
+    ]
+  },
+  "wsl": {
+    "code_commit": "1b2d0f010ec2dab8664378516005ed2ad05e4fe6",
+    "tests": {
+      "verification": {
+        "ran": 44,
+        "passed": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "claims": {
+        "ran": 82,
+        "passed": 82,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "counterevidence": {
+        "ran": 70,
+        "passed": 70,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "research_run": {
+        "ran": 77,
+        "passed": 77,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "local_integration": {
+        "ran": 40,
+        "passed": 40,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "connector_contract": {
+        "ran": 11,
+        "passed": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "golden_research": {
+        "ran": 11,
+        "passed": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "corpus_integration": {
+        "ran": 14,
+        "passed": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "full": {
+        "ran": 394,
+        "passed": 394,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "file_sha256": {
+      "tests/e_fixtures.py": "2b91fee78ee49be960ca58608414a5407c62f1c760d03ea1dd020045d9b84bb6",
+      "tests/fixtures/v2/golden-cases.json": "53e32e99668c59e7ec2724c5be3a4504c2ee8218d0740565c51ec1d51c717917",
+      "tests/test_acceptance.py": "ba9c11e5bb629f7be114bd1be6c2cc8b25c0d61177ebcd7b83413ebf9f04a058",
+      "tests/test_cbeta_resolver.py": "d56225e8ed2007f6c1a6810f9933d377f61e3328a7feb0e00fa3391234f53121",
+      "tests/test_cjk_substring_search.py": "beb3b01ca40202d9de7c1cc73e55229285428b9959c45dbbca7b719bd5399366",
+      "tests/test_claims.py": "41da18860227d6b8908dc9817e72fb277b3a3f52a6dd3be63904afbe2a11c5c8",
+      "tests/test_connector_contract.py": "cca790987c9a3dc84b50ab1da480df8d845772022ff146ffc0318abeda60ffa2",
+      "tests/test_corpus_integration.py": "865cd2f0ebe576855c7a1e2a34600642d24777907312622466e69986b1fd587c",
+      "tests/test_counterevidence.py": "a1aac971985f3bbcfa694c78cd1062bd0e5a4f7e8ee8117bf21ef63d31ae9925",
+      "tests/test_golden_research.py": "3be64c4b6f0c3ef0a3d5c01c2bc778c1717951e76c0defc49dcc25437a6735f5",
+      "tests/test_local_integration.py": "4823c9a10cef1008ad2280460c5fbff23d03d37ab0884a03a70008883a6f2c84",
+      "tests/test_normalization.py": "7649d096d0a580a945d98438473365ab2607288155f7d2a7751927e921b46cec",
+      "tests/test_remote_access.py": "479bdc2272045acfdcc3ced2dea3d7dc9a1ea7f8ef93c185778bb849af04508b",
+      "tests/test_research_run.py": "fd939a3272208b83a2966648f130959af82d6acb614b58311d70a5e4d37b4886",
+      "tests/test_text_roles.py": "c55124c3a08c0871731ac9ffae1deb29caf9f070a43310d99c74d94ebb8f60fa",
+      "tests/test_verification.py": "d1e40748d94aeade8402a6088ccf0c40820eba92ceac074e0249d4ae63ecb385",
+      "tools/corpus_research/__init__.py": "d2656ce26c5ecfcf322a6a7cab4ef39c34c7106494efb1044d751db6bb826dcb",
+      "tools/corpus_research/claims.py": "6aa743bab61b986f4c1f28bfb07719b6e3ffce9dc448ed54f49dacb9de69e0c7",
+      "tools/corpus_research/cli.py": "24889f9413b7767b00a8dd2d540ac53c2743396855949a0363822cc332236363",
+      "tools/corpus_research/connector_host.py": "17eef6c031f6dcd75d543573471e886d714d5732927a4316893f765dd11a8270",
+      "tools/corpus_research/counterevidence.py": "cf476273c96d5a6f548344de24c2523416dbb253767bfd871ebad7e98390ce88",
+      "tools/corpus_research/index.py": "c0cb48fe799c56e1c23a8dcde23612d45427fce3b58a9e8cb4085e26f2e5f6d9",
+      "tools/corpus_research/local_host.py": "34ebbbf63dd5870a0cd215fbab1bf60876abdbabc98ff2e152b30bac1d32a5db",
+      "tools/corpus_research/local_research.py": "7780e94b509408e9c882cb2a57a6bcf5c8a25f0f6775684833716d0cafe1fb70",
+      "tools/corpus_research/model.py": "257820c3e03105dcb718e25f2f07ccdcfad5fce0d62556939a9c1d31a029c346",
+      "tools/corpus_research/pointer_benchmark.py": "44cc34953e7f6d51887d2cc5b5067c18adb0372ef9c7507195255386a0032fd4",
+      "tools/corpus_research/pointer_cjk_vocab.py": "774c53c7230a8e7bb249c7ff5b5bdebfb3957375bb537194ab0c8f4960a6e0b6",
+      "tools/corpus_research/pointer_compact.py": "e4caf1a4eeee67733bcfab744cfa3ac8ce19e9c7832077c7dec5d5b8bda9e791",
+      "tools/corpus_research/pointer_export.py": "834157dd90c55790728a416261e156e71926d028a80f1eccd211afb9aabd8718",
+      "tools/corpus_research/pointer_production.py": "965f468661f39b576f3116314894370d1fb17e7835acaad9e0e58d6b25283c78",
+      "tools/corpus_research/pointer_repetition.py": "60487c2e96aa0a37d330befb483a25ecc9a0adcf4b0b1ed221fcdb167fa0fdef",
+      "tools/corpus_research/pointer_universe.py": "e39159d92484d765770b29fc6f2e9e9ebe0e864848344e26138d7c53e0450bd3",
+      "tools/corpus_research/remote_export.py": "698d269acfd51c2aa1e43176c6ba0110f404526125f222e1e2757e0debe2e52d",
+      "tools/corpus_research/research_run.py": "dfa35171168acc5eea85e869996db9faed37f0e0a323a9114acfa73892002ed8",
+      "tools/corpus_research/research_store.py": "9c8b7d30f24879b7e18cfd9306e4e6c71998341a4e2230b2c7aeb77309937cef",
+      "tools/corpus_research/retrieval.py": "22ab40d82296033490e6d41d5e5dc197fd2429eddcc9ca799910c820c61f7778",
+      "tools/corpus_research/source_resolvers.py": "0f302ca616c80cbb1c728c76f3c456df8f9f5ea156d22ad5f41d850223c9acf7",
+      "tools/corpus_research/v2_benchmark.py": "94ff4331326f13dee2864cfbe10900d8c8da97051894a41db7ad8a7747d4e628",
+      "tools/corpus_research/v2_cli.py": "ad79185d34bcebf599d6145ae2a9d1a21f2c6ed252a60cbf592e94252a0ae4f7",
+      "tools/corpus_research/verification.py": "2c8a0fdddc558913b84e039bec683669197b09f545e6654bcf36abff0a1a8e94"
+    },
+    "source_root": "/home/tranquoc/bcr-phase-a-final-20261011/phase-a",
+    "code_root": "/home/tranquoc/bcr-phase-a-final-20261011/phase-e-measured"
+  },
+  "windows": {
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "tests": {
+      "verification": {
+        "ran": 44,
+        "passed": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "claims": {
+        "ran": 82,
+        "passed": 82,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "counterevidence": {
+        "ran": 70,
+        "passed": 70,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "research_run": {
+        "ran": 77,
+        "passed": 77,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "local_integration": {
+        "ran": 40,
+        "passed": 40,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "connector_contract": {
+        "ran": 11,
+        "passed": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "golden_research": {
+        "ran": 11,
+        "passed": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "corpus_integration": {
+        "ran": 0,
+        "passed": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "exit_code": 0,
+        "error_names": []
+      },
+      "full": {
+        "ran": 371,
+        "passed": 344,
+        "failures": 0,
+        "errors": 29,
+        "skipped": 1,
+        "error_names": [
+          "setUpClass (test_acceptance.AcceptanceTests)",
+          "test_all_bm_line_uses_segment_id_as_single_line_interval (test_cbeta_resolver.CbetaResolverShapeTests.test_all_bm_line_uses_segment_id_as_single_line_interval)",
+          "test_cbeta_tei_line_uses_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_cbeta_tei_line_uses_segment_id)",
+          "test_core_chunk_uses_first_and_last_relation_ids (test_cbeta_resolver.CbetaResolverShapeTests.test_core_chunk_uses_first_and_last_relation_ids)",
+          "test_granular_record_after_5000_rows_is_not_truncated (test_cbeta_resolver.CbetaResolverShapeTests.test_granular_record_after_5000_rows_is_not_truncated)",
+          "test_invalid_relation_ids_fall_back_to_valid_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_invalid_relation_ids_fall_back_to_valid_segment_id)",
+          "test_malformed_input_identifier_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_malformed_input_identifier_remains_fail_closed)",
+          "test_malformed_record_locator_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_malformed_record_locator_remains_fail_closed)",
+          "test_non_overlapping_segment_range_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_non_overlapping_segment_range_remains_fail_closed)",
+          "test_reversed_input_range_remains_fail_closed (test_cbeta_resolver.CbetaResolverShapeTests.test_reversed_input_range_remains_fail_closed)",
+          "test_valid_relation_ids_take_precedence_over_segment_id (test_cbeta_resolver.CbetaResolverShapeTests.test_valid_relation_ids_take_precedence_over_segment_id)",
+          "test_middle_substring_uses_trigram_candidates_for_long_cbeta_text (test_cjk_substring_search.CjkSubstringSearchTest.test_middle_substring_uses_trigram_candidates_for_long_cbeta_text)",
+          "test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only (test_remote_access.RemoteAccessTests.test_cjk_fts_vocabulary_analysis_is_deterministic_and_read_only)",
+          "test_compact_pointer_poc_reconstructs_benchmark_exactly (test_remote_access.RemoteAccessTests.test_compact_pointer_poc_reconstructs_benchmark_exactly)",
+          "test_evidence_bundles_record_context_provenance_and_variants (test_remote_access.RemoteAccessTests.test_evidence_bundles_record_context_provenance_and_variants)",
+          "test_pointer_benchmark_is_deterministic_and_reports_pointer_invariants (test_remote_access.RemoteAccessTests.test_pointer_benchmark_is_deterministic_and_reports_pointer_invariants)",
+          "test_pointer_key_universe_analysis_is_read_only_and_consistent (test_remote_access.RemoteAccessTests.test_pointer_key_universe_analysis_is_read_only_and_consistent)",
+          "test_pointer_poc_is_deterministic_and_never_exports_raw_text (test_remote_access.RemoteAccessTests.test_pointer_poc_is_deterministic_and_never_exports_raw_text)",
+          "test_pointer_production_v1_is_resumable_and_preserves_original_ids (test_remote_access.RemoteAccessTests.test_pointer_production_v1_is_resumable_and_preserves_original_ids)",
+          "test_pointer_repetition_analysis_is_deterministic_and_read_only (test_remote_access.RemoteAccessTests.test_pointer_repetition_analysis_is_deterministic_and_read_only)",
+          "test_pointer_selection_keeps_best_distinct_work_file_per_corpus (test_remote_access.RemoteAccessTests.test_pointer_selection_keeps_best_distinct_work_file_per_corpus)",
+          "test_remote_export_includes_committed_wal_rows (test_remote_access.RemoteAccessTests.test_remote_export_includes_committed_wal_rows)",
+          "test_remote_export_is_deterministic_and_preserves_evidence (test_remote_access.RemoteAccessTests.test_remote_export_is_deterministic_and_preserves_evidence)",
+          "test_remote_export_refuses_to_replace_unrelated_directory (test_remote_access.RemoteAccessTests.test_remote_export_refuses_to_replace_unrelated_directory)",
+          "test_search_defaults_stay_plain_and_options_add_evidence (test_remote_access.RemoteAccessTests.test_search_defaults_stay_plain_and_options_add_evidence)",
+          "test_source_blob_sha_matches_pinned_local_source_file (test_remote_access.RemoteAccessTests.test_source_blob_sha_matches_pinned_local_source_file)",
+          "test_source_blob_sha_matches_pinned_local_source_file (test_remote_access.RemoteAccessTests.test_source_blob_sha_matches_pinned_local_source_file)",
+          "test_84000_note_isolation_parent_relation_and_provenance (test_text_roles.TextRoleTests.test_84000_note_isolation_parent_relation_and_provenance)",
+          "test_legacy_migration_and_bilara_roles (test_text_roles.TextRoleTests.test_legacy_migration_and_bilara_roles)"
+        ],
+        "skipped_names": [
+          "setUpClass (test_corpus_integration.ActualCorpusIntegrationTests)"
+        ],
+        "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+        "sqlite": "3.50.4",
+        "platform": "Windows-11-10.0.26100-SP0",
+        "exit_code": 1
+      }
+    }
+  },
+  "windows_environment": {
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "sqlite": "3.50.4",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "wsl_environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "sqlite": "3.45.1",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "source_pins": {
+      "84000/data-rdf": "c40f02614313d4772319ffb0173766dbaf0764cf",
+      "84000/data-tei": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+      "84000/data-translation-memory": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+      "buddhanexus/segmented-chinese": "068082747ea11d02cb5dbdfeec50f5072422713e",
+      "buddhanexus/segmented-pali": "60d3af5bb4d0692832e05114099f1163450ff49d",
+      "buddhanexus/segmented-sanskrit": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+      "cbeta/BM_u8": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+      "cbeta/xml-p5": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "openpecha/C0A2DD042": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+      "pts/pts-archive": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+      "suttacentral/bilara-data": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "suttacentral/sc-data": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+      "third-party/pali-canon": "7d44211b1ae51ed6c447ee07bd0557b567114170"
+    },
+    "build_seconds": 2.7257786999999993,
+    "cache": "No pre-existing index; built acceptance sample, warm OS page cache not flushed."
+  },
+  "counted_e_tests": {
+    "portable": 62,
+    "actual": 14,
+    "total": 76,
+    "golden_subset": 11
+  },
+  "qualification": "setUpClass errors/skips do not count toward testsRun; Windows full is not green. Fixture approvals are software oracles.",
+  "previous_windows_cli_full": {
+    "ran": 371,
+    "failures": 0,
+    "errors": 30,
+    "skipped": 1,
+    "log": "full-windows-final.log.gz",
+    "qualification": "Extra old cleanup error reproduced on baseline; final counted run has 29 errors."
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "locator_commit": "b31a154863c347f150a3bbb2df8bf269b50aeade",
+  "lookup_key": "mn1",
+  "candidate_pointer": {
+    "rank": 1,
+    "score": 195,
+    "match_reasons": [
+      "exact"
+    ],
+    "record_id": 571052,
+    "corpus": "suttacentral-bilara",
+    "repository": "suttacentral/bilara-data",
+    "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+    "source_blob_sha": "096c49f188d43174850a5bfebdc3432789cae836",
+    "indexed_source_path": "suttacentral/bilara-data/root/pli/ms/sutta/mn/mn1_root-pli-ms.json",
+    "work_id": "mn1",
+    "segment_id": "mn1:0.1",
+    "sequence_no": 0,
+    "evidence_class": "canonical_root",
+    "text_role": "root_text",
+    "witness": "root:root-pli-ms"
+  },
+  "verification": {
+    "status": "REJECTED",
+    "source_opened": true,
+    "checks": {
+      "required_provenance": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "source_sha_format": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "source_path_format": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "mode": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "run_id": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "use": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "text_role_known": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "location_format": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "corpus_mapping": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "repository_mapping": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "evidence_class": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "pinned_source_sha": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "indexed_source_path": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "source_opened": {
+        "status": "PASS",
+        "detail": "requires full source content from a reader",
+        "required": true
+      },
+      "opened_repository": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "opened_source_sha": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "opened_source_path": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "location_work_id": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "location_segment_id": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "location_sequence_no": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "location_language": {
+        "status": "FAIL",
+        "detail": "",
+        "required": true
+      },
+      "location_text_role": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "location_witness": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_source": {
+        "status": "PASS",
+        "detail": "requires an independent pinned read through host-wired authority",
+        "required": true
+      },
+      "independent_repository": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "independent_source_sha": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "independent_source_path": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "independent_content": {
+        "status": "PASS",
+        "detail": "compared with source reader",
+        "required": true
+      },
+      "independent_blob": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_work_id": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_segment_id": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_sequence_no": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_language": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_text_role": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_location_witness": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_excerpt_range": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "independent_context_range": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "expected_blob": {
+        "status": "PASS",
+        "detail": "Git blob hash computed from full UTF-8 source bytes",
+        "required": true
+      },
+      "opened_blob": {
+        "status": "PASS",
+        "detail": "Git blob hash computed from full UTF-8 source bytes",
+        "required": true
+      },
+      "excerpt_range": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "context_range": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "context_contains_excerpt": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      },
+      "quotation": {
+        "status": "PASS",
+        "detail": "",
+        "required": true
+      }
+    },
+    "quote": {
+      "status": "VERIFIED_EXACT",
+      "direct_quote_allowed": false,
+      "paraphrase_allowed": false
+    },
+    "evidence": null
+  },
+  "actual_connector": true,
+  "actual_work": false,
+  "semantic_review": false,
+  "publication_authorized": false,
+  "tool_requests": [
+    {
+      "repository": "quoctran-2608/BuddhismDocuments-for-AI-remote",
+      "source_sha": "b31a154863c347f150a3bbb2df8bf269b50aeade",
+      "source_path": "remote/pointer-production-v1/locator/ids/07/part-000001.jsonl"
+    },
+    {
+      "repository": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json"
+    },
+    {
+      "repository": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/mn/mn1_root-pli-ms.json"
+    }
+  ]
+}

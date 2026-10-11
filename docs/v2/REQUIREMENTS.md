@@ -22,8 +22,10 @@ Tài liệu giữ nguyên các mã đã được dùng từ trước để khôn
 - `REQ-TST`: kiểm thử chất lượng nghiên cứu;
 - `REQ-ENV`: tương thích môi trường thực thi.
 
-Toàn bộ yêu cầu trong file này đang là **MỤC TIÊU** cho tới khi có mã nguồn và
-bằng chứng nghiệm thu tương ứng.
+Đặc tả giữ nguyên 31 yêu cầu gốc và hai yêu cầu bổ sung. Mã lõi A/B/C/D đã có;
+E có tích hợp/kiểm thử/đo mẫu trên nhánh riêng, chưa nghiệm thu toàn 2.0.
+Trạng thái từng yêu cầu và giới hạn bằng chứng xem [ACCEPTANCE.md](ACCEPTANCE.md).
+Không chuyển toàn bộ thành HIỆN HÀNH từ việc có mã hoặc fixture.
 
 Một số tên trường và mã trạng thái được giữ bằng tiếng Anh vì chúng là hợp đồng
 máy đọc. Ý nghĩa tiếng Việt được giải thích trong `docs/v2/DESIGN.md`.
@@ -300,7 +302,8 @@ quan hệ truy ngược về hồ sơ trước và lý do thay đổi, ví dụ
 
 ### REQ-RUN-007 — Hồ sơ phải hỗ trợ xuất/nhập thẩm định độc lập
 
-**MỤC TIÊU D/E — CHƯA TRIỂN KHAI.** Phải có đường xuất hồ sơ cho người có
+**MỤC TIÊU D/E — ĐÃ CÓ MÃ, ĐẠT MỘT PHẦN; CHƯA THẨM ĐỊNH ĐỘC LẬP THỰC TẾ.**
+Phải có đường xuất hồ sơ cho người có
 chuyên môn hoặc AI khác trong phiên riêng và nhập lại báo cáo phản biện.
 Xuất/nhập thủ công đáp ứng phạm vi phiên bản đầu; không bắt buộc API tự động.
 Gói xuất phải đủ luận điểm, bằng chứng, nguồn ghim, ngữ cảnh, giới hạn và định
@@ -348,7 +351,9 @@ lỗi cũ xuất hiện trở lại sau thay đổi mã nguồn.
 
 ### REQ-TST-003 — Phải đo hiệu quả trên nền so sánh được
 
-**MỤC TIÊU E — CHƯA ĐO.** Nghiệm thu tích hợp phải có báo cáo đối chiếu cùng
+**MỤC TIÊU E — ĐÃ ĐO MẪU E1/E2 VÀ CHI PHÍ E3; CHỜ CHỐT NGƯỠNG.** Chất
+lượng Research trên đáp án học thuật độc lập và giá trị phản biện còn CHƯA ĐO.
+Nghiệm thu tích hợp phải có báo cáo đối chiếu cùng
 bộ truy vấn/câu hỏi và cùng phiên bản nguồn trong ba nhóm: E1 bảo toàn kết
 quả, thứ tự xếp hạng, thời gian và tài nguyên của 1.0; E2 chi phí kiểm chứng
 tăng thêm của Nhanh; E3 chi phí Nghiên cứu so với lỗi bỏ lọt và kết luận có

@@ -245,8 +245,10 @@ Không làm tất cả cùng lúc.
 tìm và truy nguyên nguồn; 2.0 kiểm những bằng chứng/luận điểm liên quan sau
 truy xuất. Hồ sơ xuất/nhập để phản biện độc lập thuộc D, còn kiểm hiệu quả và
 tích hợp thuộc E; không cần tách giai đoạn hay thiết kế hệ hai AI tự động.
-Mã lõi A/B **ĐÃ TRIỂN KHAI và đã gộp vào main** tại
-`494f8584dbc7fb104466c7e0b656e2370dd6b027`; C/D/E **CHƯA TRIỂN KHAI**.
+Mã lõi A/B/C/D **ĐÃ TRIỂN KHAI và đã gộp vào main** tại
+`67eccb4b047365d9ba753de1b0e623542039881d`. E đã có tích hợp local, fixture,
+nguồn thật và đo mẫu trên nhánh `feature/bcr-v2-phase-e`, chưa merge/nghiệm thu
+đầy đủ. Work, thẩm định độc lập thực và quyền công bố Research còn thiếu.
 Các mô tả lát cắt đầu, mốc 45 test và việc tiếp theo ở mục 5–7, 9, 11 giữ
 bối cảnh lập kế hoạch trước A. Kết quả kiểm thử A/B đã thực thi xem
 [ACCEPTANCE.md](ACCEPTANCE.md); chưa chứng minh hiệu quả của 2.0 tích hợp.
