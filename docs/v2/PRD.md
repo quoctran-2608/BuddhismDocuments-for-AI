@@ -331,6 +331,26 @@ thì sau khi sửa, tình huống đó phải trở thành **bài kiểm thử h
 Các bài kiểm thử nghiên cứu chuẩn nên ưu tiên dùng những lỗi thật từng xảy ra,
 không chỉ những tình huống giả định.
 
+### 5.12. Cho phép thẩm định lập luận độc lập
+
+**MỤC TIÊU D/E — CHƯA TRIỂN KHAI:** người dùng phải có thể xuất hồ sơ luận
+điểm, bằng chứng, nguồn và ngữ cảnh cho người có chuyên môn hoặc một AI khác
+trong phiên riêng, rồi nhập lại báo cáo phản biện. Có thể thực hiện thủ công;
+không bắt buộc API hay hệ hai AI tự động trong phiên bản đầu.
+
+Thẩm định cần chỉ ra điểm yếu, căn cứ trái chiều và đề nghị giữ/sửa/loại luận
+điểm. AI nghiên cứu không được tự gọi đánh giá của chính nó là thẩm định độc
+lập. Đổi mô hình hoặc mở phiên riêng giúp tách quá trình phản biện nhưng không
+bảo đảm người phản biện đúng: hai AI có thể cùng bỏ sót ngữ cảnh hoặc dùng cùng
+tiền giả định. Báo cáo chỉ là đầu vào cần kiểm và phê duyệt theo chính sách,
+không tự mang quyền `accepted` hay xác nhận lịch sử hiện hành.
+
+Ví dụ, tìm được câu kinh có X là kết quả truy xuất; suy ra “mọi văn bản đều
+khẳng định X” là lập luận cần kiểm. Bên thẩm định có thể yêu cầu thu hẹp về
+đúng đoạn đã đọc. Nếu chỉ đồng ý với câu rộng ấy mà không có căn cứ tương ứng,
+sự đồng ý không chứng minh câu rộng đúng. Độc lập của thẩm định khác với độc
+lập của nhân chứng tư liệu ở C; không được tính thêm một AI thành một nguồn.
+
 ## 6. Những gì 2.0 phải giữ nguyên
 
 2.0 là **lớp bổ sung**, không phải dự án viết lại hệ thống.
@@ -396,6 +416,11 @@ Các lệnh và hành vi 1.0 đang được dùng như `search`, `context`, `wor
 ràng.
 
 Không thay ranking hiện tại chỉ vì thêm lớp kiểm chứng.
+
+Ở E phải đối chiếu bằng cùng bộ truy vấn: kết quả, thứ tự xếp hạng, thời gian
+và tài nguyên. Các lệnh 1.0 không được âm thầm gọi nghiên cứu sâu; Nhanh chỉ
+kiểm phần liên quan. Cách đo nằm ở [ACCEPTANCE.md, E1–E3](ACCEPTANCE.md#22-đo-hiệu-quả-e1e3-ở-giai-đoạn-e),
+không thay thế các nguyên tắc kiểm bằng máy và truy xuất trước ở mục 5.4–5.5.
 
 ## 7. Năng lực mới của 2.0
 
@@ -742,6 +767,12 @@ Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
 21. lỗi nghiên cứu nghiêm trọng đã phát hiện có bài kiểm thử hồi quy tương ứng;
 22. các bài kiểm thử nghiên cứu chuẩn chạy ổn định;
 23. khi không đủ dữ liệu, hệ thống vẫn đóng khi thiếu dữ liệu (`fail-closed`).
+
+Ngoài các tiêu chí trên, E phải chứng minh quy trình xuất/nhập phản biện giữ
+đúng quyền phê duyệt (REQ-RUN-007) và có báo cáo so sánh E1–E3 (REQ-TST-003):
+chi phí tăng thêm, lỗi bỏ lọt, kết luận có căn cứ bị chặn nhầm và giá trị tăng
+thêm của thẩm định nếu dùng. Hiện các phép đo này **CHƯA ĐO**; số test xanh
+không tự chứng minh 2.0 tích hợp nhanh hơn hoặc nghiên cứu tốt hơn.
 
 ## 14. Nguyên tắc ưu tiên khi phải lựa chọn
 

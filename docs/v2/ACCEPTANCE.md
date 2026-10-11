@@ -373,6 +373,73 @@ research đầy đủ; REQ-ENV-001/002 và ma trận nghiệm thu không đượ
 
 ---
 
+### 2.1. Yêu cầu bổ sung cho D/E
+
+Làm rõ ngày 11/10/2026: kế hoạch vẫn có năm giai đoạn A–E. A/B đã được
+nghiệm thu **phần mã lõi** và gộp vào main tại
+`494f8584dbc7fb104466c7e0b656e2370dd6b027`; các báo cáo và số liệu phía trên
+giữ nguyên theo thời điểm ghi nhận. Điều này không nghiệm thu toàn bộ 2.0,
+không tự nâng trạng thái 31 yêu cầu gốc trong ma trận. Hai yêu cầu dưới đây
+là phần bổ sung, **CHƯA TRIỂN KHAI**, không thay hoặc làm yếu yêu cầu cũ.
+Nghiệm thu toàn bộ ở mục 6 còn phải đáp ứng hai yêu cầu bổ sung này.
+
+| Yêu cầu | Trạng thái hiện tại | Bằng chứng nghiệm thu cần có |
+|---|---|---|
+| REQ-RUN-007 | CHƯA TRIỂN KHAI; MỤC TIÊU D/E | Tích hợp + rà soát: xuất/nhập thủ công đủ snapshot và căn cứ; lưu báo cáo khác quyết định phê duyệt; báo cáo chưa phê duyệt/sai snapshot không cấp quyền; đánh giá đã phê duyệt dùng capability host và cửa kiểm hiện có |
+| REQ-TST-003 | CHƯA ĐO; MỤC TIÊU E | Báo cáo E1–E3 có baseline so sánh được, kết quả thô, chi phí và lỗi bỏ lọt/chặn nhầm; phần thẩm định độc lập có phép đo giá trị tăng thêm khi sử dụng |
+
+Nghiệm thu REQ-RUN-007 phải đi hết một vòng xuất → phản biện → nhập → quyết
+định theo chính sách → kiểm qua gate. Gói chuyển đi phải giữ luận điểm, bằng
+chứng, nguồn/ngữ cảnh, giới hạn, phiên bản và phạm vi; có nhận xét có căn cứ
+và đề nghị sửa/loại, không chỉ một nhãn đồng ý. Ghi bên đề xuất, bên phản
+biện và căn cứ phân biệt quá trình thẩm định; không lấy khác tên mô hình làm
+chứng minh độc lập nguồn tư liệu hoặc độ đúng.
+
+Cần có trường hợp thuận: snapshot còn hiện hành, đánh giá được host phê duyệt
+và đủ điều kiện của mode đi qua các gate áp dụng. Trường hợp đối nghịch gồm
+báo cáo chưa phê duyệt nhưng tự khai accepted/trusted, thiếu căn cứ nguồn,
+sai/đổi snapshot, dùng approval C1 cho C2 hoặc tái công bố C1 đã bị thay thế.
+Chúng không được cấp quyền công bố; giữ candidate/UNVERIFIED khi thiếu khả
+năng kiểm, rejected/superseded theo kết quả gate hiện có. Việc nhập không
+được chọn capability, bỏ `history_reader` hoặc sửa đè lịch sử. Thủ công vẫn
+phải có dấu vết quyết định; không cần xây API hay hệ hai AI tự động.
+
+### 2.2. Đo hiệu quả E1–E3 ở Giai đoạn E
+
+E1–E3 là nhóm nghiệm thu trong E, không phải giai đoạn mới. Cả ba hiện
+**CHƯA ĐO**. Bộ test A/B xanh chỉ chứng minh hành vi trong phạm vi đã chạy,
+không chứng minh hiệu năng hay giá trị của hệ 2.0 tích hợp.
+
+| Nhóm | Đối chiếu và phép đo | Kết quả phải ghi |
+|---|---|---|
+| E1 — Bảo toàn 1.0 | Cùng bộ truy vấn trên commit nền 1.0 và 2.0 tích hợp; cùng 13 nguồn ghim, cấu hình index/ranking/locator và điều kiện máy/cache. Chạy các lệnh search, context, work, parallels, resolve, variants, compare, provenance, evidence | Định danh/nội dung kết quả và thứ tự xếp hạng, chênh lệch ngoài chủ đích, thời gian phản hồi, CPU/bộ nhớ/I/O khi đo được; dấu vết cho thấy lệnh cũ không gọi nghiên cứu sâu |
+| E2 — Nhanh | Câu hỏi tra từ, tìm đoạn, xem nguồn, đọc ngữ cảnh và kiểm câu trích; đối chiếu cùng tác vụ với đường truy xuất nền và đường Nhanh có các phép kiểm áp dụng | Thời gian tổng và tăng thêm, thời gian từng bước đọc nguồn/kiểm chứng, số lần đọc và lượt xử lý AI, tài nguyên; truy nguyên bước gây chậm, không quét corpus hay gọi quy trình sâu ngoài nhu cầu |
+| E3 — Nghiên cứu | Cùng câu hỏi, phạm vi và nguồn trên đường nền, 2.0 Nghiên cứu, và cùng hồ sơ trước/sau thẩm định độc lập nếu dùng | Thời gian, số lần đọc nguồn, lượt xử lý/token và chi phí khi có dữ liệu thực; lỗi bỏ lọt, kết luận có căn cứ bị chặn nhầm; thẩm định phát hiện thêm bao nhiêu lỗi thật và đưa ra bao nhiêu phản biện sai |
+
+Mỗi báo cáo ghi commit nền/tích hợp, nguồn/cấu hình/môi trường, bộ truy vấn,
+điều kiện cache, số lần chạy và kết quả thô. Tách chi phí xây index/chuẩn bị
+khỏi thời gian trả lời; báo cáo phân bố thời gian thay vì chọn một lượt nhanh
+nhất. So sánh trên cùng phạm vi; khác dữ liệu hay điều kiện phải được ghi rõ,
+không gộp thành kết luận hiệu quả. E2 không được bỏ phép kiểm nguồn, approval
+hay lịch sử áp dụng để đạt thời gian đẹp; việc kiểm tất định dùng chương trình.
+
+E3 dùng mẫu có kết quả mong đợi được rà soát độc lập với AI bị đánh giá, gồm
+cả lỗi cố ý và luận điểm hợp lệ. Giữ 11 tình huống chuẩn ở mục 3, thêm đối
+chứng hợp lệ để phát hiện chặn nhầm. Ghi số lỗi bỏ lọt trên tổng lỗi đã biết
+và số luận điểm hợp lệ bị chặn trên tổng luận điểm hợp lệ. Với phản biện,
+ghi lỗi thật phát hiện thêm và phản biện sai trên tổng nhận xét kiểm được;
+phần còn tranh luận hoặc chưa kiểm phải tách riêng, không tính thành đúng.
+Một AI thứ hai đồng ý không được dùng làm đáp án chuẩn cho chính nó.
+
+Người bảo trì phải chốt mức chấp nhận hiệu năng/chi phí từ baseline trước
+nghiệm thu E, ghi lý do và điều kiện đo; tài liệu này không tự tạo ngưỡng số.
+Khi có suy giảm, phải chỉ ra bước gây ra và quyết định xử lý, không chỉ ghi
+test đạt. Không có số liệu thời gian/tài nguyên/token/chi phí thì ghi
+**CHƯA ĐO** cho phần đó và giới hạn; không được tuyên bố nhóm đo đã đạt khi
+còn thiếu phép đo bắt buộc hoặc mức chấp nhận chưa được chốt.
+
+---
+
 ## 3. Bộ kiểm thử nghiên cứu chuẩn
 
 Mỗi tình huống chuẩn phải có tối thiểu:

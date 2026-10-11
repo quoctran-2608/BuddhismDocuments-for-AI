@@ -241,6 +241,16 @@ Sau khi lát cắt này xanh mới sang lớp luận điểm.
 
 Không làm tất cả cùng lúc.
 
+**Làm rõ ngày 11/10/2026:** giữ nguyên năm giai đoạn A–E. Hệ 1.0 tiếp tục
+tìm và truy nguyên nguồn; 2.0 kiểm những bằng chứng/luận điểm liên quan sau
+truy xuất. Hồ sơ xuất/nhập để phản biện độc lập thuộc D, còn kiểm hiệu quả và
+tích hợp thuộc E; không cần tách giai đoạn hay thiết kế hệ hai AI tự động.
+Mã lõi A/B **ĐÃ TRIỂN KHAI và đã gộp vào main** tại
+`494f8584dbc7fb104466c7e0b656e2370dd6b027`; C/D/E **CHƯA TRIỂN KHAI**.
+Các mô tả lát cắt đầu, mốc 45 test và việc tiếp theo ở mục 5–7, 9, 11 giữ
+bối cảnh lập kế hoạch trước A. Kết quả kiểm thử A/B đã thực thi xem
+[ACCEPTANCE.md](ACCEPTANCE.md); chưa chứng minh hiệu quả của 2.0 tích hợp.
+
 ### Giai đoạn A — Bằng chứng
 
 ```text
@@ -275,6 +285,12 @@ Hồ sơ lần nghiên cứu
 → lịch sử thay thế
 ```
 
+D cần bổ sung hồ sơ có thể chuyển cho người có chuyên môn hoặc AI trong phiên
+riêng, tiếp nhận báo cáo phản biện và lưu quyết định phê duyệt riêng
+([REQ-RUN-007](REQUIREMENTS.md#req-run-007--hồ-sơ-phải-hỗ-trợ-xuấtnhập-thẩm-định-độc-lập)).
+Có thể xuất/nhập thủ công trước; báo cáo không tự cấp quyền cho các cửa kiểm
+A/B. Đây là độc lập của quá trình thẩm định, khác độc lập nguồn tư liệu ở C.
+
 ### Giai đoạn E — Tích hợp và kiểm thử nghiên cứu chuẩn
 
 - nối chế độ Nhanh / Nghiên cứu;
@@ -282,6 +298,14 @@ Hồ sơ lần nghiên cứu
 - bổ sung 11 tình huống nghiên cứu chuẩn;
 - biến sự cố nghiên cứu thật thành kiểm thử hồi quy;
 - chỉ sau khi đạt nghiệm thu mới chuyển yêu cầu từ MỤC TIÊU sang HIỆN HÀNH.
+
+E nghiệm thu quy trình thẩm định ở D và đo ba nhóm: E1 bảo toàn kết quả/xếp
+hạng/hiệu năng 1.0; E2 chi phí kiểm chứng tăng thêm của Nhanh; E3 chi phí so
+với lỗi phát hiện và kết luận có căn cứ bị chặn nhầm trong Nghiên cứu
+([REQ-TST-003](REQUIREMENTS.md#req-tst-003--phải-đo-hiệu-quả-trên-nền-so-sánh-được),
+[tiêu chí E1–E3](ACCEPTANCE.md#22-đo-hiệu-quả-e1e3-ở-giai-đoạn-e)).
+E1–E3 là nhóm đo trong E, không phải giai đoạn mới. Hiện **CHƯA ĐO**; API
+thẩm định tự động và hệ nhiều tác nhân vẫn ngoài phạm vi phiên bản đầu.
 
 ## 9. Mốc kiểm thử hiện tại
 

@@ -716,6 +716,52 @@ mô hình dữ liệu không làm mất dấu lịch sử.
 
 Không đặt mục tiêu AI phải viết lại từng chữ giống hệt lần trước.
 
+### 14.5. Xuất/nhập hồ sơ thẩm định độc lập
+
+**MỤC TIÊU D/E — CHƯA TRIỂN KHAI.** D chuẩn bị đường xuất/nhập thủ công;
+E tích hợp và nghiệm thu. Không thêm hệ nhiều tác nhân, ứng dụng web hay API
+bắt buộc. Các tên dữ liệu dưới đây mô tả nội dung cần giữ, không thêm trường
+bắt buộc vào hợp đồng mã A/B hiện tại.
+
+Luồng tối thiểu:
+
+```text
+snapshot hồ sơ và các luận điểm cần thẩm định
+→ xuất bằng chứng + nguồn ghim + ngữ cảnh + giới hạn
+→ người có chuyên môn hoặc AI khác trong phiên riêng phản biện
+→ nhập báo cáo dưới dạng đề xuất chưa có quyền
+→ kiểm liên kết, căn cứ và phê duyệt theo chính sách host
+→ đọc lại dữ liệu hiện hành qua các capability và chạy cửa kiểm A/B
+```
+
+Gói xuất phải giữ mã/run và phiên bản hồ sơ, nội dung đầy đủ của luận điểm
+(kể cả giới hạn, phản chứng, quan hệ thay thế và cách trình bày), Bản ghi bằng
+chứng, repo/path/SHA, quotation/ngữ cảnh/vai trò/nhân chứng và phạm vi đã/chưa
+kiểm. Bên phản biện phải biết đang xét snapshot nào; danh sách mã hoặc citation
+đơn lẻ không đủ để kiểm lập luận. Không xuất chuỗi suy nghĩ nội bộ.
+
+Báo cáo nhập phải liên kết đúng snapshot, có danh tính/vai trò người hoặc AI
+thẩm định, phiên làm việc, thời điểm, nhận xét có căn cứ cho từng luận điểm,
+điểm chưa kiểm và đề nghị giữ/sửa/loại. Ghi rõ ai đề xuất luận điểm, ai phản
+biện và quan hệ giữa các bên; không tự khai độc lập khi chưa xác định được.
+Gợi ý nguồn ngoài corpus chỉ là giả thuyết tìm kiếm, chưa phải bằng chứng.
+
+Host lưu báo cáo gốc và quyết định chấp thuận/từ chối riêng theo chính sách;
+không lấy nhãn đồng ý của AI làm approval. Chỉ đánh giá đã được host xác thực
+và phê duyệt, gắn đúng snapshot luận điểm và bằng chứng hiện tại, mới được đọc
+qua `assessment_reader(review_id)`; diễn đạt lại vẫn theo `review_reader` của
+A. Kết quả A thật đi qua `evidence_reader`, lịch sử đầy đủ/hiện hành vẫn do
+`history_reader` cung cấp. JSON nhập không được chọn capability, xác nhận
+nguồn hoặc cấp trạng thái công bố. Chi tiết hợp đồng đã triển khai xem
+[ACCEPTANCE.md](ACCEPTANCE.md).
+
+Nếu snapshot đã đổi, nguồn chưa kiểm được hoặc chính sách chưa phê duyệt,
+báo cáo không cấp quyền công bố; thiếu khả năng kiểm giữ chưa xác minh. Đề
+nghị sửa tạo luận điểm/hồ sơ mới theo lịch sử thay thế, không sửa đè bản cũ.
+Phê duyệt cho C1 không tự áp dụng cho C2, và báo cáo cũ không làm C1 hiện hành
+sau khi bị thay thế. Độc lập thẩm định không thay phép kiểm phụ thuộc nguồn
+tư liệu ở C và không hoàn thành điều kiện Research còn thiếu ở C/D.
+
 ## 15. Kiểm tra cuối sau khi tổng hợp
 
 Sau khi viết câu trả lời tự nhiên, hệ thống phải kiểm ít nhất:

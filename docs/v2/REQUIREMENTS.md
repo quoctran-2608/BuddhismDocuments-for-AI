@@ -298,6 +298,23 @@ Nếu bằng chứng mới làm thay đổi kết quả, phải tạo hồ sơ m
 quan hệ truy ngược về hồ sơ trước và lý do thay đổi, ví dụ
 `supersedes_run_id` + `revision_reason`.
 
+### REQ-RUN-007 — Hồ sơ phải hỗ trợ xuất/nhập thẩm định độc lập
+
+**MỤC TIÊU D/E — CHƯA TRIỂN KHAI.** Phải có đường xuất hồ sơ cho người có
+chuyên môn hoặc AI khác trong phiên riêng và nhập lại báo cáo phản biện.
+Xuất/nhập thủ công đáp ứng phạm vi phiên bản đầu; không bắt buộc API tự động.
+Gói xuất phải đủ luận điểm, bằng chứng, nguồn ghim, ngữ cảnh, giới hạn và định
+danh snapshot để kiểm lập luận. Báo cáo phải gắn đúng snapshot, ghi bên đề
+xuất/bên thẩm định, nhận xét có căn cứ và đề nghị sửa cùng phần chưa kiểm.
+
+Phải giữ báo cáo đề xuất và quyết định phê duyệt theo chính sách host riêng.
+AI nghiên cứu không được tự tuyên bố phản biện của chính nó là độc lập; tính
+độc lập thẩm định không thay tính độc lập nguồn ở REQ-CTR-003. Báo cáo nhập,
+dù AI khác đồng ý, không tự mang quyền của `assessment_reader`, `history_reader`
+hoặc cửa kiểm A/B. Snapshot đổi phải kiểm/phê duyệt lại; sửa tạo bản mới theo
+REQ-VER-013/REQ-RUN-006. Xem [Design mục 14.5](DESIGN.md#145-xuấtnhập-hồ-sơ-thẩm-định-độc-lập)
+và [nghiệm thu bổ sung](ACCEPTANCE.md#21-yêu-cầu-bổ-sung-cho-de).
+
 ---
 
 ## 7. Kiểm thử chất lượng nghiên cứu
@@ -328,6 +345,28 @@ một bài kiểm thử để bảo đảm lỗi đó không quay trở lại.
 
 **Kiểm thử hồi quy** là bài kiểm tra được giữ lại lâu dài nhằm phát hiện việc một
 lỗi cũ xuất hiện trở lại sau thay đổi mã nguồn.
+
+### REQ-TST-003 — Phải đo hiệu quả trên nền so sánh được
+
+**MỤC TIÊU E — CHƯA ĐO.** Nghiệm thu tích hợp phải có báo cáo đối chiếu cùng
+bộ truy vấn/câu hỏi và cùng phiên bản nguồn trong ba nhóm: E1 bảo toàn kết
+quả, thứ tự xếp hạng, thời gian và tài nguyên của 1.0; E2 chi phí kiểm chứng
+tăng thêm của Nhanh; E3 chi phí Nghiên cứu so với lỗi bỏ lọt và kết luận có
+căn cứ bị chặn nhầm. Lệnh 1.0 không được âm thầm chạy nghiên cứu sâu, Nhanh
+không chạy các bước sâu không cần thiết và chỉ kiểm bằng chứng/luận điểm liên
+quan; việc kiểm tất định không được chuyển sang AI suy luận chỉ để đo chất
+lượng. Nếu dùng thẩm định độc lập, đo thêm lỗi thật được phát hiện và phản
+biện sai so với cùng hồ sơ trước thẩm định.
+
+Báo cáo phải ghi commit/cấu hình/môi trường, điều kiện cache, phương pháp và
+số lần chạy, kết quả thô, số lượng/mẫu số của từng loại lỗi, chênh lệch và
+nguyên nhân suy giảm khi có. Ghi thời gian, số lần đọc nguồn, tài nguyên,
+số lượt xử lý AI/token và chi phí khi đo được; phần không đo được phải ghi
+**CHƯA ĐO** cùng giới hạn. Không bịa số liệu hay tự đặt ngưỡng đạt; mức chấp
+nhận hiệu năng/chi phí phải được chốt dựa trên baseline trước nghiệm thu E.
+Xem [E1–E3](ACCEPTANCE.md#22-đo-hiệu-quả-e1e3-ở-giai-đoạn-e). Yêu cầu này
+bổ sung đo hiệu quả, không thay 11 mẫu nghiên cứu chuẩn và hồi quy ở
+REQ-TST-001/002.
 
 ---
 
