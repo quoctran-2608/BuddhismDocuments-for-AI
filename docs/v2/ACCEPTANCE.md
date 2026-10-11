@@ -91,7 +91,7 @@ tự khai phải giữ `UNVERIFIED`; chỉ host đã nối công cụ đọc đ�
 có thể cung cấp khả năng tương đương đường Git cho cùng lõi.
 
 Các mục A dưới đây ghi **đã có lõi, chờ nghiệm thu**, không chuyển toàn bộ yêu
-cầu sang HIỆN HÀNH. Giai đoạn B–E vẫn chưa triển khai.
+cầu sang HIỆN HÀNH. Tại mốc rà soát A này, Giai đoạn B–E chưa triển khai.
 
 ### Nghiệm thu cuối mã lõi A — 11/10/2026
 
@@ -130,6 +130,141 @@ thử này; PR giữ Draft chờ người bảo trì rà soát và chấp thuậ
 
 ---
 
+### Bằng chứng triển khai mã lõi Giai đoạn B — 11/10/2026
+
+Nền là `main` tại merge commit A
+`5880d260e7afccde67b56e1c85f504ec52ecf376`. Đã fetch, xác nhận không có thay
+đổi nền và tạo nhánh `feature/bcr-v2-phase-b`. Chỉ bổ sung `claims.py`,
+`test_claims.py` và cập nhật tài liệu này; không sửa A, 13 nguồn, parser,
+SQLite/schema, FTS, ranking, locator hay CLI. Các mô tả Draft/chờ chấp thuận
+trong báo cáo A phía trên là lịch sử trước khi PR #1 được merge.
+
+`make_claim()` tạo đủ 13 trường theo Design mục 9, luôn `candidate`, mức hỗ trợ
+null và độc lập nguồn `uncertain`. Trường chưa có căn cứ giữ null/danh sách rỗng.
+Có thêm `presentation` (certainty và quotations) và `revision_evidence_ids` để
+kiểm cách công bố và giữ bằng chứng dẫn tới sửa đổi. Thiếu mã/nội dung/loại,
+dữ liệu sai kiểu hoặc loại ngoài bảy loại quy định bị từ chối. AI chỉ đề xuất
+luận điểm, phân tách, mức hỗ trợ và cách trình bày; không dùng dấu câu hay cờ
+JSON để tự xác nhận tính nguyên tử.
+
+#### Hợp đồng đánh giá và ranh giới với A
+
+Hai capability do **ứng dụng** nối bên ngoài JSON/mã AI sinh:
+
+- `evidence_reader(evidence_id)` lấy kết quả **thật sự qua cửa kiểm A** từ kho
+  do ứng dụng kiểm soát, hoặc kiểm lại qua A. Trả envelope A gồm `status`,
+  `source_opened`, `checks`, `quote`, `evidence`; B kiểm envelope, mã yêu cầu,
+  trạng thái và dữ liệu nguồn/ngữ cảnh. JSON ứng viên có `state=VERIFIED`
+  không cấp quyền. Cache phải vô hiệu hóa kết quả cũ khi bằng chứng đổi;
+  file JSON tùy ý không phải kho đã xác thực.
+- `assessment_reader(review_id)` lấy đánh giá đã phê duyệt qua kênh xác thực.
+  Chỉ nhận mã tra cứu, không nhận đề xuất để tự xác nhận. Thiếu/hỏng capability
+  hoặc đánh giá hợp lệ giữ chờ kiểm, khác với `UNSUPPORTED` đã được đánh giá.
+  Chưa xây kênh phê duyệt thật.
+
+Đánh giá được phê duyệt cần đủ:
+
+```text
+review_id
+claim                 # đúng claim_subject(), không chứa nhãn tự phong
+evidence              # Evidence Records hiện tại, theo thứ tự mã support/counter
+atomic                # boolean, quyết định ngữ nghĩa của người kiểm
+support_level         # DIRECT / STRONG / WEAK / UNSUPPORTED / CONTRADICTED
+scope                 # narrow_lookup / research
+evidence_uses         # evidence_id + basis + justification cho từng bằng chứng
+required_limitations
+max_certainty         # tentative / asserted
+reviewer
+rationale
+```
+
+`claim_subject()` gắn mã/run/nội dung/loại, mã bằng chứng/phản chứng, giới hạn,
+cách trình bày và thông tin sửa đổi. Ảnh chụp bằng chứng giữ toàn bộ trường A,
+gồm repository/path/SHA, quotation/context, vai trò và nhân chứng. So sánh JSON
+chính xác, phân biệt boolean/số; nội dung/provenance đổi làm phê duyệt cũ mất
+hiệu lực. Hash/nhãn tự khai không xác nhận quyền phê duyệt. Người kiểm chịu
+trách nhiệm xác nhận nguyên tử, đúng loại/phạm vi, quan hệ ngữ nghĩa và căn cứ
+phù hợp; máy kiểm liên kết dữ liệu và các quy tắc tất định.
+
+`evidence_uses.basis` phân biệt `textual_report`, `primary_text`, `relationship`,
+`historical_corroboration`, `comparison`, `interpretation`,
+`empirical_observation`, `metaphysical_argument`. Một tên basis đúng không làm
+luận điểm đạt: phải có đánh giá đã phê duyệt gắn đúng dữ liệu. Metadata chỉ
+dùng cho relationship; textual_report không chứng minh sự thật lịch sử/thực
+nghiệm/siêu hình. Primary text cần lớp canonical/structured, root_text và
+witness; bản dịch/note/discovery không được nâng thành bản gốc. Discovery vẫn
+có thể phục vụ tra cứu hẹp về chính dữ liệu ấy với lớp/vai trò/witness giữ
+nguyên và giới hạn `discovery_source:<evidence_id>:<class>`. Điểm tìm kiếm và
+số citation không quyết định mức hỗ trợ hay độc lập nguồn.
+
+#### Cửa kiểm, tổng hợp và lịch sử
+
+`assess_claim()` trả ASSESSED/UNVERIFIED/REJECTED riêng với vòng đời luận điểm.
+`final_claim_gate()` là nơi cấp accepted: cần bằng chứng A hợp lệ, đánh giá
+nguyên tử/hỗ trợ đã phê duyệt, loại/cách dùng nguồn phù hợp, quotation đúng
+wording/vai trò/witness, đủ giới hạn và cách trình bày không vượt đánh giá.
+DIRECT/STRONG không tự vượt điều kiện khác. WEAK cần certainty=tentative và
+giới hạn rõ. UNSUPPORTED/CONTRADICTED bị rejected dù thêm câu chữ giảm nhẹ.
+Thiếu approval thì không gán mức hỗ trợ suy đoán.
+
+B chỉ cho chốt tra cứu hẹp textual/relationship ở quick với scope=narrow_lookup
+đã phê duyệt. Mọi research, phạm vi rộng và năm loại còn lại giữ chờ điều kiện
+C/D (hoặc rejected nếu có lỗi khác). Có thể đánh giá hỗ trợ đủ bảy loại nhưng
+chưa cấp quyền chốt nghiên cứu. Cờ tự khai không hoàn thành phản chứng, độc
+lập nguồn hoặc Research Run.
+
+`accepted_claim_set()` chạy lại gate để xuất tập được phép. `verify_synthesis()`
+cũng chạy lại với reader hiện tại, chỉ nhận danh sách chính xác claim_id, text,
+verification_status, limitations, presentation. Mã lạ, câu mới/đổi, nâng mức,
+bỏ giới hạn, mục trùng hoặc trường prose thêm bị từ chối. Accepted đã serialize
+không tự mang quyền. Chưa xác minh ngữ nghĩa đoạn văn tự do; phần đó chờ E.
+
+`append_claim()`/`revise_claim()` tạo bản sao lịch sử JSON, không sửa đè snapshot
+cũ. Bản sửa cần mã mới, predecessor còn hiệu lực, lý do và bằng chứng dẫn tới
+sửa vẫn nằm trong liên kết support/counter. Giữ phản chứng cũ, không đổi run,
+không cho chu trình, ghi đè mã hay nhánh thay thế mơ hồ. Bản sửa bắt đầu candidate
+và cần đánh giá mới. `history_claim()` chiếu superseded nhưng giữ snapshot gốc.
+Gate/export bản sửa cần lịch sử đầy đủ; export loại bản cũ dù approval cũ còn
+tồn tại. Ứng dụng phải lưu lịch sử chỉ nối thêm và thu hồi approval bản cũ khi
+cung cấp luận điểm rời lịch sử. Hàm thuần không phải cơ chế quyền truy cập chống
+ứng dụng tự ghi đè dữ liệu hay bỏ qua gate.
+
+#### Kiểm thử đã thực thi
+
+Ubuntu WSL/Python 3.12.3/SQLite 3.45.1 dùng đủ 13 checkout nguồn ghim, cùng byte
+nguồn với baseline qua liên kết trong worktree B. Đối chiếu Gitlink/HEAD và kiểm
+nguồn không bị sửa trước/sau chạy. Tệp B được chép nguyên byte từ nhánh Windows
+sang worktree Linux riêng, giữ hash kiểm tra; không cập nhật pin.
+
+| Bộ kiểm và môi trường | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Baseline main sau A, WSL đủ nguồn, chạy mới trước sửa mã | 89/89 | 0/0/0 |
+| Riêng B, WSL | 66/66 | 0/0/0 |
+| Toàn suite sau B, cùng môi trường/nguồn WSL | 155/155 | 0/0/0 |
+| Riêng B, Windows/Python 3.14 | 66/66 | 0/0/0 |
+| Riêng A, Windows/Python 3.14 | 44/44 | 0/0/0 |
+
+Lệnh: `PYTHONPATH=tools python3 -m unittest discover -s tests -p test_claims.py -v`
+và `PYTHONPATH=tools python3 -m unittest discover -s tests -v` (Windows dùng
+python). Không sửa/bỏ qua test cũ. 89 bài cũ vẫn đạt; không có hồi quy mới trong
+WSL đối chiếu. Toàn suite Windows chưa chạy lại ở mốc B; lỗi nền Windows ghi
+ở báo cáo A, không tuyên bố đã sửa. Không có GitHub CI thực thi suite.
+
+66 phương thức B dùng mẫu phần mềm nhỏ, tất định, độc lập submodule, có kết quả
+thật từ cửa kiểm A cho fixture. Bao phủ tự phong trạng thái, thiếu/hỏng capability,
+binding, sai loại/basis/vai trò/witness, năm mức hỗ trợ, giới hạn/WEAK, đóng research,
+tổng hợp có cấu trúc, lịch sử/supersession và JSON. Tiến trình riêng chặn import
+SQLite/subprocess vẫn chạy gate hợp lệ. Đây không phải chứng cứ Phật học hoặc
+bộ nghiên cứu chuẩn thật.
+
+Đã có mã lõi B và kiểm tự động, **chờ rà soát/nghiệm thu độc lập**. Chưa tích hợp
+CLI, nguồn thật với resolver A, kênh phê duyệt ngữ nghĩa/diễn đạt lại, phiên Work
+hoặc GitHub plugin thật. REQ-ENV-001/002 chưa nghiệm thu đầy đủ. C/D/E và bộ golden
+research đầy đủ chưa triển khai; không chuyển toàn bộ 31 yêu cầu sang HIỆN HÀNH.
+Chỉ commit/push nhánh B; chưa tạo PR hoặc merge.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
@@ -137,17 +272,17 @@ thử này; PR giữ Draft chờ người bảo trì rà soát và chấp thuậ
 | REQ-VER-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: con trỏ/kết quả chưa mở không tạo được Bản ghi bằng chứng; siêu dữ liệu quan hệ chỉ được dùng đúng loại luận điểm |
 | REQ-VER-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động + cấu trúc: thiếu nguồn gốc bắt buộc bị từ chối; trường không áp dụng được phép để trống, không tạo dữ liệu giả |
 | REQ-VER-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: sai kho nguồn/SHA/đường dẫn/đoạn làm Cửa kiểm bằng chứng thất bại |
-| REQ-VER-004 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập |
-| REQ-VER-005 | CHƯA TRIỂN KHAI | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận |
-| REQ-VER-006 | CHƯA TRIỂN KHAI | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa |
-| REQ-VER-007 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: UNSUPPORTED không qua Cửa kiểm luận điểm cuối |
-| REQ-VER-008 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: CONTRADICTED không được xuất như kết luận đã xác lập |
-| REQ-VER-009 | CHƯA TRIỂN KHAI | Tự động: thay đổi điểm truy xuất không tự thay đổi mức hỗ trợ của luận điểm |
-| REQ-VER-010 | CHƯA TRIỂN KHAI | Nghiên cứu chuẩn: phần tổng hợp sinh luận điểm mới ngoài tập đã chấp nhận phải thất bại kiểm tra cuối |
-| REQ-VER-011 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ |
-| REQ-VER-012 | CHƯA TRIỂN KHAI | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
-| REQ-VER-013 | CHƯA TRIỂN KHAI | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan |
-| REQ-VER-014 | MỘT PHẦN: DỮ LIỆU A | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
+| REQ-VER-004 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: kết luận phức hợp phải được tách thành các luận điểm có thể kiểm độc lập |
+| REQ-VER-005 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: luận điểm thiếu bằng chứng hỗ trợ không thể được chấp nhận |
+| REQ-VER-006 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Cấu trúc + tự động: chỉ chấp nhận các mức DIRECT/STRONG/WEAK/UNSUPPORTED/CONTRADICTED đã định nghĩa |
+| REQ-VER-007 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: UNSUPPORTED không qua Cửa kiểm luận điểm cuối |
+| REQ-VER-008 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: CONTRADICTED không được xuất như kết luận đã xác lập |
+| REQ-VER-009 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: thay đổi điểm truy xuất không tự thay đổi mức hỗ trợ của luận điểm |
+| REQ-VER-010 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: phần tổng hợp sinh luận điểm mới ngoài tập đã chấp nhận phải thất bại kiểm tra cuối |
+| REQ-VER-011 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: thiếu loại luận điểm bị từ chối; dùng sai loại bằng chứng không được nâng mức hỗ trợ |
+| REQ-VER-012 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: AI hoặc chương trình gọi không thể tự ghi trạng thái `accepted`; chỉ Cửa kiểm luận điểm cuối được cấp trạng thái này |
+| REQ-VER-013 | ĐÃ CÓ LÕI B; CHỜ NGHIỆM THU | Tự động: sửa luận điểm tạo lịch sử thay thế, giữ bản cũ, lý do sửa và phản chứng liên quan |
+| REQ-VER-014 | MỘT PHẦN: LÕI A/B | Tự động + nghiên cứu chuẩn: thông tin chưa đủ căn cứ phải giữ trạng thái chưa xác định/chưa kiểm/không chắc; không tự suy đoán thành giá trị xác định |
 | REQ-QTE-001 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Tự động: phân loại đúng các trạng thái khớp nguyên văn, khớp sau chuẩn hóa, diễn đạt lại, chưa kiểm và không khớp |
 | REQ-QTE-002 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: câu trích sai một từ không được xuất như nguyên văn |
 | REQ-QTE-003 | ĐÃ CÓ LÕI A; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: diễn đạt lại không được trình bày như câu trích trực tiếp |
@@ -163,8 +298,8 @@ thử này; PR giữ Draft chờ người bảo trì rà soát và chấp thuậ
 | REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
 | REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
 | REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
-| REQ-ENV-001 | MỘT PHẦN: LÕI A; CHƯA THỬ WORK | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
-| REQ-ENV-002 | MỘT PHẦN: GIẢ LẬP; CHƯA THỬ PLUGIN | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
+| REQ-ENV-001 | MỘT PHẦN: LÕI A/B; CHƯA THỬ WORK | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
+| REQ-ENV-002 | MỘT PHẦN: LÕI A/B GIẢ LẬP; CHƯA THỬ PLUGIN | Tích hợp + rà soát: cùng một mẫu bằng chứng từ GitHub có thể đi qua đường plugin khi đủ dữ liệu; thiếu phép kiểm bắt buộc phải trả chưa xác minh và đóng khi thiếu dữ liệu |
 
 ---
 
