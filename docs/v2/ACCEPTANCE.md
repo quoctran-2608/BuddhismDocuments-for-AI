@@ -30,21 +30,65 @@ tên.
 
 `tools/corpus_research/verification.py` đã có lõi Bản ghi bằng chứng, Cửa kiểm
 bằng chứng và năm trạng thái kiểm câu trích. `tests/test_verification.py` có
-32 bài kiểm thử độc lập với 13 submodule, gồm tích hợp `retrieval.evidence()`
-trên SQLite nhỏ, đọc blob Git ghim trong repo tạm và bộ đọc kiểu GitHub giả lập.
-Lõi nhận/trả dữ liệu chuyển được sang JSON; bộ đọc nguồn và đánh giá ngữ nghĩa
-diễn đạt lại là đầu vào riêng có trách nhiệm cung cấp quan sát đáng tin cậy.
+44 bài kiểm thử độc lập với 13 submodule: giữ 32 phương thức ban đầu và bổ sung
+12 phương thức về ranh giới tin cậy. Có tích hợp `retrieval.evidence()` trên
+SQLite nhỏ, đọc blob Git thật ghim trong repo tạm và kiểm dữ liệu JSON kiểu
+GitHub với cùng lõi. Mẫu thử nhỏ là dữ liệu phần mềm, không phải chứng cứ corpus.
 
-Kết quả trên Windows/Python 3.14: 32/32 bài mới đạt. Baseline hệ hiện hành chạy
-36 bài, báo 29 lỗi và chặn 9 bài acceptance ở `setUpClass`; sau Giai đoạn A chạy
-68 bài với cùng 29 lỗi. Nhóm lỗi không đổi: thiếu submodule/tệp/Git object và
-khóa SQLite khi dọn thư mục tạm. Không sửa hoặc bỏ qua các bài lỗi của 1.0.
+Sau rà soát, `opened_source` và `paraphrase_review` đều là dữ liệu chưa tin cậy.
+`source_contract` phải lấy từ config/manifest do ứng dụng kiểm soát, không từ
+ứng viên. `source_reader(request)` là khả năng thực thi do ứng dụng cấu hình
+riêng: nhận định danh kho/commit/path và bộ chọn work/segment/sequence, tự đọc
+đúng phiên bản đã ghim, giải vị trí/vai trò/nhân chứng và phạm vi từ chính nguồn.
+Cửa kiểm đối chiếu nội dung đầy đủ, định danh, vị trí và phạm vi với lần đọc độc
+lập này. SHA blob tự tính chỉ kiểm tính nhất quán của byte; mã băm hay các trường
+tự khai khớp nhau không chứng minh quan hệ commit/path → blob. Chính cấu hình
+nguồn và lần đọc độc lập thiết lập quan hệ đó. Git cục bộ vẫn dùng `rev-parse`
+và `cat-file`, không đọc nội dung working tree thay cho blob ghim.
 
-Chưa xác nhận toàn suite trên checkout đủ nguồn, phiên Work thực tế hoặc GitHub
-plugin thực tế. Bộ đọc nguồn còn phải giải vị trí/markup và cung cấp phạm vi
-đoạn/ngữ cảnh; lõi không tự coi metadata ứng viên là quan sát nguồn. Diễn đạt
-lại chỉ có trạng thái `PARAPHRASE` khi nhận đánh giá riêng gắn đúng nội dung,
-người kiểm và lý do; máy không tự xác nhận ý nghĩa từ việc khớp từ.
+Ứng dụng nối `read_local_source()` và bộ giải vị trí theo định dạng nguồn bên
+trong `source_reader`; callback không được chỉ trả lại `opened_source`. Phần
+giải vị trí 13 nguồn và tích hợp CLI chưa được bổ sung trong lát cắt này. Tệp
+đã đọc đưa vào dưới dạng JSON, kể cả JSON do adapter Git từng trả ra, không tự
+mang quyền xác minh. Con trỏ chưa mở vẫn là `CANDIDATE`; có nội dung mà thiếu
+khả năng đọc độc lập giữ `UNVERIFIED`; đủ nguồn độc lập và các phép kiểm khác
+mới đạt `VERIFIED`. Mâu thuẫn với căn cứ độc lập bị `REJECTED`.
+
+`paraphrase_review` là đề xuất, nay cần thêm `review_id`. Khả năng thực thi
+`review_reader(review_id)` do ứng dụng nối vào kênh người kiểm/phê duyệt đã xác
+thực, trả bản đánh giá đã được chấp thuận gồm `review_id`, `quotation`,
+`source_text`, `supported`, `reviewer`, `rationale`. Callback chỉ nhận mã tra
+cứu, không nhận nội dung đề xuất để tự xác nhận. Tất cả trường trên phải khớp
+chính xác, gồm kiểu boolean và người kiểm. Thay câu diễn đạt lại, văn bản nguồn
+cần kiểm hoặc danh tính người kiểm làm đánh giá cũ mất hiệu lực. Thiếu đánh giá
+đã xác thực giữ `UNVERIFIED`; đánh giá hợp lệ đồng ý trả `PARAPHRASE`, phản đối
+trả `QUOTE_MISMATCH`. Diễn đạt lại luôn không có quyền trích nguyên văn. Máy
+không tự xét đúng sai ngữ nghĩa; chưa có kênh phê duyệt thật tích hợp sẵn.
+
+Hai callback nằm ngoài dữ liệu JSON, không được chọn bởi JSON hoặc mã do AI
+sinh từ đề xuất. Các cờ `trusted`, `verified`, `attested`, `approved` không cấp
+quyền; tệp JSON đánh giá tự tạo không phải kênh phê duyệt đã xác thực. Lõi không
+thực hiện I/O trực tiếp và không bắt buộc SQLite/shell; callback tùy môi trường
+có thể thực hiện I/O. Dữ liệu đầu vào/đầu ra vẫn chuyển được sang JSON. Thay đổi
+tương thích có chủ ý: lời gọi cũ chỉ truyền dữ liệu sẽ giữ `UNVERIFIED`, dù
+trước đây các trường tự khai khớp nhau đã cho qua. Các kỳ vọng thiếu an toàn ở
+kiểm thử nguồn JSON, diễn đạt lại và tiến trình cô lập đã được siết lại; các
+trường hợp hợp lệ dùng căn cứ độc lập do host kiểm thử cấu hình.
+
+`VERIFIED` chỉ xác nhận nguồn/vị trí và phép kiểm câu trích áp dụng. Nó không
+cấp mức hỗ trợ luận điểm, không xác nhận kết luận học thuật và không nâng
+`computational_segmented` hoặc `parallel_alignment` thành nhân chứng chính.
+`evidence_class`, `text_role`, `witness` được giữ riêng. Chưa có lớp luận điểm.
+
+Kết quả Windows/Python 3.14: 44/44 bài A đạt (mốc trước 32/32). Baseline 1.0
+chạy 36 bài với 29 lỗi, chặn 9 bài acceptance ở `setUpClass`; mốc A trước chạy
+68 bài với 29 lỗi; sau rà soát chạy 80 bài với cùng 29 lỗi. Đối chiếu danh sách
+`ERROR:` không có chênh lệch. Nhóm lỗi vẫn là thiếu submodule/tệp/Git object và
+khóa SQLite khi dọn thư mục tạm. Không sửa hoặc bỏ qua lỗi 1.0; toàn suite chưa
+xanh. Chưa xác nhận trên checkout đủ nguồn, phiên Work thật hoặc GitHub plugin
+thật. Chưa có adapter remote xác minh phiên bản tích hợp: chỉ dữ liệu plugin
+tự khai phải giữ `UNVERIFIED`; chỉ host đã nối công cụ đọc đúng phiên bản mới
+có thể cung cấp khả năng tương đương đường Git cho cùng lõi.
 
 Các mục A dưới đây ghi **đã có lõi, chờ nghiệm thu**, không chuyển toàn bộ yêu
 cầu sang HIỆN HÀNH. Giai đoạn B–E vẫn chưa triển khai.

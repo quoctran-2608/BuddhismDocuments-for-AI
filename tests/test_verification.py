@@ -62,8 +62,26 @@ class VerificationTests(unittest.TestCase):
             "source_path": "texts/work.txt", "content": CONTENT,
             "source_blob_sha": git_blob_sha(CONTENT.encode("utf-8")),
         })
+        # Independent test oracle, configured by the test host, never taken from
+        # candidate/provider input. Actual pinned reads are tested with Git below.
+        self.approved_source = copy.deepcopy(self.source)
+
+    def read_fixture_source(self, request) -> dict | None:
+        if all(request.get(key) == self.approved_source[key] for key in ("repository", "source_sha", "source_path")):
+            return copy.deepcopy(self.approved_source)
+        return None
+
+    def configure_fixture_location(self, location: dict) -> dict:
+        """Configure a different tiny source in the host's independent oracle."""
+        content = json.dumps(location, sort_keys=True) + "\nBefore the passage.\n" + QUOTE + "\nAfter the passage.\n"
+        self.approved_source = resolve_fixture({
+            **self.approved_source, "content": content,
+            "source_blob_sha": git_blob_sha(content.encode("utf-8")),
+        })
+        return copy.deepcopy(self.approved_source)
 
     def gate(self, candidate=None, source=None, **kwargs) -> dict:
+        kwargs.setdefault("source_reader", self.read_fixture_source)
         return evidence_gate(
             self.candidate if candidate is None else candidate,
             self.contract, self.source if source is None else source, **kwargs,
@@ -217,6 +235,7 @@ class VerificationTests(unittest.TestCase):
         for key in ("work_id", "segment_id", "sequence_no", "language", "witness"):
             record[key] = None
             source["location"][key] = None  # Reader confirms non-applicability.
+        source = self.configure_fixture_location(source["location"])
         record["source_blob_sha"] = None
         record["relation_ids"] = None
         result = self.gate(record, source)
@@ -231,7 +250,9 @@ class VerificationTests(unittest.TestCase):
     def test_note_cannot_masquerade_as_root_text(self) -> None:
         source = copy.deepcopy(self.source)
         source["location"]["text_role"] = "translation_note"
+        source = self.configure_fixture_location(source["location"])
         record = {**self.candidate, "text_role": "root_text"}
+        record["source_blob_sha"] = source["source_blob_sha"]
         self.assertEqual(self.gate(record, source)["status"], "REJECTED")
         record["text_role"] = "translation_note"
         self.assertEqual(self.gate(record, source)["evidence"]["text_role"], "translation_note")
@@ -313,19 +334,25 @@ class VerificationTests(unittest.TestCase):
         self.assertEqual(verify_quote(paraphrase, QUOTE)["status"], "QUOTE_MISMATCH")
         self.assertEqual(verify_quote(paraphrase, QUOTE, kind="paraphrase")["status"], "UNVERIFIED")
         self.assertEqual(verify_quote(QUOTE, QUOTE, kind="paraphrase")["status"], "UNVERIFIED")
-        review = {"quotation": paraphrase, "source_text": QUOTE, "supported": True, "reviewer": "fixture-reviewer", "rationale": "Fixture assessment of the same passage."}
-        result = verify_quote(paraphrase, QUOTE, kind="paraphrase", paraphrase_review=review)
+        review = {"review_id": "review-1", "quotation": paraphrase, "source_text": QUOTE, "supported": True, "reviewer": "fixture-reviewer", "rationale": "Fixture assessment of the same passage."}
+        # Only the host's pre-approved store can establish approval. The proposed
+        # JSON alone used to pass here; that unsafe expectation is tightened.
+        approvals = {"review-1": copy.deepcopy(review)}
+        reader = approvals.get
+        self.assertEqual(verify_quote(paraphrase, QUOTE, kind="paraphrase", paraphrase_review=review)["status"], "UNVERIFIED")
+        result = verify_quote(paraphrase, QUOTE, kind="paraphrase", paraphrase_review=review, review_reader=reader)
         self.assertEqual(result["status"], "PARAPHRASE")
         self.assertTrue(result["paraphrase_allowed"])
         self.assertFalse(result["direct_quote_allowed"])
         record = {**self.candidate, "quotation": paraphrase}
-        self.assertEqual(self.gate(record, quote_kind="paraphrase", paraphrase_review=review)["status"], "VERIFIED")
-        for key in ("quotation", "source_text", "reviewer", "rationale", "supported"):
+        self.assertEqual(self.gate(record, quote_kind="paraphrase", paraphrase_review=review, review_reader=reader)["status"], "VERIFIED")
+        for key in ("review_id", "quotation", "source_text", "reviewer", "rationale", "supported"):
             stale = copy.deepcopy(review)
             stale.pop(key)
-            self.assertEqual(verify_quote(paraphrase, QUOTE, kind="paraphrase", paraphrase_review=stale)["status"], "UNVERIFIED")
+            self.assertEqual(verify_quote(paraphrase, QUOTE, kind="paraphrase", paraphrase_review=stale, review_reader=reader)["status"], "UNVERIFIED")
         review["supported"] = False
-        self.assertEqual(self.gate(record, quote_kind="paraphrase", paraphrase_review=review)["status"], "REJECTED")
+        approvals["review-1"] = copy.deepcopy(review)  # Authenticated negative review.
+        self.assertEqual(self.gate(record, quote_kind="paraphrase", paraphrase_review=review, review_reader=reader)["status"], "REJECTED")
 
     def test_self_declared_paraphrase_status_is_not_a_review(self) -> None:
         record = {**self.candidate, "quotation": "An explanation of the passage.", "quote_verification_status": "PARAPHRASE", "paraphrase_review": {"supported": True}}
@@ -334,7 +361,7 @@ class VerificationTests(unittest.TestCase):
     def test_json_roundtrip_and_verification_do_not_mutate_inputs(self) -> None:
         inputs = [self.candidate, self.contract, self.source]
         original = copy.deepcopy(inputs)
-        result = evidence_gate(*json.loads(json.dumps(inputs)))
+        result = evidence_gate(*json.loads(json.dumps(inputs)), source_reader=self.read_fixture_source)
         self.assertEqual(json.loads(json.dumps(result)), self.gate())
         self.assertEqual(inputs, original)
 
@@ -351,7 +378,7 @@ builtins.__import__ = isolated
 from corpus_research.verification import verify_quote, evidence_gate
 assert verify_quote('source', 'source')['status'] == 'VERIFIED_EXACT'
 assert evidence_gate({}, {})['status'] == 'REJECTED'
-assert evidence_gate(*json.load(sys.stdin))['status'] == 'VERIFIED'
+assert evidence_gate(*json.load(sys.stdin))['status'] == 'UNVERIFIED'
 """
         result = subprocess.run(
             [sys.executable, "-c", code, str(ROOT / "tools")],
@@ -416,12 +443,150 @@ assert evidence_gate(*json.load(sys.stdin))['status'] == 'VERIFIED'
             local = resolve_fixture(local)
             remote = json.loads(json.dumps(local))  # Simulated connector payload.
             remote.pop("blob_check_required")
-            a = self.gate(record, local)
-            b = self.gate(record, remote)
+            def pinned_reader(request):
+                snapshot = read_local_source(root, request, self.contract)
+                return resolve_fixture(snapshot) if snapshot.get("content") else snapshot
+            a = self.gate(record, local, source_reader=pinned_reader)
+            # A remote-shaped JSON snapshot is unverified on its own. Local Git
+            # can independently authenticate either data transport, same core.
+            self.assertEqual(self.gate(record, remote, source_reader=None)["status"], "UNVERIFIED")
+            b = self.gate(record, remote, source_reader=pinned_reader)
             self.assertEqual(a["status"], "VERIFIED")
             self.assertEqual(a, b)
+            forged_content = CONTENT + "Self-consistent forgery, absent from the pinned commit."
+            forged_blob = git_blob_sha(forged_content.encode("utf-8"))
+            forged = resolve_fixture({**remote, "content": forged_content, "source_blob_sha": forged_blob})
+            rejected = self.gate({**record, "source_blob_sha": forged_blob}, forged, source_reader=pinned_reader)
+            self.assertEqual(rejected["status"], "REJECTED")
+            self.assertEqual(rejected["checks"]["independent_content"]["status"], "FAIL")
             missing = read_local_source(root, {**record, "source_path": "missing.txt"}, self.contract)
             self.assertEqual(self.gate({**record, "source_path": "missing.txt", "indexed_source_path": "fixture/source/missing.txt"}, missing)["status"], "UNVERIFIED")
+
+    def test_consistent_self_report_without_independent_read_is_unverified(self) -> None:
+        result = self.gate(source_reader=None)
+        self.assertEqual(result["status"], "UNVERIFIED")
+        self.assertTrue(result["source_opened"])
+        self.assertEqual(result["checks"]["expected_blob"]["status"], "PASS")
+        self.assertEqual(result["checks"]["opened_blob"]["status"], "PASS")
+        self.assertIsNone(result["evidence"])
+        self.assertFalse(result["quote"]["direct_quote_allowed"])
+
+    def test_forged_content_with_consistent_self_hash_is_not_authenticated(self) -> None:
+        content = CONTENT + "Forged addition outside the quoted passage."
+        blob = git_blob_sha(content.encode("utf-8"))
+        source = resolve_fixture({**self.source, "content": content, "source_blob_sha": blob})
+        candidate = {**self.candidate, "source_blob_sha": blob}
+        self.assertEqual(self.gate(candidate, source, source_reader=None)["status"], "UNVERIFIED")
+        result = self.gate(candidate, source)
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertEqual(result["checks"]["independent_content"]["status"], "FAIL")
+
+    def test_remote_capability_missing_failed_or_not_callable_is_unverified(self) -> None:
+        def unavailable(_):
+            raise OSError("Pinned remote revision cannot be retrieved")
+        for reader in (None, unavailable, lambda _: None, lambda _: {"verified": True}, {"trusted": True}):
+            with self.subTest(reader=type(reader).__name__):
+                self.assertEqual(self.gate(source_reader=reader)["status"], "UNVERIFIED")
+
+    def test_json_trust_flags_cannot_supply_execution_capabilities(self) -> None:
+        flags = {"trusted": True, "verified": True, "attested": True, "source_reader": "trusted-reader", "review_reader": "approved"}
+        candidate = {**self.candidate, **flags, "blob_check_required": False}
+        source = {**self.source, **flags}
+        contract = copy.deepcopy(self.contract)
+        contract["fixture"].update(flags)
+        result = evidence_gate(candidate, contract, source)
+        self.assertEqual(result["status"], "UNVERIFIED")
+        self.assertIsNone(result["evidence"])
+
+    def test_independent_reader_gets_identity_selectors_not_proposed_content(self) -> None:
+        requests = []
+        def reader(request):
+            requests.append(copy.deepcopy(request))
+            request["source_sha"] = "9" * 40  # Cannot mutate caller inputs.
+            return copy.deepcopy(self.approved_source)
+        self.assertEqual(self.gate(source_reader=reader)["status"], "VERIFIED")
+        self.assertEqual(set(requests[0]), {"corpus", "repository", "source_sha", "source_path", "work_id", "segment_id", "sequence_no"})
+        self.assertEqual(self.candidate["source_sha"], "1" * 40)
+
+    def test_independent_identity_conflicts_are_rejected(self) -> None:
+        for key, wrong in (("repository", "other/repo"), ("source_sha", "2" * 40), ("source_path", "wrong.txt"), ("source_blob_sha", "0" * 40)):
+            with self.subTest(key=key):
+                basis = {**self.approved_source, key: wrong}
+                result = self.gate(source_reader=lambda _: basis)
+                self.assertEqual(result["status"], "REJECTED")
+                self.assertIsNone(result["evidence"])
+
+    def test_location_and_ranges_cannot_be_self_attested_even_for_real_content(self) -> None:
+        candidate = {**self.candidate, "text_role": "root_text"}
+        source = copy.deepcopy(self.source)
+        source["location"]["text_role"] = "root_text"
+        result = self.gate(candidate, source)
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertEqual(result["checks"]["independent_location_text_role"]["status"], "FAIL")
+        source = {**self.source, "context_range": [0, len(CONTENT)]}
+        self.assertEqual(self.gate(source=source)["checks"]["independent_context_range"]["status"], "FAIL")
+
+    def test_missing_independent_observations_and_mandatory_blob_fail_closed(self) -> None:
+        for key in ("repository", "source_sha", "source_path", "content", "location", "excerpt_range", "context_range"):
+            with self.subTest(key=key):
+                basis = copy.deepcopy(self.approved_source)
+                basis.pop(key)
+                self.assertEqual(self.gate(source_reader=lambda _: basis)["status"], "UNVERIFIED")
+        self.contract["fixture"]["blob_check_required"] = True
+        basis = {**self.approved_source, "source_blob_sha": None}
+        self.assertEqual(self.gate(source_reader=lambda _: basis)["status"], "UNVERIFIED")
+
+    def test_self_proposed_paraphrase_review_cannot_approve_itself(self) -> None:
+        review = {"review_id": "invented", "quotation": "A paraphrase.", "source_text": QUOTE, "supported": True,
+                  "reviewer": "invented-reviewer", "rationale": "AI says yes", "approved": True, "trusted": True}
+        for reader in (None, {"approved": True}, lambda _: None):
+            with self.subTest(reader=type(reader).__name__):
+                result = verify_quote(review["quotation"], QUOTE, kind="paraphrase", paraphrase_review=review, review_reader=reader)
+                self.assertEqual(result["status"], "UNVERIFIED")
+                self.assertFalse(result["paraphrase_allowed"])
+
+    def test_approved_review_is_bound_to_exact_content_identity_and_reviewer(self) -> None:
+        approved = {"review_id": "approved-1", "quotation": "Conditioned phenomena do not last forever.",
+                    "source_text": QUOTE, "supported": True, "reviewer": "human-reviewer",
+                    "rationale": "Assessment of this exact passage."}
+        approval_store = {"approved-1": copy.deepcopy(approved)}
+        requests = []
+        def reader(review_id):
+            requests.append(review_id)
+            return approval_store.get(review_id)
+        self.assertEqual(verify_quote(approved["quotation"], QUOTE, kind="paraphrase", paraphrase_review=approved, review_reader=reader)["status"], "PARAPHRASE")
+        self.assertEqual(requests, ["approved-1"])
+        for key, changed in (("quotation", "Changed paraphrase."), ("source_text", QUOTE + " Changed context."),
+                             ("reviewer", "AI self-reviewer"), ("review_id", "unknown-review"), ("supported", 1), ("rationale", "Changed rationale")):
+            with self.subTest(key=key):
+                proposed = {**approved, key: changed}
+                result = verify_quote(proposed["quotation"], proposed["source_text"], kind="paraphrase", paraphrase_review=proposed, review_reader=reader)
+                self.assertEqual(result["status"], "UNVERIFIED")
+        self.assertEqual(verify_quote(approved["quotation"], QUOTE + " Changed after approval.", kind="paraphrase", paraphrase_review=approved, review_reader=reader)["status"], "UNVERIFIED")
+        def unavailable(_):
+            raise OSError("Approval channel unavailable")
+        self.assertEqual(verify_quote(approved["quotation"], QUOTE, kind="paraphrase", paraphrase_review=approved, review_reader=unavailable)["status"], "UNVERIFIED")
+
+    def test_source_verification_never_grants_claim_support_or_promotes_classes(self) -> None:
+        for evidence_class in ("computational_segmented", "parallel_alignment", "canonical_root", "auxiliary_reference"):
+            with self.subTest(evidence_class=evidence_class):
+                self.contract["fixture"]["evidence_class"] = evidence_class
+                candidate = {**self.candidate, "evidence_class": evidence_class, "claim_status": "accepted", "support_level": "DIRECT"}
+                result = self.gate(candidate)
+                self.assertEqual(result["status"], "VERIFIED")
+                self.assertEqual(result["evidence"]["evidence_class"], evidence_class)
+                self.assertEqual(result["evidence"]["text_role"], LOCATION["text_role"])
+                self.assertEqual(result["evidence"]["witness"], LOCATION["witness"])
+                for key in ("support_level", "claim_status", "primary_witness"):
+                    self.assertNotIn(key, result["evidence"])
+
+    def test_serializing_data_never_serializes_authority(self) -> None:
+        inputs = json.loads(json.dumps([self.candidate, self.contract, self.source]))
+        verified = evidence_gate(*inputs, source_reader=self.read_fixture_source)
+        self.assertEqual(json.loads(json.dumps(verified))["status"], "VERIFIED")
+        self.assertEqual(evidence_gate(*inputs)["status"], "UNVERIFIED")
+        # Replaying a previously verified result as source data conveys no rights.
+        self.assertEqual(evidence_gate(self.candidate, self.contract, verified)["status"], "UNVERIFIED")
 
 
 if __name__ == "__main__":

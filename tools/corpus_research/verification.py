@@ -6,7 +6,7 @@ result contains an Evidence Record; indexed text/context remain candidate data.
 
 The contract is keyed by corpus, with repository, repo_path, source_sha and
 evidence_class from project config/manifest. It is trusted configuration, NOT
-metadata copied from the candidate. An opened_source is a separate reader's
+metadata copied from the candidate. An opened_source is an UNTRUSTED reader's
 observation: repository, source_sha, source_path, full UTF-8 content, optional
 source_blob_sha, location, excerpt_range and context_range. Ranges are [start,
 end] character offsets in content; context must contain the excerpt. Location
@@ -14,14 +14,28 @@ metadata must come from inspecting the source, not from echoing the candidate.
 Structured-source readers must resolve their markup/identifiers themselves;
 this module does not certify arbitrary TEI/JSON locations from string matches.
 
-Core functions perform no I/O. Provider observations and semantic paraphrase
-reviews are trust boundaries, not cryptographic attestations. A separate review
-must bind the exact quotation/source_text and name a reviewer and rationale;
-the machine checks that binding, not semantic truth. Without it a declared
-paraphrase stays UNVERIFIED. No candidate-supplied verification label is trusted.
-read_local_source is an optional Git adapter; it reads the pinned blob, never
-the mutable working-tree file. A reader still has to supply resolved location
-and ranges before the gate can pass.
+JSON data cannot establish its own authenticity. The host application must wire
+source_reader and review_reader as executable capabilities OUTSIDE candidate,
+opened_source, review and serialized contract data. Never let model-generated
+code or JSON choose these capabilities or the trusted contract. source_reader
+receives only a source identity/locator request, independently reads that exact
+pinned revision, and resolves location/ranges from its content. It must not echo
+opened_source or read a mutable file as though it were pinned. review_reader
+receives only a review ID and retrieves an already approved assessment from an
+authenticated reviewer/approval channel; an arbitrary review JSON file or an AI
+proposal is not such a channel. No built-in remote reader or approval channel
+is claimed here. Missing capabilities leave the gate UNVERIFIED.
+
+Core code performs no direct I/O; optional callbacks are the host's execution
+boundary and may perform I/O. Inputs/results remain JSON data; capabilities are
+not serialized. read_local_source is an optional Git adapter: rev-parse binds
+commit/path to a blob, cat-file reads it, never the mutable working-tree file.
+Wire it inside source_reader, followed by a source-specific location resolver.
+An earlier read_local_source result passed as JSON alone cannot verify a source.
+
+VERIFIED means source identity, location and applicable quotation checks passed.
+It grants NO claim support level or primary-witness authority. evidence_class,
+text_role and witness retain their separate meanings; Stage B is not implemented.
 """
 
 from __future__ import annotations
@@ -100,18 +114,33 @@ def _contains(source: str, quotation: str) -> bool:
     return False
 
 
+def _read_capability(reader, request) -> dict:
+    """Invoke host-wired authority; unavailable/failed capabilities fail closed."""
+    if callable(reader):
+        try:
+            result = reader(copy.deepcopy(request))
+            return copy.deepcopy(result) if isinstance(result, dict) else {}
+        except Exception:
+            # Tool/transport/resolver failures cannot confer verification rights.
+            return {}
+    return {}
+
+
 def verify_quote(
     quotation: str | None,
     source_text: str | None,
     *,
     kind: str = "direct",
     paraphrase_review: dict | None = None,
+    review_reader=None,
 ) -> dict:
     """Return one of the five quote statuses and explicit presentation rights.
 
-    paraphrase_review is a separate trusted assessment with quotation,
-    source_text, supported (bool), reviewer and rationale. It is never read
-    from an evidence candidate. Missing/stale/incomplete reviews cannot pass.
+    paraphrase_review is a proposal with review_id, quotation, source_text,
+    supported (bool), reviewer and rationale. Only review_reader(review_id),
+    wired by the host to an authenticated approval channel, can establish an
+    approved assessment. Both must match exactly, including reviewer/content.
+    This checks approval/binding, not semantic truth; absent approval cannot pass.
     """
     status = "UNVERIFIED"
     if _text(quotation) and _text(source_text):
@@ -124,8 +153,12 @@ def verify_quote(
                 status = "QUOTE_MISMATCH"
         elif kind == "paraphrase" and isinstance(paraphrase_review, dict):
             review = paraphrase_review
+            approved = _read_capability(review_reader, review["review_id"]) if _text(review.get("review_id")) else {}
+            fields = ("review_id", "quotation", "source_text", "supported", "reviewer", "rationale")
             if (
-                review.get("quotation") == quotation
+                approved and all(key in review and key in approved for key in fields)
+                and all(review[key] == approved[key] and type(review[key]) is type(approved[key]) for key in fields)
+                and review.get("quotation") == quotation
                 and review.get("source_text") == source_text
                 and _text(review.get("reviewer")) and _text(review.get("rationale"))
             ):
@@ -196,8 +229,18 @@ def evidence_gate(
     mode: str = "quick",
     quote_kind: str = "direct",
     paraphrase_review: dict | None = None,
+    source_reader=None,
+    review_reader=None,
 ) -> dict:
-    """Recompute every check. REJECTED/UNVERIFIED never expose verified evidence."""
+    """Recompute checks; VERIFIED is source verification, never claim acceptance.
+
+    source_reader(request) must independently return the pinned source snapshot
+    (same fields as opened_source), with source-resolved location/ranges. The
+    request contains corpus/repository/source_sha/source_path plus work/segment/
+    sequence selectors, never proposed content, hashes, roles or trust flags.
+    Without this host-controlled execution boundary even consistent JSON stays
+    UNVERIFIED. REJECTED/UNVERIFIED never expose verified evidence.
+    """
     checks: dict[str, dict] = {}
 
     def check(name: str, status: str, detail: str = "", *, required: bool = True) -> None:
@@ -259,6 +302,45 @@ def evidence_gate(
             same = value == location[key] and type(value) is type(location[key])
             check(f"location_{key}", "PASS" if same else "FAIL")
 
+    # Neither candidate/provider hashes nor their matching identity labels bind
+    # bytes to a commit. Re-read through authority wired by the application.
+    basis = {}
+    if (
+        isinstance(mapping, dict) and _path(mapping.get("repo_path"))
+        and _sha(mapping.get("source_sha")) and _path(candidate.get("source_path"))
+        and candidate.get("repository") == mapping.get("repository")
+        and candidate.get("source_sha") == mapping.get("source_sha")
+    ):
+        request = {
+            "corpus": corpus, "repository": mapping.get("repository"),
+            "source_sha": mapping["source_sha"], "source_path": candidate["source_path"],
+            **{key: candidate.get(key) for key in ("work_id", "segment_id", "sequence_no")},
+        }
+        basis = _read_capability(source_reader, request)
+    anchored = _text(basis.get("content"))
+    check("independent_source", "PASS" if anchored else "UNVERIFIED", "requires an independent pinned read through host-wired authority")
+    if anchored:
+        for key in ("repository", "source_sha", "source_path"):
+            compare(f"independent_{key}", request[key], basis.get(key))
+        compare("independent_content", basis["content"], content)
+        independent_blob = basis.get("source_blob_sha")
+        if independent_blob is not None:
+            check("independent_blob", "PASS" if _sha(independent_blob) and git_blob_sha(basis["content"].encode("utf-8")) == independent_blob else "FAIL")
+        elif mapping.get("blob_check_required") is True:
+            check("independent_blob", "UNVERIFIED", "mandatory independent blob identity unavailable")
+        basis_location = basis.get("location")
+        basis_location = basis_location if isinstance(basis_location, dict) else {}
+        for key in LOCATION_FIELDS:
+            if key not in basis_location or key not in location:
+                check(f"independent_location_{key}", "UNVERIFIED")
+            else:
+                same = basis_location[key] == location[key] and type(basis_location[key]) is type(location[key])
+                check(f"independent_location_{key}", "PASS" if same else "FAIL")
+        for key in ("excerpt_range", "context_range"):
+            expected = _range(basis["content"], basis.get(key))
+            observed = _range(content, source.get(key)) if source_opened else None
+            check(f"independent_{key}", "UNVERIFIED" if expected is None or observed is None else ("PASS" if expected == observed else "FAIL"))
+
     excerpt = context = None
     quote = verify_quote(None, None)
     if source_opened:
@@ -281,7 +363,7 @@ def evidence_gate(
         if excerpt and context:
             check("context_contains_excerpt", "PASS" if context[0] <= excerpt[0] and excerpt[1] <= context[1] else "FAIL")
         if excerpt:
-            quote = verify_quote(candidate.get("quotation"), content[excerpt[0]:excerpt[1]], kind=quote_kind, paraphrase_review=paraphrase_review)
+            quote = verify_quote(candidate.get("quotation"), content[excerpt[0]:excerpt[1]], kind=quote_kind, paraphrase_review=paraphrase_review, review_reader=review_reader)
     if use == "relationship" and candidate.get("quotation") is None:
         check("quotation", "NOT_APPLICABLE")
     else:
@@ -314,8 +396,9 @@ def evidence_gate(
 def read_local_source(root, candidate: dict, source_contract: dict) -> dict:
     """Optional reader using the locator's pinned Git blob resolution.
 
-    Returned content alone is insufficient: independently resolve location and
-    excerpt/context ranges from that content before calling evidence_gate.
+    Returned JSON alone is insufficient. The host must invoke this inside
+    source_reader(request) and independently resolve location and excerpt/context
+    ranges from the returned pinned content, rather than echoing opened_source.
     Missing objects/capabilities remain UNVERIFIED; no downloads are attempted.
     """
     from pathlib import Path
