@@ -27,9 +27,18 @@ control against a host that bypasses them.
 Revision helpers return copies of an append-only JSON history. The host owns
 its persistence and must prevent external replacement of stored snapshots.
 Original snapshots stay unchanged; history_claim projects superseded status.
-Supply the complete host-held history to gates/export after revision; the host
-must also revoke superseded approvals if it exposes claims without that history.
-History/status data is never an alternative source of gate authority. No DB,
+Every publication requires history_reader({'claim_id': id, 'run_id': id_or_null}).
+The host wires it to its authoritative current append-only store, in a scope
+configured outside input JSON/model-generated code (including quick/null-run
+claims). It returns {claim_id, run_id, complete: True, history: [snapshots]}.
+Completeness covers all applicable predecessors AND successors at publication,
+not merely ancestors of the requested claim. The reader must not echo proposals,
+trust candidate flags, select its store from JSON, or return stale cached history.
+A callable alone does not establish this authority. The host owns freshness,
+scope isolation and coordination of revisions with publication; this pure core
+does not provide transactions. The legacy history argument is untrusted data
+and is ignored for authorization. History/status JSON cannot replace the reader.
+No DB,
 shell, remote integration, counterevidence search or Research Run is built here.
 """
 
@@ -311,8 +320,35 @@ def assess_claim(claim: dict, *, review_id=None, evidence_reader=None, assessmen
             'claim': candidate, 'evidence': evidence, 'assessment': assessment, 'checks': checks}
 
 
-def final_claim_gate(claim: dict, *, mode='quick', review_id=None, evidence_reader=None, assessment_reader=None, history=None) -> dict:
-    """The only publisher of accepted status; no C/D completion flags accepted."""
+def _publication_history(candidate, history_reader):
+    """Read currentness only from the host capability, never publication input."""
+    request = {key: candidate[key] for key in ('claim_id', 'run_id')}
+    response = _read_capability(history_reader, request)
+    unavailable = {'status': 'UNVERIFIED', 'detail': 'requires complete current host-held history'}
+    try:
+        _json(response)
+    except (ValueError, TypeError, RecursionError):
+        return unavailable, False
+    if not all(key in response for key in ('claim_id', 'run_id', 'complete', 'history')):
+        return unavailable, False
+    if not _same({key: response[key] for key in request}, request):
+        return {'status': 'FAIL', 'detail': 'history response belongs to a different claim/run scope'}, False
+    if response['complete'] is not True or not isinstance(response['history'], list):
+        return unavailable, False
+    try:
+        index, replaced = _history_index(response['history'])
+        if any(snapshot['run_id'] != request['run_id'] for snapshot in index.values()):
+            raise ValueError('history crosses run scope')
+        if request['claim_id'] not in index or not _same(index[request['claim_id']], claim_subject(candidate)):
+            raise ValueError('claim differs from authoritative snapshot or is not registered')
+    except (ValueError, TypeError, RecursionError):
+        return {'status': 'FAIL', 'detail': 'conflicting host history or immutable claim snapshot'}, False
+    return {'status': 'PASS', 'detail': 'exact snapshot in complete current host-held history'}, request['claim_id'] in replaced
+
+
+def final_claim_gate(claim: dict, *, mode='quick', review_id=None, evidence_reader=None,
+                     assessment_reader=None, history_reader=None, history=None) -> dict:
+    """Publish only with host-confirmed currentness; history JSON grants nothing."""
     result = assess_claim(claim, review_id=review_id, evidence_reader=evidence_reader, assessment_reader=assessment_reader)
     checks = result['checks']
     checks['mode'] = {'status': 'PASS' if mode in ('quick', 'research') else 'FAIL', 'detail': ''}
@@ -320,16 +356,7 @@ def final_claim_gate(claim: dict, *, mode='quick', review_id=None, evidence_read
     assessment = result['assessment']
     superseded = False
     if candidate:
-        if history is not None:
-            try:
-                index, replaced = _history_index(history)
-                matches = candidate['claim_id'] in index and _same(index[candidate['claim_id']], claim_subject(candidate))
-                checks['history'] = {'status': 'PASS' if matches else 'FAIL', 'detail': 'claim must match its immutable history snapshot'}
-                superseded = matches and candidate['claim_id'] in replaced
-            except (ValueError, TypeError, RecursionError):
-                checks['history'] = {'status': 'FAIL', 'detail': 'invalid revision history'}
-        elif candidate['supersedes_claim_id'] is not None:
-            checks['history'] = {'status': 'UNVERIFIED', 'detail': 'revision requires its complete history'}
+        checks['history'], superseded = _publication_history(candidate, history_reader)
         if mode == 'research' and not _text(candidate['run_id']):
             checks['run_id'] = {'status': 'FAIL', 'detail': 'research requires a run ID'}
         research = mode == 'research' or candidate['claim_type'] not in ('textual', 'relationship')
@@ -358,14 +385,8 @@ def accepted_claim_set(claims: list, review_ids: dict, **gate_options) -> dict:
     ids = [item.get('claim_id') if isinstance(item, dict) else None for item in claims]
     if not all(_text(item) for item in ids) or len(set(ids)) != len(ids):
         raise ValueError('claim IDs must be valid and unique')
-    # A complete history can contain old and current snapshots. Old claims must
-    # not re-enter publication merely because their original approval still exists.
-    history = gate_options.get('history')
-    history = claims if history is None else history
-    index, _ = _history_index(history)
-    if not all(claim['claim_id'] in index and _same(index[claim['claim_id']], claim_subject(claim)) for claim in claims):
-        raise ValueError('batch must match the complete supplied history')
-    gate_options['history'] = history
+    # This list is a publication proposal, never an authoritative history.
+    # Each gate independently re-reads the host's current applicable history.
     results = [final_claim_gate(claim, review_id=review_ids.get(claim['claim_id']), **gate_options) for claim in claims]
     return {'accepted_claims': [result['claim'] for result in results if result['status'] == 'accepted'],
             'results': results}

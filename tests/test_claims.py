@@ -59,10 +59,29 @@ class ClaimTests(unittest.TestCase):
         self.claim = make_claim({'claim_id': 'c-1', 'text': 'Fixture work reports a blue lamp.',
                                  'claim_type': 'textual', 'supporting_evidence_ids': ['ev-1'],
                                  'presentation': {'certainty': 'asserted', 'quotations': []}})
+        self.histories = {None: [copy.deepcopy(self.claim)]}
+
+    def configure_history(self, history):
+        """Configure the test host store independently of publication arguments."""
+        self.histories[history[0]['run_id']] = copy.deepcopy(history)
+
+    def read_history(self, request):
+        history = self.histories.get(request['run_id'])
+        if history is None:
+            return None
+        return {**request, 'complete': True, 'history': copy.deepcopy(history)}
 
     def approve(self, claim=None, *, review_id='review-1', level='DIRECT', atomic=True,
-                scope='narrow_lookup', bases=None, required_limitations=None, max_certainty='asserted'):
+                scope='narrow_lookup', bases=None, required_limitations=None, max_certainty='asserted',
+                register_fixture=True):
         claim = self.claim if claim is None else claim
+        # Most policy tests configure a fresh independent fixture snapshot along
+        # with its review. Revisions and tampering tests configure history explicitly.
+        # This test-only setup is never a production history reader or gate input.
+        if register_fixture and claim['supersedes_claim_id'] is None:
+            history = self.histories.setdefault(claim['run_id'], [])
+            history[:] = [item for item in history if item['claim_id'] != claim['claim_id']]
+            history.append(copy.deepcopy(claim))
         ids = list(dict.fromkeys(claim['supporting_evidence_ids'] + claim['counter_evidence_ids']))
         review = {'review_id': review_id, 'claim': claim_subject(claim),
                   'evidence': [copy.deepcopy(self.evidence[item]['evidence']) for item in ids],
@@ -79,10 +98,12 @@ class ClaimTests(unittest.TestCase):
                 'assessment_reader': self.reviews.get, **kwargs}
 
     def gate(self, claim=None, **kwargs):
-        return final_claim_gate(self.claim if claim is None else claim, **self.options(**kwargs))
+        return final_claim_gate(self.claim if claim is None else claim,
+                                **self.options(**{'history_reader': self.read_history, **kwargs}))
 
     def batch_options(self, **kwargs):
-        return {'evidence_reader': self.evidence.get, 'assessment_reader': self.reviews.get, **kwargs}
+        return {'evidence_reader': self.evidence.get, 'assessment_reader': self.reviews.get,
+                'history_reader': self.read_history, **kwargs}
 
     def test_new_claim_is_candidate_even_with_self_declared_acceptance(self):
         claim = make_claim({**self.claim, 'status': 'accepted', 'verification_status': 'DIRECT',
@@ -120,6 +141,7 @@ class ClaimTests(unittest.TestCase):
         claims = [make_claim({**self.claim, 'claim_id': f'part-{index}', 'text': text}) for index, text in enumerate(
             ('Fixture work contains X.', 'X is interpreted as Y.', 'Y appeared in year Z.', 'This proves W.'))]
         for claim in claims:
+            self.configure_history([claim])
             self.assertEqual(self.gate({**claim, 'atomic': True})['status'], 'candidate')
         compound = {**self.claim, 'text': 'A says X, therefore Y originated in Z and proves W.'}
         self.approve(compound, atomic=False)
@@ -170,6 +192,7 @@ class ClaimTests(unittest.TestCase):
         for number in range(2, 8):
             self.evidence[f'ev-{number}'] = phase_a_fixture(f'ev-{number}')
         claim = {**self.claim, 'supporting_evidence_ids': list(self.evidence), 'verification_status': 'STRONG'}
+        self.configure_history([claim])
         self.assertEqual(self.gate(claim)['status'], 'candidate')
 
     def test_direct_and_strong_need_all_gate_conditions(self):
@@ -237,7 +260,7 @@ class ClaimTests(unittest.TestCase):
                              ('claim_id', 'other'), ('run_id', 'different-run'), ('limitations', ['Changed scope.'])):
             with self.subTest(field=field):
                 result = self.gate({**self.claim, field: value})
-                self.assertEqual(result['status'], 'candidate')
+                self.assertEqual(result['status'], 'candidate' if field == 'run_id' else 'rejected')
                 self.assertEqual(result['checks']['approved_binding']['status'], 'UNVERIFIED')
 
     def test_changed_source_content_provenance_and_roles_invalidate_approval(self):
@@ -259,7 +282,7 @@ class ClaimTests(unittest.TestCase):
         self.approve()
         self.evidence['ev-2'] = phase_a_fixture('ev-2')
         for update in ({'supporting_evidence_ids': ['ev-2']}, {'counter_evidence_ids': ['ev-2']}):
-            self.assertEqual(self.gate({**self.claim, **update})['status'], 'candidate')
+            self.assertEqual(self.gate({**self.claim, **update})['status'], 'rejected')
 
     def test_malformed_assessment_cannot_grant_support(self):
         self.approve()
@@ -284,7 +307,7 @@ class ClaimTests(unittest.TestCase):
         claim = {**self.claim, 'claim_type': 'relationship', 'text': 'The fixture metadata links A and B.'}
         self.approve(claim, bases={'ev-1': 'relationship'})
         self.assertEqual(self.gate(claim)['status'], 'accepted')
-        self.assertEqual(self.gate({**claim, 'claim_type': 'textual'})['status'], 'candidate')
+        self.assertEqual(self.gate({**claim, 'claim_type': 'textual'})['status'], 'rejected')
         textual = {**claim, 'claim_type': 'textual'}
         self.approve(textual, bases={'ev-1': 'textual_report'})
         self.assertEqual(self.gate(textual)['status'], 'rejected')
@@ -438,6 +461,7 @@ class ClaimTests(unittest.TestCase):
         second = {**self.claim, 'claim_id': 'c-2', 'text': 'Fixture unsupported proposal.'}
         third = {**self.claim, 'claim_id': 'c-3', 'text': 'Fixture pending proposal.'}
         self.approve(second, review_id='review-2', level='UNSUPPORTED')
+        self.configure_history([self.claim, second, third])
         result = accepted_claim_set([self.claim, second, third], {'c-1': 'review-1', 'c-2': 'review-2'}, **self.batch_options())
         self.assertEqual([item['claim_id'] for item in result['accepted_claims']], ['c-1'])
         self.assertEqual([item['status'] for item in result['results']], ['accepted', 'rejected', 'candidate'])
@@ -538,6 +562,7 @@ class ClaimTests(unittest.TestCase):
         self.approve()
         history = revise_claim(append_claim([], self.claim), 'c-1', {'claim_id': 'c-2', 'text': 'Narrower scope.'},
                                reason='Scope change.', revision_evidence_ids=['ev-1'])
+        self.configure_history(history)
         self.assertEqual(self.gate(history[-1])['status'], 'candidate')
         self.assertEqual(self.gate(history[-1])['checks']['approved_binding']['status'], 'UNVERIFIED')
 
@@ -546,6 +571,7 @@ class ClaimTests(unittest.TestCase):
         history = revise_claim(append_claim([], self.claim), 'c-1', {'claim_id': 'c-2', 'text': 'Narrower scope.'},
                                reason='Scope change.', revision_evidence_ids=['ev-1'])
         self.approve(history[-1], review_id='review-2')
+        self.configure_history(history)
         result = accepted_claim_set(history, {'c-1': 'review-1', 'c-2': 'review-2'}, **self.batch_options())
         self.assertEqual([item['claim_id'] for item in result['accepted_claims']], ['c-2'])
         self.assertEqual(result['results'][0]['status'], 'superseded')
@@ -556,8 +582,10 @@ class ClaimTests(unittest.TestCase):
         history = revise_claim(append_claim([], self.claim), 'c-1', {'claim_id': 'c-2', 'text': 'Narrower scope.'},
                                reason='Scope change.', revision_evidence_ids=['ev-1'])
         self.approve(history[-1])
-        self.assertEqual(self.gate(history[-1])['status'], 'candidate')
-        self.assertEqual(self.gate(history[-1], history=history)['status'], 'accepted')
+        self.assertEqual(self.gate(history[-1], history_reader=None)['status'], 'candidate')
+        self.assertEqual(self.gate(history[-1], history=history, history_reader=None)['status'], 'candidate')
+        self.configure_history(history)
+        self.assertEqual(self.gate(history[-1])['status'], 'accepted')
         changed = {**history[-1], 'text': 'Silently edited snapshot.'}
         self.approve(changed)
         self.assertEqual(self.gate(changed, history=history)['status'], 'rejected')
@@ -577,16 +605,18 @@ class ClaimTests(unittest.TestCase):
         history = revise_claim(append_claim([], self.claim), 'c-1', {'claim_id': 'c-2', 'text': 'Narrower scope.'},
                                reason='Scope change.', revision_evidence_ids=['ev-1'])
         self.approve(history[-1], review_id='review-2')
+        self.configure_history(history)
         review_ids = {'c-1': 'review-1', 'c-2': 'review-2'}
         result = accepted_claim_set(history, review_ids, history=None, **self.batch_options())
         self.assertEqual([item['claim_id'] for item in result['accepted_claims']], ['c-2'])
-        with self.assertRaises(ValueError):
-            accepted_claim_set(history, review_ids, history=[self.claim], **self.batch_options())
+        result = accepted_claim_set(history, review_ids, history=[self.claim], **self.batch_options())
+        self.assertEqual([item['claim_id'] for item in result['accepted_claims']], ['c-2'])
 
     def test_reviewed_revision_subset_can_use_complete_host_history(self):
         history = revise_claim(append_claim([], self.claim), 'c-1', {'claim_id': 'c-2', 'text': 'Narrower scope.'},
                                reason='Scope change.', revision_evidence_ids=['ev-1'])
         self.approve(history[-1], review_id='review-2')
+        self.configure_history(history)
         result = accepted_claim_set([history[-1]], {'c-2': 'review-2'}, history=history, **self.batch_options())
         self.assertEqual([item['claim_id'] for item in result['accepted_claims']], ['c-2'])
 
@@ -647,14 +677,179 @@ def isolated(name, *args, **kwargs):
     return original(name, *args, **kwargs)
 builtins.__import__ = isolated
 from corpus_research.claims import final_claim_gate
-claim, evidence, reviews = json.load(sys.stdin)
-result = final_claim_gate(claim, review_id='review-1', evidence_reader=evidence.get, assessment_reader=reviews.get)
+claim, evidence, reviews, host_history = json.load(sys.stdin)
+def history_reader(request):
+    return {**request, 'complete': True, 'history': host_history}
+result = final_claim_gate(claim, review_id='review-1', evidence_reader=evidence.get,
+                          assessment_reader=reviews.get, history_reader=history_reader)
 assert result['status'] == 'accepted', result
 assert final_claim_gate(claim)['status'] == 'candidate'
 '''
-        result = subprocess.run([sys.executable, '-c', code], input=json.dumps([self.claim, self.evidence, self.reviews]),
+        result = subprocess.run([sys.executable, '-c', code], input=json.dumps(
+            [self.claim, self.evidence, self.reviews, self.histories[None]]),
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def install_revision(self):
+        self.approve()
+        old_item = synthesis_item(self.gate()['claim'])
+        history = revise_claim(append_claim([], self.claim), 'c-1',
+                               {'claim_id': 'c-2', 'text': 'Only this fixture reports a lamp.'},
+                               reason='Narrow scope.', revision_evidence_ids=['ev-1'])
+        self.configure_history(history)
+        self.approve(history[-1], review_id='review-2')
+        return history, old_item
+
+    def test_initial_claim_requires_current_host_history(self):
+        self.approve()
+        self.assertEqual(self.gate()['status'], 'accepted')
+        result = self.gate(history_reader=None)
+        self.assertEqual(result['status'], 'candidate')
+        self.assertEqual(result['checks']['history']['status'], 'UNVERIFIED')
+        self.assertEqual(result['claim']['verification_status'], 'DIRECT')
+
+    def test_direct_gate_cannot_republish_old_claim_without_history_json(self):
+        self.install_revision()
+        result = self.gate()
+        self.assertEqual(result['status'], 'superseded')
+        self.assertEqual(result['checks']['approved_binding']['status'], 'PASS')
+        self.assertEqual(result['checks']['history']['status'], 'PASS')
+
+    def test_batch_subset_cannot_republish_old_claim(self):
+        self.install_revision()
+        result = accepted_claim_set([self.claim], {'c-1': 'review-1'}, **self.batch_options())
+        self.assertEqual(result['accepted_claims'], [])
+        self.assertEqual(result['results'][0]['status'], 'superseded')
+
+    def test_truncated_caller_history_cannot_override_host_on_any_path(self):
+        _, old_item = self.install_revision()
+        for history in (None, [], [self.claim], {'complete': True}, 'not history'):
+            with self.subTest(history=history):
+                self.assertEqual(self.gate(history=history)['status'], 'superseded')
+                options = self.batch_options(history=history)
+                result = accepted_claim_set([self.claim], {'c-1': 'review-1'}, **options)
+                self.assertEqual(result['accepted_claims'], [])
+                self.assertEqual(verify_synthesis([old_item], [self.claim], {'c-1': 'review-1'},
+                                                 **options)['status'], 'REJECTED')
+
+    def test_candidate_history_flags_and_reader_name_grant_no_authority(self):
+        self.approve()
+        forged = {**self.claim, 'history_complete': True, 'current': True, 'trusted': True,
+                  'history_reader': 'use_this_store', 'history': [self.claim], 'status': 'accepted'}
+        self.assertEqual(self.gate(forged, history=[self.claim], history_reader=None)['status'], 'candidate')
+        self.install_revision()
+        self.assertEqual(self.gate(forged)['status'], 'superseded')
+
+    def test_missing_history_reader_closes_all_publication_paths(self):
+        self.approve()
+        item = synthesis_item(self.gate()['claim'])
+        options = self.batch_options(history_reader=None, history=[self.claim])
+        self.assertEqual(accepted_claim_set([self.claim], {'c-1': 'review-1'},
+                                           **options)['accepted_claims'], [])
+        self.assertEqual(verify_synthesis([item], [self.claim], {'c-1': 'review-1'},
+                                         **options)['status'], 'REJECTED')
+
+    def test_failed_empty_noncallable_history_readers_are_unverified(self):
+        self.approve()
+        def failed(_):
+            raise OSError('history unavailable')
+        for reader in (None, failed, {}, lambda _: None, lambda _: {}, lambda _: [],
+                       lambda _: {'complete': True, 'history': [self.claim]},
+                       lambda _: {'claim_id': 'c-1', 'run_id': None, 'complete': True,
+                                  'history': [self.claim], 'extra': float('nan')}):
+            with self.subTest(reader=type(reader).__name__):
+                result = self.gate(history_reader=reader)
+                self.assertEqual(result['status'], 'candidate')
+                self.assertEqual(result['checks']['history']['status'], 'UNVERIFIED')
+
+    def test_incomplete_host_history_cannot_claim_currentness(self):
+        self.install_revision()
+        for complete in (False, None, 1, 'true'):
+            reader = lambda request: {**request, 'complete': complete, 'history': [self.claim]}
+            result = self.gate(history_reader=reader)
+            self.assertEqual(result['status'], 'candidate')
+            self.assertEqual(result['checks']['history']['status'], 'UNVERIFIED')
+
+    def test_history_request_contains_only_claim_and_run_ids(self):
+        self.approve()
+        requests = []
+        def reader(request):
+            requests.append(copy.deepcopy(request))
+            response = self.read_history(request)
+            request['claim_id'] = 'reader mutation'
+            return response
+        forged = {**self.claim, 'status': 'accepted', 'current': True, 'history_complete': True}
+        self.assertEqual(self.gate(forged, history_reader=reader)['status'], 'accepted')
+        self.assertEqual(requests, [{'claim_id': 'c-1', 'run_id': None}])
+        self.assertEqual(self.claim['claim_id'], 'c-1')
+
+    def test_stored_snapshot_blocks_changed_claim_even_with_new_approval(self):
+        self.approve()
+        for field, value in (('text', 'Changed scope.'), ('claim_type', 'relationship'),
+                             ('limitations', ['New scope.']), ('counter_evidence_ids', ['ev-1'])):
+            changed = {**self.claim, field: value}
+            self.approve(changed, register_fixture=False)
+            result = self.gate(changed)
+            self.assertEqual(result['checks']['approved_binding']['status'], 'PASS')
+            self.assertEqual(result['checks']['history']['status'], 'FAIL')
+            self.assertEqual(result['status'], 'rejected')
+
+    def test_current_revision_still_requires_its_own_approval(self):
+        history, _ = self.install_revision()
+        old_review = self.gate(history[-1], review_id='review-1')
+        self.assertEqual(old_review['status'], 'candidate')
+        self.assertEqual(old_review['checks']['history']['status'], 'PASS')
+        self.assertEqual(self.gate(history[-1], review_id='review-2')['status'], 'accepted')
+
+    def test_synthesis_rechecks_history_after_previous_acceptance(self):
+        self.approve()
+        item = synthesis_item(self.gate()['claim'])
+        options = self.batch_options()
+        self.assertEqual(verify_synthesis([item], [self.claim], {'c-1': 'review-1'},
+                                         **options)['status'], 'VERIFIED')
+        self.install_revision()
+        self.assertEqual(verify_synthesis([item], [self.claim], {'c-1': 'review-1'},
+                                         **options)['status'], 'REJECTED')
+
+    def test_independent_claims_are_not_false_supersessions(self):
+        self.approve()
+        other = {**self.claim, 'claim_id': 'independent', 'text': 'Another narrow fixture report.'}
+        self.approve(other, review_id='review-other')
+        result = accepted_claim_set([self.claim, other], {'c-1': 'review-1', 'independent': 'review-other'},
+                                    **self.batch_options())
+        self.assertEqual([claim['claim_id'] for claim in result['accepted_claims']], ['c-1', 'independent'])
+
+    def test_wrong_claim_or_run_history_scope_is_rejected(self):
+        self.approve()
+        original = self.read_history({'claim_id': 'c-1', 'run_id': None})
+        for field, value in (('claim_id', 'other'), ('run_id', 'other-run')):
+            result = self.gate(history_reader=lambda _: {**original, field: value})
+            self.assertEqual(result['status'], 'rejected')
+            self.assertEqual(result['checks']['history']['status'], 'FAIL')
+        mixed = [self.claim, {**self.claim, 'claim_id': 'other', 'run_id': 'other-run'}]
+        self.assertEqual(self.gate(history_reader=lambda request: {
+            **request, 'complete': True, 'history': mixed})['status'], 'rejected')
+
+    def test_conflicting_complete_host_history_is_rejected(self):
+        history, _ = self.install_revision()
+        branching = {**history[-1], 'claim_id': 'c-3'}
+        cycle = {**self.claim, 'supersedes_claim_id': 'c-2', 'revision_reason': 'Cycle',
+                 'revision_evidence_ids': ['ev-1']}
+        for snapshots in ([], [self.claim, self.claim], [history[-1]], [cycle, history[-1]],
+                          history + [branching], [{**self.claim, 'text': 'Overwritten.'}]):
+            with self.subTest(snapshots=snapshots):
+                result = self.gate(history_reader=lambda request: {
+                    **request, 'complete': True, 'history': snapshots})
+                self.assertEqual(result['status'], 'rejected')
+                self.assertEqual(result['checks']['history']['status'], 'FAIL')
+
+    def test_serialized_accepted_claim_and_history_cannot_self_authenticate(self):
+        self.approve()
+        accepted = json.loads(json.dumps(self.gate()['claim']))
+        stale = json.loads(json.dumps(self.histories[None]))
+        self.assertEqual(self.gate(accepted, history=stale, history_reader=None)['status'], 'candidate')
+        self.install_revision()
+        self.assertEqual(self.gate(accepted, history=stale)['status'], 'superseded')
 
 
 if __name__ == '__main__':

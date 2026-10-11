@@ -149,7 +149,8 @@ JSON để tự xác nhận tính nguyên tử.
 
 #### Hợp đồng đánh giá và ranh giới với A
 
-Hai capability do **ứng dụng** nối bên ngoài JSON/mã AI sinh:
+Hai capability cho đánh giá do **ứng dụng** nối bên ngoài JSON/mã AI sinh;
+công bố còn bắt buộc `history_reader` theo hợp đồng gia cố bên dưới:
 
 - `evidence_reader(evidence_id)` lấy kết quả **thật sự qua cửa kiểm A** từ kho
   do ứng dụng kiểm soát, hoặc kiểm lại qua A. Trả envelope A gồm `status`,
@@ -224,12 +225,12 @@ cũ. Bản sửa cần mã mới, predecessor còn hiệu lực, lý do và bằ
 sửa vẫn nằm trong liên kết support/counter. Giữ phản chứng cũ, không đổi run,
 không cho chu trình, ghi đè mã hay nhánh thay thế mơ hồ. Bản sửa bắt đầu candidate
 và cần đánh giá mới. `history_claim()` chiếu superseded nhưng giữ snapshot gốc.
-Gate/export bản sửa cần lịch sử đầy đủ; export loại bản cũ dù approval cũ còn
-tồn tại. Ứng dụng phải lưu lịch sử chỉ nối thêm và thu hồi approval bản cũ khi
-cung cấp luận điểm rời lịch sử. Hàm thuần không phải cơ chế quyền truy cập chống
-ứng dụng tự ghi đè dữ liệu hay bỏ qua gate.
+Mọi gate/export phải đọc lịch sử hiện hành qua capability của host, gồm cả
+luận điểm đầu tiên. Danh sách caller gửi không xác nhận lịch sử đầy đủ; bản cũ
+bị loại dù approval cũ còn tồn tại. Hàm thuần không phải cơ chế quyền truy cập
+chống ứng dụng tự ghi đè dữ liệu hay bỏ qua gate.
 
-#### Kiểm thử đã thực thi
+#### Kiểm thử tại mốc triển khai B trước gia cố lịch sử
 
 Ubuntu WSL/Python 3.12.3/SQLite 3.45.1 dùng đủ 13 checkout nguồn ghim, cùng byte
 nguồn với baseline qua liên kết trong worktree B. Đối chiếu Gitlink/HEAD và kiểm
@@ -262,6 +263,75 @@ CLI, nguồn thật với resolver A, kênh phê duyệt ngữ nghĩa/diễn đ�
 hoặc GitHub plugin thật. REQ-ENV-001/002 chưa nghiệm thu đầy đủ. C/D/E và bộ golden
 research đầy đủ chưa triển khai; không chuyển toàn bộ 31 yêu cầu sang HIỆN HÀNH.
 Chỉ commit/push nhánh B; chưa tạo PR hoặc merge.
+
+#### Gia cố ranh giới lịch sử công bố — 11/10/2026
+
+Mốc trước sửa là `3900236d58e1e08aa3adabd2a949db4a9201b9b5` trên
+`feature/bcr-v2-phase-b`. Gate cũ chỉ bắt buộc lịch sử khi ứng viên có predecessor;
+C1 không có predecessor vẫn được accepted khi bỏ lịch sử sau khi C2 thay thế.
+Batch cũ mặc định lấy `claims` làm lịch sử đầy đủ, nên subset `[C1]` che mất C2.
+Synthesis kế thừa lỗ hổng đó dù phê duyệt ngữ nghĩa C1 vẫn hợp lệ.
+
+`final_claim_gate()` nay luôn gọi `history_reader`, không nhận quyền hiện hành
+từ `history` JSON. `accepted_claim_set()` bỏ fallback `history=claims` và gọi
+lại gate cho từng đề xuất. `verify_synthesis()` gọi lại batch với các reader
+hiện tại, từ chối mục C1 đã từng accepted nếu lịch sử host nay có C2.
+Tham số `history` cũ được giữ tương thích nhưng bỏ qua khi xét quyền công bố;
+thiếu, cắt ngắn hay gắn nhãn trusted/complete vào JSON không thay thế capability.
+
+Hợp đồng tối thiểu:
+
+```text
+history_reader({claim_id, run_id})
+  -> {claim_id, run_id, complete: true, history: [immutable snapshots]}
+```
+
+Request chỉ chứa mã luận điểm và run (run có thể null trong quick), không gửi
+nội dung, đề xuất lịch sử, trạng thái hay cờ hiện hành. Host tự cấu hình kho
+lịch sử có thẩm quyền và phạm vi project/phiên/tài khoản bên ngoài JSON hoặc
+mã AI sinh. Trả toàn bộ lịch sử áp dụng trong phạm vi ấy, gồm predecessor và
+mọi successor hiện có, kể cả khi đang hỏi mã cũ; không chỉ trả các tổ tiên.
+Envelope phải khớp claim/run, từng snapshot thuộc cùng run và nội dung luận
+điểm phải khớp chính xác `claim_subject()` trong kho. Các kiểm append-only,
+chu trình, trùng mã, run và giữ phản chứng tiếp tục áp dụng.
+
+`complete: true` là cam kết của capability đã được host cấu hình tin cậy,
+không phải chứng minh bằng JSON. Có callback chưa đủ: callback không được
+echo dữ liệu caller, tự suy hiện hành từ ứng viên, chọn kho theo JSON hay trả
+cache cũ. Lõi không thể phát hiện host cố ý nói sai về tính đầy đủ. Store trả
+thiếu mà gắn complete=true vi phạm hợp đồng, không thuộc bảo đảm của lõi.
+
+- `accepted`: snapshot đã đăng ký khớp lịch sử host đầy đủ/hiện hành, chưa
+  bị thay thế và mọi điều kiện bằng chứng/đánh giá/cách trình bày đều đạt.
+- `candidate`: thiếu/hỏng capability hoặc thiếu dữ liệu, complete không phải
+  boolean true, hoặc còn phép kiểm UNVERIFIED (gồm điều kiện C/D).
+- `rejected`: có FAIL, như sai scope, snapshot bị sửa, mã không có trong lịch
+  sử được host xác nhận đầy đủ, lịch sử mâu thuẫn hoặc lỗi gate khác.
+- `superseded`: lịch sử hợp lệ xác nhận snapshot đã bị thay thế, không có
+  FAIL khác; ưu tiên hơn trạng thái chờ. Trường hợp có FAIL vẫn rejected.
+
+| Bộ kiểm tại mốc gia cố | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Baseline B trước sửa, WSL đủ 13 nguồn ghim | 155/155 | 0/0/0 |
+| Riêng B sau sửa, Windows và WSL | 82/82 mỗi môi trường | 0/0/0 |
+| Toàn suite sau sửa, WSL cùng nguồn ghim | 171/171 | 0/0/0 |
+
+Giữ cả 66 phương thức B cũ; siết kỳ vọng khi dữ liệu khác snapshot host và
+thiết lập kho fixture độc lập với tham số công bố. Thêm 16 bài, gồm hồi quy
+C1 qua cả ba đường, subset/lịch sử bị cắt, tự khai accepted/current/trusted,
+thiếu/lỗi/incomplete reader, request chỉ có mã, sai scope, đổi snapshot dù có
+approval mới, C2 cần approval riêng, hai luận điểm độc lập và lịch sử mâu thuẫn.
+Tiến trình chặn SQLite/shell vẫn chạy gate với capability host cấu hình.
+89 bài A/legacy vẫn đạt, không skip hay hồi quy trong môi trường đối chiếu.
+Không đổi pin, mã A hoặc các thành phần truy xuất hiện hành.
+
+Đây vẫn là lõi thuần và fixture phần mềm, **chưa nghiệm thu B hoàn toàn**.
+Chưa có kho lịch sử/adapter thực, xác thực chủ thể, quyền ghi hay transaction.
+Host phải bảo vệ snapshot chỉ nối thêm, đọc mới và phối hợp công bố với thay
+đổi lịch sử để tránh khoảng thời gian giữa đọc và ghi. Giai đoạn D cần tích
+hợp phạm vi Research Run/quick, lưu vết phiên bản, kho có thẩm quyền và cơ chế
+phối hợp đó. Chưa triển khai C/D/E, chưa xác minh Work/plugin thực hoặc golden
+research đầy đủ; REQ-ENV-001/002 và ma trận nghiệm thu không được nâng trạng thái.
 
 ---
 
