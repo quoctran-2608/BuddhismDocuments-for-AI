@@ -15,8 +15,16 @@ The host wires all readers outside proposal JSON/model-generated code:
   limitations. It must invoke existing retrieval/source tools or read genuine
   receipts for the exact pinned scope; never echo proposed completion flags.
   Complete means that bounded operation finished without truncation/missing
-  data, not that every possible counterargument was searched. Host policy
+  data in the step's corpus with the plan's constraints and pin. Every planned
+  step and corpus must be covered before execution_complete is true; a step
+  cannot attest a different corpus or the entire multicorpus plan. Host policy
   approves appropriate directions and records important unchecked scope.
+  Candidate pointers must retain corpus/repository/source_sha/source_path,
+  work_id (explicit null if inapplicable), and segment_id or sequence_no from
+  the actual hit. C compares these to A; evidence_id alone is not a link.
+  For opaque locator/record IDs the host must resolve the pinned hit and
+  normalize these fields using existing tools, not copy them from the evidence
+  selected by proposal JSON. Unresolved opaque pointers stay UNVERIFIED.
 * assessment_reader(review_id): existing B approval channel. Its ordinary B
   assessment binds the claim enriched with found evidence IDs as *potential*
   counters. Optional counterevidence_review additionally binds exact search
@@ -198,6 +206,26 @@ def _plan(value):
     return make_counterevidence_plan(value.get('claim'), **{key: value.get(key) for key in PLAN_FIELDS if key != 'claim'})
 
 
+def _step_scope(scope, corpus):
+    """Project the approved plan; constraints apply unchanged to each corpus."""
+    return {'corpora': [corpus], 'source_revisions': [item for item in scope['source_revisions']
+            if item['corpus'] == corpus], 'constraints': scope['constraints']}
+
+
+def _pointer_binding(pointer, record):
+    """Only a scoped source AND precise location can bind a hit to A evidence."""
+    source = ('corpus', 'repository', 'source_sha', 'source_path')
+    location = ('work_id', 'segment_id', 'sequence_no', 'language', 'text_role', 'witness')
+    for key in source + location + ('source_blob_sha', 'indexed_source_path'):
+        if key in pointer and not _same(pointer[key], record.get(key)):
+            return 'FAIL'
+    if not all(_text(pointer.get(key)) for key in source) or 'work_id' not in pointer:
+        return 'UNVERIFIED'
+    precise = _text(pointer.get('segment_id')) or (
+        type(pointer.get('sequence_no')) is int and pointer['sequence_no'] >= 0)
+    return 'PASS' if precise else 'UNVERIFIED'
+
+
 def search_counterevidence(plan, *, search_reader=None, evidence_reader=None):
     """Read actual bounded executions; opened evidence still needs semantics."""
     checks, attempts, candidates, evidence = {}, [], {}, {}
@@ -224,6 +252,7 @@ def search_counterevidence(plan, *, search_reader=None, evidence_reader=None):
     if receipts and (not _strings(receipt_ids) or len(set(receipt_ids)) != len(receipt_ids) or not set(receipt_ids).issubset(expected_ids)):
         checks['receipt_ids'] = 'FAIL'
         receipts = []
+    covered_corpora = set()
     for step in proposed['steps']:
         receipt = next((item for item in receipts if item['step_id'] == step['step_id']), None)
         name = 'step:' + step['step_id']
@@ -243,12 +272,13 @@ def search_counterevidence(plan, *, search_reader=None, evidence_reader=None):
             complete = receipt['status'] == 'executed' and receipt['complete'] and not receipt['limitations']
             checks[name] = 'PASS' if complete else 'UNVERIFIED'
             checked = receipt['checked_scope']
-            if complete and not _same(checked, proposed['scope']):
+            expected_scope = _step_scope(proposed['scope'], step['corpus'])
+            if complete and not _same(checked, expected_scope):
                 checks[name] = 'FAIL'
             elif checked is not None:
-                if (not set(checked['corpora']).issubset(proposed['scope']['corpora'])
-                        or any(item not in proposed['scope']['source_revisions'] for item in checked['source_revisions'])
-                        or checked['constraints'] != proposed['scope']['constraints']):
+                if (not set(checked['corpora']).issubset(expected_scope['corpora'])
+                        or any(item not in expected_scope['source_revisions'] for item in checked['source_revisions'])
+                        or checked['constraints'] != expected_scope['constraints']):
                     checks[name] = 'FAIL'
             attempts.append(copy.deepcopy(receipt))
             # Failed/not-run attempts cannot provide observed hits.
@@ -263,17 +293,29 @@ def search_counterevidence(plan, *, search_reader=None, evidence_reader=None):
                 record = _record(eid, evidence_reader) if eid else None
                 checks['candidate:' + key] = checks.get('candidate:' + key, 'PASS' if record else 'UNVERIFIED')
                 if record:
+                    binding = _pointer_binding(hit['pointer'], record)
+                    previous = checks['candidate:' + key]
+                    checks['candidate:' + key] = ('FAIL' if 'FAIL' in (previous, binding) else
+                        'UNVERIFIED' if 'UNVERIFIED' in (previous, binding) else 'PASS')
                     identity = {key: record[key] for key in ('corpus', 'repository', 'source_sha')}
                     if checked is None and checks['candidate:' + key] != 'FAIL':
                         checks['candidate:' + key] = 'UNVERIFIED'
-                    elif checked is not None and identity not in checked['source_revisions']:
+                    elif checked is not None and (identity not in checked['source_revisions']
+                            or identity not in expected_scope['source_revisions']):
                         checks['candidate:' + key] = 'FAIL'
                     if eid in evidence and not _same(evidence[eid], record):
                         checks['candidate:' + key] = 'FAIL'
-                    evidence[eid] = record
+                    if checks['candidate:' + key] == 'PASS':
+                        evidence[eid] = record
+                    else:
+                        evidence.pop(eid, None)
+            if checks[name] == 'PASS':
+                covered_corpora.add(step['corpus'])
         except (ValueError, TypeError, RecursionError):
             checks[name] = 'UNVERIFIED'
-    executed = checks['execution_binding'] == 'PASS' and all(checks.get('step:' + key) == 'PASS' for key in expected_ids)
+    checks['corpus_coverage'] = 'PASS' if covered_corpora == set(proposed['scope']['corpora']) else 'UNVERIFIED'
+    executed = (checks['execution_binding'] == 'PASS' and checks['corpus_coverage'] == 'PASS'
+                and all(checks.get('step:' + key) == 'PASS' for key in expected_ids))
     result_status = _status(checks, 'SEARCHED')
     summary = None
     if result_status == 'SEARCHED' and not candidates:

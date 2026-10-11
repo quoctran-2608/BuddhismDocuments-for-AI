@@ -73,7 +73,7 @@ class CounterevidenceTests(unittest.TestCase):
             steps=self.steps, unchecked_scope=['Other works and traditions have not been checked.'])
         self.receipt = {'step_id': 's-1', 'status': 'executed', 'complete': True,
             'checked_scope': copy.deepcopy(self.scope), 'limitations': [], 'candidates': [
-                {'candidate_id': 'hit-1', 'evidence_id': 'ev-2', 'pointer': {'segment_id': 'fixture-work:2'}}] if hits else []}
+                {'candidate_id': 'hit-1', 'evidence_id': 'ev-2', 'pointer': self.full_pointer()}] if hits else []}
         # This independently configured execution oracle stands in for a host
         # that ran the approved bounded query. Proposal flags never select it.
         self.executions = {'search-1': {'search_id': 'search-1',
@@ -320,6 +320,7 @@ class CounterevidenceTests(unittest.TestCase):
 
     def test_metadata_is_not_quotation_or_primary_text(self):
         self.evidence['ev-2'] = fixture('ev-2', klass='metadata_relationship', role='relationship')
+        self.receipt['candidates'][0]['pointer'] = self.full_pointer()
         self.approve(action='keep', level='DIRECT')
         result = self.assess()
         self.assertEqual(result['search']['verified_evidence'][0]['evidence_class'], 'metadata_relationship')
@@ -532,7 +533,10 @@ assert result['status'] == 'REVISION_REQUIRED', result
         self.assertEqual(result['status'], 'UNVERIFIED')
         self.assertEqual(result['attempts'][0]['checked_scope'], checked)
         self.receipt['complete'] = True
-        self.assertEqual(self.search()['status'], 'REJECTED')
+        # The fixture step is now complete in its own corpus, but the other
+        # corpus still has no step: the whole plan must remain incomplete.
+        self.assertEqual(self.search()['status'], 'UNVERIFIED')
+        self.assertFalse(self.search()['execution_complete'])
 
     def test_missing_checked_scope_cannot_certify_countersearch(self):
         self.receipt.update(checked_scope=None, complete=False)
@@ -581,11 +585,159 @@ assert result['status'] == 'REVISION_REQUIRED', result
 
     def test_unknown_source_dependence_can_be_acknowledged_without_fake_count(self):
         self.evidence['ev-2'] = fixture('ev-2', path='other-work.txt')
+        self.receipt['candidates'][0]['pointer'] = self.full_pointer()
         self.approve()
         result = self.assess()
         self.assertEqual(result['status'], 'REVISION_REQUIRED')
         self.assertEqual(result['independence']['pairs'][0]['relationship'], 'uncertain')
         self.assertIsNone(result['independence']['independent_source_count'])
+
+    def configure_two_corpora(self):
+        self.scope['corpora'].append('han-fixture')
+        self.scope['source_revisions'].append({
+            'corpus': 'han-fixture', 'repository': 'fixture/han', 'source_sha': '1'*40})
+        self.steps.append({**self.steps[0], 'step_id': 's-2', 'corpus': 'han-fixture'})
+        self.configure_search(hits=False)
+        receipts = []
+        for step in self.steps:
+            checked = {'corpora': [step['corpus']], 'source_revisions': [copy.deepcopy(item)
+                for item in self.scope['source_revisions'] if item['corpus'] == step['corpus']],
+                'constraints': copy.deepcopy(self.scope['constraints'])}
+            receipts.append({**copy.deepcopy(self.receipt), 'step_id': step['step_id'], 'checked_scope': checked})
+        self.executions['search-1']['steps'] = receipts
+        return receipts
+
+    def test_two_corpora_steps_complete_their_own_scopes(self):
+        receipts = self.configure_two_corpora()
+        self.evidence['ev-han'] = fixture('ev-han', segment=2, corpus='han-fixture', repository='fixture/han')
+        for index, eid in enumerate(('ev-2', 'ev-han')):
+            receipts[index]['candidates'] = [{'candidate_id': 'hit-'+eid, 'evidence_id': eid,
+                                             'pointer': self.full_pointer(eid)}]
+        result = self.search()
+        self.assertEqual(result['status'], 'SEARCHED')
+        self.assertTrue(result['execution_complete'])
+        self.assertEqual(result['attempts'], receipts)
+        self.assertEqual(result['plan']['scope']['corpora'], ['fixture', 'han-fixture'])
+        self.assertEqual([record['evidence_id'] for record in result['verified_evidence']], ['ev-2', 'ev-han'])
+
+    def test_multicorpus_missing_receipt_keeps_plan_incomplete(self):
+        self.configure_two_corpora()
+        self.executions['search-1']['steps'].pop()
+        result = self.search()
+        self.assertEqual(result['status'], 'UNVERIFIED')
+        self.assertFalse(result['execution_complete'])
+        self.assertIsNone(result['summary'])
+
+    def test_multicorpus_without_a_step_for_one_corpus_is_not_complete(self):
+        self.configure_two_corpora()
+        self.plan['steps'].pop()
+        self.executions['search-1']['plan']['steps'].pop()
+        self.executions['search-1']['steps'].pop()
+        result = self.search()
+        self.assertEqual(result['status'], 'UNVERIFIED')
+        self.assertFalse(result['execution_complete'])
+        self.assertIsNone(result['summary'])
+
+    def test_step_with_partial_constraints_cannot_claim_complete(self):
+        receipts = self.configure_two_corpora()
+        receipts[0]['checked_scope']['constraints'] = ['Only the first fixture passage.']
+        result = self.search()
+        self.assertEqual(result['status'], 'REJECTED')
+        self.assertFalse(result['execution_complete'])
+
+    def test_multicorpus_wrong_pin_and_outside_scope_fail(self):
+        for change in ('sha', 'outside'):
+            self.setUp()
+            receipts = self.configure_two_corpora()
+            if change == 'sha':
+                receipts[1]['checked_scope']['source_revisions'][0]['source_sha'] = '2'*40
+            else:
+                receipts[1]['checked_scope']['corpora'] = ['outside']
+                receipts[1]['checked_scope']['source_revisions'][0]['corpus'] = 'outside'
+            result = self.search()
+            self.assertEqual(result['status'], 'REJECTED')
+            self.assertFalse(result['execution_complete'])
+
+    def test_receipt_cannot_cover_a_different_steps_corpus(self):
+        receipts = self.configure_two_corpora()
+        for checked in (receipts[0]['checked_scope'], self.scope):
+            receipts[1]['checked_scope'] = copy.deepcopy(checked)
+            self.assertEqual(self.search()['status'], 'REJECTED')
+            self.assertFalse(self.search()['execution_complete'])
+
+    def test_single_corpus_scope_remains_complete(self):
+        self.configure_search(hits=False)
+        result = self.search()
+        self.assertEqual(result['status'], 'SEARCHED')
+        self.assertTrue(result['execution_complete'])
+        self.assertEqual(result['attempts'][0]['checked_scope'], self.scope)
+
+    def full_pointer(self, evidence_id='ev-2'):
+        record = self.evidence[evidence_id]['evidence']
+        return {key: copy.deepcopy(record[key]) for key in (
+            'corpus', 'repository', 'source_sha', 'source_path', 'work_id', 'segment_id', 'sequence_no')}
+
+    def test_pointer_matching_a_source_and_location_is_usable(self):
+        self.receipt['candidates'][0]['pointer'] = self.full_pointer()
+        result = self.search()
+        self.assertEqual(result['status'], 'SEARCHED')
+        self.assertEqual([item['evidence_id'] for item in result['verified_evidence']], ['ev-2'])
+
+    def test_hit_for_another_segment_cannot_use_verified_evidence(self):
+        self.receipt['candidates'][0]['pointer'] = {**self.full_pointer(), 'segment_id': 'fixture-work:1'}
+        result = self.search()
+        self.assertEqual(result['status'], 'REJECTED')
+        self.assertEqual(result['verified_evidence'], [])
+
+    def test_pointer_source_and_work_mismatches_are_rejected(self):
+        for field, value in (('corpus', 'other'), ('repository', 'fixture/other'), ('source_sha', '2'*40),
+                             ('source_path', 'other.txt'), ('work_id', 'another-work'), ('sequence_no', 1)):
+            with self.subTest(field=field):
+                self.receipt['candidates'][0]['pointer'] = {**self.full_pointer(), field: value}
+                result = self.search()
+                self.assertEqual(result['status'], 'REJECTED')
+                self.assertEqual(result['verified_evidence'], [])
+
+    def test_opaque_and_incomplete_pointers_cannot_certify_hit_binding(self):
+        full = self.full_pointer()
+        pointers = [{}, {'record_id': 123, 'verified': True}, {'segment_id': full['segment_id']}]
+        pointers += [{key: value for key, value in full.items() if key != missing}
+                     for missing in ('corpus', 'repository', 'source_sha', 'source_path', 'work_id')]
+        pointers.append({key: value for key, value in full.items() if key not in ('segment_id', 'sequence_no')})
+        for pointer in pointers:
+            with self.subTest(pointer=pointer):
+                self.receipt['candidates'][0]['pointer'] = pointer
+                result = self.search()
+                self.assertEqual(result['status'], 'UNVERIFIED')
+                self.assertEqual(result['verified_evidence'], [])
+
+    def test_sequence_location_can_bind_but_boolean_is_not_a_sequence(self):
+        pointer = self.full_pointer()
+        pointer.pop('segment_id')
+        self.receipt['candidates'][0]['pointer'] = pointer
+        self.assertEqual(self.search()['status'], 'SEARCHED')
+        pointer['sequence_no'] = True
+        self.assertEqual(self.search()['status'], 'REJECTED')
+
+    def test_host_resolves_opaque_pointer_before_c_checks_it(self):
+        self.receipt['candidates'][0]['pointer'] = {'record_id': 123}
+        self.assertEqual(self.search()['status'], 'UNVERIFIED')
+        # Stand-in for a host using the pinned source resolver; C does not
+        # infer record_id mappings or take an opaque 'verified' flag.
+        def resolved_reader(search_id):
+            response = copy.deepcopy(self.executions.get(search_id))
+            response['steps'][0]['candidates'][0]['pointer'] = {**self.full_pointer(), 'record_id': 123}
+            return response
+        self.assertEqual(self.search(search_reader=resolved_reader)['status'], 'SEARCHED')
+
+    def test_unbound_hit_cannot_become_counter_or_revision_ground(self):
+        self.approve()
+        self.receipt['candidates'][0]['pointer']['segment_id'] = 'fixture-work:1'
+        result = self.assess()
+        self.assertEqual(result['status'], 'REJECTED')
+        self.assertEqual(result['search']['verified_evidence'], [])
+        self.assertEqual(result['claim']['counter_evidence_ids'], [])
+        self.assertIsNone(result['revision_proposal'])
 
     def test_unsupported_and_contradicted_assessments_are_rejected_by_b(self):
         for level, action in (('UNSUPPORTED', 'unsupported'), ('CONTRADICTED', 'contradicted')):

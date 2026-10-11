@@ -479,6 +479,63 @@ không xây hệ AI phản biện thứ hai, không triển khai D/E trong nhán
 
 ---
 
+### Gia cố C: phạm vi nhiều corpus và liên kết hit–A — 11/10/2026
+
+Rà soát commit `b0720b0edfa04a79f6a810c9f34e5ecad4148d8e` xác nhận hai lỗi:
+một bước hoàn tất bị yêu cầu phủ toàn bộ plan.scope, khiến kế hoạch nhiều
+corpus hợp lệ bị từ chối; pointer trỏ đoạn khác vẫn có thể nhận evidence_id
+đã qua A trong cùng corpus/pin. Chỉ sửa mô-đun C, bài kiểm C và tài liệu này.
+
+Phạm vi một bước nay là phần chiếu plan.scope theo step.corpus: đúng một
+corpus, repository/SHA đã ghim tương ứng và constraints của kế hoạch giữ
+nguyên. Một biên nhận không được nhận đã kiểm corpus khác hoặc toàn kế hoạch.
+Để execution_complete=true, mọi bước đã giao phải hoàn tất và tập corpus từ
+các bước hoàn tất phải phủ đủ corpora của kế hoạch. Corpus có trong kế hoạch
+nhưng không có bước, thiếu biên nhận hoặc bước chưa hoàn tất giữ UNVERIFIED,
+không có tóm tắt “không tìm thấy”. Sai pin, corpus hoặc constraints bị từ chối.
+Complete vẫn chỉ là thực thi thao tác hữu hạn trong các constraints đã được
+host phê duyệt; không chứng minh đã kiểm hết corpus hoặc hoàn thành Research.
+
+Pointer do search_reader cung cấp từ hit thực phải có corpus, repository,
+source_sha, source_path tương đối trong repository, work_id (null tường minh
+khi không áp dụng) và segment_id hoặc sequence_no đủ xác định vị trí. C kiểm
+các trường này với snapshot A, so chính xác cả kiểu dữ liệu; những định danh
+nguồn/vị trí bổ sung hiện diện cũng phải khớp. Sai nguồn, work hoặc đoạn trả
+REJECTED; thiếu dữ liệu đối chiếu trả UNVERIFIED. Bằng chứng không liên kết
+được không được đưa vào verified_evidence, mã phản chứng tìm thấy hoặc đề
+xuất sửa. evidence_id đơn lẻ hoặc cờ verified không chứng minh liên kết hit.
+
+Pointer opaque như record_id/locator ID chưa đủ để đối chiếu. Host phải dùng
+công cụ/nguồn ghim hiện có để giải chính hit đó, chuẩn hóa các định danh rồi
+đưa vào biên nhận search_reader. Không được chép định danh từ một bằng chứng
+do JSON đề xuất chọn để tự tạo liên kết. C không bịa mapping hoặc dựng thêm
+reader/adapter; pointer chưa giải giữ UNVERIFIED. Lõi chỉ kiểm liên kết dữ liệu,
+trách nhiệm về tính xác thực của hit và phép giải vẫn thuộc capability host.
+
+Giữ đủ 56 phương thức test C cũ, thêm 14 phương thức cho hai vấn đề này. Có
+hai bước/hai corpus với hit đã qua A, thiếu bước/biên nhận, giả hoàn tất khi
+phạm vi hẹp, sai SHA/vượt scope, biên nhận nhầm corpus và hồi quy một corpus;
+pointer đúng/sai đoạn/sai nguồn, thiếu định danh/opaque, vị trí sequence, host
+chuẩn hóa hit và ngăn hit không liên kết đi vào sửa luận điểm. Điều chỉnh một
+kỳ vọng cũ: bước kiểm một corpus hoàn tất hợp lệ nhưng corpus còn lại thiếu
+bước nay là UNVERIFIED thay vì REJECTED, execution_complete vẫn false. Fixture
+chung cung cấp pointer đầy đủ; hai fixture đổi nguồn/đoạn cập nhật pointer
+tương ứng để tiếp tục kiểm loại bằng chứng/quan hệ chưa biết, không né cửa A.
+
+| Bộ kiểm sau gia cố | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Riêng C, Windows và WSL | 70/70 mỗi môi trường | 0/0/0 |
+| Riêng A, Windows và WSL | 44/44 mỗi môi trường | 0/0/0 |
+| Riêng B, Windows và WSL | 82/82 mỗi môi trường | 0/0/0 |
+| Toàn suite, WSL cùng 13 nguồn ghim | 241/241 | 0/0/0 |
+
+Số liệu 56/227 và lịch sử A/B phía trên giữ nguyên theo mốc trước gia cố.
+Không sửa A/B, 13 nguồn ghim hoặc truy xuất 1.0; không tải thêm dữ liệu.
+Giới hạn mã lõi/fixture và phần chờ D/E vẫn giữ nguyên; chưa tích hợp corpus
+thật, kho lịch sử, Research Run hoặc adapter mới. Chưa nghiệm thu toàn bộ C.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
