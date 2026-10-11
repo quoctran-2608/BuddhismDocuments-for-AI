@@ -50,6 +50,14 @@ class ConnectorHost:
         if quotation is None and opened.get('excerpt_range'):
             a,b = opened['excerpt_range']
             quotation = opened['content'][a:b]
+        # Production v1 pointers omit language. Complete that field from the
+        # independently resolved source, never from a self-declared flag.
+        # Preserve a supplied value so disagreement remains a gate failure.
+        pointer = copy.deepcopy(pointer)
+        if pointer.get('language') is None:
+            pointer['language'] = opened.get('location',{}).get('language')
+        if pointer.get('source_blob_sha') is None:
+            pointer['source_blob_sha'] = opened.get('source_blob_sha')
         candidate = make_evidence_record(pointer,contract_for(self.contract,pointer.get('corpus'),pointer.get('source_path')),
             evidence_id=evidence_id,quotation=quotation,run_id=run_id)
         candidate['limitations'] = [SPAN_LIMITATION]

@@ -64,6 +64,10 @@ def load(path):
 
 
 def main(argv=None):
+    # JSON output is UTF-8 on Windows pipes as well as native terminals.
+    for stream in (sys.stdout,sys.stderr):
+        if hasattr(stream,'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     args = parser().parse_args(argv)
     try:
         host = LocalHost(args.root,args.db,source_root=args.source_root)

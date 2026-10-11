@@ -58,6 +58,7 @@ class LocalIntegrationTests(unittest.TestCase):
         result = self.host.verify_record(self.row()['id'],quotation=BLUE)
         self.assertEqual(result['status'],'VERIFIED')
         self.assertEqual(result['evidence']['context']['text'],BLUE)
+        self.assertRegex(result['evidence']['source_blob_sha'],r'^[0-9a-f]{40}$')
         self.assertEqual(result['evidence']['quotation'],BLUE)
         self.assertEqual(self.host.metrics['source_reads'],2)
 
@@ -277,6 +278,13 @@ class LocalIntegrationTests(unittest.TestCase):
         result = subprocess.run(command+['quote','--record-id',str(self.row()['id']),'--text','The wrong fixture lamp.'],env=env,capture_output=True,text=True,encoding='utf-8',check=True)
         self.assertEqual(json.loads(result.stdout)['status'],'REJECTED')
 
+    def test_cli_outputs_utf8_even_when_inherited_pipe_encoding_is_ascii(self):
+        env = {**__import__('os').environ,'PYTHONPATH':str(ROOT/'tools'),'PYTHONIOENCODING':'ascii'}
+        command = [sys.executable,'-m','corpus_research.v2_cli','--root',str(self.root),'--db',str(self.db),
+                   'quick','如是我聞','--corpus','cbeta-tei','--limit','1']
+        result = subprocess.run(command,env=env,capture_output=True,text=True,encoding='utf-8',check=True)
+        self.assertEqual(json.loads(result.stdout)['verified_evidence'][0]['quotation'],'如是我聞，藍燈。')
+
     def test_review_roundtrip_without_host_approval_is_proposed(self):
         research,run = self.start()
         package = research.store.export_review('r-1',expected_version=run['version'],review_questions=['Review fixture claim scope.'])['json']
@@ -321,6 +329,20 @@ class LocalIntegrationTests(unittest.TestCase):
         self.assertEqual(revised['claims'][0],old)  # Append-only original remains unchanged.
         self.assertEqual(revised['claims'][-1]['claim_id'],'c-2')
         with self.assertRaises(ConflictError): research.store.import_review(report)
+
+    def test_revised_run_reopens_source_locators_without_replaying_old_checks(self):
+        research,run = self.start()
+        old = run['claims'][0]
+        revised = research.store.revise_claim('r-1',old['claim_id'],
+            {**old,'claim_id':'c-2','text':'Narrower fixture statement.'},reason='Narrow scope.',
+            revision_evidence_ids=old['supporting_evidence_ids'],expected_version=run['version'])
+        self.assertEqual(revised['evidence'],[])
+        reopened = LocalResearch(LocalHost(self.root,self.db),self.store_path)
+        captured = reopened.capture('r-1',expected_version=revised['version'])
+        self.assertTrue(set(old['supporting_evidence_ids']).issubset(captured['evidence_ids']))
+        self.assertTrue(reopened.host.metrics['source_reads'])
+        self.assertEqual(captured['checks']['assessment:c-2'],'UNVERIFIED')
+        self.assertEqual(captured['accepted_claim_ids'],[])
 
     def test_c1_assessment_cannot_be_reused_for_c2(self):
         from corpus_research.claims import claim_subject,final_claim_gate

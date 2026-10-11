@@ -33,6 +33,11 @@ class LocalResearch:
 
     def prepare(self, run_id):
         run = self.store.get_run(run_id)
+        # A D claim revision invalidates derived evidence observations. Recover
+        # locator/quotation proposals from immutable audit versions, then run A
+        # afresh. History snapshots never become approval or A gate envelopes.
+        for snapshot in self.store.run_history(run_id):
+            self.host.restore_locators(snapshot)
         self.host.restore_locators(run)
         return run
 

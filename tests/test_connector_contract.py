@@ -42,6 +42,15 @@ class ConnectorContractTests(unittest.TestCase):
         self.assertEqual(len(self.calls),2)
         self.assertTrue(all(set(call)=={'repository','source_sha','source_path'} for call in self.calls))
 
+    def test_production_pointer_missing_language_is_resolved_from_source(self):
+        pointer = {k:v for k,v in self.pointer.items() if k!='language'}
+        result = self.host(source_fetch=self.fetch).verify_pointer(pointer,evidence_id='ev-1')
+        self.assertEqual(result['status'],'VERIFIED')
+        self.assertEqual(result['evidence']['language'],'pli')
+        self.assertNotIn('language',pointer)
+        wrong = self.host(source_fetch=self.fetch).verify_pointer({**pointer,'language':'zh'},evidence_id='ev-2')
+        self.assertEqual(wrong['status'],'REJECTED')
+
     def test_wrong_revision_blob_and_location_cannot_verify(self):
         for field,value in [('source_sha','3'*40),('source_blob_sha','4'*40),('segment_id','mn1:99'),('text_role','translator_comment')]:
             with self.subTest(field=field):

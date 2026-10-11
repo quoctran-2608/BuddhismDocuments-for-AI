@@ -126,6 +126,9 @@ class LocalHost:
     def verify_pointer(self, pointer, *, quotation=None, run_id=None, retrieval_query=None):
         contract = contract_for(self.contract,pointer.get('corpus'),pointer.get('source_path'))
         opened = self.source_reader(source_request(pointer))
+        pointer = copy.deepcopy(pointer)
+        if pointer.get('source_blob_sha') is None:
+            pointer['source_blob_sha'] = opened.get('source_blob_sha')
         if quotation is None and opened.get('excerpt_range'):
             start,end = opened['excerpt_range']
             quotation = opened['content'][start:end]
@@ -255,6 +258,10 @@ class LocalHost:
                     bundle = self.retrieve('evidence',row['id'])
                     pointer = self.pointer(bundle['record'])
                     checked = self.verify_pointer(pointer,run_id=plan['claim']['run_id'],retrieval_query=step['query'])
+                    if checked['status']=='VERIFIED':
+                        # Enrich this actual hit only with its just-verified
+                        # Git blob identity; keep C's exact pointer binding.
+                        pointer['source_blob_sha'] = checked['evidence']['source_blob_sha']
                     receipt['candidates'].append({'candidate_id':f'{search_id}:{step["step_id"]}:{number}',
                         'evidence_id':checked['evidence']['evidence_id'] if checked['status']=='VERIFIED' else None,
                         'pointer':pointer})
