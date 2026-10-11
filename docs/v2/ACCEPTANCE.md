@@ -536,6 +536,167 @@ thật, kho lịch sử, Research Run hoặc adapter mới. Chưa nghiệm thu t
 
 ---
 
+### Bằng chứng triển khai mã lõi Giai đoạn D — 11/10/2026
+
+Nền `main` được fetch và xác nhận tại commit C đã duyệt
+`361ccf2874fd35b2de68991aa9319b398e3218b5`; nhánh triển khai là
+`feature/bcr-v2-phase-d`. Thêm `research_run.py`, `research_store.py` và
+`test_research_run.py`; chỉ cập nhật tài liệu này. Không sửa mã/test A/B/C,
+13 nguồn ghim, corpus SQLite/schema, parser/index, FTS, ranking, locator hoặc
+CLI. Kế hoạch vẫn gồm năm giai đoạn A–E; không triển khai E. Các câu “chưa
+triển khai D” và số liệu A/B/C phía trên giữ nguyên theo mốc lịch sử.
+
+#### Hồ sơ, thông tin host và truy nguyên
+
+`make_research_run()` giữ đủ 28 trường trong Design mục 14.2 và luôn tạo draft.
+Host cấu hình `context_reader(run_id)` bên ngoài JSON, cung cấp kho/commit chính,
+environment local/connector, pins và locator khi áp dụng. `ResearchStore` dùng
+clock host (mặc định UTC) để lập thời điểm; không lấy thời điểm, finalized,
+accepted IDs hoặc counterevidence_performed tự khai làm căn cứ. SHA hợp lệ về
+định dạng chưa chứng minh nguồn tồn tại: host phải xác lập phiên bản từ cấu
+hình/Git/Connector thực. Không có adapter tự khám phá phiên bản trong D.
+
+Scope phải hợp lệ theo hợp đồng C, pins phải thuộc cấu hình host. Local không
+cần locator và giữ ba trường remote null; Connector cần repository/commit/root
+hợp lệ. model_identifier và verification_config được phép null. Trường riêng
+không được tự thêm vào proposal; các trường chain-of-thought/private reasoning
+và credential đã biết bị chặn. Host phải loại bí mật khỏi dữ liệu được cung
+cấp; kiểm tên trường không phải dịch vụ nhận diện/redact mọi bí mật trong prose.
+
+`capture()` và `finalize()` đọc hiện hành qua evidence_reader, assessment_reader
+và các capability C, dùng nguyên assess_claim/final_claim_gate/
+assess_counterevidence. Lưu đầy đủ history luận điểm, Evidence Records A, đánh
+giá B, kết quả gate, search attempts/candidates/verified_evidence, quan hệ nguồn,
+findings và đề nghị sửa C. JSON đầu ra hoặc cache lịch sử không được nối ngược
+thành reader nguồn/phê duyệt mới. Thiếu nguồn hoặc approval có thể ghi nhận
+trong draft với UNVERIFIED, nhưng không chốt hồ sơ kiểm chứng đầy đủ.
+
+Hai cấu trúc retrieval/research phân biệt truy xuất với nghiên cứu: queries
+do AI đề xuất là planned_queries; actual_countersearches lấy từ C đã đọc qua
+host, giữ nguyên truy vấn, pin, phạm vi thực kiểm, bước lỗi/chưa chạy và phần
+chưa kiểm. evidence/assessments/history giữ đường nghiên cứu; không yêu cầu
+viết lại câu trả lời từng chữ hoặc lưu chuỗi suy nghĩ nội bộ. Chưa có biên nhận
+tích hợp cho mọi thao tác truy xuất ngoài C; planned query không tự thành
+query đã chạy. Hướng tìm phù hợp và ý nghĩa constraints vẫn do host phê duyệt.
+
+`trace_claim(run_id, claim_id)` trả nội dung/loại, hỗ trợ/phản chứng, nguồn ghim,
+vị trí/ngữ cảnh/vai trò/nhân chứng, đánh giá đã lưu, mã bằng chứng thiếu và
+quan hệ thay thế. Kết quả ghi rõ version và historical_observation_only; không
+cấp quyền công bố. `run_history()` đọc mọi snapshot lưu trước đây, gồm các
+quan sát C cũ. Yêu cầu C đã ghi được giữ qua sửa draft/luận điểm và tự kiểm lại
+khi chốt; truyền danh sách rỗng không xóa một yêu cầu sửa C đang còn hiệu lực.
+
+#### Kho thực, lịch sử và ranh giới giao dịch
+
+`ResearchStore(path, ...)` là adapter SQLite riêng bằng thư viện chuẩn Python.
+Đường dẫn và capability chỉ cấu hình từ host, không nhận từ proposal/report.
+Kho lưu qua nhiều lần chạy chương trình; marker application_id từ chối DB
+khác, gồm corpus index. Không có DB cố định hoặc dữ liệu sinh trong repo.
+
+Mỗi thao tác ghi dùng BEGIN IMMEDIATE và expected_version: SQLite khóa writer
+giữa các tiến trình, kiểm phiên bản hiện hành rồi ghi snapshot mới/cập nhật
+con trỏ phiên bản trong cùng giao dịch. Mã run/claim/report/decision có ràng
+buộc duy nhất; claim ID không tái sử dụng giữa các run. Draft cũng lưu phiên
+bản mới, không xóa bản trước. Trigger chặn UPDATE/DELETE các snapshot và bản
+ghi lịch sử/thẩm định; API không cho sửa, append, revise hoặc capture lại run
+finalized. Đây là bảo vệ qua adapter/SQLite, không chống chủ sở hữu máy sửa
+schema, thay file DB hoặc cấu hình reader giả. Host chịu trách nhiệm quyền file.
+
+Run mới thay run finalized bằng supersedes_run_id + revision_reason, phải dùng
+claim ID và approval phù hợp run mới. Hai draft có thể đề nghị thay cùng run,
+nhưng chỉ một successor được chốt; quan hệ được ghi nguyên tử khi chốt và có
+ràng buộc duy nhất. Trạng thái superseded là hình chiếu từ quan hệ, không sửa
+byte snapshot cũ. Chu trình/tái sử dụng ID/thiếu lý do bị từ chối. Các phép
+append/revise luận điểm vẫn gọi B và giữ quy tắc cùng run_id/phản chứng.
+
+`history_reader({'claim_id', 'run_id'})` đọc đầy đủ lịch sử hiện hành trong kho,
+gồm mọi predecessor/successor cùng run. Caller không cắt lịch sử bằng JSON.
+Run bị thay thế không còn trả complete=true cho công bố; lưu trữ cũ vẫn đọc
+được để kiểm toán. Giữ nguyên cả ba đường B chặn công bố lại luận điểm cũ.
+
+`check_publication()` kiểm expected_version, run còn hiện hành và chạy lại
+verify_synthesis của B dưới khóa kho. Lịch sử đổi sau lần kiểm trước gây
+ConflictError hoặc bị gate chặn. **Kết quả luôn publication_authorized=false**:
+D chưa phối hợp được side effect xuất bản thực với mọi nguồn/approval bên
+ngoài. E phải nối quyết định công bố và độ mới của các provider với host có
+thẩm quyền. Khóa SQLite bảo vệ sửa/chốt lịch sử trong kho, không tuyên bố bảo
+đảm công bố nguyên tử qua mạng hoặc ứng dụng ngoài.
+
+Finalized xác nhận một hồ sơ kiểm toán đủ các phép kiểm áp dụng, không đồng
+nghĩa mọi luận điểm accepted. Quick hẹp vẫn qua gate B như cũ; Research cần
+phản chứng C đã kiểm/phê duyệt cho mọi luận điểm hiện hành để chốt hồ sơ,
+nhưng gate B vẫn giữ candidate do điều kiện tích hợp chưa hoàn thành. Không
+sửa hoặc mở rào chắn Research của B chỉ vì đã có run finalized.
+
+#### Xuất/nhập và quyết định phê duyệt tách riêng
+
+`export_review()` lấy snapshot đã capture từ kho, gắn package_id, version và
+SHA-256, câu hỏi thẩm định; trả JSON và Markdown. Gói có snapshot đầy đủ,
+lịch sử phiên bản của run và snapshot run tiền nhiệm khi áp dụng để giữ căn
+cứ sửa, kể cả các lần tìm C trước. Draft chưa đầy đủ vẫn có thể xuất để nhờ
+kiểm, với trạng thái/giới hạn UNVERIFIED giữ nguyên; không thành hồ sơ đã duyệt.
+verify_review_package đối chiếu toàn bộ gói với bản lưu có thẩm quyền, không
+chỉ tin hash do người gửi tính lại. Snapshot/version đổi khiến gói bị stale.
+
+`import_review()` kiểm gói/snapshot hiện hành, danh tính/vai trò khai báo,
+thời điểm/session, quan hệ với bên đề xuất, nhận xét từng claim, căn cứ,
+giới hạn, đề nghị keep/rewrite/narrow/reject và phần chưa xác minh. Mã claim
+phải có trong gói; citation phải vừa liên kết claim vừa có Evidence Record A
+trong snapshot. Gợi ý ngoài/thiếu corpus chỉ ghi phần chưa kiểm, không thành
+bằng chứng mới. Báo cáo gốc được lưu bất biến, thời điểm nhập lấy từ host.
+Các cờ approved/trusted/accepted trong báo cáo vẫn là dữ liệu đề xuất;
+import trả PROPOSED, không sửa run/claim hoặc tự cấp approval cho B.
+
+`record_review_decision(report_id, review_id=...)` lưu đối tượng quyết định
+riêng qua **assessment_reader B hiện có**. Đánh giá host cần có phần
+review_report_decision gắn report/package/claim, disposition approve/reject và
+lý do; B vẫn kiểm subject/evidence hiện hành. Quyết định sai snapshot hoặc
+nguồn đổi không được ghi như đã duyệt. Nhãn RECORDED chỉ nói quyết định được
+lưu; không công bố và không thay assessment_reader bằng báo cáo nhập. Sửa
+luận điểm tiếp tục qua revise_claim với ID mới và approval riêng.
+
+**Chưa tích hợp kênh xác thực/phê duyệt thực**. Test dùng oracle host cấu hình
+độc lập với proposal/report; danh tính AI tự khai hoặc khác tên model không
+chứng minh độc lập thẩm định và không thay tính độc lập nguồn của C.
+
+#### Đối chiếu yêu cầu và kiểm thử
+
+| Yêu cầu | Mã lõi/lưu trữ thật và bằng chứng tự động | Phần còn chờ E |
+|---|---|---|
+| REQ-RUN-001 | Đủ trường, context/clock host, local/connector, scope/pins; test thiếu định danh/phiên bản/locator, tự khai trạng thái và JSON roundtrip | Nối cấu hình/Git/Connector thực và điều phối tạo run trong nghiên cứu |
+| REQ-RUN-002 | retrieval/research riêng, A/B/C snapshots và lịch sử; test planned/actual, trace và chặn private reasoning | Adapter các thao tác truy xuất thực, kiểm khả năng tái lập trên corpus |
+| REQ-RUN-003 | Giữ checked/unchecked scope và failures C; test partial scope, nguồn/pin sai, failed search và không bỏ C đã ghi | Chính sách phạm vi/câu trả lời và truy xuất Work/Connector thực |
+| REQ-RUN-004 | Trace claim→support/counter→A/provenance/approval/successors; test missing/orphan evidence, wrong run và kiểu nguồn giữ nguyên | Truy nguyên qua giao diện tích hợp và dữ liệu nghiên cứu chuẩn |
+| REQ-RUN-005 | Lưu/replay C requests, search/semantics/decisions/revisions và phiên bản cũ; fixture A→C→B→D xuyên suốt | Nối executor/kênh phê duyệt thật, quy trình nghiên cứu đầy đủ |
+| REQ-RUN-006 | SQLite thật, snapshot bất biến, CAS/transaction, successor duy nhất, history_reader hiện hành; test mở lại, trigger, hai tiến trình ghi cùng version và lịch sử đổi sau kiểm | Phối hợp công bố ngoài kho với provider/host, giao diện vận hành và xác thực quyền |
+| REQ-RUN-007 | Xuất JSON/Markdown từ kho, nhập PROPOSED, giữ báo cáo gốc và quyết định host riêng; test tampering/stale, fake approval, thiếu capability, nguồn đổi và không sửa finalized | Phiên phản biện thực, kênh xác thực/phê duyệt, sử dụng trên Work/Connector |
+
+| Bộ kiểm D | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Baseline main 361ccf2, WSL đủ 13 nguồn ghim | 241/241 | 0/0/0 |
+| Riêng D, Windows/Python 3.14 và WSL/Python 3.12.3 | 69/69 mỗi môi trường | 0/0/0 |
+| Riêng A, Windows và WSL | 44/44 mỗi môi trường | 0/0/0 |
+| Riêng B, Windows và WSL | 82/82 mỗi môi trường | 0/0/0 |
+| Riêng C, Windows và WSL | 70/70 mỗi môi trường | 0/0/0 |
+| Toàn suite với D, WSL cùng 13 nguồn ghim | 310/310 | 0/0/0 |
+
+Các DB test nằm trong thư mục tạm, connection được đóng trước cleanup trên
+Windows. Hai tiến trình Python thật cùng barrier/version ghi một thắng/một
+ConflictError; snapshot không mất dữ liệu. Fixture xuyên suốt giữ C phản chứng,
+B claim cũ/mới, D finalized và run thay thế, rồi xuất hồ sơ; không tuyên bố
+fixture là nghiên cứu Phật học. Lõi JSON chạy trong tiến trình chặn SQLite/
+shell; adapter lưu trữ cần SQLite chuẩn. WSL dùng checkout riêng tại nền C và
+chính 13 checkout nguồn bất biến đã có, kiểm SHA/diff trước/sau. Không tải
+corpus/package và không sửa test A/B/C/legacy để đạt.
+
+Đây là **mã lõi D có kho lưu trữ thật và fixture, chờ nghiệm thu tích hợp**,
+không chuyển toàn bộ D/2.0 sang HIỆN HÀNH. E còn adapter corpus thực, luồng
+Quick/Research, phối hợp công bố/xác thực, 11 ca nghiên cứu chuẩn, Work/
+Connector và phép đo E1–E3 (**CHƯA ĐO**). Không xây dịch vụ AI phản biện, web,
+API, kho vector hoặc hạ tầng phân tán.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |
@@ -561,12 +722,12 @@ thật, kho lịch sử, Research Run hoặc adapter mới. Chưa nghiệm thu t
 | REQ-CTR-002 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: “không tìm thấy phản chứng” phải kèm corpus/truy vấn/phạm vi đã kiểm |
 | REQ-CTR-003 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Nghiên cứu chuẩn: nguồn phụ thuộc không được tính như xác nhận độc lập; chưa rõ phải giữ uncertain |
 | REQ-CTR-004 | ĐÃ CÓ LÕI C; CHỜ NGHIỆM THU | Tích hợp: phản chứng có thể làm luận điểm bị thu hẹp/hạ mức/loại/thay thế |
-| REQ-RUN-001 | CHƯA TRIỂN KHAI | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt |
-| REQ-RUN-002 | CHƯA TRIỂN KHAI | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ |
-| REQ-RUN-003 | CHƯA TRIỂN KHAI | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi |
-| REQ-RUN-004 | CHƯA TRIỂN KHAI | Tự động: từ mã luận điểm truy ra được toàn bộ mã bằng chứng liên quan |
-| REQ-RUN-005 | CHƯA TRIỂN KHAI | Tự động: trạng thái tìm phản chứng và tóm tắt kết quả có thể truy vấn |
-| REQ-RUN-006 | CHƯA TRIỂN KHAI | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
+| REQ-RUN-001 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: chế độ Nghiên cứu thiếu commit kho chính, kho/commit/thư mục gốc của locator, phiên bản nguồn hoặc trường bắt buộc phải không đạt |
+| REQ-RUN-002 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Cấu trúc: dữ liệu tách được tái lập truy xuất và tái lập nghiên cứu; không yêu cầu lưu chuỗi suy nghĩ nội bộ |
+| REQ-RUN-003 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động + nghiên cứu chuẩn: hồ sơ phải có phạm vi đã kiểm/chưa kiểm và câu trả lời không được mở rộng quá phạm vi |
+| REQ-RUN-004 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: từ mã luận điểm truy ra được toàn bộ mã bằng chứng liên quan |
+| REQ-RUN-005 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: trạng thái tìm phản chứng và tóm tắt kết quả có thể truy vấn |
+| REQ-RUN-006 | ĐÃ CÓ LÕI D; CHỜ NGHIỆM THU | Tự động: hồ sơ đã chốt (`finalized`) không được sửa đè; thay đổi phải tạo bản mới có quan hệ thay thế và lý do |
 | REQ-TST-001 | CHƯA TRIỂN KHAI | Tự động: 11 mẫu nghiên cứu chuẩn nằm trong repo/nguồn ghim và chạy được trên môi trường sạch, không phụ thuộc đường dẫn cá nhân |
 | REQ-TST-002 | CHƯA TRIỂN KHAI | Quy trình + tự động: mỗi sự cố nghiên cứu nghiêm trọng đã sửa có bài kiểm thử hồi quy tương ứng |
 | REQ-ENV-001 | MỘT PHẦN: LÕI A/B; CHƯA THỬ WORK | Tự động + tích hợp: lõi kiểm chứng nhận/trả dữ liệu JSON tương đương trên Codex và ChatGPT Work; không yêu cầu SQLite, shell hay đường dẫn tuyệt đối để hiểu đúng trạng thái |
@@ -586,7 +747,7 @@ Nghiệm thu toàn bộ ở mục 6 còn phải đáp ứng hai yêu cầu bổ 
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng nghiệm thu cần có |
 |---|---|---|
-| REQ-RUN-007 | CHƯA TRIỂN KHAI; MỤC TIÊU D/E | Tích hợp + rà soát: xuất/nhập thủ công đủ snapshot và căn cứ; lưu báo cáo khác quyết định phê duyệt; báo cáo chưa phê duyệt/sai snapshot không cấp quyền; đánh giá đã phê duyệt dùng capability host và cửa kiểm hiện có |
+| REQ-RUN-007 | ĐÃ CÓ LÕI D; CHỜ TÍCH HỢP E | Tích hợp + rà soát: xuất/nhập thủ công đủ snapshot và căn cứ; lưu báo cáo khác quyết định phê duyệt; báo cáo chưa phê duyệt/sai snapshot không cấp quyền; đánh giá đã phê duyệt dùng capability host và cửa kiểm hiện có |
 | REQ-TST-003 | CHƯA ĐO; MỤC TIÊU E | Báo cáo E1–E3 có baseline so sánh được, kết quả thô, chi phí và lỗi bỏ lọt/chặn nhầm; phần thẩm định độc lập có phép đo giá trị tăng thêm khi sử dụng |
 
 Nghiệm thu REQ-RUN-007 phải đi hết một vòng xuất → phản biện → nhập → quyết
