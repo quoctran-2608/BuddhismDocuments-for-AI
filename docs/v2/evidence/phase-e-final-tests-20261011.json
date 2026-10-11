@@ -1,0 +1,285 @@
+{
+  "purpose": "Final pre-merge execution evidence for approved phase E integration; software checks only, not scholarly acceptance.",
+  "approved_code_commit": "49862169878a796951d069830459b526f4ee2d47",
+  "main_before": "67eccb4b047365d9ba753de1b0e623542039881d",
+  "evidence_only_commit_policy": "Only this JSON and two raw gzip logs are added. Code/tests/criteria/old evidence and benchmarks stay identical to approved_code_commit. Final evidence-only HEAD must rerun the complete WSL suite before merge; that later run is reported separately.",
+  "reproduction": {
+    "full_command": "PYTHONPATH=tools BCR_SOURCE_ROOT=<existing-pinned-source-checkout> python3 -m unittest discover -s tests -v",
+    "code_digest_definition": "SHA256 of compact sorted-key JSON mapping tracked paths to SHA256 of LF-normalized bytes for git ls-tree -r --name-only HEAD tools tests bin config schema manifest.json; every byte is checked against the tested Git blob before execution.",
+    "portable_commands": [
+      "PYTHONPATH=tools python -m unittest discover -s tests -p test_local_integration.py -v",
+      "PYTHONPATH=tools python -m unittest discover -s tests -p test_connector_contract.py -v",
+      "PYTHONPATH=tools python -m unittest discover -s tests -p test_golden_research.py -v",
+      "PYTHONPATH=tools python -m unittest discover -s tests -p test_source_span_selection.py -v"
+    ],
+    "layout": "Old corpus tests need the existing 13 source checkouts at repository-relative gitlink locations. E actual-source tests accept BCR_SOURCE_ROOT. No download or synthetic substitution for actual-source tests.",
+    "command_note": "Commands above reproduce the discoveries. This run invokes the same unittest loader/TextTestRunner inside a temporary external harness to collect direct success/group counts and pin checks."
+  },
+  "wsl": {
+    "tested_commit": "49862169878a796951d069830459b526f4ee2d47",
+    "approved_code_commit": "49862169878a796951d069830459b526f4ee2d47",
+    "started_at_utc": "2026-10-11T14:32:47.204183+00:00",
+    "finished_at_utc": "2026-10-11T14:33:10.324011+00:00",
+    "environment": {
+      "python": "3.12.3",
+      "sqlite": "3.45.1",
+      "system": "Linux",
+      "release": "6.6.87.2-microsoft-standard-WSL2",
+      "distribution": "Ubuntu 24.04.3 LTS",
+      "wsl_version": "WSL version: 2.6.2.0"
+    },
+    "code_files_digest_sha256": "672bb098824ea693de6b4aaa31ed290a6a65fddb5e1e248b50b8fd72de216d9a",
+    "command": "PYTHONPATH=tools BCR_SOURCE_ROOT=<existing-pinned-source-checkout> python3 -m unittest discover -s tests -v",
+    "runner": "stdlib unittest discovery; TextTestRunner verbosity=2; result counts captured directly",
+    "groups_passed": {
+      "Other 1.0": 45,
+      "B": 82,
+      "E portable": 78,
+      "E corpus": 14,
+      "C": 70,
+      "D": 77,
+      "A": 44
+    },
+    "span_regressions_passed": 16,
+    "counts": {
+      "ran": 410,
+      "passed": 410,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "source_pins_before": [
+      {
+        "corpus": "suttacentral-bilara",
+        "repo_path": "suttacentral/bilara-data",
+        "expected_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "observed_head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "suttacentral-relations",
+        "repo_path": "suttacentral/sc-data",
+        "expected_sha": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "observed_head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "cbeta-tei",
+        "repo_path": "cbeta/xml-p5",
+        "expected_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "observed_head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "cbeta-bm",
+        "repo_path": "cbeta/BM_u8",
+        "expected_sha": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "observed_head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-tm",
+        "repo_path": "84000/data-translation-memory",
+        "expected_sha": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "observed_head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-rdf",
+        "repo_path": "84000/data-rdf",
+        "expected_sha": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "observed_head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-tei",
+        "repo_path": "84000/data-tei",
+        "expected_sha": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "observed_head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "openpecha",
+        "repo_path": "openpecha/C0A2DD042",
+        "expected_sha": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "observed_head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-pali",
+        "repo_path": "buddhanexus/segmented-pali",
+        "expected_sha": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "observed_head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-chinese",
+        "repo_path": "buddhanexus/segmented-chinese",
+        "expected_sha": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "observed_head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-sanskrit",
+        "repo_path": "buddhanexus/segmented-sanskrit",
+        "expected_sha": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "observed_head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "pts-archive",
+        "repo_path": "pts/pts-archive",
+        "expected_sha": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "observed_head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "pali-canon-derived",
+        "repo_path": "third-party/pali-canon",
+        "expected_sha": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "observed_head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_content_unchanged": true
+      }
+    ],
+    "source_pins_after": [
+      {
+        "corpus": "suttacentral-bilara",
+        "repo_path": "suttacentral/bilara-data",
+        "expected_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "observed_head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "suttacentral-relations",
+        "repo_path": "suttacentral/sc-data",
+        "expected_sha": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "observed_head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "cbeta-tei",
+        "repo_path": "cbeta/xml-p5",
+        "expected_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "observed_head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "cbeta-bm",
+        "repo_path": "cbeta/BM_u8",
+        "expected_sha": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "observed_head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-tm",
+        "repo_path": "84000/data-translation-memory",
+        "expected_sha": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "observed_head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-rdf",
+        "repo_path": "84000/data-rdf",
+        "expected_sha": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "observed_head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "84000-tei",
+        "repo_path": "84000/data-tei",
+        "expected_sha": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "observed_head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "openpecha",
+        "repo_path": "openpecha/C0A2DD042",
+        "expected_sha": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "observed_head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-pali",
+        "repo_path": "buddhanexus/segmented-pali",
+        "expected_sha": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "observed_head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-chinese",
+        "repo_path": "buddhanexus/segmented-chinese",
+        "expected_sha": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "observed_head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "buddhanexus-sanskrit",
+        "repo_path": "buddhanexus/segmented-sanskrit",
+        "expected_sha": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "observed_head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "pts-archive",
+        "repo_path": "pts/pts-archive",
+        "expected_sha": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "observed_head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_content_unchanged": true
+      },
+      {
+        "corpus": "pali-canon-derived",
+        "repo_path": "third-party/pali-canon",
+        "expected_sha": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "observed_head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_content_unchanged": true
+      }
+    ],
+    "source_pins_unchanged": true,
+    "raw_log_file": "phase-e-final-wsl-approved-20261011.log.gz",
+    "raw_log_sha256": "102ed556f8db81e68522fe3a8c1a6e1798db2003acc7fe8fa014bb7ccd86682d",
+    "gzip_sha256": "7f604c69b8b03b515a2af6f42c4528751925a7f48a61ce21ded1cfce8695a6d4",
+    "source_layout": "Temporary native code worktree uses symlinks for 13 unchanged gitlinks to already-present pinned checkouts; all code/test bytes equal tested Git commit. No corpus download.",
+    "windows_full_suite": "Not rerun; known baseline errors remain, full Windows suite not accepted",
+    "benchmark": "Historical checkpoint measurements untouched; no new benchmark or scholarly quality/AI-cost assessment"
+  },
+  "windows_portable": {
+    "tested_commit": "49862169878a796951d069830459b526f4ee2d47",
+    "approved_code_commit": "49862169878a796951d069830459b526f4ee2d47",
+    "started_at_utc": "2026-10-11T14:31:32.862626+00:00",
+    "finished_at_utc": "2026-10-11T14:32:57.011215+00:00",
+    "environment": {
+      "python": "3.14.0",
+      "sqlite": "3.50.4",
+      "system": "Windows",
+      "release": "11"
+    },
+    "code_files_digest_sha256": "672bb098824ea693de6b4aaa31ed290a6a65fddb5e1e248b50b8fd72de216d9a",
+    "command": "PYTHONPATH=tools python -m unittest discover -s tests -p <each E portable test module> -v",
+    "runner": "stdlib unittest discovery; TextTestRunner verbosity=2; result counts captured directly",
+    "groups_passed": {
+      "E portable": 78
+    },
+    "span_regressions_passed": 16,
+    "counts": {
+      "ran": 78,
+      "passed": 78,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "source_pins_before": null,
+    "source_pins_after": null,
+    "source_pins_unchanged": null,
+    "raw_log_file": "phase-e-final-windows-portable-20261011.log.gz",
+    "raw_log_sha256": "68b8636ab5c0212082e5f753e7cfb35d8695a6b0c40195ba5d455a4863dc33fd",
+    "gzip_sha256": "85710d5e49f5bc84a1eaa6e71b5e9b3e9b18e4e1b9b4e3aa4b27a7db830ce8af",
+    "source_layout": null,
+    "windows_full_suite": "Not rerun; known baseline errors remain, full Windows suite not accepted",
+    "benchmark": "Historical checkpoint measurements untouched; no new benchmark or scholarly quality/AI-cost assessment"
+  },
+  "limits": [
+    "Windows full suite has known baseline errors and is not accepted.",
+    "Existing E1/E2 and E3 draft-cost numbers are historical pre-span-fix measurements, not measured again here.",
+    "Research semantic approval/publication remains closed; scholarly quality, independent review, real Work, full Connector, all source-format resolvers, full-index/cold-cache performance and official thresholds are not accepted by these test results."
+  ]
+}
