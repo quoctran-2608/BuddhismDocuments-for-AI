@@ -85,13 +85,48 @@ chạy 36 bài với 29 lỗi, chặn 9 bài acceptance ở `setUpClass`; mốc 
 68 bài với 29 lỗi; sau rà soát chạy 80 bài với cùng 29 lỗi. Đối chiếu danh sách
 `ERROR:` không có chênh lệch. Nhóm lỗi vẫn là thiếu submodule/tệp/Git object và
 khóa SQLite khi dọn thư mục tạm. Không sửa hoặc bỏ qua lỗi 1.0; toàn suite chưa
-xanh. Chưa xác nhận trên checkout đủ nguồn, phiên Work thật hoặc GitHub plugin
+xanh. Ở lần rà soát mã này chưa xác nhận trên checkout đủ nguồn, phiên Work thật hoặc GitHub plugin
 thật. Chưa có adapter remote xác minh phiên bản tích hợp: chỉ dữ liệu plugin
 tự khai phải giữ `UNVERIFIED`; chỉ host đã nối công cụ đọc đúng phiên bản mới
 có thể cung cấp khả năng tương đương đường Git cho cùng lõi.
 
 Các mục A dưới đây ghi **đã có lõi, chờ nghiệm thu**, không chuyển toàn bộ yêu
 cầu sang HIỆN HÀNH. Giai đoạn B–E vẫn chưa triển khai.
+
+### Nghiệm thu cuối mã lõi A — 11/10/2026
+
+Đã fetch và xác nhận `main` tại `f7415f574ed1510d5854ee00db6baafe2484e355`
+chưa chứa Giai đoạn A; mã A được kiểm tại
+`60873fbe55fe4b2061fba8c0e0050afbb5b07f2f`. Hai phiên bản chạy trong worktree
+riêng trên Ubuntu WSL2/Linux 6.6.87.2, Python 3.12.3, SQLite 3.45.1. Đã tải đủ
+13 submodule bằng `submodule update --init --recursive --depth 1`, đối chiếu
+HEAD với Gitlink/manifest và xác nhận nguồn không bị sửa. Baseline dùng liên
+kết tới chính các checkout nguồn đã ghim của nhánh A, bảo đảm cùng byte nguồn.
+Môi trường được giữ tại `/home/tranquoc/bcr-phase-a-final-20261011`; checkout
+Windows gốc vẫn chưa khởi tạo nguồn. Không sửa Gitlink, manifest hay cấu hình.
+
+| Môi trường và bộ nguồn | Phiên bản | Bài chạy | Bài đạt | Error records | Assertion failures | Bài acceptance bị chặn |
+|---|---|---:|---:|---:|---:|---:|
+| WSL/Python 3.12.3, đủ 13 nguồn ghim | main | 45 | 45 | 0 | 0 | 0 |
+| WSL/Python 3.12.3, cùng 13 nguồn ghim | A | 89 | 89 | 0 | 0 | 0 |
+| Windows/Python 3.14, thiếu nguồn | main | 36 | 9 | 29 | 0 | 9 |
+| Windows/Python 3.14, cùng tình trạng thiếu nguồn | A | 80 | 53 | 29 | 0 | 9 |
+
+44/44 phương thức A đạt riêng trên cả Windows và WSL; không bài nào bị bỏ qua.
+29 error records Windows giống nhau cả tên bài và loại exception: 26
+`PermissionError` khóa SQLite, 2 `FileNotFoundError`, 1
+`subprocess.CalledProcessError` do nguồn Git thiếu. Một bài có thể báo cả lỗi
+thân bài và cleanup; lỗi `setUpClass` không được tính vào số bài đã chạy.
+Không kết luận A sửa lỗi nền Windows từ việc suite Linux xanh. Đối chiếu cùng
+môi trường không phát hiện lỗi mới hoặc lỗi thuộc A; hàm đường dẫn chuyển từ
+`pointer_export.py` có phần thực thi AST giống bản main, các tệp 1.0 khác giữ
+nguyên. Kết quả này nghiệm thu mã lõi trong phạm vi suite hiện có, không thay
+cho kiểm toàn bộ dữ liệu/hiệu năng hoặc nghiệm thu toàn bộ 2.0.
+
+Chưa thử phiên Work/GitHub plugin thật, chưa tích hợp adapter remote, bộ giải
+vị trí 13 nguồn hay kênh phê duyệt diễn đạt lại vào CLI. `REQ-ENV-001/002` vẫn
+chưa được nghiệm thu đầy đủ. Không có sửa mã A được yêu cầu bởi kết quả kiểm
+thử này; PR giữ Draft chờ người bảo trì rà soát và chấp thuận phạm vi/giới hạn.
 
 ---
 
