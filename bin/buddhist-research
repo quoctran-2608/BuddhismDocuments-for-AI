@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Optional v2 command; existing buddhist-corpus remains the retrieval CLI."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
+from corpus_research.v2_cli import main
+
+raise SystemExit(main())

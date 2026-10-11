@@ -1,0 +1,277 @@
+[
+  {
+    "id": 1,
+    "layer": "software_fixture",
+    "question": "Câu trích đổi một từ",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "green lamp được gắn nguyên văn",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Nguyên văn blue lamp",
+    "invalid_claim": "green lamp được gắn nguyên văn",
+    "expected": "QUOTE_MISMATCH",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_01_one_word_quote_change",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 2,
+    "layer": "software_fixture",
+    "question": "SHA nguồn sai",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "SHA sai được dùng làm nguồn đã xác minh",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Đọc đúng blob ghim",
+    "invalid_claim": "SHA sai được dùng làm nguồn đã xác minh",
+    "expected": "BLOCKED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_02_wrong_source_sha",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 3,
+    "layer": "software_fixture",
+    "question": "Sai vị trí đoạn",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Đoạn 2 được gắn approval của đoạn 1",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Đoạn 1 chứa blue lamp",
+    "invalid_claim": "Đoạn 2 được gắn approval của đoạn 1",
+    "expected": "BLOCKED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_03_wrong_source_segment",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 4,
+    "layer": "software_fixture",
+    "question": "Chú thích giả nguyên văn",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "translation_note được dùng như primary_text",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Chú thích được ghi đúng vai trò",
+    "invalid_claim": "translation_note được dùng như primary_text",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_04_translation_note_is_not_root",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 5,
+    "layer": "software_fixture",
+    "question": "Metadata song hành giả câu chữ",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Metadata được dùng như textual_report",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Luận điểm relationship từ metadata",
+    "invalid_claim": "Metadata được dùng như textual_report",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_05_parallel_metadata_is_not_wording",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 6,
+    "layer": "software_fixture",
+    "question": "Nguồn phụ thuộc giả độc lập",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Hai đoạn cùng nguồn được coi independent",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Hai đoạn cùng nguồn được gộp một họ",
+    "invalid_claim": "Hai đoạn cùng nguồn được coi independent",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_06_dependent_sources_are_not_independent",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 7,
+    "layer": "software_fixture",
+    "question": "Luận điểm vượt bằng chứng",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Tất cả đoạn luôn mô tả blue lamp",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Chỉ đoạn 1 mô tả blue lamp",
+    "invalid_claim": "Tất cả đoạn luôn mô tả blue lamp",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_07_universal_claim_exceeds_support",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 8,
+    "layer": "software_fixture",
+    "question": "Sai loại/basis bằng chứng",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Văn bản tự chứng minh lịch sử/thực nghiệm/siêu hình",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Văn bản fixture có câu chữ đã đọc",
+    "invalid_claim": "Văn bản tự chứng minh lịch sử/thực nghiệm/siêu hình",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_08_wrong_basis_for_historical_empirical_metaphysical",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 9,
+    "layer": "software_fixture",
+    "question": "Research bỏ phản chứng",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Research không tìm phản chứng vẫn accepted",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Hồ sơ đang chờ kiểm C và phê duyệt",
+    "invalid_claim": "Research không tìm phản chứng vẫn accepted",
+    "expected": "UNVERIFIED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_09_research_without_countersearch",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 10,
+    "layer": "software_fixture",
+    "question": "Tự tạo tương đương Pāli–Hán",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Tự khẳng định hai thuật ngữ đồng nhất",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Không xác lập tương đương thiếu bằng chứng",
+    "invalid_claim": "Tự khẳng định hai thuật ngữ đồng nhất",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_10_invented_pali_chinese_equivalence",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  },
+  {
+    "id": 11,
+    "layer": "software_fixture",
+    "question": "Tổng hợp thêm claim mới",
+    "scope": "Only the two invented fixture passages.",
+    "allowed_sources": [
+      "fixture/source@1111111111111111111111111111111111111111"
+    ],
+    "evidence_to_check": [
+      "ev-1",
+      "ev-2"
+    ],
+    "forbidden_evidence_use": "Thêm claim chưa được ghi/đánh giá",
+    "known_counterevidence": "ev-2 reports a red lamp; other sources unexamined.",
+    "valid_claim": "Tổng hợp đúng claim c-1 đã qua gate fixture",
+    "invalid_claim": "Thêm claim chưa được ghi/đánh giá",
+    "expected": "REJECTED",
+    "required_limitations": [
+      "Only the two software passages."
+    ],
+    "pass_criterion": "Invalid case is blocked by the applicable A/B/C gate; declared valid controls pass only with the test host oracle.",
+    "test": "test_golden_research.GoldenResearchTests.test_golden_11_synthesis_adds_new_claim",
+    "actual_corpus_acceptance": false,
+    "independent_scholarly_review": false
+  }
+]
