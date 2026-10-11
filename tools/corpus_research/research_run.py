@@ -168,9 +168,10 @@ def capture_research_run(run, history, *, review_ids, counter_requests,
         assessment = assess_claim(claim, review_id=review_ids.get(cid), evidence_reader=current_evidence,
                                   assessment_reader=reader)
         assessments[cid] = assessment
-        verified = assessment['assessment'] is not None and not any(
-            check['status'] == 'UNVERIFIED' for check in assessment['checks'].values())
-        checks['assessment:'+cid] = 'PASS' if verified else 'UNVERIFIED'
+        # B assessment validity is separate from its support/publication verdict.
+        # Valid UNSUPPORTED/CONTRADICTED assessments still belong in the audit.
+        checks['assessment:'+cid] = ('PASS' if assessment['status'] == 'ASSESSED' else
+                                    'FAIL' if assessment['status'] == 'REJECTED' else 'UNVERIFIED')
         gates[cid] = final_claim_gate(claim, mode=run['mode'], review_id=review_ids.get(cid),
             evidence_reader=current_evidence, assessment_reader=reader, history_reader=history_reader)
     counters, seen = [], set()

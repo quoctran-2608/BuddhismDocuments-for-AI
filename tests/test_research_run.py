@@ -9,7 +9,7 @@ import sys
 import tempfile
 import unittest
 
-from corpus_research.claims import (accepted_claim_set, claim_subject, final_claim_gate,
+from corpus_research.claims import (accepted_claim_set, assess_claim, claim_subject, final_claim_gate,
     make_claim, synthesis_item, verify_synthesis)
 from corpus_research.counterevidence import (assess_counterevidence, make_counterevidence_plan,
     search_counterevidence, source_independence)
@@ -692,6 +692,114 @@ except ConflictError:
         package = self.store.export_review('r-1', expected_version=run['version'], review_questions=['Check missing evidence.'])['json']
         self.assertEqual(package['snapshot']['checks']['evidence:ev-1'], 'UNVERIFIED')
         with self.assertRaises(ValueError): self.store.import_review(self.report(package))
+
+
+    def assert_rejected_b_assessment(self, claim, review_id):
+        result = assess_claim(claim, review_id=review_id, evidence_reader=self.evidence.get,
+                              assessment_reader=self.reviews.get)
+        self.assertEqual(result['status'], 'REJECTED')
+        self.assertIsNotNone(result['assessment'])
+        statuses = [check['status'] for check in result['checks'].values()]
+        self.assertIn('FAIL', statuses)
+        self.assertNotIn('UNVERIFIED', statuses)
+        return result
+
+    def assert_invalid_b_blocks_finalization(self, defect):
+        run, claim, reviews = self.registered()
+        rid = reviews[claim['claim_id']]
+        defect(self.reviews[rid])
+        rejected = self.assert_rejected_b_assessment(claim, rid)
+        captured = self.store.capture('r-1', expected_version=run['version'], review_ids=reviews)
+        self.assertEqual(captured['assessments']['c-1'], rejected)
+        with self.assertRaises(ValueError):
+            self.store.finalize('r-1', expected_version=captured['version'], review_ids=reviews)
+        self.assertEqual(captured['checks']['assessment:c-1'], 'FAIL')
+        stored = self.open_store().get_run('r-1')
+        self.assertEqual(stored['version'], captured['version'])
+        self.assertEqual(stored['run_status'], 'draft')
+        self.assertEqual(stored['assessments']['c-1'], rejected)
+
+    def test_capture_atomic_false_b_assessment_cannot_finalize(self):
+        self.assert_invalid_b_blocks_finalization(lambda review: review.update(atomic=False))
+
+    def test_capture_wrong_evidence_basis_b_assessment_cannot_finalize(self):
+        self.assert_invalid_b_blocks_finalization(
+            lambda review: review['evidence_uses'][0].update(basis='historical_corroboration'))
+
+    def test_capture_missing_required_limitation_b_assessment_cannot_finalize(self):
+        self.assert_invalid_b_blocks_finalization(
+            lambda review: review['required_limitations'].append('Additional mandatory fixture limitation.'))
+
+    def assert_invalid_b_decision_is_not_recorded(self, defect):
+        _, claim, reviews, exported = self.package(final=True)
+        report = self.report(exported['json'])
+        self.store.import_review(report)
+        rid = reviews[claim['claim_id']]
+        self.reviews[rid]['review_report_decision'] = {
+            'report_id': report['report_id'], 'package_id': report['package_id'],
+            'claim_id': claim['claim_id'], 'disposition': 'approve',
+            'rationale': 'Host decision must still pass the existing B assessment.'}
+        defect(self.reviews[rid])
+        self.assert_rejected_b_assessment(claim, rid)
+        result = self.store.record_review_decision(report['report_id'], review_id=rid)
+        self.assertEqual(result, {'status': 'UNVERIFIED', 'decision': None})
+        read = self.open_store().get_review(report['report_id'])
+        self.assertEqual(read['decisions'], [])
+        self.assertEqual(read['status'], 'PROPOSED')
+        self.assertEqual(read['original_report'], report)
+
+    def test_review_decision_atomic_false_b_assessment_is_not_recorded(self):
+        self.assert_invalid_b_decision_is_not_recorded(lambda review: review.update(atomic=False))
+
+    def test_review_decision_wrong_evidence_basis_b_assessment_is_not_recorded(self):
+        self.assert_invalid_b_decision_is_not_recorded(
+            lambda review: review['evidence_uses'][0].update(basis='historical_corroboration'))
+
+    def test_review_decision_missing_required_limitation_b_assessment_is_not_recorded(self):
+        self.assert_invalid_b_decision_is_not_recorded(
+            lambda review: review['required_limitations'].append('Additional mandatory fixture limitation.'))
+
+    def test_valid_negative_b_assessments_remain_in_finalized_audit(self):
+        for level in ('UNSUPPORTED', 'CONTRADICTED'):
+            with self.subTest(level=level):
+                run_id, cid = 'r-'+level, 'c-'+level
+                run, claim, reviews = self.registered(run_id=run_id, claim_id=cid)
+                self.reviews[reviews[cid]]['support_level'] = level
+                finalized = self.store.finalize(run_id, expected_version=run['version'], review_ids=reviews)
+                self.assertEqual(finalized['run_status'], 'finalized')
+                self.assertEqual(finalized['checks']['assessment:'+cid], 'PASS')
+                self.assertEqual(finalized['assessments'][cid]['status'], 'ASSESSED')
+                self.assertEqual(finalized['rejected_claim_ids'], [cid])
+                self.assertEqual(finalized['accepted_claim_ids'], [])
+                trace = self.open_store().trace_claim(run_id, cid)
+                self.assertEqual(trace['claim'], claim)
+                self.assertEqual(trace['assessment']['assessment']['support_level'], level)
+                package = self.store.export_review(run_id, expected_version=finalized['version'],
+                    review_questions=['Why was this fixture claim rejected?'])['json']
+                self.assertEqual(package['snapshot']['claims'], [claim])
+                self.assertEqual(package['snapshot']['assessments'][cid], finalized['assessments'][cid])
+                self.assertFalse(package['publication_authorized'])
+
+    def test_valid_negative_b_review_decisions_can_be_recorded(self):
+        _, claim, reviews, exported = self.package(final=True)
+        report = self.report(exported['json'])
+        self.store.import_review(report)
+        for level in ('UNSUPPORTED', 'CONTRADICTED'):
+            with self.subTest(level=level):
+                rid = 'decision-'+level
+                self.reviews[rid] = copy.deepcopy(self.reviews[reviews['c-1']])
+                self.reviews[rid].update(review_id=rid, support_level=level,
+                    review_report_decision={'report_id': report['report_id'], 'package_id': report['package_id'],
+                        'claim_id': claim['claim_id'], 'disposition': 'reject',
+                        'rationale': 'Retain the valid B rejection in the audit.'})
+                result = self.store.record_review_decision(report['report_id'], review_id=rid)
+                self.assertEqual(result['status'], 'RECORDED')
+                self.assertEqual(result['decision']['assessment']['status'], 'ASSESSED')
+                self.assertEqual(result['decision']['assessment']['assessment']['support_level'], level)
+                self.assertFalse(result['publication_authorized'])
+        read = self.open_store().get_review(report['report_id'])
+        self.assertEqual(len(read['decisions']), 2)
+        self.assertEqual(read['original_report'], report)
 
 
 if __name__ == '__main__':

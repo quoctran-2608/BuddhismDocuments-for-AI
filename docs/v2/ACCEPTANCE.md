@@ -697,6 +697,46 @@ API, kho vector hoặc hạ tầng phân tán.
 
 ---
 
+### Gia cố D: ranh giới trạng thái đánh giá B — 11/10/2026
+
+Trước sửa, D chỉ kiểm assessment khác null và không có check `UNVERIFIED`.
+Kết quả B `REJECTED` với check `FAIL` vì `atomic=False`, basis không phù hợp
+loại luận điểm hoặc thiếu limitation bắt buộc vẫn có thể làm capture ghi
+`assessment:<claim_id>=PASS`, cho chốt run và ghi quyết định `RECORDED`.
+Đã thêm test trước khi sửa: chạy 77 bài D có đúng 6 failure mới (3 finalization,
+3 quyết định phản biện); 69 bài cũ và 2 bài mới cho đánh giá phủ định hợp lệ đạt.
+
+`capture_research_run()` nay chỉ ghi `PASS` khi B trả `status=ASSESSED`;
+`REJECTED` ghi `FAIL`, kết quả chưa kiểm được giữ `UNVERIFIED`. Snapshot draft
+vẫn giữ đầy đủ đánh giá lỗi để kiểm toán; finalization bị chặn và không tăng
+version. `record_review_decision()` cũng yêu cầu `ASSESSED`; đánh giá không hợp
+lệ trả `UNVERIFIED`/decision null, không thêm bản ghi quyết định và giữ nguyên
+báo cáo `PROPOSED`.
+
+Trạng thái hợp lệ của assessment khác với mức hỗ trợ hay quyền công bố.
+`UNSUPPORTED`/`CONTRADICTED` được B đánh giá hợp lệ vẫn cho chốt hồ sơ kiểm toán,
+giữ claim trong `rejected_claim_ids`, trace và gói phản biện; quyết định host
+`reject` hợp lệ vẫn được lưu riêng. Không cấp quyền công bố từ việc chốt run
+hoặc ghi quyết định.
+
+Giữ nguyên toàn bộ 69 bài D và thêm 8 bài: ba lỗi trên tại mỗi cửa kiểm, giữ
+hai mức phủ định trong hồ sơ đã chốt/xuất/mở lại, và lưu quyết định bác bỏ có
+assessment B hợp lệ. Các luồng hợp lệ cũ tiếp tục đạt.
+
+| Bộ kiểm sau gia cố D | Chạy/đạt | Error/failure/skip |
+|---|---:|---:|
+| Riêng D, Windows/Python 3.14 và WSL/Python 3.12.3 | 77/77 mỗi môi trường | 0/0/0 |
+| Riêng A, Windows và WSL | 44/44 mỗi môi trường | 0/0/0 |
+| Riêng B, Windows và WSL | 82/82 mỗi môi trường | 0/0/0 |
+| Riêng C, Windows và WSL | 70/70 mỗi môi trường | 0/0/0 |
+| Toàn suite WSL, đủ 13 nguồn ghim | 318/318 | 0/0/0 |
+
+Chỉ sửa hai điều kiện trong mã D, test D và mục ghi nhận này; giữ nguyên A/B/C,
+13 nguồn ghim, tìm kiếm/SQLite corpus/locator/lệnh 1.0. Không mở rộng kiến trúc
+hoặc triển khai E; các giới hạn tích hợp D đã nêu ở trên vẫn còn.
+
+---
+
 ## 2. Ma trận nghiệm thu 31 yêu cầu
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có |

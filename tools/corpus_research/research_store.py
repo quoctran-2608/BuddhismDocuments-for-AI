@@ -385,7 +385,7 @@ class ResearchStore:
             claim = next(item for item in package['snapshot']['claims'] if item['claim_id'] == decision['claim_id'])
             assessment = assess_claim(claim, review_id=review_id, evidence_reader=self.readers['evidence_reader'],
                 assessment_reader=lambda key: approved if key == review_id else {})
-            if assessment['assessment'] is None or any(check['status'] == 'UNVERIFIED' for check in assessment['checks'].values()):
+            if assessment['status'] != 'ASSESSED':
                 return {'status': 'UNVERIFIED', 'decision': None}
             captured = package['snapshot']['assessments'].get(claim['claim_id'])
             if captured is None or not _same(captured['evidence'], assessment['evidence']):
