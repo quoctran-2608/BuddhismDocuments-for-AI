@@ -13,6 +13,12 @@
 > kỹ thuật được giữ bằng tiếng Anh trong dấu mã để đối chiếu chính xác với mã
 > nguồn.
 
+> **Đối chiếu 11/10/2026:** mã A–E đã gộp tại `57db982274e267218594ae5ca463bd2a42d2be02`.
+> Tài liệu giữ đề bài/ngữ nghĩa chuẩn tắc, không chứng nhận nghiệm thu toàn 2.0.
+> Hành vi/API đã triển khai xem [USAGE](USAGE.md), code validators/tests;
+> mức đạt từng yêu cầu xem [ACCEPTANCE](ACCEPTANCE.md). Các mô tả điều kiện
+> trước triển khai phải đọc theo bối cảnh thiết kế, không là việc còn chưa làm.
+
 ## 1. Ba trạng thái phát triển phải được giữ riêng
 
 ### HIỆN HÀNH
@@ -31,6 +37,9 @@ Hệ thống hiện đã có:
 
 ### MỤC TIÊU
 
+Mã A–E đã thực hiện các contracts/lớp ở sơ đồ dưới, nhưng luồng Research tới
+accepted synthesis/publication vẫn là mục tiêu chưa nghiệm thu. Khả năng
+hiện hành và phần chưa đạt được tách trong [ACCEPTANCE](ACCEPTANCE.md).
 Buddhist Corpus Research 2.0 bổ sung:
 
 ```text
@@ -718,8 +727,9 @@ Không đặt mục tiêu AI phải viết lại từng chữ giống hệt lầ
 
 ### 14.5. Xuất/nhập hồ sơ thẩm định độc lập
 
-**MỤC TIÊU D/E — CHƯA TRIỂN KHAI.** D chuẩn bị đường xuất/nhập thủ công;
-E tích hợp và nghiệm thu. Không thêm hệ nhiều tác nhân, ứng dụng web hay API
+**MỤC TIÊU D/E — ĐÃ CÓ MÃ, NGHIỆM THU MỘT PHẦN.** D có xuất/nhập thủ công;
+E đã tích hợp, kiểm fixture/nguồn thật; chưa thẩm định độc lập thực tế hay
+semantic approval xác thực. API thực và report shape xem [USAGE](USAGE.md). Không thêm hệ nhiều tác nhân, ứng dụng web hay API
 bắt buộc. Các tên dữ liệu dưới đây mô tả nội dung cần giữ, không thêm trường
 bắt buộc vào hợp đồng mã A/B hiện tại.
 

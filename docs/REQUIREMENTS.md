@@ -427,7 +427,9 @@ hiểu là snapshot/hồ sơ lịch sử, không phải trạng thái vận hàn
 
 ## 11. Quan hệ với Buddhist Corpus Research 2.0
 
-Tài liệu này chỉ sở hữu các yêu cầu **HIỆN HÀNH** của hệ thống đang chạy.
+Tài liệu này sở hữu các yêu cầu **HIỆN HÀNH của nền 1.0**, vẫn được bảo toàn.
+Mã A–E 2.0 đã gộp trên main; yêu cầu/nghiệm thu 2.0 vẫn được quản trị riêng,
+không chuyển hoặc sao chép mã yêu cầu vào bộ 1.0.
 
 Các yêu cầu riêng của chương trình nâng cấp 2.0 nằm tại:
 

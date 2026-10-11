@@ -1,11 +1,17 @@
 # Buddhist Corpus Research 2.0 — Kế hoạch triển khai ngắn
 
-> Trạng thái: **MỤC TIÊU**
+> Trạng thái: **KẾ HOẠCH MỤC TIÊU / CÓ BỐI CẢNH LỊCH SỬ**
 >
 > Vai trò: cầu nối ngắn giữa bộ tài liệu 2.0 và mã nguồn hiện hành.
 >
 > Tài liệu này được viết **sau khi đọc mã nguồn thật**. Nó không thay PRD,
-> Design, Requirements hay Acceptance và không mô tả tính năng đã triển khai.
+> Design, Requirements hay Acceptance. Các lát cắt/mốc test/việc tiếp theo
+> trước A ở mục 1–7, 9–11 là lịch sử lập kế hoạch, không phải việc chưa làm
+> tại main hiện nay. Thứ tự năm giai đoạn A–E và các quyết định được giữ nguyên.
+>
+> Cập nhật 11/10/2026: mã A–E đã gộp tại `57db982274e267218594ae5ca463bd2a42d2be02`.
+> Dùng [USAGE](USAGE.md), [ACCEPTANCE](ACCEPTANCE.md) và [evidence](evidence/README.md)
+> để đọc hiện trạng; Research publication, Work và nghiệm thu học thuật còn thiếu.
 
 ## 1. Kết luận ngắn
 
@@ -245,13 +251,13 @@ Không làm tất cả cùng lúc.
 tìm và truy nguyên nguồn; 2.0 kiểm những bằng chứng/luận điểm liên quan sau
 truy xuất. Hồ sơ xuất/nhập để phản biện độc lập thuộc D, còn kiểm hiệu quả và
 tích hợp thuộc E; không cần tách giai đoạn hay thiết kế hệ hai AI tự động.
-Mã lõi A/B/C/D **ĐÃ TRIỂN KHAI và đã gộp vào main** tại
-`67eccb4b047365d9ba753de1b0e623542039881d`. E đã có tích hợp local, fixture,
-nguồn thật và đo mẫu trên nhánh `feature/bcr-v2-phase-e`, chưa merge/nghiệm thu
-đầy đủ. Work, thẩm định độc lập thực và quyền công bố Research còn thiếu.
+Mã A–E **ĐÃ TRIỂN KHAI và đã gộp vào main** tại
+`57db982274e267218594ae5ca463bd2a42d2be02`. E có tích hợp local, fixture,
+nguồn thật và đo mẫu, chưa nghiệm thu đầy đủ. Work, thẩm định độc lập thực
+và quyền công bố Research còn thiếu.
 Các mô tả lát cắt đầu, mốc 45 test và việc tiếp theo ở mục 5–7, 9, 11 giữ
 bối cảnh lập kế hoạch trước A. Kết quả kiểm thử A/B đã thực thi xem
-[ACCEPTANCE.md](ACCEPTANCE.md); chưa chứng minh hiệu quả của 2.0 tích hợp.
+[ACCEPTANCE.md](ACCEPTANCE.md); hiệu quả tích hợp chỉ đã đo mẫu trong [E_REPORT](E_REPORT.md).
 
 ### Giai đoạn A — Bằng chứng
 
@@ -306,7 +312,9 @@ hạng/hiệu năng 1.0; E2 chi phí kiểm chứng tăng thêm của Nhanh; E3 
 với lỗi phát hiện và kết luận có căn cứ bị chặn nhầm trong Nghiên cứu
 ([REQ-TST-003](REQUIREMENTS.md#req-tst-003--phải-đo-hiệu-quả-trên-nền-so-sánh-được),
 [tiêu chí E1–E3](ACCEPTANCE.md#22-đo-hiệu-quả-e1e3-ở-giai-đoạn-e)).
-E1–E3 là nhóm đo trong E, không phải giai đoạn mới. Hiện **CHƯA ĐO**; API
+E1–E3 là nhóm đo trong E, không phải giai đoạn mới. E1/E2 đã đo mẫu, E3 đã đo
+chi phí draft tại checkpoint trước sửa span; chất lượng học thuật, thẩm định
+độc lập và token/chi phí AI **CHƯA ĐO**, ngưỡng chưa chốt. API
 thẩm định tự động và hệ nhiều tác nhân vẫn ngoài phạm vi phiên bản đầu.
 
 ## 9. Mốc kiểm thử hiện tại

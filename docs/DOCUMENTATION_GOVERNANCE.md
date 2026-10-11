@@ -22,18 +22,24 @@ Thẩm quyền được xác định theo miền thông tin:
 | Artefact Connector production | production manifest/summary ở remote repo |
 | Schema SQLite | `schema/corpus-index.sql` |
 | Hành vi truy xuất/xếp hạng | mã trong `tools/corpus_research/` + tests |
-| CLI | `docs/CLI.md` + `tools/corpus_research/cli.py` |
+| CLI 1.0 | [CLI](CLI.md) + `tools/corpus_research/cli.py` |
+| CLI E / Python host APIs | [USAGE](v2/USAGE.md) + `v2_cli.py`, `local_host.py`, `local_research.py`, `connector_host.py`; signatures/validators/tests quyết định thực thi |
 | Quy trình AI nghiên cứu | `.codex/skills/buddhist-corpus-research/SKILL.md` |
 | Connector chuyên biệt | `docs/REMOTE_AGENT.md` |
 | SC ↔ CBETA | `docs/SC_CBETA_BRIDGE.md` + resolver tests |
 | Khảo sát ban đầu | `docs/CORPUS_SURVEY.md` |
 | Lịch sử phát triển | `progress.md` + lịch sử Git |
-| Yêu cầu có mã của hệ hiện hành | `docs/REQUIREMENTS.md` |
-| Nghiệm thu hệ hiện hành | `docs/ACCEPTANCE.md` |
+| Yêu cầu có mã của nền 1.0 | [REQUIREMENTS](REQUIREMENTS.md) |
+| Nghiệm thu nền 1.0 | [ACCEPTANCE](ACCEPTANCE.md) |
 | Đề bài nâng cấp Buddhist Corpus Research 2.0 | `docs/v2/PRD.md` |
 | Thiết kế Buddhist Corpus Research 2.0 | `docs/v2/DESIGN.md` |
 | Yêu cầu có mã của 2.0 | `docs/v2/REQUIREMENTS.md` |
 | Nghiệm thu 2.0 | `docs/v2/ACCEPTANCE.md` |
+| Báo cáo tích hợp/giới hạn/số đo E có mốc | [E_REPORT](v2/E_REPORT.md); không dùng benchmark cũ làm số đo sau sửa span |
+| Bằng chứng thực thi gốc | [evidence README](v2/evidence/README.md) → JSON/raw logs có tested commit và môi trường; phân biệt code commit với evidence-only commit |
+| Checkpoint E lịch sử | [E_PROGRESS](v2/E_PROGRESS.md); không là trạng thái nghiệm thu hiện hành |
+| Đường đọc và bản đồ tiếp nhận | [AI_ONBOARDING](AI_ONBOARDING.md); tóm tắt và liên kết, không sở hữu policy/contracts |
+| Kiểm toán tài liệu theo ngày | [06/10](DOCUMENTATION_AUDIT_2026-10-06.md), [11/10](DOCUMENTATION_AUDIT_2026-10-11.md); snapshot, không là runtime authority |
 | Lý do quyết định kiến trúc | `docs/adr/` |
 
 ## 2. Bốn trạng thái bắt buộc
@@ -42,6 +48,10 @@ Thẩm quyền được xác định theo miền thông tin:
 
 Đã triển khai và có thể xác nhận bằng code, config, schema, tests hoặc runtime
 artefact.
+
+Phải ghi rõ cấp xác nhận: có mã, software tests, nguồn thật, runtime thực hay
+nghiệm thu học thuật. Mã A–E đã gộp không tự làm mọi yêu cầu 2.0 HIỆN HÀNH;
+thẩm định ngữ nghĩa, Work/full Connector và publication còn chưa đủ.
 
 ### MỤC TIÊU
 
@@ -90,7 +100,8 @@ Ví dụ:
   lịch sử, config/runtime là hiện trạng;
 - README chỉ dẫn legacy export nhưng CLI/config/production artefact dùng pointer
   v1: README cần sửa;
-- đặc tả Atomic Claim tồn tại nhưng code chưa có: đó vẫn là MỤC TIÊU.
+- một hợp đồng trong DESIGN là chuẩn tắc; có code/test chưa đủ chứng minh
+  runtime hoặc nghiệm thu học thuật. Kiểm ACCEPTANCE trước khi tuyên bố đạt.
 
 ## 5. Vai trò của các tài liệu chính
 
@@ -109,17 +120,30 @@ Nó không thay thế nguồn chuyên biệt.
 
 ### Bộ tài liệu Buddhist Corpus Research 2.0
 
-`docs/v2/` là khu vực riêng cho chương trình nâng cấp **MỤC TIÊU** 2.0:
+`docs/v2/` chứa thiết kế chuẩn tắc, hướng dẫn **HIỆN HÀNH**, nghiệm thu theo
+yêu cầu và bằng chứng **LỊCH SỬ** có mốc của 2.0. Mã A–E đã trên main tại
+`57db982274e267218594ae5ca463bd2a42d2be02` (11/10/2026); còn tiêu chí chưa đạt:
 
 - `docs/v2/PRD.md` sở hữu đề bài, mục tiêu, phạm vi và tiêu chí thành công;
 - `docs/v2/DESIGN.md` sở hữu ngữ nghĩa và hợp đồng dữ liệu của lớp kiểm chứng;
-- `docs/v2/REQUIREMENTS.md` sở hữu 29 yêu cầu có mã của 2.0;
+- `docs/v2/REQUIREMENTS.md` sở hữu **31 yêu cầu gốc + 2 bổ sung = 33** mã;
 - `docs/v2/ACCEPTANCE.md` sở hữu cách nghiệm thu các yêu cầu 2.0;
+- [USAGE](v2/USAGE.md) sở hữu hướng dẫn CLI/API tích hợp, không hợp đồng mới;
+- [E_REPORT](v2/E_REPORT.md) dẫn số đo và giới hạn với mốc, [evidence](v2/evidence/README.md)
+  sở hữu kết quả/raw logs; [E_PROGRESS](v2/E_PROGRESS.md) chỉ là checkpoint cũ;
 - các tài liệu 2.0 bổ sung về sau phải nằm cùng thư mục nếu chúng chỉ áp dụng cho
   chương trình nâng cấp này.
 
 Các tài liệu trong `docs/v2/` không phải bằng chứng rằng tính năng đã được
 triển khai. Tài liệu chung/hiện hành tiếp tục nằm ở cấp `docs/`.
+
+**Một nguồn cho một hợp đồng:** DESIGN giữ ngữ nghĩa/hợp đồng chuẩn tắc;
+constants/validators và tests ở mã A/B/C/D/E xác định hình dạng dữ liệu thực
+hiện tại. USAGE/onboarding chỉ dẫn tới đó, không duy trì schema độc lập.
+AGENTS vẫn sở hữu luật nghiên cứu; capability/auth do host xác lập ngoài JSON.
+ACCEPTANCE ghi mức đạt; evidence chứng minh đúng lần chạy/commit, không tự
+thay tiêu chí hoặc cấp quyền công bố. Các mốc A–E trong ACCEPTANCE và số đo
+trước sửa span trong E_REPORT được bảo tồn; đọc trạng thái đầu trang để biết hiện tại.
 
 ### AGENTS
 

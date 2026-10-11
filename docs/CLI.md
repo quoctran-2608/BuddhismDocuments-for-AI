@@ -1,11 +1,26 @@
-# Hướng dẫn CLI
+# Hướng dẫn CLI 1.0
 
 > Trạng thái: **HIỆN HÀNH**
 >
 > Tất cả lệnh CLI là local-only. Tiến độ/lỗi build đi ra stderr; kết quả chính
 > được xuất JSON ra stdout.
 
-Kiến trúc tổng thể: `docs/ARCHITECTURE.md`.
+Đây là CLI retrieval/build/export 1.0; CLI E riêng và Python host xem
+[USAGE](v2/USAGE.md). `evidence` ở đây gom record/context/provenance/variants từ
+index, **không** tạo Evidence Record A VERIFIED hoặc assessment B.
+
+Chạy từ root repo. Wrapper `bin/buddhist-corpus` cần Bash/Python; PowerShell:
+
+```powershell
+$env:PYTHONPATH = 'tools'
+python -m corpus_research.cli --help
+```
+
+Mọi `--db` là option toàn cục, đặt trước subcommand. JSON kết quả chính ra
+stdout; lỗi parser/build/thiếu index đi stderr với exit 2. `status` có thể xuất
+JSON và exit 2 nếu source contract lỗi; exit 0 không chứng nhận học thuật.
+
+Kiến trúc tổng thể: [ARCHITECTURE](ARCHITECTURE.md).
 
 Luật nghiên cứu: `AGENTS.md`.
 
@@ -23,7 +38,7 @@ bin/buddhist-corpus build --profile all
 # Build riêng một nguồn nặng và hoãn rebuild FTS
 bin/buddhist-corpus build --profile core --source cbeta-bm --defer-fts
 
-# Tìm kiếm và kiểm nguồn
+# Tìm ứng viên và dữ liệu để kiểm nguồn
 bin/buddhist-corpus search "sutaṃ" --language pli
 bin/buddhist-corpus search "如是我聞" --language lzh
 bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
@@ -94,15 +109,10 @@ bin/buddhist-corpus export-pointer-production-v1 \
   --workers 4
 ```
 
-Exporter hiện hành kiểm production key universe dự kiến:
-
-```text
-terms/latin: 26,547 normalized non-CJK lemma keys
-ids:         32,498 exact original work_id keys
-total:       59,045
-```
-
-Đây là invariant của production v1 hiện tại và được kiểm trong exporter/tests.
+Exporter kiểm production key universe dự kiến bằng constants trong
+[pointer_production.py](../tools/corpus_research/pointer_production.py) và tests;
+coverage/key/pointer counts của artefact phải đọc production manifest/summary
+được [runtime config](../config/remote-corpus.json) chỉ tới.
 
 Exporter:
 
@@ -293,6 +303,6 @@ PYTHONPATH=tools python3 -m unittest discover -s tests -v
 ```
 
 Số test hiện hữu và ánh xạ requirement → test được theo dõi trong
-`docs/ACCEPTANCE.md`.
+[nghiệm thu 1.0](ACCEPTANCE.md) và [2.0](v2/ACCEPTANCE.md).
 
 Tài liệu này không dùng một con số test cố định làm nguồn chuẩn lâu dài.

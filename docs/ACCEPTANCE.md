@@ -19,7 +19,9 @@
 - **QUY TRÌNH**: là luật vận hành/AI behavior, hiện chưa có test máy đầy đủ;
 - **RÀ SOÁT**: cần kiểm bằng đối chiếu tài liệu hoặc kiểm tra thủ công có chủ đích;
 
-Repo hiện có 45 test method trong 6 file test chính:
+Phần **1.0** có 45 test method trong 6 file dưới đây; đây không phải tổng test
+repository sau A–E. Bằng chứng toàn suite và yêu cầu 2.0 xem
+[v2/ACCEPTANCE](v2/ACCEPTANCE.md) và [evidence cuối](v2/evidence/README.md):
 
 - `tests/test_acceptance.py`: 9;
 - `tests/test_cbeta_resolver.py`: 10;
@@ -28,8 +30,8 @@ Repo hiện có 45 test method trong 6 file test chính:
 - `tests/test_remote_access.py`: 15;
 - `tests/test_text_roles.py`: 3.
 
-Con số này mô tả test hiện có trong repo; tài liệu này không tuyên bố chúng đã
-được chạy lại trong phiên chuẩn hóa docs hiện tại.
+Con số này kiểm kê nhóm test 1.0. Nguồn bằng chứng có mốc ở các liên kết trên;
+không suy tổng suite hoặc nghiệm thu học thuật từ số nhóm này.
 
 ---
 
@@ -104,7 +106,8 @@ test máy bảo đảm AI không diễn giải rank quá mức.
 
 Các test hiện tại chứng minh hệ thống **cung cấp được provenance/context**, nhưng
 chưa chứng minh đầy đủ AI **luôn dùng chúng đúng cách**. Đây là một trong các lý
-do lớp verification mục tiêu tồn tại.
+do cần lớp kiểm chứng 2.0. A–E đã có mã/tests/nguồn thật ở phạm vi được nêu
+trong [nghiệm thu 2.0](v2/ACCEPTANCE.md); chưa chứng minh mọi hành vi AI/học thuật.
 
 ---
 
@@ -170,16 +173,10 @@ Một artefact production hợp lệ tối thiểu phải:
 8. có thể tái sinh deterministic;
 9. không bị artefact staging chưa hoàn tất ghi đè.
 
-Production artefact hiện tại công bố:
-
-- 26.547 key Latin;
-- 32.498 ID;
-- 59.045 key tổng;
-- 706.011 pointer;
-- 0 raw-text field.
-
-Các con số production phải lấy từ remote production summary, không lấy benchmark
-lịch sử làm nguồn chuẩn.
+Số liệu production hiện tại lấy từ manifest/summary ở remote root theo
+[config](../config/remote-corpus.json); không duy trì bản đếm thứ hai trong
+nghiệm thu. Invariant exporter/tests vẫn là tiêu chí kỹ thuật, khác số đo
+benchmark lịch sử.
 
 ---
 

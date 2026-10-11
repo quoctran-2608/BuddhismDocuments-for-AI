@@ -11,6 +11,12 @@
 > `docs/v2/DESIGN.md`, `docs/v2/REQUIREMENTS.md` và
 > `docs/v2/ACCEPTANCE.md`.
 
+> **Đối chiếu 11/10/2026:** mã A–E đã gộp tại `57db982274e267218594ae5ca463bd2a42d2be02`.
+> Tài liệu giữ đề bài/ngữ nghĩa chuẩn tắc, không chứng nhận nghiệm thu toàn 2.0.
+> Hành vi/API đã triển khai xem [USAGE](USAGE.md), code validators/tests;
+> mức đạt từng yêu cầu xem [ACCEPTANCE](ACCEPTANCE.md). Các mô tả điều kiện
+> trước triển khai phải đọc theo bối cảnh thiết kế, không là việc còn chưa làm.
+
 ## 1. Quy ước phiên bản
 
 Trong chương trình nâng cấp này:
@@ -333,7 +339,10 @@ không chỉ những tình huống giả định.
 
 ### 5.12. Cho phép thẩm định lập luận độc lập
 
-**MỤC TIÊU D/E — CHƯA TRIỂN KHAI:** người dùng phải có thể xuất hồ sơ luận
+**MỤC TIÊU D/E — ĐÃ CÓ MÃ XUẤT/NHẬP, ĐẠT MỘT PHẦN:**
+D/E đã cung cấp package/report và host decision; thẩm định độc lập thực tế và
+kênh semantic approval xác thực chưa có. Xem [USAGE](USAGE.md) và [ACCEPTANCE](ACCEPTANCE.md).
+Theo mục tiêu sản phẩm, người dùng phải có thể xuất hồ sơ luận
 điểm, bằng chứng, nguồn và ngữ cảnh cho người có chuyên môn hoặc một AI khác
 trong phiên riêng, rồi nhập lại báo cáo phản biện. Có thể thực hiện thủ công;
 không bắt buộc API hay hệ hai AI tự động trong phiên bản đầu.
@@ -771,7 +780,9 @@ Chỉ xem xét khi có số liệu thực tế chứng minh cần thiết.
 Ngoài các tiêu chí trên, E phải chứng minh quy trình xuất/nhập phản biện giữ
 đúng quyền phê duyệt (REQ-RUN-007) và có báo cáo so sánh E1–E3 (REQ-TST-003):
 chi phí tăng thêm, lỗi bỏ lọt, kết luận có căn cứ bị chặn nhầm và giá trị tăng
-thêm của thẩm định nếu dùng. Hiện các phép đo này **CHƯA ĐO**; số test xanh
+thêm của thẩm định nếu dùng. E1/E2 đã đo mẫu, E3 đã đo chi phí draft ở
+checkpoint trước sửa span ([E_REPORT](E_REPORT.md)); chất lượng học thuật,
+thẩm định độc lập và token/chi phí AI **CHƯA ĐO**, ngưỡng chưa chốt. Số test xanh
 không tự chứng minh 2.0 tích hợp nhanh hơn hoặc nghiên cứu tốt hơn.
 
 ## 14. Nguyên tắc ưu tiên khi phải lựa chọn
@@ -813,8 +824,7 @@ Các tài liệu chuyên biệt:
 - `docs/v2/DESIGN.md` — thiết kế chi tiết của lớp kiểm chứng;
 - `docs/v2/REQUIREMENTS.md` — yêu cầu có mã của 2.0;
 - `docs/v2/ACCEPTANCE.md` — cách chứng minh yêu cầu 2.0 đã được đáp ứng;
-- `docs/ARCHITECTURE.md` — kiến trúc **HIỆN HÀNH**, không phải kiến trúc 2.0 chưa
-  triển khai;
+- `docs/ARCHITECTURE.md` — kiến trúc **HIỆN HÀNH** của 1.0 và mã A–E 2.0;
 - `docs/adr/` — lý do của các quyết định kiến trúc bền vững.
 
 PRD không quyết định lược đồ dữ liệu, tên mô-đun, lớp, giao diện lập trình (API)

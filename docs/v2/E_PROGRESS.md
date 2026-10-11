@@ -1,5 +1,13 @@
 # Tiến độ E
 
+> **LỊCH SỬ — checkpoint 11/10/2026 tại `1b2d0f010ec2dab8664378516005ed2ad05e4fe6`.**
+> Nội dung dưới giữ nguyên 394 tests, main nền D và E chưa merge tại mốc đó.
+> Sau đó span fix bổ sung 16 tests; mã A–E gộp tại
+> [57db982…](https://github.com/quoctran-2608/BuddhismDocuments-for-AI/commit/57db982274e267218594ae5ca463bd2a42d2be02).
+> Trạng thái cuối: [E_REPORT](E_REPORT.md), [ACCEPTANCE](ACCEPTANCE.md),
+> [evidence cuối](evidence/README.md). Benchmark ở đây chưa đo lại sau sửa span.
+
+
 - Nền/main remote vẫn `67eccb4b047365d9ba753de1b0e623542039881d`;
   nhánh `feature/bcr-v2-phase-e`, không PR/merge.
 - Hai checkpoint mã đã push: `1d2bf7046f78c6f58f2332f0ab033b8a23f5b5e0`,

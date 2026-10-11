@@ -5,10 +5,28 @@
 > Vai trò: quy định cách chứng minh từng yêu cầu trong
 > `docs/v2/REQUIREMENTS.md` đã thật sự được triển khai.
 >
-> Toàn bộ 2.0 hiện đang **CHƯA TRIỂN KHAI ĐẦY ĐỦ**. Có tài liệu thiết kế không
-> đồng nghĩa yêu cầu đã đạt.
+> Mã A–E đã gộp; toàn bộ 2.0 **CHƯA NGHIỆM THU ĐẦY ĐỦ**. Có mã/tests không
+> đồng nghĩa mọi yêu cầu hoặc chất lượng học thuật đã đạt.
 >
 > Nghiệm thu hệ hiện hành nằm riêng trong `docs/ACCEPTANCE.md`.
+
+## Trạng thái sau khi gộp A–E — 11/10/2026
+
+Main tích hợp tại `57db982274e267218594ae5ca463bd2a42d2be02`. Mã A–E đã có;
+Quick ba resolver, Research draft/receipts/review đã chạy nguồn thật. Research
+publication đóng; approval xác thực, Work/full Connector, ground truth/review
+độc lập và ngưỡng chưa đủ. [USAGE](USAGE.md) là hướng dẫn hiện hành;
+[E_REPORT](E_REPORT.md) và [evidence cuối](evidence/README.md) phân biệt mốc chạy.
+
+Bằng chứng cuối E: WSL 410/410, E portable Windows 78/78, E corpus WSL 14/14;
+Windows full chưa đạt. Log cuối được commit kiểm mã `4986216…`; main evidence-only
+`57db982…` giữ nguyên mã và được báo chạy lại WSL riêng (xem evidence README).
+Các phần triển khai/gia cố A–E ở mục 1 là **hồ sơ lịch sử từng mốc**, bao gồm
+nhận xét chưa triển khai/chưa merge và bảng 394. Không đọc chúng như hiện trạng.
+Ma trận mục 2 + 2.1 bao phủ **31 yêu cầu gốc + 2 bổ sung = 33**; giữ nguyên mã,
+tiêu chí và mức đạt một phần. Cột evidence E40 là nhóm local integration gốc,
+không tổng tests E; 16 regression span và bằng chứng cuối được dẫn bổ sung,
+không viết lại số test ở mốc lịch sử.
 
 ## 1. Nguyên tắc nghiệm thu
 
@@ -808,7 +826,7 @@ ngưỡng và phạm vi nguồn thật chưa đáp ứng nghiệm thu đầy đ�
 
 ---
 
-## 2. Ma trận nghiệm thu 31 yêu cầu
+## 2. Ma trận nghiệm thu 31 yêu cầu gốc (hai bổ sung ở mục 2.1)
 
 | Yêu cầu | Trạng thái hiện tại | Bằng chứng tối thiểu cần có | Bằng chứng E và giới hạn |
 |---|---|---|---|

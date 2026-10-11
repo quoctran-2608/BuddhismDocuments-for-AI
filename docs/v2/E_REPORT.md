@@ -1,5 +1,15 @@
 # Báo cáo Giai đoạn E — 11/10/2026
 
+> **Cập nhật trạng thái sau merge — 11/10/2026:** mã A–E đã nằm trên main tại
+> [57db982274e267218594ae5ca463bd2a42d2be02](https://github.com/quoctran-2608/BuddhismDocuments-for-AI/commit/57db982274e267218594ae5ca463bd2a42d2be02).
+> Bảng 394 tests/số đo E1–E3 và nhận xét “main vẫn nền D/không merge” bên dưới
+> giữ bối cảnh checkpoint `1b2d0f0` và báo cáo trước merge. Phần gia cố span
+> ghi 410/410 riêng; [evidence cuối](evidence/README.md) chỉ rõ log chạy mã
+> `4986216…`, commit evidence-only `57db982…` và giới hạn bằng chứng lần chạy lại.
+> Không đổi benchmark cũ thành benchmark sau sửa span. Mã đã gộp không mở
+> Research publication hoặc nghiệm thu học thuật toàn 2.0.
+
+
 E đã hoàn thành phần lớn phần khả dụng trong môi trường này, còn các điều
 kiện rõ ràng chưa đạt. Quick tra cứu và kiểm nguồn thật; Research tạo hồ sơ
 có bằng chứng/biên nhận, sửa luận điểm và xuất/nhập thẩm định, giữ dự thảo.

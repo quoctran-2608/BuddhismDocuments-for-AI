@@ -28,16 +28,9 @@ Chứa:
 
 Không hard-code. Đọc `config/remote-corpus.json`.
 
-Tại thời điểm tài liệu này được đồng bộ, config khai báo:
-
-```text
-repository: quoctran-2608/BuddhismDocuments-for-AI-remote
-branch: main
-root_path: remote/pointer-production-v1
-mode: pointer_production_v1
-```
-
-Nếu config đổi, config là nguồn chuẩn.
+Đọc `repository`, `branch`, `root_path`, `mode` trực tiếp từ
+[config/remote-corpus.json](../config/remote-corpus.json).
+Host chốt locator commit cho phiên; không lấy branch/root/SHA từ bản sao văn xuôi.
 
 Repo remote là artefact dẫn xuất phục vụ truy cập, không phải nguồn câu chữ.
 
@@ -152,7 +145,7 @@ Ví dụ đã được production xác nhận:
 key: anicca
 bucket: 45
 path:
-remote/pointer-production-v1/
+<root_path từ config>/
   locator/terms/latin/45/part-000001.jsonl
 ```
 
@@ -365,10 +358,12 @@ Câu trả lời Connector phải tách:
 
 Không trích pointer metadata như lời văn nguồn.
 
-## 20. Tích hợp kiểm chứng trên nhánh E
+## 20. Tích hợp kiểm chứng E trên main
 
-Mã lõi A/B/C/D đã có trên main; nhánh E bổ sung `ConnectorHost` portable để nối
+Mã A–E đã gộp tại `57db982274e267218594ae5ca463bd2a42d2be02` (11/10/2026).
+`ConnectorHost` portable nối
 công cụ fetch đã được cấp quyền với production locator và pinned upstream.
+Lookup/kiểm A là đường Quick; adapter chưa orchestration Research C/D từ xa.
 Một ca thực `ids/mn1` đã đi qua GitHub Connector đến A VERIFIED; 11 fixture
 contract kiểm JSON, missing capability và sai binding. Không có SQLite/shell
 trong adapter portable. Hướng dẫn reader/pins: [v2/USAGE.md](v2/USAGE.md).

@@ -18,6 +18,14 @@ Kiến thức mô hình không được âm thầm trở thành “nguồn thứ
 
 ## 2. Hai chế độ thực thi
 
+Local/Connector là môi trường truy cập; Quick/Research là quy trình độc lập
+với môi trường đó. Mã A–E của 2.0 đã trên main; cách dùng và khả năng từng tổ
+hợp xem [AI_ONBOARDING](docs/AI_ONBOARDING.md) và [USAGE](docs/v2/USAGE.md).
+A `VERIFIED` không tự cấp quyền cho luận điểm. Chỉ reader/capability do host
+xác thực mới có thẩm quyền; AI không được tự chọn reviewer hay dùng JSON tự
+khai approved. Research thiếu điều kiện phải giữ chưa xác minh; cửa công bố
+Research hiện đóng, kể cả run `finalized`. Các luật nguồn bên dưới giữ nguyên.
+
 ### 2.1. Local mode — offline nghiêm ngặt
 
 Build, lập chỉ mục, nghiên cứu bằng CLI và công việc Codex bên trong checkout

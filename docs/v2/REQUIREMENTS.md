@@ -22,8 +22,11 @@ Tài liệu giữ nguyên các mã đã được dùng từ trước để khôn
 - `REQ-TST`: kiểm thử chất lượng nghiên cứu;
 - `REQ-ENV`: tương thích môi trường thực thi.
 
-Đặc tả giữ nguyên 31 yêu cầu gốc và hai yêu cầu bổ sung. Mã lõi A/B/C/D đã có;
-E có tích hợp/kiểm thử/đo mẫu trên nhánh riêng, chưa nghiệm thu toàn 2.0.
+Đặc tả giữ nguyên 31 yêu cầu gốc và hai yêu cầu bổ sung: tổng **33**. Mã A–E
+đã gộp vào main tại `57db982274e267218594ae5ca463bd2a42d2be02` (11/10/2026).
+E có tích hợp, nguồn thật và đo mẫu; chưa nghiệm thu toàn 2.0. Hướng dẫn hiện
+hành: [USAGE](USAGE.md); kết quả/commit được chạy: [E_REPORT](E_REPORT.md) và
+[evidence](evidence/README.md). Không sửa tiêu chí chuẩn tắc từ việc đã gộp mã.
 Trạng thái từng yêu cầu và giới hạn bằng chứng xem [ACCEPTANCE.md](ACCEPTANCE.md).
 Không chuyển toàn bộ thành HIỆN HÀNH từ việc có mã hoặc fixture.
 

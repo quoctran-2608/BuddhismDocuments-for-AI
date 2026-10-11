@@ -269,17 +269,9 @@ Repo remote không phải corpus thứ 14.
 
 Runtime hiện hành phải được đọc từ `config/remote-corpus.json`.
 
-Ở thời điểm tài liệu này được đồng bộ, config khai báo:
-
-```text
-repository: quoctran-2608/BuddhismDocuments-for-AI-remote
-branch: main
-root_path: remote/pointer-production-v1
-mode: pointer_production_v1
-```
-
-Nếu config thay đổi, config là nguồn chuẩn chứ không phải giá trị sao chép trong
-tài liệu này.
+Đọc `repository`, `branch`, `root_path`, `mode` trực tiếp từ
+[config/remote-corpus.json](../config/remote-corpus.json).
+Host chốt locator commit cho phiên; không lấy branch/root/SHA từ bản sao văn xuôi.
 
 ## 10. Production locator
 
@@ -378,24 +370,36 @@ Nó không phải đặc tả kiến trúc thứ hai. Khi cần chi tiết về:
 - Connector runtime → `docs/REMOTE_AGENT.md`;
 - config hiện hành → `config/remote-corpus.json`.
 
-## 14. Lớp kiểm chứng 2.0 và giới hạn tích hợp
+## 14. Lớp kiểm chứng 2.0 và ranh giới tích hợp
 
-Mã lõi A/B/C/D đã gộp vào main tại `67eccb4b047365d9ba753de1b0e623542039881d`:
-Evidence Record/quote verification, Atomic Claim/Final Claim Gate,
-counterevidence/independence và Research Run/ResearchStore. Truy xuất 1.0 giữ nguyên.
+Mã A–E đã gộp vào main tại `57db982274e267218594ae5ca463bd2a42d2be02`
+(11/10/2026); retrieval/index/ranking/CLI 1.0 giữ nguyên.
 
-Trên nhánh E, `LocalHost` nối retrieval với reader Git ghim và resolver riêng
-Bilara/CBETA/84000. `LocalResearch` dùng D để tạo dự thảo/thẩm định, entry point
-`buddhist-research` riêng. `ConnectorHost` dùng production locator hiện có rồi
-mở nguồn ghim; không tạo nguồn hay hệ truy xuất mới.
+| Lớp | Trách nhiệm hiện hành | Ranh giới |
+|---|---|---|
+| A — verification | Source/pin/blob/location/quote với reader độc lập | VERIFIED chỉ là bằng chứng, không cấp claim assessment |
+| B — claims | Claim subject/assessment, final gate, revision history | Assessment cần host; JSON accepted/approved không mang quyền; Research guard đóng |
+| C — counterevidence | Per-step scope/receipt/hit–A, dependency và quyết định qua host | SEARCHED không là phản bác ngữ nghĩa; thiếu dependency giữ uncertain |
+| D — research_run/store | DB riêng, snapshots/version/history, report và decision | Stored observations cần fresh checks; finalized/RECORDED không cấp publication |
+| E — adapters/CLI | LocalHost, LocalResearch, ConnectorHost, ba resolver và CLI riêng | Chỉ nối capability host; không xây nguồn/ranking/approval mới |
 
-Research chưa có semantic approval xác thực hay phối hợp công bố hoàn chỉnh;
-B giữ rào chắn. Chưa có resolver đủ 13 corpus hoặc phiên Work được nghiệm thu.
-Không suy rộng test fixture hay một ca Connector thành nghiệm thu toàn 2.0.
-Hướng dẫn và bằng chứng: [v2/USAGE.md](v2/USAGE.md), [v2/ACCEPTANCE.md](v2/ACCEPTANCE.md).
-PRD/DESIGN vẫn là đặc tả mục tiêu.
+LocalHost đọc Git nguồn ghim và giải Bilara/CBETA/84000; LocalResearch tạo draft
+và chạy C operations hỗ trợ qua retrieval. Parallels/variants chưa có A resolver
+đầy đủ. ConnectorHost không tự gọi mạng/SQLite/shell: ứng dụng nối công cụ được
+cấp quyền vào `locator_fetch`/`source_fetch`, pin config/locator, đọc nguồn đầy đủ
+và gắn identity/blob. Pointer/range/flags từ transport không chọn capability.
 
-## 15. Luồng dữ liệu tổng thể
+Quick đi đường retrieval → A → bằng chứng/giới hạn, không gọi B/C/D. Research
+đi qua candidate/assessment/C/D/review và currentness checks, còn thiếu semantic
+approval xác thực; B/D giữ cửa công bố đóng. Lịch sử/hash/report không thay
+fresh nguồn/assessment hoặc host authority. Chưa nghiệm thu đủ 13 resolver,
+Work, toàn Connector hoặc chất lượng Research học thuật. PRD/DESIGN giữ các
+mục tiêu còn thiếu; [USAGE](v2/USAGE.md) mô tả API hiện hành,
+[ACCEPTANCE](v2/ACCEPTANCE.md) và [evidence](v2/evidence/README.md) ghi mức kiểm thực.
+
+Bảng môi trường × quy trình và sơ đồ Quick/Research: [AI_ONBOARDING](AI_ONBOARDING.md).
+
+## 15. Luồng dữ liệu nền 1.0 (2.0 nối sau mở nguồn)
 
 ```text
 Pinned upstream repositories

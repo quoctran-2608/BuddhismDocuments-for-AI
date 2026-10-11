@@ -1,236 +1,89 @@
-# Hạ tầng nghiên cứu corpus Phật học cho AI
+# Buddhist Corpus Research
 
-Repository này xây dựng một hạ tầng nghiên cứu Phật học **ưu tiên bằng chứng và
-khả năng truy nguyên nguồn** trên 13 repository upstream được ghim bằng commit
-SHA.
+Hệ thống đưa AI tới đúng văn bản Phật học, đúng phiên bản và đúng nhân chứng,
+rồi kiểm nguồn/câu trích và lưu dấu vết nghiên cứu. Kiến thức mô hình chỉ giúp
+đề xuất truy vấn; kết luận phải dựa vào nguồn đã đọc theo [AGENTS.md](AGENTS.md).
 
-> Kiến thức sẵn có của mô hình chỉ được dùng để đề xuất giả thuyết tìm kiếm.
-> Chỉ bằng chứng trong repository mới được dùng để xác lập kết luận nghiên cứu.
+## Hệ thống gồm gì?
 
-Đây không còn chỉ là một kho “raw data”. Repository hiện gồm:
+- **Repo chính** `quoctran-2608/BuddhismDocuments-for-AI`: luật, mã Python,
+  cấu hình, schema, tests và tài liệu.
+- **13 upstream**: nguồn bất biến ghim trong [manifest.json](manifest.json).
+  [Corpus mapping](config/corpus-sources.json) phân biệt nguồn chính, bản dịch,
+  metadata, alignment và dữ liệu dẫn xuất; mỗi record giữ provenance và witness.
+- **Index local**: SQLite/FTS dẫn xuất dưới `derived/`; có thể dựng lại từ pins,
+  giúp tìm ứng viên và ngữ cảnh, không sở hữu câu chữ nguồn.
+- **Repo hỗ trợ** `BuddhismDocuments-for-AI-remote`: locator pointer-only để
+  Connector tìm đường tới upstream. Runtime đọc [remote config](config/remote-corpus.json),
+  không dùng GitHub Code Search làm router. Remote không phải nguồn thứ 14.
 
-- tầng nguồn bất biến;
-- bộ parser và chỉ mục SQLite/FTS cục bộ;
-- CLI nghiên cứu;
-- mô hình provenance, nhân chứng, dị bản và quan hệ;
-- GitHub Connector dùng production pointer locator;
-- hệ tài liệu yêu cầu, nghiệm thu và ADR;
-- hướng nâng cấp lớp kiểm chứng claim-by-claim đang được đặc tả nhưng chưa triển
-  khai đầy đủ.
+## 1.0 và 2.0 hiện làm được gì?
 
-## 1. Kiến trúc trong 30 giây
+**1.0** cung cấp retrieval tất định: search/context/work/parallels/resolve/
+variants/compare/provenance/evidence; xếp hạng ứng viên, giữ riêng nhân chứng.
+CLI, index và ranking 1.0 được giữ nguyên khi bổ sung 2.0.
 
-```text
-13 repository upstream ở commit SHA đã ghim
-        │
-        ├── local parsers
-        │      ↓
-        │   SQLite + FTS + relations + variants + lemmas
-        │      ↓
-        │   CLI nghiên cứu cục bộ
-        │
-        └── production pointer export
-               ↓
-quoctran-2608/BuddhismDocuments-for-AI-remote
-               ↓
-GitHub Connector
-               ↓
-mở lại pinned upstream source
-               ↓
-câu trả lời có provenance
-```
+**2.0** đã gộp mã A–E vào `main` tại
+[57db982…](https://github.com/quoctran-2608/BuddhismDocuments-for-AI/commit/57db982274e267218594ae5ca463bd2a42d2be02):
+A kiểm nguồn/câu trích, B quản lý và đánh giá luận điểm, C kiểm phạm vi tìm
+phản chứng/quan hệ nguồn, D lưu hồ sơ có version/lịch sử, E nối host adapter
+và CLI riêng. **Quick** tìm và kiểm bằng chứng hẹp; **Research** tạo dự thảo,
+candidate claims, biên nhận C và gói phản biện, cần thẩm định để đi tiếp.
+Local/Connector/Work là trục môi trường, khác trục Quick/Research.
 
-Ba vai trò phải được giữ riêng:
+Quick đã kiểm nguồn thật qua **Bilara JSON, CBETA TEI, 84000 TEI**; ba resolver
+không bao phủ mọi định dạng của 13 nguồn. Một ca GitHub Connector thật đạt A
+`VERIFIED`; Work chưa kiểm phiên thực và toàn luồng Connector chưa nghiệm thu.
 
-- **repo chính** `quoctran-2608/BuddhismDocuments-for-AI`: kiến trúc, luật
-  nghiên cứu, config, schema, code, tests và docs;
-- **repo remote** `quoctran-2608/BuddhismDocuments-for-AI-remote`: artefact
-  dẫn xuất để định tuyến Connector, không phải corpus Phật học thứ 14;
-- **13 repo upstream**: nơi chứa bằng chứng văn bản/metadata thực sự.
+Research **chưa có semantic approval xác thực và chưa được phép công bố**.
+Report nhập `PROPOSED`, assessment `ASSESSED` và run `finalized` không tự cấp
+quyền công bố. Mã A–E đã có không có nghĩa toàn bộ 2.0 đạt nghiệm thu học thuật.
+Đáp án/reviewer độc lập, hiệu quả Research học thuật, token/chi phí AI và ngưỡng
+hiệu năng còn thiếu; Windows full suite chưa đạt. Xem [trạng thái nghiệm thu](docs/v2/ACCEPTANCE.md),
+[báo cáo E](docs/v2/E_REPORT.md) và [evidence cuối](docs/v2/evidence/README.md).
 
-Runtime Connector hiện hành phải luôn được đọc từ
-[`config/remote-corpus.json`](config/remote-corpus.json), không hard-code từ
-README.
+## Bắt đầu sử dụng
 
-## 2. Hai chế độ thực thi hiện hành
+Chỉ dùng nguồn và công cụ đã có, không tự tải corpus/package/model. Chạy từ
+root repo chính. WSL/Linux có Python, Git và SQLite FTS5:
 
-### Chế độ cục bộ (`Local mode`)
-
-Chế độ cục bộ hoạt động hoàn toàn ngoại tuyến.
-
-```bash
-# Kiểm nguồn và trạng thái chỉ mục
+```sh
 bin/buddhist-corpus status
-
-# Xây chỉ mục
-bin/buddhist-corpus build --profile core
-bin/buddhist-corpus build --profile discovery
-bin/buddhist-corpus build --profile all
-
-# Truy xuất và kiểm nguồn
-bin/buddhist-corpus search "anicca" --language pli --context 2 --with-provenance
-bin/buddhist-corpus search "如是我聞" --language lzh
-bin/buddhist-corpus evidence --record-id RECORD_ID --context 2
-bin/buddhist-corpus parallels an1.1-5
-bin/buddhist-corpus resolve ea9.7
-bin/buddhist-corpus variants T01n0001
-bin/buddhist-corpus compare mn1 T01n0001
+bin/buddhist-corpus search 'sutaṃ' --language pli --context 2 --with-provenance
+bin/buddhist-research quick 'sutaṃ' --corpus suttacentral-bilara --limit 1
 ```
 
-Chi tiết: [Hướng dẫn CLI](docs/CLI.md).
+`status` kiểm pins và báo trạng thái index; thiếu nguồn/SHA sai thì dừng nhánh
+nghiên cứu. Nếu nguồn đủ nhưng thiếu index, xem [build profiles](docs/CLI.md#2-build-profile).
+Search hit và gói `evidence` 1.0 vẫn cần mở nguồn; Quick chỉ trả bằng chứng
+đã qua A trong `verified_evidence`. Luôn đọc giới hạn của kết quả.
 
-### Chế độ GitHub Connector
+PowerShell dùng module Python thay wrapper Bash 1.0:
 
-Khi AI không có SQLite cục bộ:
-
-```text
-câu hỏi
-→ giả thuyết tìm kiếm có căn cứ
-→ production locator
-→ pointer đã xếp hạng
-→ pinned upstream source
-→ ngữ cảnh + provenance
-→ quan hệ/dị bản khi cần
-→ tổng hợp tách nhân chứng
+```powershell
+$env:PYTHONPATH = 'tools'
+python -m corpus_research.cli status
+python -m corpus_research.v2_cli quick 'sutaṃ' --corpus suttacentral-bilara --limit 1
 ```
 
-Pointer chỉ là chỉ dẫn mở nguồn, **không phải bằng chứng câu chữ**.
+Giao diện Python dành cho host đã có; callback có thẩm quyền do ứng dụng nối,
+không lấy từ JSON của AI. Cú pháp, điều kiện index/store và ví dụ Research xem
+[USAGE](docs/v2/USAGE.md). Repo cung cấp CLI/Python/Connector contracts.
 
-Chi tiết vận hành:
-[GitHub Connector Research Access](docs/REMOTE_AGENT.md).
+## Đọc gì tiếp?
 
-## 3. Truy xuất hiện hành
-
-Hệ thống hiện tại **không phải** vector/embedding semantic RAG.
-
-Truy xuất cục bộ dùng:
-
-- exact match;
-- chuẩn hóa Unicode;
-- bỏ dấu như một bước fallback riêng;
-- SQLite FTS5 `unicode61`;
-- lemma/morphology do corpus cung cấp;
-- FTS5 trigram riêng cho truy vấn chuỗi con Hán văn `lzh`/`zh`;
-- xếp hạng có trọng số theo lớp bằng chứng và phá hòa xác định.
-
-CJK trigram là hạ tầng sinh ứng viên, không phải từ điển thuật ngữ.
-
-## 4. Production Connector hiện hành
-
-Production v1 hiện dùng hai namespace:
-
-```text
-terms/latin
-ids
-```
-
-Không có production `terms/cjk`.
-
-Artefact hiện hành được khai báo trong `config/remote-corpus.json` và nằm ở
-repo remote. Con số production, trường pointer và invariant phải lấy từ
-production manifest/summary của artefact đó.
-
-Các nguyên tắc quan trọng:
-
-- không phụ thuộc GitHub Code Search để định tuyến;
-- pointer production không chứa `raw_text`;
-- identifier giữ nguyên spelling gốc;
-- bucket dùng SHA-256 trên exact production key;
-- rank chỉ là thứ tự ưu tiên mở nguồn, không phải thẩm quyền học thuật.
-
-## 5. 13 nguồn upstream
-
-Danh sách repo, đường dẫn local và commit SHA chuẩn nằm trong
-[`manifest.json`](manifest.json).
-
-Vai trò corpus và `evidence_class` nằm trong
-[`config/corpus-sources.json`](config/corpus-sources.json).
-
-Các họ nguồn chính gồm:
-
-- SuttaCentral;
-- CBETA;
-- 84000;
-- OpenPecha;
-- BuddhaNexus;
-- PTS archive;
-- dữ liệu Pāli dẫn xuất phục vụ lemma, hình thái học và khảo dị.
-
-Không dùng README làm nguồn chuẩn cho SHA hay kích thước nguồn.
-
-## 6. Tài liệu nên đọc
-
-| Nhu cầu | Tài liệu |
+| Nhu cầu | Cửa vào |
 |---|---|
-| Hiểu toàn bộ dự án | [PROJECT_SPEC.md](docs/PROJECT_SPEC.md) |
-| Biết tài liệu nào có thẩm quyền về việc gì | [DOCUMENTATION_GOVERNANCE.md](docs/DOCUMENTATION_GOVERNANCE.md) |
-| Luật nghiên cứu bắt buộc | [AGENTS.md](AGENTS.md) |
-| Kiến trúc kỹ thuật hiện hành | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Yêu cầu hiện hành | [REQUIREMENTS.md](docs/REQUIREMENTS.md) |
-| Nghiệm thu hiện hành | [ACCEPTANCE.md](docs/ACCEPTANCE.md) |
-| Bộ tài liệu nâng cấp 2.0 | [docs/v2/README.md](docs/v2/README.md) |
-| Đề bài / PRD 2.0 | [docs/v2/PRD.md](docs/v2/PRD.md) |
-| Thiết kế kiểm chứng 2.0 | [docs/v2/DESIGN.md](docs/v2/DESIGN.md) |
-| Yêu cầu 2.0 | [docs/v2/REQUIREMENTS.md](docs/v2/REQUIREMENTS.md) |
-| Nghiệm thu 2.0 | [docs/v2/ACCEPTANCE.md](docs/v2/ACCEPTANCE.md) |
-| Lý do các quyết định kiến trúc | [ADR index](docs/adr/README.md) |
-| CLI | [CLI.md](docs/CLI.md) |
-| GitHub Connector | [REMOTE_AGENT.md](docs/REMOTE_AGENT.md) |
-| Cầu nối SuttaCentral ↔ CBETA | [SC_CBETA_BRIDGE.md](docs/SC_CBETA_BRIDGE.md) |
-| Khảo sát corpus tại mốc 22/09/2026 | [CORPUS_SURVEY.md](docs/CORPUS_SURVEY.md) |
-| Lịch sử phát triển và benchmark | [progress.md](progress.md) |
+| AI mới hoặc lập trình viên tiếp quản | [AI_ONBOARDING](docs/AI_ONBOARDING.md): kiến trúc, module, giao diện, trạng thái và xử lý lỗi |
+| Nghiên cứu đúng luật | [AGENTS](AGENTS.md) → [SKILL](.codex/skills/buddhist-corpus-research/SKILL.md) |
+| Mục tiêu/phạm vi/bất biến | [PROJECT_SPEC](docs/PROJECT_SPEC.md) |
+| Kiến trúc và nguồn thẩm quyền | [ARCHITECTURE](docs/ARCHITECTURE.md), [GOVERNANCE](docs/DOCUMENTATION_GOVERNANCE.md) |
+| Dùng retrieval 1.0 | [CLI](docs/CLI.md) |
+| GitHub Connector | [REMOTE_AGENT](docs/REMOTE_AGENT.md) + [runtime config](config/remote-corpus.json) |
+| Thiết kế, sử dụng và nghiệm thu 2.0 | [docs/v2](docs/v2/README.md) |
+| Quyết định và lịch sử | [ADR](docs/adr/README.md), [progress](progress.md), [khảo sát](docs/CORPUS_SURVEY.md) |
 
-## 7. Trạng thái phát triển
-
-### HIỆN HÀNH
-
-Đã có:
-
-- 13 nguồn được ghim;
-- SQLite/FTS local;
-- truy xuất theo ngôn ngữ;
-- provenance;
-- `evidence_class`, `text_role`, `witness`;
-- quy trình quan hệ/song hành/dị bản;
-- GitHub Connector production locator;
-- fail-closed khi corpus không đủ dữ liệu.
-
-### MỤC TIÊU — chưa triển khai đầy đủ
-
-Hướng nâng cấp tiếp theo bổ sung:
-
-```text
-Bản ghi bằng chứng
-→ kiểm chứng câu trích
-→ Luận điểm nguyên tử
-→ kiểm chứng luận điểm ↔ bằng chứng
-→ phản chứng
-→ Cửa kiểm luận điểm cuối
-→ Hồ sơ lần nghiên cứu
-```
-
-Chi tiết nằm trong
-[Bộ tài liệu 2.0](docs/v2/README.md),
-[PRD 2.0](docs/v2/PRD.md),
-[Thiết kế 2.0](docs/v2/DESIGN.md),
-[Yêu cầu 2.0](docs/v2/REQUIREMENTS.md) và
-[Nghiệm thu 2.0](docs/v2/ACCEPTANCE.md).
-
-### TƯƠNG LAI — chưa thuộc 2.0 phiên bản đầu
-
-Chỉ sau 2.0 phiên bản đầu mới xem xét đường dự phòng Connector sâu hoặc tác vụ
-từ xa khi có số liệu chứng minh locator hiện tại không đủ. Đây không phải chức
-năng đang vận hành hay yêu cầu hiện hành.
-
-## 8. Nguyên tắc không được hiểu sai
-
-- database dẫn xuất không phải nguồn gốc;
-- pointer không phải bằng chứng;
-- metadata quan hệ không phải câu chữ;
-- nhiều citation không tự động là nhiều nguồn độc lập;
-- rank cao không đồng nghĩa kết luận đúng hơn;
-- AI không được tự suy phương trình Pāli/Sanskrit/Hán/Tạng từ trí nhớ;
-- không đủ bằng chứng thì phải nói rõ giới hạn thay vì lấp chỗ trống.
-
-Muốn hiểu kỹ lý do của các nguyên tắc này, xem
-[Hồ sơ quyết định kiến trúc](docs/adr/README.md).
+Kiểm thử kỹ thuật cuối E ghi WSL 410/410 và E portable Windows 78/78; xem
+[nguồn bằng chứng và commit được chạy](docs/v2/evidence/README.md), không dùng
+số test làm chứng nhận học thuật. [Biên bản docs 11/10/2026](docs/DOCUMENTATION_AUDIT_2026-10-11.md)
+ghi phạm vi nâng cấp tài liệu và các phép kiểm bàn giao.

@@ -197,9 +197,8 @@ Vai trò:
 - cung cấp production pointer locator;
 - định tuyến từ key sang pointer nguồn.
 
-Hiện production root là:
-
-`remote/pointer-production-v1`
+Production root lấy từ `root_path` trong [remote config](../config/remote-corpus.json),
+không dùng đường dẫn sao chép trong tài liệu để quyết định runtime.
 
 Repository này:
 
@@ -338,16 +337,10 @@ terms/latin
 ids
 ```
 
-Theo artefact production hiện tại:
-
-- `terms/latin`: 26.547 key;
-- `ids`: 32.498 key;
-- tổng: 59.045 key;
-- 58.643 query có kết quả;
-- 402 query không có kết quả;
-- 706.011 pointer;
-- 517 file;
-- 0 trường `raw_text` trong artefact production.
+Số key/pointer/file và coverage hiện tại phải lấy từ manifest/summary của
+production root do [remote config](../config/remote-corpus.json) khai báo.
+Không lấy số ở benchmark cũ làm hiện trạng. Invariant exporter nằm trong
+[pointer_production.py](../tools/corpus_research/pointer_production.py).
 
 Production v1 không materialize `terms/cjk`.
 
@@ -415,6 +408,9 @@ Các năng lực chính:
 - `evidence`.
 
 Ngoài ra có các lệnh export/benchmark/analysis phục vụ artefact Connector.
+CLI E riêng `bin/buddhist-research` / `corpus_research.v2_cli` và các Python
+host adapters được hướng dẫn tại [USAGE](v2/USAGE.md); 1.0 không âm thầm gọi
+nghiên cứu sâu. Bản đồ module và đường đọc nhanh: [AI_ONBOARDING](AI_ONBOARDING.md).
 
 Nguồn chuẩn của giao diện dòng lệnh là `docs/CLI.md` và
 `tools/corpus_research/cli.py`.
@@ -441,19 +437,17 @@ Compare giữ nhân chứng riêng và không tự harmonize.
 
 ## 12. Những gì hệ thống hiện tại chưa làm
 
-Các điểm sau không được mô tả như tính năng hiện hành:
+Không có semantic vector search/embedding RAG phổ quát, knowledge graph toàn
+corpus, autonomous research agents hoặc universal truth/confidence score.
+Production locator không tìm CJK tùy ý đầy đủ; không dùng web làm nguồn bổ sung.
 
-- semantic vector search toàn corpus;
-- embedding-based universal RAG;
-- arbitrary exhaustive CJK lookup qua remote production locator;
-- tự động kiểm chứng claim-by-claim;
-- bắt buộc tìm phản chứng cho mọi research claim;
-- quote verification có trạng thái máy đọc;
-- Research Run Manifest;
-- universal confidence score;
-- knowledge graph toàn bộ corpus;
-- autonomous research agents;
-- web research làm nguồn bổ sung mặc định.
+Mã A–E đã có, nhưng **chưa có semantic approval xác thực hoặc quyền công bố
+Research**, chưa ground truth học thuật/reviewer độc lập thực tế, chưa thử Work
+và chưa nghiệm thu toàn Connector. Ba resolver không hỗ trợ mọi định dạng của
+13 nguồn; metadata/variants chưa có đường A resolver đầy đủ. E1/E2 đã đo mẫu,
+E3 đo chi phí draft; chất lượng Research, token/chi phí AI và ngưỡng hiệu năng
+còn thiếu. Windows full suite chưa đạt. Bằng chứng có mốc nằm trong
+[E_REPORT](v2/E_REPORT.md) và [evidence](v2/evidence/README.md).
 
 ## 13. Giới hạn hiện hành
 
@@ -483,24 +477,22 @@ AI vẫn phải đọc context và phân biệt:
 - alignment;
 - ứng viên do xử lý tính toán tạo ra.
 
-### 13.3. Claim verification chưa được máy hóa đầy đủ
+### 13.3. Kiểm máy không thay đánh giá ngữ nghĩa
 
-Hệ thống hiện đã mạnh ở:
+A kiểm nguồn/quote, B kiểm hợp đồng assessment, C kiểm phạm vi và liên kết
+phản chứng, D giữ version/history; các lớp đã có mã và tests. Chúng không tự
+quyết định một diễn giải là đúng. Host phải xác thực reviewer và đọc lại
+bằng chứng/lịch sử hiện hành. JSON approved, snapshot hoặc callback oracle
+không tự có thẩm quyền. Nhiều nguồn chưa rõ phụ thuộc giữ `uncertain`.
+Research publication vẫn đóng dù có thể chốt hồ sơ kiểm toán với capability
+phù hợp; `finalized` không phải giấy phép công bố.
 
-- provenance;
-- witness separation;
-- evidence hierarchy;
-- source opening;
-- fail-closed.
+## 14. Lớp kiểm chứng 2.0 — mã hiện hành và mục tiêu còn lại
 
-Nhưng sau khi evidence đã được đọc, việc AI hình thành claim và đánh giá claim
-có vượt quá nguồn hay không vẫn còn phụ thuộc nhiều vào quy trình tác nhân.
-
-Đây là khoảng trống chính của hướng nâng cấp tiếp theo.
-
-## 14. Hướng nâng cấp đã được chấp thuận — MỤC TIÊU
-
-> Trạng thái phần này: **MỤC TIÊU — CHƯA TRIỂN KHAI ĐẦY ĐỦ**
+> Mã A–E đã gộp tại `57db982274e267218594ae5ca463bd2a42d2be02` (11/10/2026).
+> Hợp đồng/tiêu chí chưa đủ nghiệm thu vẫn là **MỤC TIÊU**. Sơ đồ dưới là quy
+> trình nghiên cứu đầy đủ theo thiết kế; CLI hiện chỉ tạo Research draft,
+> không đi tới accepted synthesis/publication.
 >
 > Thiết kế chi tiết và data contract mục tiêu nằm trong
 > `docs/v2/DESIGN.md`.
@@ -537,13 +529,14 @@ question
 
 ### 14.1. Evidence Record
 
-Mục tiêu là biến “nguồn đã thực sự mở và đọc” thành record có cấu trúc.
+A đã tạo Evidence Record có cấu trúc từ nguồn được host đọc/kiểm, với reader
+độc lập và source binding. Gói `evidence()` 1.0 chỉ là đầu vào, không đã verified.
 
 Pointer không bao giờ tự động trở thành Evidence Record.
 
 ### 14.2. Quote verification
 
-Các trạng thái mục tiêu:
+Các trạng thái đã có trong A:
 
 - VERIFIED_EXACT;
 - VERIFIED_NORMALIZED;
@@ -561,7 +554,7 @@ Một claim phải nối được tới supporting evidence và, khi phù hợp,
 
 ### 14.4. Claim–Evidence Verification
 
-Các mức mục tiêu:
+Các mức đã có trong B (assessment hợp lệ cần host reader):
 
 - DIRECT;
 - STRONG;
@@ -575,7 +568,7 @@ CONTRADICTED không được trình bày như kết luận đã xác lập.
 
 ### 14.5. Counterevidence
 
-Research mode mục tiêu phải chủ động tìm:
+C đã có kế hoạch/phạm vi/biên nhận và đánh giá qua host; Research mục tiêu phải chủ động tìm:
 
 - ngoại lệ;
 - nhân chứng khác;
@@ -595,7 +588,7 @@ Phần tổng hợp không được tự sinh thêm kết luận quan trọng ch
 
 ### 14.7. Research Run Manifest
 
-Mục tiêu là có thể trả lời:
+D đã có Research Run/ResearchStore riêng để truy được:
 
 - câu hỏi là gì;
 - phạm vi nào đã kiểm;
@@ -607,7 +600,11 @@ Mục tiêu là có thể trả lời:
 - counterevidence pass có chạy hay không;
 - giới hạn gì còn lại.
 
-## 15. Hai mức nghiên cứu mục tiêu
+## 15. Quick và Research, độc lập với môi trường truy cập
+
+Local/Connector/Work là trục môi trường; Quick/Research là trục quy trình.
+Khả năng từng tổ hợp xem [AI_ONBOARDING](AI_ONBOARDING.md#2-kiến-trúc-và-hai-trục-sử-dụng).
+Local không đồng nghĩa Quick; Connector không đồng nghĩa Research.
 
 ### 15.1. Quick mode
 
@@ -628,7 +625,9 @@ retrieval
 → answer
 ```
 
-Vẫn phải có provenance, quote discipline và fail-closed.
+Quick E hiện dùng LocalHost hoặc ConnectorHost kiểm nguồn ghim bằng A, không
+chạy B/C/D hay tự cấp assessment. Ba resolver Bilara/CBETA/84000; phạm vi nhỏ,
+provenance, quote discipline và fail-closed vẫn bắt buộc.
 
 ### 15.2. Research mode
 
@@ -649,6 +648,12 @@ Bắt buộc hơn về:
 - counterevidence;
 - final gate;
 - run manifest.
+
+LocalResearch hiện tạo draft, literal textual candidates, C lexical receipts,
+version/history và gói review. Phần đánh giá ngữ nghĩa/quan hệ nguồn phải qua
+host tin cậy; report PROPOSED không là approval. CLI chưa finalize được khi
+thiếu checks, B giữ guard Research và D không cấp publication. Hướng dẫn
+[USAGE](v2/USAGE.md); nghiệm thu còn thiếu xem [ACCEPTANCE](v2/ACCEPTANCE.md).
 
 ## 16. Các nguyên tắc chống suy diễn quá mức
 
@@ -746,10 +751,11 @@ Yêu cầu và nghiệm thu riêng của Buddhist Corpus Research 2.0 nằm tron
 
 - `schema/corpus-index.sql`.
 
-### Muốn biết CLI
+### Muốn biết CLI/API hiện hành
 
-- `docs/CLI.md`;
-- `tools/corpus_research/cli.py`.
+- [CLI 1.0](CLI.md) + `tools/corpus_research/cli.py`;
+- [USAGE 2.0](v2/USAGE.md) + `tools/corpus_research/v2_cli.py`;
+- [AI_ONBOARDING](AI_ONBOARDING.md) để chọn host/module/test cần đọc.
 
 ### Muốn hiểu SC ↔ CBETA
 
@@ -805,9 +811,9 @@ Có thể tóm tắt sự tiến hóa của dự án bằng hai câu:
 
 > Đưa AI tới đúng nguồn, đúng phiên bản và đúng ngữ cảnh.
 
-**Hướng nâng cấp:**
+**Mục tiêu kiểm chứng, đã có mã A–E nhưng chưa nghiệm thu học thuật toàn bộ:**
 
 > Không cho AI đi xa hơn những gì nguồn thực sự cho phép kết luận.
 
-Hai mục tiêu này bổ sung nhau. Lớp kiểm chứng mới phải được xây trên retrieval
+Hai mục tiêu này bổ sung nhau. Lớp kiểm chứng đã được bổ sung trên retrieval
 và Connector hiện tại, không thay thế những phần đã hoạt động tốt.
