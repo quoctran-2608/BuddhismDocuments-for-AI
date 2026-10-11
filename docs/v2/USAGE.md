@@ -57,6 +57,15 @@ biệt root/translation/comment; CBETA loại note/rdg khỏi dòng gốc; 84000
 heading/main/note. Phạm vi trích là một đoạn text liên tục không escape trong
 byte nguồn, có thể ngắn hơn đoạn hiển thị 1.0. Không ghép câu qua markup/entity
 hoặc tái tuần tự hóa XML để làm câu trích. Context có thể chứa markup nguồn.
+Khi một unit/chunk có nhiều span, `quote --text` chọn span chứa câu trích
+theo đúng phép kiểm exact/normalized của A; Quick chọn span chứa truy vấn
+(exact, chuẩn hóa, bỏ dấu hoặc compact), rồi trích byte nguồn thực. Không có
+hint thì vẫn chọn span dài nhất. Hai lượt đọc ghim phải giải ra cùng phạm vi.
+Offset/range tự khai trong pointer hoặc transport không chọn được span.
+Quick giữ hit/rank 1.0 nhưng không trả quote VERIFIED nếu truy vấn chỉ khớp
+qua nhiều span/markup, metadata/identifier, lemma hoặc FTS mà không có dạng
+truy vấn tương ứng trong một span nguồn. Khi đó dùng locator để xem ngữ cảnh
+và `quote --text` cho câu thực trong đúng unit; không tự nối hoặc bịa câu.
 Định dạng khác, XML có DTD/entity, đoạn không giải chắc chắn hoặc tệp quá 20 MB
 giữ chưa xác minh. Đừng suy rộng ba resolver thành hỗ trợ đủ 13 corpus.
 

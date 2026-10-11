@@ -30,6 +30,9 @@ chặng A–E giữ nguyên tiêu chí; chỉ cập nhật nhận định trạn
 
 ## Kiểm thử và cách hiểu
 
+Bảng và evidence lịch sử dưới đây ghi kết quả checkpoint `1b2d0f0`, trước
+vòng gia cố span. Kết quả chạy lại được ghi riêng ở phần ngay sau bảng.
+
 | Bộ | WSL chạy/đạt | Windows chạy/đạt | Failure/error/skip |
 |---|---:|---:|---|
 | Baseline D trước E | 318/318 | 309 chạy, 282 đạt, 29 error entries | Windows chưa đủ nguồn và lỗi cleanup cũ |
@@ -61,6 +64,45 @@ cho textual/relationship và synthesis, cùng ca thiếu căn cứ giữ candida
 không dùng hệ thống chặn mọi claim để tự nhận thành công. 14 ca thật kiểm byte,
 SHA, segment, note/main, rank, C và D; chưa có expected interpretation độc lập
 cho toàn bộ 11 mẫu. Logs và JSON: [evidence](evidence/README.md).
+
+### Gia cố chọn span trước merge
+
+Đã tái hiện lỗi tại bản E được duyệt `e4c02d95`: một TEI unit hoặc Bilara
+chunk có span dài không chứa từ khóa và span ngắn chứa từ khóa. Quick trả
+VERIFIED cho span dài; `quote --text` từ chối câu đúng trong span ngắn. Bốn
+regression ban đầu thất bại ở cả Bilara chunk, CBETA TEI và 84000 TEI
+(12 subtest failures). Đây là lỗi chọn đoạn trong E, không phải lỗi cửa A.
+
+Resolver nay chọn trong các span của đúng unit đã giải từ nguồn ghim: theo
+câu trích bằng phép exact/normalized hiện có của A, hoặc theo truy vấn Quick
+bằng exact/normalize/fold/compact. A vẫn kiểm câu thực, pin/blob/location và
+đọc nguồn độc lập lần hai; hai lượt phải giải cùng range. Không lấy offset
+từ pointer/transport, không ghép span qua markup/JSON, không đổi A/B/C/D.
+Nếu truy vấn chỉ khớp xuyên span, trong metadata, qua lemma/FTS mà không có
+dạng truy vấn trong một span, giữ retrieval hit/rank nhưng không cấp quote
+VERIFIED. Không có hint vẫn chọn span dài nhất. Giới hạn ghi trong [USAGE.md](USAGE.md).
+
+Thêm 16 bài ở `test_source_span_selection.py`: Quick và quote CLI cho span
+ngắn ở cả ba định dạng, reread/Connector, sai hoặc thiếu vị trí, sai pin/blob,
+offset giả, câu ghép qua markup/chunk, query thuộc note/unit khác hoặc xuyên
+span, normalized/folded query với quote nguyên byte, ranh giới từ, hành vi
+không hint, và second read khác range bị A chặn. Giữ nguyên toàn bộ bài cũ.
+WSL chạy lại: E portable **78/78**, E corpus thật **14/14**, toàn suite
+**410/410**, không failure/error/skip. Đủ 13 nguồn ghim; HEAD và tracked bytes
+nguồn được kiểm trước/sau và giữ nguyên. Windows E portable **78/78**;
+không chạy lại Windows full trong vòng này. Harness/logs vòng này giữ ngoài
+Git tại `phase-e-evidence-20261011/span-fix-*`; không ghi đè evidence lịch sử.
+
+Để tái chạy offline trên môi trường có đủ nguồn: `PYTHONPATH=tools python3
+-m unittest discover -s tests -v`; có thể chạy từng `test_local_integration.py`,
+`test_connector_contract.py`, `test_golden_research.py`,
+`test_source_span_selection.py`, `test_corpus_integration.py` bằng `-p`.
+`BCR_SOURCE_ROOT` chọn checkout nguồn đã có cho E corpus thật; các bài 1.0
+cần nguồn tại layout checkout như lần WSL đã chạy. Không tải nguồn bị thiếu.
+
+Các số E1/E2/E3 phía dưới vẫn là phép đo lịch sử ở checkpoint `1b2d0f0`,
+không phải số đo sau sửa span. Vòng gia cố chỉ chạy regression/integration;
+không đo lại hiệu năng, chất lượng học thuật, thẩm định độc lập hay AI cost.
 
 ## E1 — Bảo toàn 1.0
 

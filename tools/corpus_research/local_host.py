@@ -98,7 +98,7 @@ class LocalHost:
                 source_sha=self.contract[c]['source_sha']) for c in corpora],
                 'constraints':['indexed_profile:'+profile]}
 
-    def source_reader(self, request):
+    def source_reader(self, request, *, quotation=None, retrieval_query=None):
         started = time.perf_counter()
         try:
             if set(request) != set(source_request({})):
@@ -107,10 +107,11 @@ class LocalHost:
             opened = read_local_source(self.source_root,request,self.contract)
             if not opened.get('content'):
                 return opened
-            resolved = resolve_source(opened['content'],request['corpus'],request['source_path'],request)
+            resolved = resolve_source(opened['content'],request['corpus'],request['source_path'],request,
+                                      quotation=quotation,retrieval_query=retrieval_query)
             return {**opened,**resolved}
         except (ValueError,KeyError,TypeError,ExpatError):
-            return {'error':'source format/location is unavailable or unsupported'}
+            return {'error':'source format/location or matching contiguous span is unavailable or unsupported'}
         finally:
             self.metrics['source_seconds'] += time.perf_counter()-started
 
@@ -125,7 +126,7 @@ class LocalHost:
 
     def verify_pointer(self, pointer, *, quotation=None, run_id=None, retrieval_query=None):
         contract = contract_for(self.contract,pointer.get('corpus'),pointer.get('source_path'))
-        opened = self.source_reader(source_request(pointer))
+        opened = self.source_reader(source_request(pointer),quotation=quotation,retrieval_query=retrieval_query)
         pointer = copy.deepcopy(pointer)
         if pointer.get('source_blob_sha') is None:
             pointer['source_blob_sha'] = opened.get('source_blob_sha')
@@ -144,7 +145,10 @@ class LocalHost:
     def _gate(self, candidate, opened, contract, *, register=False):
         before_source = self.metrics['source_seconds']
         started = time.perf_counter()
-        result = evidence_gate(candidate,contract,opened,source_reader=self.source_reader,review_reader=self.review_reader,
+        # Bind the selection hint in host code, outside A's request/proposal.
+        # The second read still derives all ranges from original pinned bytes.
+        reader = lambda request: self.source_reader(request,quotation=candidate['quotation'])
+        result = evidence_gate(candidate,contract,opened,source_reader=reader,review_reader=self.review_reader,
                                mode='research' if candidate['run_id'] else 'quick')
         self.metrics['verification_seconds'] += max(0.0,time.perf_counter()-started-(self.metrics['source_seconds']-before_source))
         if opened.get('error'):
@@ -167,7 +171,7 @@ class LocalHost:
         if candidate is None:
             return {}
         candidate = copy.deepcopy(candidate)
-        opened = self.source_reader(source_request(candidate))
+        opened = self.source_reader(source_request(candidate),quotation=candidate['quotation'])
         return self._gate(candidate,opened,contract_for(self.contract,candidate['corpus'],candidate['source_path']))
 
     def restore_locators(self, run):

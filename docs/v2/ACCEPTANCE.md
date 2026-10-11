@@ -879,9 +879,12 @@ phải có dấu vết quyết định; không cần xây API hay hệ hai AI t�
 
 ### 2.2. Đo hiệu quả E1–E3 ở Giai đoạn E
 
-E1–E3 là nhóm nghiệm thu trong E, không phải giai đoạn mới. Cả ba hiện
-**CHƯA ĐO**. Bộ test A/B xanh chỉ chứng minh hành vi trong phạm vi đã chạy,
-không chứng minh hiệu năng hay giá trị của hệ 2.0 tích hợp.
+E1–E3 là nhóm nghiệm thu trong E, không phải giai đoạn mới. E1/E2 đã đo mẫu;
+E3 đã đo chi phí thực thi Research dự thảo. Kết quả, phạm vi và checkpoint
+đo được ghi trong [E_REPORT.md](E_REPORT.md). Chất lượng học thuật, giá trị
+thẩm định độc lập và token/chi phí AI vẫn **CHƯA ĐO**; ngưỡng còn chờ chốt.
+Bộ test A/B xanh chỉ chứng minh hành vi trong phạm vi đã chạy, không tự
+chứng minh hiệu năng hay giá trị của hệ 2.0 tích hợp.
 
 | Nhóm | Đối chiếu và phép đo | Kết quả phải ghi |
 |---|---|---|

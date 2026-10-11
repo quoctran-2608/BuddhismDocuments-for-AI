@@ -26,7 +26,7 @@ class ConnectorHost:
         self.locator_commit = locator_commit
         self.source_fetch,self.locator_fetch,self.review_reader = source_fetch,locator_fetch,review_reader
 
-    def source_reader(self, request):
+    def source_reader(self, request, *, quotation=None):
         mapping = self.contract.get(request.get('corpus'),{})
         if (request.get('repository')!=mapping.get('repository') or request.get('source_sha')!=mapping.get('source_sha')
                 or not _sha(request.get('source_sha')) or not _path(request.get('source_path'))):
@@ -38,7 +38,7 @@ class ConnectorHost:
                 or not _sha(blob) or git_blob_sha(content.encode('utf-8'))!=blob):
             return {}
         try:
-            resolved = resolve_source(content,request['corpus'],request['source_path'],request)
+            resolved = resolve_source(content,request['corpus'],request['source_path'],request,quotation=quotation)
         except (ValueError,KeyError,TypeError,ExpatError):
             return {}
         return {**identity,'content':content,'source_blob_sha':blob,'blob_check_required':True,**resolved}
@@ -46,7 +46,7 @@ class ConnectorHost:
     def verify_pointer(self, pointer, *, evidence_id, quotation=None, run_id=None):
         request = {key:pointer.get(key) for key in ('corpus','repository','source_sha','source_path',
                                                    'work_id','segment_id','sequence_no')}
-        opened = self.source_reader(request)
+        opened = self.source_reader(request,quotation=quotation)
         if quotation is None and opened.get('excerpt_range'):
             a,b = opened['excerpt_range']
             quotation = opened['content'][a:b]
@@ -62,7 +62,7 @@ class ConnectorHost:
             evidence_id=evidence_id,quotation=quotation,run_id=run_id)
         candidate['limitations'] = [SPAN_LIMITATION]
         return evidence_gate(candidate,contract_for(self.contract,pointer.get('corpus'),pointer.get('source_path')),
-            opened,source_reader=self.source_reader,review_reader=self.review_reader,
+            opened,source_reader=lambda request: self.source_reader(request,quotation=quotation),review_reader=self.review_reader,
             mode='research' if run_id else 'quick')
 
     def lookup(self, namespace, key):

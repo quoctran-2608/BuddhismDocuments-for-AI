@@ -16,7 +16,8 @@ from pathlib import PurePosixPath
 import re
 from xml.parsers import expat
 
-from .model import work_from_segment
+from .model import compact, fold_diacritics, normalize, work_from_segment
+from .verification import verify_quote
 
 SUPPORTED = ('suttacentral-bilara', 'cbeta-tei', '84000-tei')
 SPAN_LIMITATION = 'Only the resolved contiguous source text is verified; markup/escaped text is not flattened.'
@@ -31,7 +32,7 @@ def contract_for(contract, corpus, path):
     return selected
 
 
-def _selected(units, selector):
+def _selected(units, selector, content, *, quotation=None, retrieval_query=None):
     matches = [i for i, unit in enumerate(units) if unit['segment_id'] == selector['segment_id']
                and (selector.get('sequence_no') is None or unit['sequence_no'] == selector['sequence_no'])]
     if len(matches) != 1:
@@ -43,6 +44,26 @@ def _selected(units, selector):
     spans = unit['spans']
     if not spans:
         raise ValueError('no contiguous unescaped text at this source location')
+    # Selection hints never supply offsets or broaden the resolved unit. A
+    # independently reopens the source and repeats selection by the quotation.
+    if quotation is not None:
+        matching = [span for span in spans if verify_quote(quotation,content[span[0]:span[1]])['direct_quote_allowed']]
+        # Keep a source-derived span on mismatch so the unchanged A gate reports
+        # QUOTE_MISMATCH, rather than masking an invalid quote as unavailable.
+        if matching:
+            spans = matching
+    elif retrieval_query is not None:
+        if not isinstance(retrieval_query,str) or not retrieval_query.strip():
+            raise ValueError('retrieval query cannot select a source span')
+        forms = [(transform(retrieval_query),transform) for transform in (normalize,fold_diacritics,compact)]
+        matching = []
+        for span in spans:
+            text = content[span[0]:span[1]]
+            if retrieval_query in text or any(form and form in transform(text) for form,transform in forms):
+                matching.append(span)
+        if not matching:
+            raise ValueError('no contiguous source span matches the retrieval query; hit remains a locator')
+        spans = matching
     excerpt = max(spans, key=lambda span: span[1]-span[0])
     context = [min(unit['start'],units[max(0, i-1)]['start']),
                max(unit['end'],units[min(len(units)-1, i+1)]['end'])]
@@ -52,7 +73,7 @@ def _selected(units, selector):
             'limitations': [SPAN_LIMITATION]}
 
 
-def _bilara(content, path, selector):
+def _bilara(content, path, selector, **selection):
     parts = PurePosixPath(path).parts
     if len(parts) < 3 or parts[0] not in ('root', 'translation', 'comment') or not path.endswith('.json'):
         raise ValueError('unsupported Bilara role/path')
@@ -113,7 +134,7 @@ def _bilara(content, path, selector):
                     sequence_no=sequence, start=start, end=end, spans=spans))
     for unit in units:
         unit.update(language=language, text_role=role, witness=kind+':'+witness, evidence_class=cls)
-    return _selected(units, selector)
+    return _selected(units, selector, content, **selection)
 
 
 @lru_cache(maxsize=4)
@@ -233,8 +254,8 @@ def _tei_units(content, path, corpus):
     return units
 
 
-def _tei(content,path,selector,corpus):
-    result = _selected(_tei_units(content,path,corpus), selector)
+def _tei(content,path,selector,corpus,**selection):
+    result = _selected(_tei_units(content,path,corpus), selector, content, **selection)
     # Nested notes overlap their containing paragraph; include the complete
     # selected body unit even when a neighboring note ends earlier.
     result['context_range'][0] = min(result['context_range'][0],result['excerpt_range'][0])
@@ -242,11 +263,11 @@ def _tei(content,path,selector,corpus):
     return result
 
 
-def resolve_source(content, corpus, path, selector):
+def resolve_source(content, corpus, path, selector, *, quotation=None, retrieval_query=None):
     if not isinstance(content,str) or not content or len(content.encode('utf-8')) > 20_000_000:
         raise ValueError('source unavailable or beyond resolver size limit')
     if corpus == 'suttacentral-bilara':
-        return _bilara(content,path,selector)
+        return _bilara(content,path,selector,quotation=quotation,retrieval_query=retrieval_query)
     if corpus in ('cbeta-tei','84000-tei'):
-        return _tei(content,path,selector,corpus)
+        return _tei(content,path,selector,corpus,quotation=quotation,retrieval_query=retrieval_query)
     raise ValueError('no trusted source-specific resolver for this corpus')
