@@ -1,0 +1,70 @@
+{
+  "check_id": "COR01-OFFLINE-STRUCTURAL",
+  "recorded_at_utc": "2026-10-12T03:20:36.264754+00:00",
+  "mode": "offline_supplementary_structural_check",
+  "tool": "Python standard library: ElementTree, re, hashlib",
+  "bcr_code_commit": "17292dedf86ba9f732be3e99b40d57f37be03739",
+  "new_A_gate_calls": 0,
+  "new_live_source_reads": 0,
+  "inputs": [
+    {
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+      "git_blob_sha": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+      "sha256": "2cb0bf10b322901789dd3251a1dbeb3c980781a94f7420b41b5f878939836208"
+    },
+    {
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn35/sn35.146_root-pli-ms.json",
+      "git_blob_sha": "104ba9bf4da29eec5fa168942ebf68805ebbec41",
+      "sha256": "38c0d28e6584605ba07988fe139c9de4ac7c5581a02ba310b22c6d140d65048c"
+    },
+    {
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0099.xml",
+      "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+      "sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73"
+    },
+    {
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0100.xml",
+      "git_blob_sha": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+      "sha256": "653ef954372ec21dd45aa47712c8e5eb7bc144a7c8b0980e4741ba34c243f840"
+    }
+  ],
+  "outputs": {
+    "T100_211": {
+      "start": "0452b04",
+      "end": "0452c16",
+      "hindrance_list_lines": [
+        "0452c01",
+        "0452c02"
+      ],
+      "declared_five_but_four_listed_terms": true
+    },
+    "T100_212": {
+      "start": "0452c17",
+      "contains": "0453a01"
+    },
+    "T99_977_quote": {
+      "span_break": "0253a06 to 0253a07 via lb",
+      "source_punctuation": "no comma after 者; comma after 因",
+      "article_punctuation": "comma after 者; full stop after 因"
+    },
+    "Bilara_ids": {
+      "sn35.145": "Bāhirānattahetusutta",
+      "sn35.146": "Kammanirodhasutta"
+    }
+  },
+  "status": "PASS structural/textual observations only",
+  "semantic_approval": false,
+  "limitations": [
+    "Reads historic archived source bytes; does not establish a fresh live commit/path binding.",
+    "The independent audit reports its own supplementary A checks; their raw execution receipts were not attached.",
+    "No new machine gate for kinh 211 is asserted."
+  ]
+}

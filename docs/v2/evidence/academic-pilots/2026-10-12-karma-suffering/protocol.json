@@ -1,0 +1,17 @@
+{
+  "pilot_id": "BCR-ACADEMIC-PILOT-01",
+  "design": "exploratory/non-blinded; cases designed after article and seed-source reading",
+  "case_count": 12,
+  "claim_registry_count": 104,
+  "claim_registry_authority": "Work inventory and provisional analysis; not 104 executed Research assessments",
+  "original_protocol_sha256": "01fd3d38168c3e5af0957a2d4bb3e040e58dd96b7192db1e1e4d03d684308ff6",
+  "bcr_commit": "17292dedf86ba9f732be3e99b40d57f37be03739",
+  "first_run_locator_pin": "b31a154863c347f150a3bbb2df8bf269b50aeade",
+  "semantic_ground_truth": "NOT_AVAILABLE",
+  "accuracy_or_false_rate_estimation": "NOT_PERMITTED from current sample",
+  "source_generated_controls_are_not_article_quotes": true,
+  "case_definitions": "case-results.json",
+  "correction_version": "v2",
+  "historic_protocol_preserved_outside_git": true,
+  "new_execution_scope": "offline structural check only; no new A/B/C/D gate or approval"
+}

@@ -1,0 +1,84 @@
+{
+  "bcr_commit": "17292dedf86ba9f732be3e99b40d57f37be03739",
+  "environment": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39"
+  },
+  "entries": [
+    {
+      "component": "Local retrieval 1.0",
+      "execution_status": "BLOCKED",
+      "exit_code": 2,
+      "error": "error: index not found at [WORKSPACE_PATH_REDACTED]; run `bin/buddhist-corpus build --profile core`\n",
+      "scope": "original local attempt, not a successful comparative run",
+      "raw_reference": "logs/local_execution.json#retrieval"
+    },
+    {
+      "component": "Local Quick 2.0",
+      "execution_status": "BLOCKED",
+      "exit_code": 2,
+      "error": "{\"status\": \"UNVERIFIED\", \"publication_authorized\": false, \"error\": \"unable to open database file\"}\n",
+      "scope": "original local attempt, not a successful comparative run",
+      "raw_reference": "logs/local_execution.json#quick"
+    },
+    {
+      "component": "Integrated Research A/B/C/D",
+      "execution_status": "BLOCKED",
+      "exit_code": 2,
+      "error": "{\"status\": \"UNVERIFIED\", \"publication_authorized\": false, \"error\": \"unable to open database file\"}\n",
+      "scope": "original local attempt, not a successful comparative run",
+      "raw_reference": "logs/local_execution.json#research"
+    },
+    {
+      "component": "Connector production locator",
+      "execution_status": "EXECUTED",
+      "lookup_calls": 15,
+      "candidate": 13,
+      "unverified": 2,
+      "limitations": "production export lookup, not local retrieval engine benchmark"
+    },
+    {
+      "component": "Connector A",
+      "execution_status": "EXECUTED historical",
+      "gate_calls": 15,
+      "verified": 13,
+      "rejected": 2,
+      "source_generated_controls": 13,
+      "article_quote_inputs": 2,
+      "article_quote_verified": 0,
+      "semantic_approval": false
+    },
+    {
+      "component": "Research B/C/D remote",
+      "execution_status": "NOT_RUN",
+      "blocking_reason": "No remote orchestration/authenticated semantic and dependency readers; no successful D store run"
+    },
+    {
+      "component": "Research publication",
+      "execution_status": "NOT_RUN",
+      "authorization": "NOT_PERMITTED"
+    },
+    {
+      "component": "1.0/2.0 added academic value",
+      "execution_status": "NOT_MEASURED"
+    },
+    {
+      "component": "semantic false acceptance/rejection",
+      "execution_status": "INCONCLUSIVE",
+      "ground_truth": "NOT_AVAILABLE"
+    },
+    {
+      "component": "COR01 offline structural check",
+      "execution_status": "EXECUTED",
+      "reference": "supplementary-checks.json",
+      "new_gate_calls": 0
+    }
+  ],
+  "runtime_costs": {
+    "AI_tokens": null,
+    "AI_money": null,
+    "CPU_RSS_IO_per_case": null
+  },
+  "independent_audit_not_human_approval": true
+}
