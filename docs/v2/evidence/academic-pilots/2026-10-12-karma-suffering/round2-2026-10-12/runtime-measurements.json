@@ -1,0 +1,343 @@
+{
+  "method": "perf_counter single wall observation per subprocess; includes startup, IO and JSON output; sequential retrieval/Quick, mixed cache, no flushing",
+  "performance_acceptance": false,
+  "AI_tokens": null,
+  "AI_money": null,
+  "CPU_RSS_IO_per_case": null,
+  "measurements": {
+    "retrieval": {
+      "observations": 25,
+      "median_seconds": 0.14220884399992428,
+      "min_seconds": 0.11427315499986435,
+      "max_seconds": 0.19878398800028663,
+      "observations_raw": [
+        {
+          "command": "AC01-q0-retrieval",
+          "seconds": 0.1339501949996702,
+          "exit": 0
+        },
+        {
+          "command": "AC01-q1-retrieval",
+          "seconds": 0.15134869499979686,
+          "exit": 0
+        },
+        {
+          "command": "AC02-q0-retrieval",
+          "seconds": 0.15872449500011498,
+          "exit": 0
+        },
+        {
+          "command": "AC02-q1-retrieval",
+          "seconds": 0.12567729500005953,
+          "exit": 0
+        },
+        {
+          "command": "AC03-q0-retrieval",
+          "seconds": 0.14963464599986764,
+          "exit": 0
+        },
+        {
+          "command": "AC03-q1-retrieval",
+          "seconds": 0.11427315499986435,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q0-retrieval",
+          "seconds": 0.12032652399966537,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q1-retrieval",
+          "seconds": 0.13421532700021999,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q2-retrieval",
+          "seconds": 0.13619942700006504,
+          "exit": 0
+        },
+        {
+          "command": "AC05-q0-retrieval",
+          "seconds": 0.1784807189997082,
+          "exit": 0
+        },
+        {
+          "command": "AC05-q1-retrieval",
+          "seconds": 0.15247167200004696,
+          "exit": 0
+        },
+        {
+          "command": "AC06-q0-retrieval",
+          "seconds": 0.1296741450000809,
+          "exit": 0
+        },
+        {
+          "command": "AC06-q1-retrieval",
+          "seconds": 0.12071400300010282,
+          "exit": 0
+        },
+        {
+          "command": "AC07-q0-retrieval",
+          "seconds": 0.13320620300009978,
+          "exit": 0
+        },
+        {
+          "command": "AC07-q1-retrieval",
+          "seconds": 0.14961970300009853,
+          "exit": 0
+        },
+        {
+          "command": "AC08-q0-retrieval",
+          "seconds": 0.14918930300018474,
+          "exit": 0
+        },
+        {
+          "command": "AC08-q1-retrieval",
+          "seconds": 0.15341090399988389,
+          "exit": 0
+        },
+        {
+          "command": "AC09-q0-retrieval",
+          "seconds": 0.1307218769998144,
+          "exit": 0
+        },
+        {
+          "command": "AC09-q1-retrieval",
+          "seconds": 0.1312349360000553,
+          "exit": 0
+        },
+        {
+          "command": "AC10-q0-retrieval",
+          "seconds": 0.14220884399992428,
+          "exit": 0
+        },
+        {
+          "command": "AC10-q1-retrieval",
+          "seconds": 0.17077236500017534,
+          "exit": 0
+        },
+        {
+          "command": "AC11-q0-retrieval",
+          "seconds": 0.1504550580002615,
+          "exit": 0
+        },
+        {
+          "command": "AC11-q1-retrieval",
+          "seconds": 0.12403489300004367,
+          "exit": 0
+        },
+        {
+          "command": "AC12-q0-retrieval",
+          "seconds": 0.19878398800028663,
+          "exit": 0
+        },
+        {
+          "command": "AC12-q1-retrieval",
+          "seconds": 0.18536828900005276,
+          "exit": 0
+        }
+      ]
+    },
+    "quick": {
+      "observations": 25,
+      "median_seconds": 0.1942992219996995,
+      "min_seconds": 0.09783253600016906,
+      "max_seconds": 2.623990832000345,
+      "observations_raw": [
+        {
+          "command": "AC01-q0-quick",
+          "seconds": 0.20408389300018825,
+          "exit": 0
+        },
+        {
+          "command": "AC01-q1-quick",
+          "seconds": 0.5858853800000361,
+          "exit": 0
+        },
+        {
+          "command": "AC02-q0-quick",
+          "seconds": 0.17849579399990034,
+          "exit": 0
+        },
+        {
+          "command": "AC02-q1-quick",
+          "seconds": 0.15522289399996225,
+          "exit": 0
+        },
+        {
+          "command": "AC03-q0-quick",
+          "seconds": 0.7884548590000122,
+          "exit": 0
+        },
+        {
+          "command": "AC03-q1-quick",
+          "seconds": 2.623990832000345,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q0-quick",
+          "seconds": 0.10559702099999413,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q1-quick",
+          "seconds": 0.10484672099983072,
+          "exit": 0
+        },
+        {
+          "command": "AC04-q2-quick",
+          "seconds": 0.1262778260002051,
+          "exit": 0
+        },
+        {
+          "command": "AC05-q0-quick",
+          "seconds": 0.17974718599998596,
+          "exit": 0
+        },
+        {
+          "command": "AC05-q1-quick",
+          "seconds": 0.1452998539998589,
+          "exit": 0
+        },
+        {
+          "command": "AC06-q0-quick",
+          "seconds": 0.4660791769997559,
+          "exit": 0
+        },
+        {
+          "command": "AC06-q1-quick",
+          "seconds": 0.09783253600016906,
+          "exit": 0
+        },
+        {
+          "command": "AC07-q0-quick",
+          "seconds": 0.11247420299969235,
+          "exit": 0
+        },
+        {
+          "command": "AC07-q1-quick",
+          "seconds": 0.11035820200004309,
+          "exit": 0
+        },
+        {
+          "command": "AC08-q0-quick",
+          "seconds": 0.5805516129998978,
+          "exit": 0
+        },
+        {
+          "command": "AC08-q1-quick",
+          "seconds": 0.752613816000121,
+          "exit": 0
+        },
+        {
+          "command": "AC09-q0-quick",
+          "seconds": 2.2764490229997136,
+          "exit": 0
+        },
+        {
+          "command": "AC09-q1-quick",
+          "seconds": 0.7624715179999839,
+          "exit": 0
+        },
+        {
+          "command": "AC10-q0-quick",
+          "seconds": 0.1527787449999778,
+          "exit": 0
+        },
+        {
+          "command": "AC10-q1-quick",
+          "seconds": 0.45033272699993177,
+          "exit": 0
+        },
+        {
+          "command": "AC11-q0-quick",
+          "seconds": 0.1942992219996995,
+          "exit": 0
+        },
+        {
+          "command": "AC11-q1-quick",
+          "seconds": 0.14097553300007348,
+          "exit": 0
+        },
+        {
+          "command": "AC12-q0-quick",
+          "seconds": 0.4263835750002727,
+          "exit": 0
+        },
+        {
+          "command": "AC12-q1-quick",
+          "seconds": 0.2297630860002755,
+          "exit": 0
+        }
+      ]
+    },
+    "research": {
+      "observations": 12,
+      "median_seconds": 13.474204998999767,
+      "min_seconds": 0.825487718000204,
+      "max_seconds": 53.82579346700004,
+      "observations_raw": [
+        {
+          "command": "AC01-research-API",
+          "seconds": 25.952283940000143,
+          "exit": 0
+        },
+        {
+          "command": "AC02-research-API",
+          "seconds": 7.656289080999613,
+          "exit": 0
+        },
+        {
+          "command": "AC03-research-API",
+          "seconds": 20.75955637800007,
+          "exit": 0
+        },
+        {
+          "command": "AC04-research-API",
+          "seconds": 12.191155522999907,
+          "exit": 0
+        },
+        {
+          "command": "AC05-research-API",
+          "seconds": 28.122822157000428,
+          "exit": 0
+        },
+        {
+          "command": "AC06-research-API",
+          "seconds": 3.6315287099996567,
+          "exit": 0
+        },
+        {
+          "command": "AC07-research-API",
+          "seconds": 0.825487718000204,
+          "exit": 0
+        },
+        {
+          "command": "AC08-research-API",
+          "seconds": 8.088683657999809,
+          "exit": 0
+        },
+        {
+          "command": "AC09-research-API",
+          "seconds": 53.82579346700004,
+          "exit": 0
+        },
+        {
+          "command": "AC10-research-API",
+          "seconds": 52.57249442200009,
+          "exit": 0
+        },
+        {
+          "command": "AC11-research-API",
+          "seconds": 14.757254474999627,
+          "exit": 0
+        },
+        {
+          "command": "AC12-research-API",
+          "seconds": 5.48458557199956,
+          "exit": 0
+        }
+      ]
+    }
+  }
+}

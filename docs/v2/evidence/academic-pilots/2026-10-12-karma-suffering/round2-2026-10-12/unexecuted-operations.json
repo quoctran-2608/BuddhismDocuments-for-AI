@@ -1,0 +1,44 @@
+{
+  "operations": [
+    {
+      "operation": "historical pre-A baseline",
+      "status": "NOT_RUN",
+      "reason": "current CLI1 comparison explicitly used; no historic version results inferred"
+    },
+    {
+      "operation": "authenticated semantic assessment and academic adjudication",
+      "status": "BLOCKED",
+      "reason": "no approved host reader or independent ground truth"
+    },
+    {
+      "operation": "modern source attribution AC07",
+      "status": "BLOCKED",
+      "reason": "essential pinned modern source absent"
+    },
+    {
+      "operation": "review import/decision",
+      "status": "NOT_RUN",
+      "reason": "no real external reviewer report/approval supplied"
+    },
+    {
+      "operation": "Research publication",
+      "status": "NOT_RUN",
+      "reason": "publication gate closed"
+    },
+    {
+      "operation": "semantic detection accuracy and FA/FR",
+      "status": "INCONCLUSIVE",
+      "reason": "independent semantic ground truth absent"
+    },
+    {
+      "operation": "AI tokens/money and per-case CPU/RSS/IO",
+      "status": "NOT_MEASURED",
+      "reason": "no AI service; wall clock only instrumentation"
+    },
+    {
+      "operation": "stable external archive",
+      "status": "external_archive_pending",
+      "reason": "authorized project archive location not specified"
+    }
+  ]
+}
