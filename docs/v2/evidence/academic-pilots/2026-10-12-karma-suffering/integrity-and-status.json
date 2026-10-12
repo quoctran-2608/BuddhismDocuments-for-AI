@@ -1,0 +1,78 @@
+{
+  "schema": "bcr-academic-pilot-evidence-bootstrap-v1",
+  "pilot_id": "2026-10-12-karma-suffering",
+  "date": "2026-10-12",
+  "phase": "preliminary-independent-audit",
+  "decision": "CONDITIONAL_ACCEPTANCE_FOR_SOURCE_A_EXPLORATION_ONLY",
+  "academic_acceptance": "INCONCLUSIVE",
+  "main_commit_at_audit": "17292dedf86ba9f732be3e99b40d57f37be03739",
+  "locator_commit_at_audit": "b31a154863c347f150a3bbb2df8bf269b50aeade",
+  "input_article": {
+    "filename": "Nghiệp và khổ đau.docx",
+    "sha256": "570c4cee4092df7a1343020b5a3d37e98ffca89e1473c362fde732f9625f55d4",
+    "public_copy_committed": false
+  },
+  "original_work_package": {
+    "filename": "BCR_Pilot01_Audit_Package.zip",
+    "sha256": "9355b268d097c3647efe51c7a2a8a6f548e38d39b71011ded99adfef67d7afa7",
+    "committed": false,
+    "persistent_external_url": null,
+    "archive_status": "external_archive_pending"
+  },
+  "original_work_report": {
+    "filename": "BCR_Pilot01_Report.md",
+    "sha256": "aabd4e58de4564f20220a31abbe5f466a6f82fcaeae6cf8079974ce1f02b6cbe",
+    "committed": false
+  },
+  "independent_audit_full": {
+    "filename": "BCR_Pilot01_Independent_Audit_2026-10-12.md",
+    "sha256": "b3d161b6829de90497a9a8987bc5e8702e6879a73a695ca28905b6dfdfa38d13",
+    "committed": false,
+    "summary_committed": true
+  },
+  "sha256_manifest_items": 275,
+  "sha256_manifest_items_verified": 275,
+  "sha256_manifest_errors": 0,
+  "source_ledger_entries": 16,
+  "source_sha_and_blob_cross_checked_at_independent_audit": 16,
+  "source_content_committed": false,
+  "rpc": {
+    "recorded_total": 59,
+    "locator": 15,
+    "source": 44,
+    "raw_committed": false
+  },
+  "verification_a": {
+    "valid_work_cases": 15,
+    "verified": 13,
+    "rejected": 2,
+    "article_supplied_quote_cases": 2,
+    "article_supplied_quote_verified": 0,
+    "verified_are_source_generated_controls": 13,
+    "offline_replay_cases": 15,
+    "offline_replay_matched": 15
+  },
+  "claim_registry_items_work_authored": 104,
+  "claim_registry_is_semantic_ground_truth": false,
+  "execution_status": {
+    "connector_a": "PARTIALLY_VERIFIED",
+    "local_retrieval_1_0": "BLOCKED",
+    "local_quick_2_0": "BLOCKED",
+    "research_abcd": "BLOCKED",
+    "comparative_1_0_2_0": "NOT_MEASURED",
+    "semantic_independent_review": "NOT_DONE",
+    "publication": "NOT_AUTHORIZED"
+  },
+  "audit_findings": [
+    "IA-01",
+    "IA-02",
+    "IA-03",
+    "IA-04",
+    "IA-05"
+  ],
+  "notes": [
+    "Checksums verified against locally available Work package; repository commit does not itself persist the package.",
+    "Offline A replay is not an additional live Connector run.",
+    "Work correction package pending; do not present as academic PASS."
+  ]
+}
