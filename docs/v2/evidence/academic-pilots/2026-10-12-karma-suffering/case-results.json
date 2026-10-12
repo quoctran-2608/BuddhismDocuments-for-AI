@@ -1,0 +1,1091 @@
+{
+  "version": "corrected-v2",
+  "recorded_at_utc": "2026-10-12T03:20:36.264754+00:00",
+  "case_count": 12,
+  "cases": [
+    {
+      "case_id": "AC01",
+      "article_location": "P011/P016/P018/P019",
+      "audit_question": "Có đúng kinh Sīvaka nêu tám nhóm và phê phán mọi cảm thọ do nghiệp trước?",
+      "hypothesis_category": "khả năng đúng",
+      "scope": "E01: 1.5–3.15",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "sivaka-rejection",
+          "evidence_id": "pilot-sivaka-rejection",
+          "segment": "sn36.21:2.7",
+          "work_id": "sn36.21",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#sivaka-rejection"
+        },
+        {
+          "name": "sivaka-karma",
+          "evidence_id": "pilot-sivaka-karma",
+          "segment": "sn36.21:3.7",
+          "work_id": "sn36.21",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#sivaka-karma"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "PASS kiểm văn bản; semantic INCONCLUSIVE",
+      "work_corrected_analysis": "PASS kiểm văn bản; semantic INCONCLUSIVE",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-03: source controls only; no semantic approval.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Có đoạn tương ứng; semantic judgement chưa duyệt",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC02",
+      "article_location": "P013",
+      "audit_question": "Câu Pāli bài có khớp nguyên văn nhân chứng Bilara ghim không?",
+      "hypothesis_category": "trích cần xác minh/false rejection",
+      "scope": "E01: 1.5",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "article-pali-quote",
+          "evidence_id": null,
+          "segment": "sn36.21:1.5",
+          "work_id": "sn36.21",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "witness": "root:root-pli-ms",
+          "status": "REJECTED",
+          "quote_status": "QUOTE_MISMATCH",
+          "quotation_input_kind": "article_direct_quote",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#article-pali-quote"
+        },
+        {
+          "name": "pali-byte-control",
+          "evidence_id": "pilot-pali-byte-control",
+          "segment": "sn36.21:1.5",
+          "work_id": "sn36.21",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#pali-byte-control"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "FAIL nguyên văn ghim; không kết luận sai nghĩa",
+      "work_corrected_analysis": "FAIL nguyên văn ghim; không kết luận sai nghĩa",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-03: article quote REJECTED; not a semantic verdict.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "So đúng byte và normalization hiện hành của A",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC03",
+      "article_location": "P029",
+      "audit_question": "Câu Hán có trong kinh 977, và A có thể kiểm câu xuyên lb không?",
+      "hypothesis_category": "trích cần xác minh/false rejection",
+      "scope": "H01: 0253a06–07",
+      "source_provenance": [
+        {
+          "evidence_key": "H01",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "source_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "content_sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73",
+          "work_id": "T02n0099",
+          "witness": "T; CBETA TEI"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "article-han-quote",
+          "evidence_id": null,
+          "segment": "T02n0099:0253a06",
+          "work_id": "T02n0099",
+          "repository": "cbeta-org/xml-p5",
+          "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "witness": "T",
+          "status": "REJECTED",
+          "quote_status": "QUOTE_MISMATCH",
+          "quotation_input_kind": "article_direct_quote",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_chinese.json#article-han-quote"
+        },
+        {
+          "name": "han-contiguous-control",
+          "evidence_id": "pilot-han-contiguous-control",
+          "segment": "T02n0099:0253a07",
+          "work_id": "T02n0099",
+          "repository": "cbeta-org/xml-p5",
+          "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "witness": "T",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_chinese.json#han-contiguous-control"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "Có chuỗi chữ; A REJECTED; năng lực câu xuyên markup chưa đạt",
+      "work_corrected_analysis": "Có chuỗi chữ; A REJECTED; năng lực câu xuyên markup chưa đạt",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-02: punctuation difference and markup limit; supplementary audit checks were offline and outside 15.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Đọc ngữ cảnh và kiểm span tách biệt",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC04",
+      "article_location": "P075/P142",
+      "audit_question": "35.145 có đúng đoạn nghiệp cũ/mới theo hệ ID SuttaCentral bài khai không?",
+      "hypothesis_category": "khả năng sai/false acceptance",
+      "scope": "E05 toàn kinh; E11: 1.3–1.10",
+      "source_provenance": [
+        {
+          "evidence_key": "E05",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+          "source_blob_sha": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+          "content_sha256": "2cb0bf10b322901789dd3251a1dbeb3c980781a94f7420b41b5f878939836208",
+          "work_id": "sn35.145",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E11",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn35/sn35.146_root-pli-ms.json",
+          "source_blob_sha": "104ba9bf4da29eec5fa168942ebf68805ebbec41",
+          "content_sha256": "38c0d28e6584605ba07988fe139c9de4ac7c5581a02ba310b22c6d140d65048c",
+          "work_id": "sn35.146",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "wrong-id-body",
+          "evidence_id": "pilot-wrong-id-body",
+          "segment": "sn35.145:1.1",
+          "work_id": "sn35.145",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+          "git_blob_sha": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#wrong-id-body"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "FAIL định danh theo Bilara; hệ cũ INCONCLUSIVE",
+      "work_corrected_analysis": "FAIL định danh theo Bilara; hệ cũ INCONCLUSIVE",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-04: mismatch confirmed only under pinned Bilara numbering; Work analysis, not automated claim mismatch detection.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Kiểm tên và thân văn; không suy alias legacy",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC05",
+      "article_location": "P070/P072",
+      "audit_question": "Tiểu kinh nói trực tiếp “hai cấp độ nhân quả” hay đây là cách hòa giải?",
+      "hypothesis_category": "dẫn thật nhưng chưa đủ hỗ trợ",
+      "scope": "E03: 5–8; E01",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E03",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "source_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "content_sha256": "c03352119d44ce72bccaf6dbeac732ec2e1e191bbca9fd52ca8c1a4be073c432",
+          "work_id": "mn135",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "karma-body",
+          "evidence_id": "pilot-karma-body",
+          "segment": "mn135:4.1",
+          "work_id": "mn135",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "git_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#karma-body"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE semantic; B không chạy",
+      "work_corrected_analysis": "INCONCLUSIVE semantic; B không chạy",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-05: claim support assessment not executed.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Không chấp nhận mô hình nghiên cứu chỉ từ A",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC06",
+      "article_location": "P089/P093/P094",
+      "audit_question": "Kinh Bất khả tư nghì đủ để duyệt quy tắc không phán xét nạn nhân?",
+      "hypothesis_category": "dẫn thật nhưng chưa đủ hỗ trợ",
+      "scope": "E07: 1.7; E06",
+      "source_provenance": [
+        {
+          "evidence_key": "E06",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn136_root-pli-ms.json",
+          "source_blob_sha": "aea0996730c254cadb34eca7038a64115dde0312",
+          "content_sha256": "0d8310e1165278d98c2f495a061c476ccbf7709b0e02ccfcca3acdb982c1ec94",
+          "work_id": "mn136",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E07",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an4/an4.77_root-pli-ms.json",
+          "source_blob_sha": "d37ddd453e40679cb4d3aaf3bbfc0b961475ed17",
+          "content_sha256": "c2b20d41acdbc54d6f3018122433edc32aa5f4983450abfbaf045b23423e7e3d",
+          "work_id": "an4.77",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "inconceivable-karma",
+          "evidence_id": "pilot-inconceivable-karma",
+          "segment": "an4.77:1.7",
+          "work_id": "an4.77",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an4/an4.77_root-pli-ms.json",
+          "git_blob_sha": "d37ddd453e40679cb4d3aaf3bbfc0b961475ed17",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#inconceivable-karma"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE semantic",
+      "work_corrected_analysis": "INCONCLUSIVE semantic",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-05: no independent semantic ground truth.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Tách hiện diện câu với suy luận chuẩn tắc",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC07",
+      "article_location": "P122/P125/P147–149",
+      "audit_question": "Có đúng lời và phạm vi quy thuộc Gethin/Thanissaro không?",
+      "hypothesis_category": "chưa đủ bằng chứng",
+      "scope": "chưa mở nguồn hiện đại thuộc corpus",
+      "source_provenance": [],
+      "machine_results": [],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE; BLOCKED nguồn",
+      "work_corrected_analysis": "INCONCLUSIVE; BLOCKED nguồn",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-05: no verified modern-source attribution.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Không lấy tên tác giả làm xác nhận",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC08",
+      "article_location": "T01R08",
+      "audit_question": "Opakkamika chỉ là tổn thương từ bên ngoài?",
+      "hypothesis_category": "khả năng sai/diễn giải cạnh tranh",
+      "scope": "E01: 3.6; E01-EN: 3.6; E04: 13.1",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E01-EN",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "translation/en/sujato/sutta/sn/sn36/sn36.21_translation-en-sujato.json",
+          "source_blob_sha": "dabd8d57623a0e9d60a43c877c2d519aebd3b983",
+          "content_sha256": "ad04414e4ff744d66771aca28d410a1ed097e4932766dddbbf1ebf3c700de368",
+          "work_id": "sn36.21",
+          "witness": "translation:translation-en-sujato"
+        },
+        {
+          "evidence_key": "E04",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn101_root-pli-ms.json",
+          "source_blob_sha": "28b3c405c7996d072b838dbd3e4d3aa94b1bd78f",
+          "content_sha256": "cbf9a9c0e37fd8ae630a6a7983144599ae60033a69e3699eb0ee937702a8061b",
+          "work_id": "mn101",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE; cần chuyên gia",
+      "work_corrected_analysis": "INCONCLUSIVE; cần chuyên gia",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "No new lexical adjudication; uncertainty retained.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Giữ bất đồng, không lấy bản dịch AI làm oracle",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC09",
+      "article_location": "P035/T02R05",
+      "audit_question": "Hai Hán bản có cùng danh sách đầy đủ năm triền cái?",
+      "hypothesis_category": "đúng một phần/khác nhân chứng",
+      "scope": "H01: 0253a09–15; H02: kinh 211 0452b04–0452c16, list 0452c01–02",
+      "source_provenance": [
+        {
+          "evidence_key": "H01",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "source_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "content_sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73",
+          "work_id": "T02n0099",
+          "witness": "T; CBETA TEI"
+        },
+        {
+          "evidence_key": "H02",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0100.xml",
+          "source_blob_sha": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+          "content_sha256": "653ef954372ec21dd45aa47712c8e5eb7bc144a7c8b0980e4741ba34c243f840",
+          "work_id": "T02n0100",
+          "witness": "T; CBETA TEI"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "han-hindrance-control",
+          "evidence_id": "pilot-han-hindrance-control",
+          "segment": "T02n0099:0253a09",
+          "work_id": "T02n0099",
+          "repository": "cbeta-org/xml-p5",
+          "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "witness": "T",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_chinese.json#han-hindrance-control"
+        },
+        {
+          "name": "han-second-witness",
+          "evidence_id": "pilot-han-second-witness",
+          "segment": "T02n0100:0453a01",
+          "work_id": "T02n0100",
+          "repository": "cbeta-org/xml-p5",
+          "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0100.xml",
+          "git_blob_sha": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+          "witness": "T",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_chinese.json#han-second-witness",
+          "actual_subwork": "212",
+          "originally_attributed_subwork": "211",
+          "claim_support_for_211": "INVALID attribution; gate preserved"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE diễn giải; khác chữ được quan sát",
+      "work_corrected_analysis": "Corrected textual observation retained from archived context; historical 0453a01 gate excluded; semantic INCONCLUSIVE.",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-01: gate 0453a01 belongs to kinh 212; withdrawn as evidence for kinh 211. Correct textual comparison is 0452c01–02, no new A gate.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Không hòa bản tự nói năm nhưng thiếu mục ngủ",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC10",
+      "article_location": "P135–139",
+      "audit_question": "Bằng chứng cảm thọ đủ để kết luận tất cả khổ/bất hạnh và toàn Phật giáo sơ kỳ?",
+      "hypothesis_category": "giới hạn kết luận/false acceptance",
+      "scope": "E01/E02/E04/E09",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E02",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+          "source_blob_sha": "d94e0f3f5526f4f4b838cbb5713a11c0adb19c7d",
+          "content_sha256": "a769181dd07053940e08dc75f1d141cc49e9b94e4c8caf652adc752a620cd588",
+          "work_id": "an3.61",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E04",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn101_root-pli-ms.json",
+          "source_blob_sha": "28b3c405c7996d072b838dbd3e4d3aa94b1bd78f",
+          "content_sha256": "cbf9a9c0e37fd8ae630a6a7983144599ae60033a69e3699eb0ee937702a8061b",
+          "work_id": "mn101",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E09",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "source_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "content_sha256": "c733b9ad6007f88b95bedd8904599f76d9b7fa999be2d56b9cd87c5acb4550d7",
+          "work_id": "sn56.11",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "sivaka-rejection",
+          "evidence_id": "pilot-sivaka-rejection",
+          "segment": "sn36.21:2.7",
+          "work_id": "sn36.21",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#sivaka-rejection"
+        },
+        {
+          "name": "ethics-present",
+          "evidence_id": "pilot-ethics-present",
+          "segment": "an3.61:3.1",
+          "work_id": "an3.61",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+          "git_blob_sha": "d94e0f3f5526f4f4b838cbb5713a11c0adb19c7d",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#ethics-present"
+        },
+        {
+          "name": "craving",
+          "evidence_id": "pilot-craving",
+          "segment": "sn56.11:4.4",
+          "work_id": "sn56.11",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "git_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#craving"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "INCONCLUSIVE học thuật độc lập",
+      "work_corrected_analysis": "INCONCLUSIVE học thuật độc lập",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-05: scope/generalization needs expert adjudication.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Giới hạn phạm vi; không nâng A thành approval",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC11",
+      "article_location": "P063",
+      "audit_question": "Có các liên hệ giết/hại/không cho với tuổi thọ/sức khỏe/tài sản không?",
+      "hypothesis_category": "đối chứng thuận",
+      "scope": "E03: 5–8,13–14",
+      "source_provenance": [
+        {
+          "evidence_key": "E03",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "source_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "content_sha256": "c03352119d44ce72bccaf6dbeac732ec2e1e191bbca9fd52ca8c1a4be073c432",
+          "work_id": "mn135",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "karma-body",
+          "evidence_id": "pilot-karma-body",
+          "segment": "mn135:4.1",
+          "work_id": "mn135",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "git_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#karma-body"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "PASS kiểm văn bản; semantic INCONCLUSIVE",
+      "work_corrected_analysis": "PASS kiểm văn bản; semantic INCONCLUSIVE",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-03/IA-05: root text read; control at 4.1 is not machine assessment of detailed causal claims at 5–8/13–14.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Xác nhận có văn bản, giữ điều kiện sau chết/tái sinh",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    },
+    {
+      "case_id": "AC12",
+      "article_location": "P108/P109/P113",
+      "audit_question": "Có tham ái ba loại và định nghĩa nghiệp là cetanā không?",
+      "hypothesis_category": "đối chứng thuận",
+      "scope": "E09:4.4–4.5; E10:6.1–6.5",
+      "source_provenance": [
+        {
+          "evidence_key": "E09",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "source_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "content_sha256": "c733b9ad6007f88b95bedd8904599f76d9b7fa999be2d56b9cd87c5acb4550d7",
+          "work_id": "sn56.11",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E10",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an6/an6.63_root-pli-ms.json",
+          "source_blob_sha": "d7fedefb5232885c34d12b34e6465f8141f0bc75",
+          "content_sha256": "13e8b090ceec222dcb4d62344f089667f3bde85c507c62dcedacd22244fafd82",
+          "work_id": "an6.63",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "machine_results": [
+        {
+          "name": "craving",
+          "evidence_id": "pilot-craving",
+          "segment": "sn56.11:4.4",
+          "work_id": "sn56.11",
+          "repository": "suttacentral/bilara-data",
+          "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "git_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "witness": "root:root-pli-ms",
+          "status": "VERIFIED",
+          "quote_status": "VERIFIED_EXACT",
+          "quotation_input_kind": "source_generated_control",
+          "source_verification_scope": "resolved contiguous span, not claim support",
+          "semantic_approval": false,
+          "raw_reference": "evidence/quick_quotes.json#craving"
+        }
+      ],
+      "machine_result_limit": "Related source controls only unless quotation_input_kind is article_direct_quote. Not execution of the complete case question.",
+      "work_initial_analysis": "PASS hiện diện; approval INCONCLUSIVE",
+      "work_corrected_analysis": "PASS hiện diện; approval INCONCLUSIVE",
+      "independent_audit": {
+        "authority": "independent ChatGPT session, not human academic adjudication",
+        "finding": "IA-03/IA-05: source control of craving only; cetanā source manually read, no separate A gate in original 15.",
+        "reference": "independent-audit.md"
+      },
+      "expert_confirmation_status": "PENDING / INCONCLUSIVE semantic",
+      "claim_support_assessment": "NOT_RUN B",
+      "semantic_approval": "NOT_GRANTED",
+      "limitations": [
+        "Không bác mọi claim vì thiếu reviewer",
+        "Exploratory non-blinded case; Work labels are provisional, not independent ground truth."
+      ]
+    }
+  ],
+  "historic_A_summary": {
+    "gate_calls": 15,
+    "verified": 13,
+    "rejected": 2,
+    "article_direct_quote_calls": 2,
+    "article_direct_quote_verified": 0,
+    "source_generated_controls": 13
+  },
+  "all_historic_A_gates": [
+    {
+      "name": "header-control",
+      "evidence_id": "pilot-header-control",
+      "segment": "sn36.21:0.1",
+      "work_id": "sn36.21",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+      "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#header-control"
+    },
+    {
+      "name": "article-pali-quote",
+      "evidence_id": null,
+      "segment": "sn36.21:1.5",
+      "work_id": "sn36.21",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+      "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+      "witness": "root:root-pli-ms",
+      "status": "REJECTED",
+      "quote_status": "QUOTE_MISMATCH",
+      "quotation_input_kind": "article_direct_quote",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#article-pali-quote"
+    },
+    {
+      "name": "pali-byte-control",
+      "evidence_id": "pilot-pali-byte-control",
+      "segment": "sn36.21:1.5",
+      "work_id": "sn36.21",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+      "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#pali-byte-control"
+    },
+    {
+      "name": "sivaka-rejection",
+      "evidence_id": "pilot-sivaka-rejection",
+      "segment": "sn36.21:2.7",
+      "work_id": "sn36.21",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+      "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#sivaka-rejection"
+    },
+    {
+      "name": "sivaka-karma",
+      "evidence_id": "pilot-sivaka-karma",
+      "segment": "sn36.21:3.7",
+      "work_id": "sn36.21",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+      "git_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#sivaka-karma"
+    },
+    {
+      "name": "ethics-present",
+      "evidence_id": "pilot-ethics-present",
+      "segment": "an3.61:3.1",
+      "work_id": "an3.61",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+      "git_blob_sha": "d94e0f3f5526f4f4b838cbb5713a11c0adb19c7d",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#ethics-present"
+    },
+    {
+      "name": "karma-body",
+      "evidence_id": "pilot-karma-body",
+      "segment": "mn135:4.1",
+      "work_id": "mn135",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+      "git_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#karma-body"
+    },
+    {
+      "name": "wrong-id-body",
+      "evidence_id": "pilot-wrong-id-body",
+      "segment": "sn35.145:1.1",
+      "work_id": "sn35.145",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+      "git_blob_sha": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#wrong-id-body"
+    },
+    {
+      "name": "inconceivable-karma",
+      "evidence_id": "pilot-inconceivable-karma",
+      "segment": "an4.77:1.7",
+      "work_id": "an4.77",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/an/an4/an4.77_root-pli-ms.json",
+      "git_blob_sha": "d37ddd453e40679cb4d3aaf3bbfc0b961475ed17",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#inconceivable-karma"
+    },
+    {
+      "name": "two-arrows",
+      "evidence_id": "pilot-two-arrows",
+      "segment": "sn36.6:1.6",
+      "work_id": "sn36.6",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn36/sn36.6_root-pli-ms.json",
+      "git_blob_sha": "ef50974de894a35e7ffd542f128da6ba0deed79b",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#two-arrows"
+    },
+    {
+      "name": "craving",
+      "evidence_id": "pilot-craving",
+      "segment": "sn56.11:4.4",
+      "work_id": "sn56.11",
+      "repository": "suttacentral/bilara-data",
+      "source_pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+      "git_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+      "witness": "root:root-pli-ms",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_quotes.json#craving"
+    },
+    {
+      "name": "article-han-quote",
+      "evidence_id": null,
+      "segment": "T02n0099:0253a06",
+      "work_id": "T02n0099",
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0099.xml",
+      "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+      "witness": "T",
+      "status": "REJECTED",
+      "quote_status": "QUOTE_MISMATCH",
+      "quotation_input_kind": "article_direct_quote",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_chinese.json#article-han-quote"
+    },
+    {
+      "name": "han-contiguous-control",
+      "evidence_id": "pilot-han-contiguous-control",
+      "segment": "T02n0099:0253a07",
+      "work_id": "T02n0099",
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0099.xml",
+      "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+      "witness": "T",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_chinese.json#han-contiguous-control"
+    },
+    {
+      "name": "han-hindrance-control",
+      "evidence_id": "pilot-han-hindrance-control",
+      "segment": "T02n0099:0253a09",
+      "work_id": "T02n0099",
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0099.xml",
+      "git_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+      "witness": "T",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_chinese.json#han-hindrance-control"
+    },
+    {
+      "name": "han-second-witness",
+      "evidence_id": "pilot-han-second-witness",
+      "segment": "T02n0100:0453a01",
+      "work_id": "T02n0100",
+      "repository": "cbeta-org/xml-p5",
+      "source_pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "source_path": "T/T02/T02n0100.xml",
+      "git_blob_sha": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+      "witness": "T",
+      "status": "VERIFIED",
+      "quote_status": "VERIFIED_EXACT",
+      "quotation_input_kind": "source_generated_control",
+      "source_verification_scope": "resolved contiguous span, not claim support",
+      "semantic_approval": false,
+      "raw_reference": "evidence/quick_chinese.json#han-second-witness",
+      "actual_subwork": "212",
+      "originally_attributed_subwork": "211",
+      "claim_support_for_211": "INVALID attribution; gate preserved"
+    }
+  ],
+  "independent_offline_replay": {
+    "reported_cases": 15,
+    "reported_status": "13 VERIFIED + 2 REJECTED reproduced",
+    "basis": "independent-audit.md",
+    "raw_replay_receipts": "NOT_PROVIDED",
+    "is_live": false
+  },
+  "independent_offline_supplementary": {
+    "reported_checks": [
+      {
+        "input": "unpunctuated Han sentence across markup",
+        "status": "REJECTED"
+      },
+      {
+        "input": "short contiguous Han source prefix at 0253a06",
+        "status": "VERIFIED"
+      }
+    ],
+    "basis": "independent-audit.md IA-02",
+    "raw_receipts": "NOT_PROVIDED",
+    "included_in_original_15": false
+  }
+}

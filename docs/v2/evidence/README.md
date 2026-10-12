@@ -81,3 +81,8 @@ Logs/results chứng minh thực thi phần mềm, không phải review độc l
 AI token/cost và tỷ lệ lỗi Research học thuật CHƯA ĐO; CHỜ CHỐT NGƯỠNG.
 Không commit corpus index, ResearchStore DB, cache, full downloaded source hay
 gói phản biện lớn. Raw gzip chỉ là báo cáo đo/log nhỏ, không có credentials.
+
+
+## Academic pilots — nghiệm thu ứng dụng thực tế
+
+[Academic Pilot 01: nghiệp và khổ đau, 12/10/2026](academic-pilots/2026-10-12-karma-suffering/README.md) kiểm toán bài Phật giáo do AI tạo, khác software tests A–E. Có bằng chứng source/provenance verification trong mẫu; academic acceptance chưa hoàn thành. Hồ sơ có báo cáo Work lịch sử (public redacted projection), bản hiệu đính, kiểm toán ChatGPT độc lập, correction log và evidence manifest. Chưa chứng minh BCR 2.0 tốt hơn 1.0 trong đánh giá toàn bài; không đổi benchmark E, pins hoặc quyền publication.
