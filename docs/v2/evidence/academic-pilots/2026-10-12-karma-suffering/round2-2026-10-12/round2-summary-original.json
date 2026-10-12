@@ -1,0 +1,98 @@
+{
+  "cases": 12,
+  "retrieval_cases": 12,
+  "quick_cases": 12,
+  "research_draft_cases": 12,
+  "query_pairs": 25,
+  "retrieval_quick_equal": 25,
+  "quick_A_status_counts": {
+    "VERIFIED": 45,
+    "UNVERIFIED": 9
+  },
+  "article_quote_calls": 2,
+  "article_quote_statuses": {
+    "REJECTED": 2
+  },
+  "targeted_source_controls": 24,
+  "targeted_source_A_statuses": {
+    "VERIFIED": 23,
+    "BLOCKED": 1
+  },
+  "research_evidence_ids": 95,
+  "candidate_claims": 57,
+  "actual_claim_status_counts": {
+    "candidate": 57
+  },
+  "review_package_verifications": [
+    {
+      "case_id": "AC01",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC02",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC03",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC04",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC05",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC06",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC07",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC08",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC09",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC10",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC11",
+      "status": "MATCHED",
+      "publication_authorized": false
+    },
+    {
+      "case_id": "AC12",
+      "status": "MATCHED",
+      "publication_authorized": false
+    }
+  ],
+  "article_B_statuses": {
+    "UNVERIFIED": 11,
+    "REJECTED": 1
+  },
+  "C_receipt_calls": 102,
+  "publication_authorized": false,
+  "semantic_ground_truth": "NOT_AVAILABLE",
+  "semantic_detection_accuracy": null,
+  "academic_acceptance": "INCONCLUSIVE",
+  "external_archive_status": "external_archive_pending"
+}

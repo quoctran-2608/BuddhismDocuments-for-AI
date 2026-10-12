@@ -1,0 +1,178 @@
+[
+  {
+    "evidence_key": "E01",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+    "blob": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+    "blob_matches": true,
+    "sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E02",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+    "blob": "d94e0f3f5526f4f4b838cbb5713a11c0adb19c7d",
+    "blob_matches": true,
+    "sha256": "a769181dd07053940e08dc75f1d141cc49e9b94e4c8caf652adc752a620cd588",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E03",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+    "blob": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+    "blob_matches": true,
+    "sha256": "c03352119d44ce72bccaf6dbeac732ec2e1e191bbca9fd52ca8c1a4be073c432",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E04",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/mn/mn101_root-pli-ms.json",
+    "blob": "28b3c405c7996d072b838dbd3e4d3aa94b1bd78f",
+    "blob_matches": true,
+    "sha256": "cbf9a9c0e37fd8ae630a6a7983144599ae60033a69e3699eb0ee937702a8061b",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E05",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+    "blob": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+    "blob_matches": true,
+    "sha256": "2cb0bf10b322901789dd3251a1dbeb3c980781a94f7420b41b5f878939836208",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E06",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/mn/mn136_root-pli-ms.json",
+    "blob": "aea0996730c254cadb34eca7038a64115dde0312",
+    "blob_matches": true,
+    "sha256": "0d8310e1165278d98c2f495a061c476ccbf7709b0e02ccfcca3acdb982c1ec94",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E07",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/an/an4/an4.77_root-pli-ms.json",
+    "blob": "d37ddd453e40679cb4d3aaf3bbfc0b961475ed17",
+    "blob_matches": true,
+    "sha256": "c2b20d41acdbc54d6f3018122433edc32aa5f4983450abfbaf045b23423e7e3d",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E08",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/sn/sn36/sn36.6_root-pli-ms.json",
+    "blob": "ef50974de894a35e7ffd542f128da6ba0deed79b",
+    "blob_matches": true,
+    "sha256": "7ace8ea92b60c299f7f8c4dd7e413865d91fc6150686e718dacb63ae8866d640",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E09",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+    "blob": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+    "blob_matches": true,
+    "sha256": "c733b9ad6007f88b95bedd8904599f76d9b7fa999be2d56b9cd87c5acb4550d7",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E10",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/an/an6/an6.63_root-pli-ms.json",
+    "blob": "d7fedefb5232885c34d12b34e6465f8141f0bc75",
+    "blob_matches": true,
+    "sha256": "13e8b090ceec222dcb4d62344f089667f3bde85c507c62dcedacd22244fafd82",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E11",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "root/pli/ms/sutta/sn/sn35/sn35.146_root-pli-ms.json",
+    "blob": "104ba9bf4da29eec5fa168942ebf68805ebbec41",
+    "blob_matches": true,
+    "sha256": "38c0d28e6584605ba07988fe139c9de4ac7c5581a02ba310b22c6d140d65048c",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "H01",
+    "repository": "cbeta-org/xml-p5",
+    "pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+    "path": "T/T02/T02n0099.xml",
+    "blob": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+    "blob_matches": true,
+    "sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "H02",
+    "repository": "cbeta-org/xml-p5",
+    "pin": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+    "path": "T/T02/T02n0100.xml",
+    "blob": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+    "blob_matches": true,
+    "sha256": "653ef954372ec21dd45aa47712c8e5eb7bc144a7c8b0980e4741ba34c243f840",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E01-EN",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "translation/en/sujato/sutta/sn/sn36/sn36.21_translation-en-sujato.json",
+    "blob": "dabd8d57623a0e9d60a43c877c2d519aebd3b983",
+    "blob_matches": true,
+    "sha256": "ad04414e4ff744d66771aca28d410a1ed097e4932766dddbbf1ebf3c700de368",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E02-EN",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "translation/en/sujato/sutta/an/an3/an3.61_translation-en-sujato.json",
+    "blob": "a0c30fb67c58f8b7b20bcc5b751ca66bf824e373",
+    "blob_matches": true,
+    "sha256": "572a30f413d8b67d0c5898344292870db095c4b6a69ba45155681a3c5635b9d5",
+    "content_matches": true,
+    "exit": 0
+  },
+  {
+    "evidence_key": "E03-EN",
+    "repository": "suttacentral/bilara-data",
+    "pin": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+    "blob": "2d955d4f7f77bd4e95951f9289d3349ae8697c93",
+    "blob_matches": true,
+    "sha256": "7487e739d0cc5ffa1b82d2c914d982b5fbb6b915a8bf3a776920b16fbaed5960",
+    "content_matches": true,
+    "exit": 0
+  }
+]

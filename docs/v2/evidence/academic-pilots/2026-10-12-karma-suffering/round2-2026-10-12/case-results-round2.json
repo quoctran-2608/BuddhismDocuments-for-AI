@@ -1,0 +1,289 @@
+[
+  {
+    "case_id": "AC01",
+    "question": "Có đúng kinh Sīvaka nêu tám nhóm và phê phán mọi cảm thọ do nghiệp trước?",
+    "article_location": "P011/P016/P018/P019",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC01-*",
+      "research": "research/AC01",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC02",
+    "question": "Câu Pāli bài có khớp nguyên văn nhân chứng Bilara ghim không?",
+    "article_location": "P013",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "FAIL exact pinned witness match",
+    "source_quote_controls": [
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Explicit original quote mismatch",
+    "manual_source_inspection": "manual-structural-observations.json for IDs, punctuation and TEI subwork boundaries",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC02-*",
+      "research": "research/AC02",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC03",
+    "question": "Câu Hán có trong kinh 977, và A có thể kiểm câu xuyên lb không?",
+    "article_location": "P029",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "FAIL exact pinned witness match",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Explicit original quote mismatch",
+    "manual_source_inspection": "manual-structural-observations.json for IDs, punctuation and TEI subwork boundaries",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC03-*",
+      "research": "research/AC03",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC04",
+    "question": "35.145 có đúng đoạn nghiệp cũ/mới theo hệ ID SuttaCentral bài khai không?",
+    "article_location": "P075/P142",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "manual-structural-observations.json for IDs, punctuation and TEI subwork boundaries",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC04-*",
+      "research": "research/AC04",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC05",
+    "question": "Tiểu kinh nói trực tiếp “hai cấp độ nhân quả” hay đây là cách hòa giải?",
+    "article_location": "P070/P072",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC05-*",
+      "research": "research/AC05",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC06",
+    "question": "Kinh Bất khả tư nghì đủ để duyệt quy tắc không phán xét nạn nhân?",
+    "article_location": "P089/P093/P094",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC06-*",
+      "research": "research/AC06",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC07",
+    "question": "Có đúng lời và phạm vi quy thuộc Gethin/Thanissaro không?",
+    "article_location": "P122/P125/P147–149",
+    "execution": "PASS",
+    "source_presence": "BLOCKED",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "BLOCKED",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication, scope, translations, source independence; modern attribution needs missing pinned sources",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC07-*",
+      "research": "research/AC07",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC08",
+    "question": "Opakkamika chỉ là tổn thương từ bên ngoài?",
+    "article_location": "T01R08",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC08-*",
+      "research": "research/AC08",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC09",
+    "question": "Hai Hán bản có cùng danh sách đầy đủ năm triền cái?",
+    "article_location": "P035/T02R05",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "manual-structural-observations.json for IDs, punctuation and TEI subwork boundaries",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC09-*",
+      "research": "research/AC09",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC10",
+    "question": "Bằng chứng cảm thọ đủ để kết luận tất cả khổ/bất hạnh và toàn Phật giáo sơ kỳ?",
+    "article_location": "P135–139",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC10-*",
+      "research": "research/AC10",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC11",
+    "question": "Có các liên hệ giết/hại/không cho với tuổi thọ/sức khỏe/tài sản không?",
+    "article_location": "P063",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "BLOCKED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC11-*",
+      "research": "research/AC11",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  },
+  {
+    "case_id": "AC12",
+    "question": "Có tham ái ba loại và định nghĩa nghiệp là cetanā không?",
+    "article_location": "P108/P109/P113",
+    "execution": "PASS",
+    "source_presence": "PASS",
+    "article_quote": "NOT_APPLICABLE",
+    "source_quote_controls": [
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "claim_support": "BLOCKED authenticated semantic assessment; proposal retained",
+    "semantic_verdict": "INCONCLUSIVE",
+    "autonomous_BCR_findings": "Returned retrieval/A/C observations; no autonomous semantic verdict",
+    "manual_source_inspection": "Pinned target excerpts in target-source-A-controls.json",
+    "Codex_interpretation": "Scope/claim links are unapproved proposals; no semantic ground truth or source equivalence inferred",
+    "expert_needed": "Pāli/Hán semantic adjudication and independent expected answer",
+    "inconclusive": "Meaning, claim support, semantic counterevidence adequacy, independent source count and academic acceptance",
+    "raw_references": {
+      "commands": "commands/AC12-*",
+      "research": "research/AC12",
+      "locked_matrix": "execution-matrix-locked.json"
+    }
+  }
+]

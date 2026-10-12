@@ -86,3 +86,10 @@ gói phản biện lớn. Raw gzip chỉ là báo cáo đo/log nhỏ, không có
 ## Academic pilots — nghiệm thu ứng dụng thực tế
 
 [Academic Pilot 01: nghiệp và khổ đau, 12/10/2026](academic-pilots/2026-10-12-karma-suffering/README.md) kiểm toán bài Phật giáo do AI tạo, khác software tests A–E. Có bằng chứng source/provenance verification trong mẫu; academic acceptance chưa hoàn thành. Hồ sơ có báo cáo Work lịch sử (public redacted projection), bản hiệu đính, kiểm toán ChatGPT độc lập, correction log và evidence manifest. Chưa chứng minh BCR 2.0 tốt hơn 1.0 trong đánh giá toàn bài; không đổi benchmark E, pins hoặc quyền publication.
+
+### Academic Pilot 01 — Round 2 (WSL, 12/10/2026)
+
+[Hồ sơ kiểm toán độc lập và bằng chứng định danh Round 2](academic-pilots/2026-10-12-karma-suffering/round2-2026-10-12/README.md):
+12/12 ca local chạy, 25/25 retrieval match đối chiếu CLI 1.0 hiện hành/Quick,
+Research draft có lịch sử và receipts; học thuật INCONCLUSIVE và publication đóng.
+Bản gốc raw ZIP lưu ngoài Git có SHA-256 và bảng kiểm thành viên; không có bài Word riêng trong Git.

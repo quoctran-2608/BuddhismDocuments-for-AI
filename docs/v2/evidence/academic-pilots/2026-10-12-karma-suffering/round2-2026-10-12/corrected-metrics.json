@@ -1,0 +1,60 @@
+{
+  "pilot": "BCR-ACADEMIC-PILOT-01",
+  "round": 2,
+  "code_commit": "a6707b3ab34e4977cc686a822b726e2bdade8e2c",
+  "source": "independent audit of original raw ZIP; original summary preserved separately",
+  "archive_sha256": "8f035794a659ca045f007d139f2ee8f1270b5c8978e2dacc3a62b5441ee2189a",
+  "run_cases": {
+    "retrieval": 12,
+    "quick": 12,
+    "research_draft": 12
+  },
+  "retrieval": {
+    "comparisons": 25,
+    "equal": 25,
+    "baseline": "current 1.0 at code commit (not historical pre-A baseline)"
+  },
+  "quick_A": {
+    "verified": 45,
+    "unverified": 9
+  },
+  "article_direct_quotes": {
+    "tested": 2,
+    "rejected": 2,
+    "paragraphs": [
+      "P013",
+      "P029"
+    ],
+    "semantic_verdict": "NOT_DETERMINED"
+  },
+  "source_generated_target_controls": {
+    "total": 24,
+    "verified": 23,
+    "blocked": 1
+  },
+  "research": {
+    "runs": 12,
+    "status": "draft",
+    "evidence_ids": 95,
+    "historical_claim_records": 57,
+    "active_candidate_claim_ids": 56,
+    "rejected_claims": 1,
+    "B_assessments": {
+      "unverified": 11,
+      "rejected": 1,
+      "accepted": 0
+    },
+    "C_receipts_entries": 102,
+    "C_unique_case_search_ids": 57,
+    "C_duplicate_entry_copies": 45,
+    "store_snapshots": 105,
+    "packages": 12,
+    "reports": 0,
+    "decisions": 0
+  },
+  "publication_authorized": false,
+  "academic_acceptance": "INCONCLUSIVE",
+  "semantic_ground_truth": "NOT_AVAILABLE",
+  "semantic_detection_accuracy": null,
+  "raw_archive_status": "external_archive_pending"
+}
