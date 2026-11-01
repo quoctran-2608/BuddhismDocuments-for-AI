@@ -1,0 +1,565 @@
+{
+  "protocol": "BCR-ACADEMIC-PILOT-01-ROUND2",
+  "projection_type": "REDACTED from immutable locked matrix; verbatim article_inputs and quote_input omitted",
+  "original_matrix_sha256": "f2887e9f78662df40ef078a6be1de2409deff022154a1994808ee9994f95200c",
+  "locked_at_utc": "2026-10-12T04:10:15.288791+00:00",
+  "code_commit": "a6707b3ab34e4977cc686a822b726e2bdade8e2c",
+  "queries_and_limits_fixed_before_main_execution": true,
+  "ground_truth": "NOT_AVAILABLE",
+  "design": "exploratory/non-blinded; Work provisional PASS/FAIL not ground truth",
+  "source_controls_are_not_article_quotes": true,
+  "publication_authorized": false,
+  "cases": [
+    {
+      "case_id": "AC01",
+      "audit_question": "Có đúng kinh Sīvaka nêu tám nhóm và phê phán mọi cảm thọ do nghiệp trước?",
+      "article_location": "P011/P016/P018/P019",
+      "scope": "E01: 1.5–3.15",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "pubbekatahetū",
+        "kammavipākajā"
+      ],
+      "counterqueries": [
+        "kammavipākajā"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC02",
+      "audit_question": "Câu Pāli bài có khớp nguyên văn nhân chứng Bilara ghim không?",
+      "article_location": "P013",
+      "scope": "E01: 1.5",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "Yaṃ kiñcāyaṃ purisapuggalo paṭisaṃvedeti sukhaṃ vā dukkhaṃ vā adukkhamasukhaṃ vā sabbaṃ taṃ pubbekatahetū.",
+        "pubbekatahetū"
+      ],
+      "counterqueries": [
+        "pubbekatahetū"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC03",
+      "audit_question": "Câu Hán có trong kinh 977, và A có thể kiểm câu xuyên lb không?",
+      "article_location": "P029",
+      "scope": "H01: 0253a06–07",
+      "source_provenance": [
+        {
+          "evidence_key": "H01",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "source_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "content_sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73",
+          "work_id": "T02n0099",
+          "witness": "T; CBETA TEI"
+        }
+      ],
+      "corpus": "cbeta-tei",
+      "language": "lzh",
+      "queries": [
+        "一切人所知覺者，皆是本所造因。",
+        "一切人所知覺者"
+      ],
+      "counterqueries": [
+        "是本所造因"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC04",
+      "audit_question": "35.145 có đúng đoạn nghiệp cũ/mới theo hệ ID SuttaCentral bài khai không?",
+      "article_location": "P075/P142",
+      "scope": "E05 toàn kinh; E11: 1.3–1.10",
+      "source_provenance": [
+        {
+          "evidence_key": "E05",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn35/sn35.145_root-pli-ms.json",
+          "source_blob_sha": "1174e0edfa75b909ec8df42c78ef46e10f41c1b3",
+          "content_sha256": "2cb0bf10b322901789dd3251a1dbeb3c980781a94f7420b41b5f878939836208",
+          "work_id": "sn35.145",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E11",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn35/sn35.146_root-pli-ms.json",
+          "source_blob_sha": "104ba9bf4da29eec5fa168942ebf68805ebbec41",
+          "content_sha256": "38c0d28e6584605ba07988fe139c9de4ac7c5581a02ba310b22c6d140d65048c",
+          "work_id": "sn35.146",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "sn35.145",
+        "sn35.146",
+        "purāṇakammaṁ"
+      ],
+      "counterqueries": [
+        "purāṇakammaṁ",
+        "navakammaṁ"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC05",
+      "audit_question": "Tiểu kinh nói trực tiếp “hai cấp độ nhân quả” hay đây là cách hòa giải?",
+      "article_location": "P070/P072",
+      "scope": "E03: 5–8; E01",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E03",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "source_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "content_sha256": "c03352119d44ce72bccaf6dbeac732ec2e1e191bbca9fd52ca8c1a4be073c432",
+          "work_id": "mn135",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "kammassakā",
+        "pubbekatahetū"
+      ],
+      "counterqueries": [
+        "pāṇātipātī",
+        "pubbekatahetū"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC06",
+      "audit_question": "Kinh Bất khả tư nghì đủ để duyệt quy tắc không phán xét nạn nhân?",
+      "article_location": "P089/P093/P094",
+      "scope": "E07: 1.7; E06",
+      "source_provenance": [
+        {
+          "evidence_key": "E06",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn136_root-pli-ms.json",
+          "source_blob_sha": "aea0996730c254cadb34eca7038a64115dde0312",
+          "content_sha256": "0d8310e1165278d98c2f495a061c476ccbf7709b0e02ccfcca3acdb982c1ec94",
+          "work_id": "mn136",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E07",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an4/an4.77_root-pli-ms.json",
+          "source_blob_sha": "d37ddd453e40679cb4d3aaf3bbfc0b961475ed17",
+          "content_sha256": "c2b20d41acdbc54d6f3018122433edc32aa5f4983450abfbaf045b23423e7e3d",
+          "work_id": "an4.77",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "kammavipāko",
+        "mn136"
+      ],
+      "counterqueries": [
+        "mn136"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC07",
+      "audit_question": "Có đúng lời và phạm vi quy thuộc Gethin/Thanissaro không?",
+      "article_location": "P122/P125/P147–149",
+      "scope": "chưa mở nguồn hiện đại thuộc corpus",
+      "source_provenance": [],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "Gethin",
+        "The Karma of Now"
+      ],
+      "counterqueries": [
+        "Thanissaro"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": "modern books/commentary not declared or pinned in current ledger; discovery queries cannot verify attribution"
+    },
+    {
+      "case_id": "AC08",
+      "audit_question": "Opakkamika chỉ là tổn thương từ bên ngoài?",
+      "article_location": "T01R08",
+      "scope": "E01: 3.6; E01-EN: 3.6; E04: 13.1",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E01-EN",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "translation/en/sujato/sutta/sn/sn36/sn36.21_translation-en-sujato.json",
+          "source_blob_sha": "dabd8d57623a0e9d60a43c877c2d519aebd3b983",
+          "content_sha256": "ad04414e4ff744d66771aca28d410a1ed097e4932766dddbbf1ebf3c700de368",
+          "work_id": "sn36.21",
+          "witness": "translation:translation-en-sujato"
+        },
+        {
+          "evidence_key": "E04",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn101_root-pli-ms.json",
+          "source_blob_sha": "28b3c405c7996d072b838dbd3e4d3aa94b1bd78f",
+          "content_sha256": "cbf9a9c0e37fd8ae630a6a7983144599ae60033a69e3699eb0ee937702a8061b",
+          "work_id": "mn101",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "Opakkamika",
+        "opakkamikā"
+      ],
+      "counterqueries": [
+        "mn101",
+        "opakkamena"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC09",
+      "audit_question": "Hai Hán bản có cùng danh sách đầy đủ năm triền cái?",
+      "article_location": "P035/T02R05",
+      "scope": "H01: 0253a09–15; H02: kinh 211 0452b04–0452c16, list 0452c01–02",
+      "source_provenance": [
+        {
+          "evidence_key": "H01",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0099.xml",
+          "source_blob_sha": "58d4a3c83f5a7053d90f160559bff90bdffbe09f",
+          "content_sha256": "6cb6d3371943705c712909ea66d48cccec0ec42a1380aab55cc15e0b4750ab73",
+          "work_id": "T02n0099",
+          "witness": "T; CBETA TEI"
+        },
+        {
+          "evidence_key": "H02",
+          "repository": "cbeta-org/xml-p5",
+          "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+          "source_path": "T/T02/T02n0100.xml",
+          "source_blob_sha": "f15b55f502b2f7ffe6495e49552349a0e2c6eb85",
+          "content_sha256": "653ef954372ec21dd45aa47712c8e5eb7bc144a7c8b0980e4741ba34c243f840",
+          "work_id": "T02n0100",
+          "witness": "T; CBETA TEI"
+        }
+      ],
+      "corpus": "cbeta-tei",
+      "language": "lzh",
+      "queries": [
+        "五蓋",
+        "貪欲"
+      ],
+      "counterqueries": [
+        "睡眠",
+        "掉悔"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC10",
+      "audit_question": "Bằng chứng cảm thọ đủ để kết luận tất cả khổ/bất hạnh và toàn Phật giáo sơ kỳ?",
+      "article_location": "P135–139",
+      "scope": "E01/E02/E04/E09",
+      "source_provenance": [
+        {
+          "evidence_key": "E01",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "content_sha256": "06521a9667b99dee6d9e0464805d32f14a93c3195c09460f0f724eacb3f1647c",
+          "work_id": "sn36.21",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E02",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+          "source_blob_sha": "d94e0f3f5526f4f4b838cbb5713a11c0adb19c7d",
+          "content_sha256": "a769181dd07053940e08dc75f1d141cc49e9b94e4c8caf652adc752a620cd588",
+          "work_id": "an3.61",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E04",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn101_root-pli-ms.json",
+          "source_blob_sha": "28b3c405c7996d072b838dbd3e4d3aa94b1bd78f",
+          "content_sha256": "cbf9a9c0e37fd8ae630a6a7983144599ae60033a69e3699eb0ee937702a8061b",
+          "work_id": "mn101",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E09",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "source_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "content_sha256": "c733b9ad6007f88b95bedd8904599f76d9b7fa999be2d56b9cd87c5acb4550d7",
+          "work_id": "sn56.11",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "pubbekatahetū",
+        "taṇhā"
+      ],
+      "counterqueries": [
+        "kammavipākajā",
+        "pāṇātipātī"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC11",
+      "audit_question": "Có các liên hệ giết/hại/không cho với tuổi thọ/sức khỏe/tài sản không?",
+      "article_location": "P063",
+      "scope": "E03: 5–8,13–14",
+      "source_provenance": [
+        {
+          "evidence_key": "E03",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/mn/mn135_root-pli-ms.json",
+          "source_blob_sha": "12bc0f2b7776c35d35e3dae240153291f4e3e803",
+          "content_sha256": "c03352119d44ce72bccaf6dbeac732ec2e1e191bbca9fd52ca8c1a4be073c432",
+          "work_id": "mn135",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "pāṇātipātī",
+        "appāyukasaṁvattanikā"
+      ],
+      "counterqueries": [
+        "pubbekatahetū"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    },
+    {
+      "case_id": "AC12",
+      "audit_question": "Có tham ái ba loại và định nghĩa nghiệp là cetanā không?",
+      "article_location": "P108/P109/P113",
+      "scope": "E09:4.4–4.5; E10:6.1–6.5",
+      "source_provenance": [
+        {
+          "evidence_key": "E09",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/sn/sn56/sn56.11_root-pli-ms.json",
+          "source_blob_sha": "08be6e7ef45f2ade92cf1a74383b89d7f7b8500b",
+          "content_sha256": "c733b9ad6007f88b95bedd8904599f76d9b7fa999be2d56b9cd87c5acb4550d7",
+          "work_id": "sn56.11",
+          "witness": "root:root-pli-ms"
+        },
+        {
+          "evidence_key": "E10",
+          "repository": "suttacentral/bilara-data",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_path": "root/pli/ms/sutta/an/an6/an6.63_root-pli-ms.json",
+          "source_blob_sha": "d7fedefb5232885c34d12b34e6465f8141f0bc75",
+          "content_sha256": "13e8b090ceec222dcb4d62344f089667f3bde85c507c62dcedacd22244fafd82",
+          "work_id": "an6.63",
+          "witness": "root:root-pli-ms"
+        }
+      ],
+      "corpus": "suttacentral-bilara",
+      "language": null,
+      "queries": [
+        "taṇhā",
+        "cetanā"
+      ],
+      "counterqueries": [
+        "an6.63"
+      ],
+      "limit": 3,
+      "query_basis": "article literal or lexical hypothesis from previously opened pinned source; no expected semantic verdict",
+      "retrieval_scope": "corpus-level CLI search (no work filter available); intended work/path inspected separately",
+      "executable_operations": [
+        "CLI1 search/work/context/provenance",
+        "CLI2 quick",
+        "CLI2 quote if verbatim available",
+        "CLI2 run-create/claim-add/run-capture/review-export/publication-check",
+        "API C reader/receipts/history/trace"
+      ],
+      "essential_missing_scope": null
+    }
+  ]
+}

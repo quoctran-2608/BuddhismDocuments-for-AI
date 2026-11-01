@@ -22,3 +22,10 @@ Kiểm JSON và hashes file Git theo manifest. Mở upstream repository/path t�
 Để tái lập đủ 15 A checks cần code tại tested commit và raw archived inputs/receipts. Chỉ bản báo cáo audit offline replay được cung cấp, không scripts/raw receipts riêng của auditor. Không replay source cache rồi gọi live. Raw lớn và bài riêng không ở Git; `external_archive_pending` là giới hạn truy cập lâu dài, không tuyên bố lưu đầy đủ trên Git. Xem [USAGE](../../../USAGE.md) và [tiêu chí nghiệm thu](../../../ACCEPTANCE.md) trước lượt chạy WSL; không tự cấp approval.
 
 Giữ nguyên [evidence E lịch sử](../../README.md), không chuyển ma trận dự án sang PASS. PR này chỉ chờ chủ dự án và kiểm toán độc lập review, không tự merge.
+
+## Vòng 2 — thực thi BCR local trên WSL
+
+[Round 2: thực thi WSL và kiểm toán độc lập, 12/10/2026](round2-2026-10-12/README.md).
+12/12 ca có retrieval, Quick và Research draft; 25/25 cặp retrieval 1.0 hiện hành/Quick giống nhau.
+Bài toán semantic vẫn INCONCLUSIVE, publication đóng; raw ZIP riêng không công khai.
+Hồ sơ Round 1 phía trên được giữ nguyên về mặt lịch sử.

@@ -1,0 +1,750 @@
+[
+  {
+    "case_id": "AC01",
+    "pairs": [
+      {
+        "query": "pubbekatahetū",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0838de43a47e616fba386355",
+          "e-4a9966c98087a79c85dfeb3c",
+          "e-82da12ae804cb2f2729b5605"
+        ]
+      },
+      {
+        "query": "kammavipākajā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "UNVERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0b2aabaaea6077c13ae9670f",
+          "e-e5a4bf9942ebf54e9e9d916f"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "sn36.21",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC01",
+      "run_id": "pilot01-r2-ac01",
+      "status": "draft",
+      "version": 10,
+      "candidate_claims": 6,
+      "evidence_count": 9,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 11,
+      "source_reads": 320,
+      "retrieval_calls": 48,
+      "elapsed_seconds": 25.76604274600004,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC02",
+    "pairs": [
+      {
+        "query": "Yaṃ kiñcāyaṃ purisapuggalo paṭisaṃvedeti sukhaṃ vā dukkhaṃ vā adukkhamasukhaṃ vā sabbaṃ taṃ pubbekatahetū.",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "UNVERIFIED",
+          "UNVERIFIED",
+          "UNVERIFIED"
+        ],
+        "verified_evidence_ids": []
+      },
+      {
+        "query": "pubbekatahetū",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0838de43a47e616fba386355",
+          "e-4a9966c98087a79c85dfeb3c",
+          "e-82da12ae804cb2f2729b5605"
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "kind": "article_direct_quote",
+        "record_id": 11246,
+        "exit": 0,
+        "status": "REJECTED",
+        "quote": {
+          "status": "QUOTE_MISMATCH",
+          "direct_quote_allowed": false,
+          "paraphrase_allowed": false
+        }
+      }
+    ],
+    "work_commands": [
+      {
+        "work": "sn36.21",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC02",
+      "run_id": "pilot01-r2-ac02",
+      "status": "draft",
+      "version": 8,
+      "candidate_claims": 4,
+      "evidence_count": 7,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 7,
+      "source_reads": 258,
+      "retrieval_calls": 31,
+      "elapsed_seconds": 7.4890885539998635,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC03",
+    "pairs": [
+      {
+        "query": "一切人所知覺者，皆是本所造因。",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 1,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-c29fce7607a362fdf6d6c6d5"
+        ]
+      },
+      {
+        "query": "一切人所知覺者",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 2,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-f9fdbde434ecc1c1dc5f9744",
+          "e-87529131a6c518b7d3fec67f"
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "kind": "article_direct_quote",
+        "record_id": 8289097,
+        "exit": 0,
+        "status": "REJECTED",
+        "quote": {
+          "status": "QUOTE_MISMATCH",
+          "direct_quote_allowed": false,
+          "paraphrase_allowed": false
+        }
+      }
+    ],
+    "work_commands": [
+      {
+        "work": "T02n0099",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC03",
+      "run_id": "pilot01-r2-ac03",
+      "status": "draft",
+      "version": 8,
+      "candidate_claims": 4,
+      "evidence_count": 7,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 7,
+      "source_reads": 204,
+      "retrieval_calls": 25,
+      "elapsed_seconds": 20.389892404999955,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC04",
+    "pairs": [
+      {
+        "query": "sn35.145",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 0,
+        "retrieval_equal": true,
+        "quick_statuses": [],
+        "verified_evidence_ids": []
+      },
+      {
+        "query": "sn35.146",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 0,
+        "retrieval_equal": true,
+        "quick_statuses": [],
+        "verified_evidence_ids": []
+      },
+      {
+        "query": "purāṇakammaṁ",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 1,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-5e27af05d03772f70c62f628"
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "kind": "article_citation_title_literal_not_body_quote",
+        "record_id": 11676,
+        "exit": 0,
+        "status": "REJECTED"
+      }
+    ],
+    "work_commands": [
+      {
+        "work": "sn35.145",
+        "exit": 0
+      },
+      {
+        "work": "sn35.146",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC04",
+      "run_id": "pilot01-r2-ac04",
+      "status": "draft",
+      "version": 6,
+      "candidate_claims": 2,
+      "evidence_count": 9,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 3,
+      "source_reads": 188,
+      "retrieval_calls": 25,
+      "elapsed_seconds": 12.032531733000269,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC05",
+    "pairs": [
+      {
+        "query": "kammassakā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-2837d30797178e6962d90655",
+          "e-6ce66cc4bfb2c2f57692dce9",
+          "e-3102d224ae653fb02ab81799"
+        ]
+      },
+      {
+        "query": "pubbekatahetū",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0838de43a47e616fba386355",
+          "e-4a9966c98087a79c85dfeb3c",
+          "e-82da12ae804cb2f2729b5605"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "mn135",
+        "exit": 0
+      },
+      {
+        "work": "sn36.21",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC05",
+      "run_id": "pilot01-r2-ac05",
+      "status": "draft",
+      "version": 11,
+      "candidate_claims": 7,
+      "evidence_count": 13,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 13,
+      "source_reads": 768,
+      "retrieval_calls": 107,
+      "elapsed_seconds": 27.948747406000166,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC06",
+    "pairs": [
+      {
+        "query": "kammavipāko",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-c64a3a5d39d6a528ff342cf1",
+          "e-9be3d019a4278561d94e2088",
+          "e-de606cc7d166d462b6feed50"
+        ]
+      },
+      {
+        "query": "mn136",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 0,
+        "retrieval_equal": true,
+        "quick_statuses": [],
+        "verified_evidence_ids": []
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "an4.77",
+        "exit": 0
+      },
+      {
+        "work": "mn136",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC06",
+      "run_id": "pilot01-r2-ac06",
+      "status": "draft",
+      "version": 8,
+      "candidate_claims": 4,
+      "evidence_count": 4,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 7,
+      "source_reads": 60,
+      "retrieval_calls": 10,
+      "elapsed_seconds": 3.453469756999766,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC07",
+    "pairs": [
+      {
+        "query": "Gethin",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 0,
+        "retrieval_equal": true,
+        "quick_statuses": [],
+        "verified_evidence_ids": []
+      },
+      {
+        "query": "The Karma of Now",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 0,
+        "retrieval_equal": true,
+        "quick_statuses": [],
+        "verified_evidence_ids": []
+      }
+    ],
+    "quotes": [],
+    "work_commands": [],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC07",
+      "run_id": "pilot01-r2-ac07",
+      "status": "draft",
+      "version": 5,
+      "candidate_claims": 1,
+      "evidence_count": 1,
+      "article_assessment_status": "REJECTED",
+      "counter_receipt_calls": 1,
+      "source_reads": 10,
+      "retrieval_calls": 4,
+      "elapsed_seconds": 0.6548139139999876,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC08",
+    "pairs": [
+      {
+        "query": "Opakkamika",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-7791af36101cb0ddd6ad17e5",
+          "e-fd2d1d2e3f98ecf6978453d6",
+          "e-cdd7d8611af45298b2373cfa"
+        ]
+      },
+      {
+        "query": "opakkamikā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "UNVERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0c76c763f4e34663df5b3cad",
+          "e-6152946502a1f85d5df316b2"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "mn101",
+        "exit": 0
+      },
+      {
+        "work": "sn36.21",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC08",
+      "run_id": "pilot01-r2-ac08",
+      "status": "draft",
+      "version": 10,
+      "candidate_claims": 6,
+      "evidence_count": 8,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 11,
+      "source_reads": 118,
+      "retrieval_calls": 27,
+      "elapsed_seconds": 7.907180774000153,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC09",
+    "pairs": [
+      {
+        "query": "五蓋",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "UNVERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-df324bfaf02767fcdd45ba59",
+          "e-520d121afac640d3d05acd45"
+        ]
+      },
+      {
+        "query": "貪欲",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "UNVERIFIED",
+          "UNVERIFIED",
+          "UNVERIFIED"
+        ],
+        "verified_evidence_ids": []
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "T02n0099",
+        "exit": 0
+      },
+      {
+        "work": "T02n0100",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC09",
+      "run_id": "pilot01-r2-ac09",
+      "status": "draft",
+      "version": 7,
+      "candidate_claims": 3,
+      "evidence_count": 6,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 5,
+      "source_reads": 170,
+      "retrieval_calls": 45,
+      "elapsed_seconds": 53.30301388400039,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC10",
+    "pairs": [
+      {
+        "query": "pubbekatahetū",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0838de43a47e616fba386355",
+          "e-4a9966c98087a79c85dfeb3c",
+          "e-82da12ae804cb2f2729b5605"
+        ]
+      },
+      {
+        "query": "taṇhā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-825d93c7c7b44c07852bfc28",
+          "e-2fea33f312489214bc306097",
+          "e-8440ed209b7cb6424631f54e"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "an3.61",
+        "exit": 0
+      },
+      {
+        "work": "mn101",
+        "exit": 0
+      },
+      {
+        "work": "sn36.21",
+        "exit": 0
+      },
+      {
+        "work": "sn56.11",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC10",
+      "run_id": "pilot01-r2-ac10",
+      "status": "draft",
+      "version": 11,
+      "candidate_claims": 7,
+      "evidence_count": 12,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 13,
+      "source_reads": 690,
+      "retrieval_calls": 107,
+      "elapsed_seconds": 52.1522261580003,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC11",
+    "pairs": [
+      {
+        "query": "pāṇātipātī",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-0c6788e6a14bddf2c23267f3",
+          "e-076621bad702813d884e4a70",
+          "e-fb3158680cef41daedbff9cd"
+        ]
+      },
+      {
+        "query": "appāyukasaṁvattanikā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 2,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-2a2f1e9cd924c0c4404124c5",
+          "e-b1e4edeb5560fb7af0f7dd6c"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "mn135",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC11",
+      "run_id": "pilot01-r2-ac11",
+      "status": "draft",
+      "version": 10,
+      "candidate_claims": 6,
+      "evidence_count": 10,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 11,
+      "source_reads": 396,
+      "retrieval_calls": 48,
+      "elapsed_seconds": 14.569416978999925,
+      "publication_authorized": false
+    }
+  },
+  {
+    "case_id": "AC12",
+    "pairs": [
+      {
+        "query": "taṇhā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-825d93c7c7b44c07852bfc28",
+          "e-2fea33f312489214bc306097",
+          "e-8440ed209b7cb6424631f54e"
+        ]
+      },
+      {
+        "query": "cetanā",
+        "retrieval_exit": 0,
+        "quick_exit": 0,
+        "retrieval_count": 3,
+        "retrieval_equal": true,
+        "quick_statuses": [
+          "VERIFIED",
+          "VERIFIED",
+          "VERIFIED"
+        ],
+        "verified_evidence_ids": [
+          "e-745c6fac7071e87911639af7",
+          "e-1678a2fddf8228d0a358d42f",
+          "e-b2615e616fa66a119070c755"
+        ]
+      }
+    ],
+    "quotes": [],
+    "work_commands": [
+      {
+        "work": "an6.63",
+        "exit": 0
+      },
+      {
+        "work": "sn56.11",
+        "exit": 0
+      }
+    ],
+    "research_exit": 0,
+    "research": {
+      "case_id": "AC12",
+      "run_id": "pilot01-r2-ac12",
+      "status": "draft",
+      "version": 11,
+      "candidate_claims": 7,
+      "evidence_count": 9,
+      "article_assessment_status": "UNVERIFIED",
+      "counter_receipt_calls": 13,
+      "source_reads": 132,
+      "retrieval_calls": 18,
+      "elapsed_seconds": 5.302748781999981,
+      "publication_authorized": false
+    }
+  }
+]

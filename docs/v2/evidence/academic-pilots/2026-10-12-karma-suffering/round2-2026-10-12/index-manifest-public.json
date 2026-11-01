@@ -1,0 +1,62 @@
+{
+  "path": "[local-only index file omitted from archive; see original in private ZIP]",
+  "sha256": "99da1d7f82b360481568c8458d8bfd2e982b8b7497aaee646912898df82095a2",
+  "bytes": 12102680576,
+  "source_state": [
+    {
+      "corpus": "suttacentral-bilara",
+      "repo_path": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "parser_version": "2026-09-23.1-text-role",
+      "evidence_class": "canonical_root",
+      "indexed_at": "2026-10-12T04:08:08.985785+00:00",
+      "record_count": 22985,
+      "relation_count": 0,
+      "variant_count": 4542,
+      "lemma_count": 0
+    },
+    {
+      "corpus": "cbeta-tei",
+      "repo_path": "cbeta/xml-p5",
+      "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "parser_version": "2026-09-22.6",
+      "evidence_class": "authoritative_structured",
+      "indexed_at": "2026-10-12T04:15:36.274445+00:00",
+      "record_count": 12615232,
+      "relation_count": 0,
+      "variant_count": 1056173,
+      "lemma_count": 0
+    },
+    {
+      "corpus": "suttacentral-relations",
+      "repo_path": "suttacentral/sc-data",
+      "source_sha": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+      "parser_version": "2026-09-22.8-sc-cbeta-bridge",
+      "evidence_class": "metadata_relationship",
+      "indexed_at": "2026-10-12T04:18:19.363759+00:00",
+      "record_count": 0,
+      "relation_count": 430436,
+      "variant_count": 0,
+      "lemma_count": 0
+    }
+  ],
+  "search_index_state": [
+    {
+      "component": "text-search",
+      "version": "2026-09-23.cjk-trigram-v1",
+      "rebuilt_at": "2026-10-12T05:06:03.490474+00:00",
+      "record_count": 12616163
+    }
+  ],
+  "counts": {
+    "records": 12638217,
+    "works": 21123,
+    "relations": 430436,
+    "variants": 1060715,
+    "lemmas": 0
+  },
+  "integrity": "ok",
+  "matrix_sha256": "f2887e9f78662df40ef078a6be1de2409deff022154a1994808ee9994f95200c",
+  "projection_type": "REDACTED from original index-main-manifest.json; local absolute path omitted",
+  "original_in_archive": "index-main-manifest.json"
+}

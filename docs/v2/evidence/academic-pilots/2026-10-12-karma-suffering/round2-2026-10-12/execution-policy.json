@@ -1,0 +1,14 @@
+{
+  "recorded_at_utc": "2026-10-12T05:22:59.035081+00:00",
+  "matrix_sha256": "f2887e9f78662df40ef078a6be1de2409deff022154a1994808ee9994f95200c",
+  "code_commit": "a6707b3ab34e4977cc686a822b726e2bdade8e2c",
+  "index_sha256": "99da1d7f82b360481568c8458d8bfd2e982b8b7497aaee646912898df82095a2",
+  "current_CLI_1_used": true,
+  "historical_pre_A_baseline_used": false,
+  "research_entrypoint": "Existing LocalResearch API, audited actual reader returns; max_candidates=3, limit=3; C fetches 4 to detect truncation",
+  "retrieval_quick_pair_policy": "same query/corpus/language/limit; additional CLI context/provenance and work/resolve preserved separately",
+  "runtime_method": "single-observation wall clock per command including Python startup and stdout writes; sequential retrieval then Quick; no cache flush or performance acceptance",
+  "semantic_reader": null,
+  "independent_ground_truth": null,
+  "publication_authorized": false
+}
