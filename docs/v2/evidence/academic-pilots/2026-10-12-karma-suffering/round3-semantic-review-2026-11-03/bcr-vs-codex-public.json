@@ -1,0 +1,622 @@
+{
+  "status": [
+    "SEMANTIC_REVIEW_PROVISIONAL",
+    "HUMAN_ADJUDICATION_PENDING",
+    "PUBLICATION_NOT_PERMITTED"
+  ],
+  "findings": [
+    {
+      "id": "R3-F01",
+      "cases": [
+        "AC02",
+        "AC03"
+      ],
+      "origin": "BCR_AUTOMATED_HISTORICAL",
+      "layer": "exact_quotation",
+      "automatically_detected_by_bcr": true,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E01#sn36.21:1.5",
+        "H01#0253a06–0253a07"
+      ],
+      "machine_evidence": [
+        {
+          "artifact": "commands/AC02-article-quote.stdout",
+          "pointer": "/quote/status",
+          "sha256": "9b02c9157417b76b7873c8f4bd41b78643a6d29c6a5dc3b020f4560443029d46",
+          "round": 2
+        },
+        {
+          "artifact": "commands/AC03-article-quote.stdout",
+          "pointer": "/quote/status",
+          "sha256": "9b02c9157417b76b7873c8f4bd41b78643a6d29c6a5dc3b020f4560443029d46",
+          "round": 2
+        }
+      ],
+      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng.; Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+    },
+    {
+      "id": "R3-F02",
+      "cases": [
+        "AC02"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E01#sn36.21:1.4–1.6",
+        "E01-EN#sn36.21:1.5"
+      ],
+      "machine_evidence": [],
+      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng."
+    },
+    {
+      "id": "R3-F03",
+      "cases": [
+        "AC03"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "source_attribution",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "H01#0253a06–0253a08"
+      ],
+      "machine_evidence": [],
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+    },
+    {
+      "id": "R3-F04",
+      "cases": [
+        "AC03"
+      ],
+      "origin": "BCR_AUTOMATED_HISTORICAL",
+      "layer": "source_retrieval",
+      "automatically_detected_by_bcr": true,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "Y01#0678a10"
+      ],
+      "machine_evidence": [
+        {
+          "artifact": "commands/AC03-q0-quick.stdout",
+          "pointer": "/verification/0",
+          "sha256": "e169573a4d3ee365ef4443d8d60f1f66242dc9e2476aa2da1a6ca8aa453a9f16",
+          "round": 2
+        },
+        {
+          "artifact": "cross-witness-observation.json",
+          "pointer": "/automatic_BCR/gate",
+          "sha256": "87a30f883dce0562060657a4fdac121a1954d4cc3a81527d77554618fba85a2c",
+          "round": 2
+        }
+      ],
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+    },
+    {
+      "id": "R3-F05",
+      "cases": [
+        "AC03"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "source_attribution",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "Y01#teiHeader/titleStmt/author",
+        "Y01#teiHeader/editionStmt",
+        "Y01#0678a10"
+      ],
+      "machine_evidence": [],
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+    },
+    {
+      "id": "R3-F06",
+      "cases": [
+        "AC03"
+      ],
+      "origin": "BCR_AUTOMATED_HISTORICAL",
+      "layer": "exact_quotation",
+      "automatically_detected_by_bcr": true,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "H01#0253a06–0253a07"
+      ],
+      "machine_evidence": [
+        {
+          "artifact": "commands/AC03-supplement-unpunctuated-cross-span.stdout",
+          "pointer": "/quote/status",
+          "sha256": "9b02c9157417b76b7873c8f4bd41b78643a6d29c6a5dc3b020f4560443029d46",
+          "round": 2
+        },
+        {
+          "artifact": "commands/AC03-supplement-contiguous-prefix.stdout",
+          "pointer": "/quote/status",
+          "sha256": "03df60a040a94d8e4230bce0b8341752fd9e7db65855142cdd7c849c1a31b917",
+          "round": 2
+        }
+      ],
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+    },
+    {
+      "id": "R3-F07",
+      "cases": [
+        "AC04"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "source_attribution",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E05#sn35.145:0.3",
+        "E05#sn35.145:1.1–1.15",
+        "E11#sn35.146:0.3",
+        "E11#sn35.146:1.3–1.10"
+      ],
+      "machine_evidence": [],
+      "note": "Citation identity mismatch chỉ theo hệ định danh đã ghim; alias chưa kiểm."
+    },
+    {
+      "id": "R3-F08",
+      "cases": [
+        "AC05"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E03#mn135:5.2–5.3",
+        "E01#sn36.21:2.1–3.15"
+      ],
+      "machine_evidence": [],
+      "note": "Tách tiền đề nguồn và mô hình tổng hợp; cần chuyên gia."
+    },
+    {
+      "id": "R3-F09",
+      "cases": [
+        "AC06"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E07#an4.77:1.7–1.8",
+        "E06#mn136:13.6–13.11",
+        "E06#mn136:17.2–20.4"
+      ],
+      "machine_evidence": [],
+      "note": "Tách cảnh báo nhận thức và ứng dụng đạo đức; cần chuyên gia."
+    },
+    {
+      "id": "R3-F10",
+      "cases": [
+        "AC07"
+      ],
+      "origin": "BCR_AUTOMATED_HISTORICAL",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": true,
+      "human_adjudication": "PENDING",
+      "source_refs": [],
+      "machine_evidence": [
+        {
+          "artifact": "research/AC07/article-B-assessment-attempt.json",
+          "pointer": "/checks/supporting_evidence",
+          "sha256": "2ec9b9e9596e5698cad132d838a2dc5190017f8707b21676f87e73347e1cbd59",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC07/article-B-assessment-attempt.json",
+          "pointer": "/checks/approved_binding",
+          "sha256": "2ec9b9e9596e5698cad132d838a2dc5190017f8707b21676f87e73347e1cbd59",
+          "round": 2
+        }
+      ],
+      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker."
+    },
+    {
+      "id": "R3-F11",
+      "cases": [
+        "AC07"
+      ],
+      "origin": "CODEX_AUDIT_INPUT_COVERAGE",
+      "layer": "source_attribution",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [],
+      "machine_evidence": [],
+      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker."
+    },
+    {
+      "id": "R3-F12",
+      "cases": [
+        "AC08"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E01-EN#sn36.21:3.6",
+        "E04#mn101:12.3–15.3"
+      ],
+      "machine_evidence": [],
+      "note": "Nghĩa theo ngữ cảnh chưa adjudicate; kiểm tiền đề câu hỏi."
+    },
+    {
+      "id": "R3-F13",
+      "cases": [
+        "AC09"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "counterevidence",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "H01#0253a09–0253a11",
+        "H02#0452c01–0452c02"
+      ],
+      "machine_evidence": [],
+      "note": "Giữ khác danh sách và ranh tiểu kinh; không tự bù reading."
+    },
+    {
+      "id": "R3-F14",
+      "cases": [
+        "AC10"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E01#sn36.21:1.5–3.15",
+        "E02#an3.61:2.7–3.3",
+        "E09#sn56.11:4.1–4.5"
+      ],
+      "machine_evidence": [],
+      "note": "Giới hạn phạm vi tổng hợp và độ đại diện của mẫu."
+    },
+    {
+      "id": "R3-F15",
+      "cases": [
+        "AC11"
+      ],
+      "origin": "ROUND2_HARNESS_STRUCTURAL_CHECK",
+      "layer": "source_retrieval",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E03#mn135:5.1–5.5"
+      ],
+      "machine_evidence": [
+        {
+          "artifact": "fixed-selector-blocks.json",
+          "pointer": "/blocks/0",
+          "sha256": "b9bb5d964da171a6e2b11e689459f2b1d13a0c614539910803715fa9db6d21a4",
+          "round": 2
+        }
+      ],
+      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng."
+    },
+    {
+      "id": "R3-F16",
+      "cases": [
+        "AC11"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E03#mn135:5.2–5.5",
+        "E03#mn135:7.2–8.5",
+        "E03#mn135:13.2–14.5"
+      ],
+      "machine_evidence": [],
+      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng."
+    },
+    {
+      "id": "R3-F17",
+      "cases": [
+        "AC12"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "source_attribution",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E10#an6.63:6.1",
+        "E10#an6.63:33.3–33.5"
+      ],
+      "machine_evidence": [],
+      "note": "Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng."
+    },
+    {
+      "id": "R3-F18",
+      "cases": [
+        "AC01",
+        "AC12"
+      ],
+      "origin": "CODEX_INTERPRETATION",
+      "layer": "semantic_claim_support",
+      "automatically_detected_by_bcr": false,
+      "human_adjudication": "PENDING",
+      "source_refs": [
+        "E01#sn36.21:5.1–5.4",
+        "E09#sn56.11:4.4–4.5",
+        "E10#an6.63:33.3–33.5"
+      ],
+      "machine_evidence": [],
+      "note": "Phạm vi phát biểu hẹp được phân biệt với phạm vi suy rộng.; Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng."
+    },
+    {
+      "id": "R3-F19",
+      "cases": [
+        "AC01",
+        "AC02",
+        "AC03",
+        "AC04",
+        "AC05",
+        "AC06",
+        "AC07",
+        "AC08",
+        "AC09",
+        "AC10",
+        "AC11",
+        "AC12"
+      ],
+      "origin": "BCR_AUTOMATED_HISTORICAL",
+      "layer": "research_workflow",
+      "automatically_detected_by_bcr": true,
+      "human_adjudication": "PENDING",
+      "source_refs": [],
+      "machine_evidence": [
+        {
+          "artifact": "research/AC01/summary.json",
+          "pointer": "/status",
+          "sha256": "99c388fd0bf7c9221fd79ff3da44b64d5068607de45ecda0fc0e9c3dfefb4fd7",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC01/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "77b7a70346031f5e98078d18b4d26876887c49542a880f148627178bec90a46a",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC01/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "85b4299e2f5fd5c65b24d93e199c6ab921be63f096d7b3eebf72a2993c73962a",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC02/summary.json",
+          "pointer": "/status",
+          "sha256": "495da0e9780e3fef7983fd223a6f97cb8058399d67370cf4b3aad8f05adbf063",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC02/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "279d956e27db752c87e3d4a0408f496a566348a482530c6b10979ee10d02d952",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC02/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "adba00adcaeb440de3d394320d27a843ae32dc343ee1e266d966906eb9417195",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC03/summary.json",
+          "pointer": "/status",
+          "sha256": "9dea1d8a4bd81fe732105f81873a8ddddd6785d5349ef5758df0b40597408806",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC03/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "171f57deb903cbad1160e8d68344f8025353eaa0ea57915ea4e62a982ee54645",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC03/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "bac1b08bc04efdbfaffd7c4eea9ac2b9aa92a6c88d4f7a5e5e62e661b87a4ae7",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC04/summary.json",
+          "pointer": "/status",
+          "sha256": "b50cecacc25457a0e7574db1f834598d6d12418cd20cd22583163f8351577d50",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC04/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "a4c1cf76579707175e1e519fb6a61a6b0e111dd769d17bdf48afd55073938904",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC04/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "f0716423e3833b7a0e48e125443cb2ee4a83d9112980d7ef181cd0fe0f3bd525",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC05/summary.json",
+          "pointer": "/status",
+          "sha256": "6dfc8b87a5dd8383bf93bac50afefab624c0a5d3e9f198b1233b2999bef2079c",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC05/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "59a52783a359b2d88e243f5a6c1ec4ba819c245dcbabfd897f63944b402a0e3a",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC05/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "cd9940ec6a41df3ea408afa21e05e37b712793b861fb41b735977bc5808c163f",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC06/summary.json",
+          "pointer": "/status",
+          "sha256": "5ff3e0603a1c7fb375c71b3dbbfc9e782cfd10234750e12dfe2198d2c68958e5",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC06/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "f6d3c2978f52a5dc861cfd0b13c4a2173f2cebe33f881de3455e1e41b5ec2d7c",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC06/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "2fafba07f0f72df70cbb4f8673257799bacac25a6d02b93dbe5749c77867ab04",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC07/summary.json",
+          "pointer": "/status",
+          "sha256": "ac61bca05cbae4cbdd5fdd47c544d9a04b2aa37fd759e41d09a9aa4ca9e9690f",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC07/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "2ec9b9e9596e5698cad132d838a2dc5190017f8707b21676f87e73347e1cbd59",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC07/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "311a10bcf28f2ad7ab5334d59f5072fb1a714c6bb79e1ff3b8c66bfb7a9a77d4",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC08/summary.json",
+          "pointer": "/status",
+          "sha256": "386996d986b93fb449c80bd60386dfab2f1a804f43fa5e19abc1c881d614cda5",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC08/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "aeb5169eac78218d661fe88ba9874d2075c1c26404390eb4b7f4d7d808a5bbeb",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC08/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "befe9270356df5cbc09e7784aab989bbe2ae185f1f9cdcbf79a47f80a8a8312a",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC09/summary.json",
+          "pointer": "/status",
+          "sha256": "9f0341e08ee10c1737793532f0500f8dbcebee6026f4859bd93337b82c623ccf",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC09/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "7f50068abcf52db001c7a4ec5d0b5d632a7429e90d1c9045eccc8aea8ab6c63e",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC09/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "69466b14158674bd523f678eb00a63894a980480a55a7bde320f9e241a2be4c8",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC10/summary.json",
+          "pointer": "/status",
+          "sha256": "ebf7b17e154d860ad5455c2fd116ad1235b480f341758918c376b94dc37cfec5",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC10/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "fc0596f952fc3bf04de7a5ca70349d6e92f0b3c5eb2b4068b8004f8d681672ad",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC10/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "e30c0faa583b54647cfdf4c45e5afc33318471ca50ec584b6802c87e36c6add7",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC11/summary.json",
+          "pointer": "/status",
+          "sha256": "9f2e19df371266f08b6e66c5163e89c2f8cb03504e81c3473a83a345bbf89e03",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC11/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "1246caf77c5146dcf3be992aa8a551b303558ec23052cdbfac324c45f6f34368",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC11/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "9b381c5db2b38b5388dcc8b5227650c8a20d18bfc47e6c0ea0724eeb2fb58c17",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC12/summary.json",
+          "pointer": "/status",
+          "sha256": "1a5b71a32e5cce919b88a163156383f2b0c4b2b350c7dbd82c77626e46ddcbc2",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC12/article-B-assessment-attempt.json",
+          "pointer": "/status",
+          "sha256": "449e321f66633e449e53241e94049ffe90443052ac2de0792b63f84eedafab73",
+          "round": 2
+        },
+        {
+          "artifact": "research/AC12/publication-check.json",
+          "pointer": "/publication_authorized",
+          "sha256": "2e24346f766b35d69003ee2c32c4dcd558247c9174b8576c5449541a2b8cc202",
+          "round": 2
+        }
+      ],
+      "note": "Historical machine workflow observations; no new run or semantic approval."
+    }
+  ],
+  "historical_machine_counts": {
+    "audited_at": "2026-11-02T13:42:58.980573+00:00",
+    "execution": "ARCHIVED_OUTPUT_INSPECTION_NOT_RERUN",
+    "case_count": 12,
+    "retrieval_pairs": 25,
+    "retrieval_equal": 25,
+    "quick_A": {
+      "VERIFIED": 45,
+      "UNVERIFIED": 9
+    },
+    "B_statuses": {
+      "UNVERIFIED": 11,
+      "REJECTED": 1
+    },
+    "C_receipt_entries": 102,
+    "C_unique_case_search_ids": 57,
+    "C_duplicated_entry_copies": 45,
+    "publication_authorized_any": false,
+    "source_controls": {
+      "VERIFIED": 23,
+      "BLOCKED": 1
+    },
+    "semantic_accuracy": null,
+    "independent_ground_truth": false
+  },
+  "privacy": "No article quotations, private case prose, local paths or raw data."
+}

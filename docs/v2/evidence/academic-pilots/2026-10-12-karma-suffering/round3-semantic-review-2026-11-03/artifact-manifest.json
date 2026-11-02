@@ -1,0 +1,53 @@
+{
+  "created_at": "2026-11-02T22:43:02.234999+00:00",
+  "kind": "public_redacted_projection",
+  "status": [
+    "SEMANTIC_REVIEW_PROVISIONAL",
+    "HUMAN_ADJUDICATION_PENDING",
+    "PUBLICATION_NOT_PERMITTED"
+  ],
+  "payload_count": 8,
+  "self_hash_policy": "Manifest excludes itself and SHA256SUMS; SHA256SUMS covers manifest and all payload except itself.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2337,
+      "sha256": "cde7b73efac31e4e9905a0dfb0545225613bdde1f2288595babcac810eb492e2"
+    },
+    {
+      "path": "bcr-vs-codex-public.json",
+      "bytes": 20943,
+      "sha256": "59363a414f968e89b40cc2ff3b7221943776a29469523006f854672664dad39c"
+    },
+    {
+      "path": "expert-review-template.md",
+      "bytes": 2793,
+      "sha256": "df1c3e30f26c88a7eeecb533b3a79ea55d104732977f67195262536f40d0d0ec"
+    },
+    {
+      "path": "improvement-candidates.md",
+      "bytes": 3306,
+      "sha256": "ec7d85997f9d76d7198e784479750393135f0815691cf5eada202b7b3ed5190b"
+    },
+    {
+      "path": "limitations.md",
+      "bytes": 951,
+      "sha256": "e1210475401df6821e50e2ed36549f15bc079418a9b0f583c5d4cedd3a981057"
+    },
+    {
+      "path": "protocol-public.json",
+      "bytes": 815,
+      "sha256": "68bc6fddc27a9b921d0cf60bfc887daed926fd20aa95f287b18a423f1c0ebfc0"
+    },
+    {
+      "path": "review-matrix-public.json",
+      "bytes": 9094,
+      "sha256": "02c8e8b7e9af9341478bac97e9b35105655db213151a64083b172b57a49f4ece"
+    },
+    {
+      "path": "source-ledger-public.json",
+      "bytes": 17051,
+      "sha256": "545f67ab8ecfd5d558582207e00f619baa678b7d1b42b5f07a870452edadcc56"
+    }
+  ]
+}
