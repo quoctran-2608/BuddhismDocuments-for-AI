@@ -1,6 +1,6 @@
 {
   "kind": "PUBLIC_REDACTED_SOURCE_RIGHTS_HANDOFF",
-  "created_at": "2026-11-03T07:54:49.738058+00:00",
+  "created_at": "2026-11-03T08:43:21.569750+00:00",
   "payload_count": 6,
   "self_hash_policy": "Manifest excludes itself and SHA256SUMS; SHA256SUMS covers payload+manifest, not itself; external ZIP sidecar/delivery receipt anchors hashes.",
   "files": [
@@ -11,8 +11,8 @@
     },
     {
       "path": "open-inputs-public.md",
-      "bytes": 704,
-      "sha256": "e200c286065167c1e34a0dcf3bb209491b50a9a028644d2f8af01337352e8a04"
+      "bytes": 976,
+      "sha256": "e4257e92ce20a690f79c6a773626938f051b1a9c121bfbb4d5267fe46578a13d"
     },
     {
       "path": "readiness-public.json",
@@ -21,18 +21,18 @@
     },
     {
       "path": "README.md",
-      "bytes": 1030,
-      "sha256": "aa78a1f18d5c89c12e72cd81119352fe4a584c7703e22060dd1d79a73ecd24e4"
+      "bytes": 1502,
+      "sha256": "8e466451fab917d37f0d2c069ab16abe22b6c20f7e3103fe426a7be9be9d162d"
     },
     {
       "path": "rights-summary-public.json",
-      "bytes": 755,
-      "sha256": "a5f4b2e2fa51ceded0c020d20afb1b28edd8729bb7a5e9899d2ff9c8c59122ac"
+      "bytes": 1563,
+      "sha256": "da563f7c6122c68d5393bb3a74eae2b731627edd18ffb818311e736050d29712"
     },
     {
       "path": "source-rights-method.md",
-      "bytes": 1403,
-      "sha256": "cd90a9de2affe6f74da26fdffdceea2ca95c5a9053ef7eb19cbf7b1769eb8293"
+      "bytes": 2200,
+      "sha256": "8f0028d392aaa1c213106b37e85e6afeb15018f00aa8f883d3f3d10f6b14bf8f"
     }
   ]
 }

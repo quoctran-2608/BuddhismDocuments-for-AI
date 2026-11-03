@@ -1,24 +1,50 @@
 {
+  "version": "AUDIT_CORRECTION_V2",
   "source_snapshots": 17,
-  "named_licenses_verified": 5,
+  "named_licenses_verified": 3,
   "original_Pali_public_domain_basis": 11,
-  "published_reuse_basis_verified": 16,
+  "published_reuse_basis_verified": 14,
+  "explicit_NC_header_CC_version_unresolved": [
+    "H01",
+    "H02"
+  ],
   "unresolved_source_scope": [
+    "H01",
+    "H02",
     "Y01"
   ],
   "actual_distribution_clearance": 0,
   "breakdown": {
     "CC0_Sujato_translations": 3,
-    "CC_BY_NC_SA_3_0_TW_Han_editions": 2,
     "public_domain_original_Pali": 11,
-    "Yinshun_custom_notice_scope_unresolved": 1
+    "Chinese_NC_header_notice_CC_version_unresolved": 2,
+    "Yinshun_collection_scope_unresolved": 1
   },
+  "named_CC_version_for_pinned_H01_H02": null,
+  "archived_terms": {
+    "url": "https://archive2.cbeta.org/copyright.php",
+    "observed_version": "3.0 Taiwan",
+    "kind": "ARCHIVED"
+  },
+  "current_terms": {
+    "url": "https://cbeta.org/copyright",
+    "observed_version": "4.0 International",
+    "kind": "CURRENT"
+  },
+  "current_policy_not_retroactively_bound_to_pinned_files": true,
+  "previous_named5_reuse16_assertion_superseded": true,
+  "CBETA_clarification_needed_if_bundling_without_version_specific_basis": true,
+  "CBETA_inquiry_sent": false,
   "not_a_legal_opinion": true,
   "private_article_external_permission": "PENDING",
   "no_blanket_license_assumption": true,
-  "official_urls": [
-    "https://github.com/suttacentral/bilara-data/blob/0914c609e49215bb1473199929ee8a2996b423c4/LICENSE.md",
-    "https://suttacentral.net/licensing",
-    "https://www.cbeta.org/copyright.php"
-  ]
+  "historical_receipts": {
+    "original_delivery_found_locally": true,
+    "bundled_privately_in_V2": true,
+    "prepack_checks": 88,
+    "frozen_directory_checks": 89,
+    "added_check": "complete_private_manifest_hashes",
+    "frozen_directory_precedes_ZIP_write": true,
+    "new_V2_runs_recorded_separately": true
+  }
 }
