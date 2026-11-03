@@ -1,0 +1,38 @@
+{
+  "phase": "EXPERT_ADJUDICATION_PREPARATION",
+  "case_count": 12,
+  "atomic_review_prompts": 37,
+  "ready": [
+    "AC01",
+    "AC02",
+    "AC04",
+    "AC05",
+    "AC06",
+    "AC09",
+    "AC10",
+    "AC11",
+    "AC12"
+  ],
+  "blocked": [
+    "AC03",
+    "AC07",
+    "AC08"
+  ],
+  "ready_count": 9,
+  "blocked_count": 3,
+  "blockers": {
+    "AC03": "Article-declared punctuation edition missing",
+    "AC07": "Modern scholarly attribution texts/provenance missing",
+    "AC08": "Provenanced lexicon/commentary and additional translation evidence missing"
+  },
+  "scoped_limits": {
+    "AC04": "Pinned numbering and wording only; historical aliases open",
+    "AC09": "Current witnesses/boundaries only; origin of variation open"
+  },
+  "reviewers_assigned": 0,
+  "expert_decisions_received": 0,
+  "distribution": "NOT_RUN",
+  "rights_clearance": "PENDING_OWNER_CHECK",
+  "all_cases": "HUMAN_ADJUDICATION_PENDING",
+  "publication": "PUBLICATION_NOT_PERMITTED"
+}

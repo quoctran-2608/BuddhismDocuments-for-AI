@@ -1,0 +1,38 @@
+{
+  "kind": "PUBLIC_REDACTED_PREPARATION",
+  "created_at": "2026-11-03T05:04:53.031386+00:00",
+  "payload_count": 6,
+  "files": [
+    {
+      "path": "expert-decision-template.md",
+      "bytes": 1593,
+      "sha256": "f6fc8ae8ec2338a2bd169078c068fa6624fd5ba384f842bdc5d71c588b124490"
+    },
+    {
+      "path": "protocol-public.json",
+      "bytes": 952,
+      "sha256": "56470054636ddc9a2d905578e3870b67460f3023a155c673a83d446b5d09e231"
+    },
+    {
+      "path": "readiness-public.json",
+      "bytes": 961,
+      "sha256": "1c2c536e6b6cdf4ab45251f1914408fe060f5f986c64b5f002638591f26228ad"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1117,
+      "sha256": "433e4c9043066547f3d185a8c22439c1cf7a896ea453f6061a938b867414a390"
+    },
+    {
+      "path": "reviewer-workflow-vi.md",
+      "bytes": 4373,
+      "sha256": "9a68ad1c7831bf5a314c29828ec8d38a897296051ed3dc51f71a75d948e71cb3"
+    },
+    {
+      "path": "unresolved-inputs-public.md",
+      "bytes": 910,
+      "sha256": "6dad22277c3f333533aad460874d4ebbea3d3127fa8de988a91f56ff9dbba476"
+    }
+  ],
+  "self_hash_policy": "Manifest excludes itself and SHA256SUMS; SHA256SUMS covers payload plus manifest, not itself."
+}
