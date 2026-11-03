@@ -1,0 +1,36 @@
+{
+  "round": 3,
+  "status": [
+    "SEMANTIC_REVIEW_PROVISIONAL",
+    "HUMAN_ADJUDICATION_PENDING",
+    "PUBLICATION_NOT_PERMITTED"
+  ],
+  "private_protocol_sha256": "4746bf96929572a00ea32e758b3b95ec6ff267efc5df4faf3ebc0cd46280c820",
+  "source_first": true,
+  "prior_result_exposure": true,
+  "blinded": false,
+  "wave_A": [
+    "AC02",
+    "AC03",
+    "AC07",
+    "AC11"
+  ],
+  "wave_B": [
+    "AC01",
+    "AC04",
+    "AC05",
+    "AC06",
+    "AC08",
+    "AC09",
+    "AC10",
+    "AC12"
+  ],
+  "original_locked_questions_and_scope_preserved": true,
+  "code_or_pin_changes": false,
+  "index_writes": false,
+  "new_BCR_runs": 0,
+  "expert_approval": false,
+  "publication_authorized": false,
+  "article_excerpts_and_personal_paths": "OMITTED",
+  "report_client_date": "2026-11-03"
+}

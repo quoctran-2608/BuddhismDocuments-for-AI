@@ -1,0 +1,484 @@
+{
+  "round": 3,
+  "status": [
+    "SEMANTIC_REVIEW_PROVISIONAL",
+    "HUMAN_ADJUDICATION_PENDING",
+    "PUBLICATION_NOT_PERMITTED"
+  ],
+  "report_client_date": "2026-11-03",
+  "privacy": "Purpose-built allowlist; private article omitted. Not byte-equal to private review-matrix.",
+  "cases": [
+    {
+      "case_id": "AC01",
+      "provisional_label": "SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Phạm vi phát biểu hẹp được phân biệt với phạm vi suy rộng.",
+      "source_refs": [
+        "E01#sn36.21:1.4–1.6",
+        "E01#sn36.21:2.1–2.7",
+        "E01#sn36.21:3.1–3.15",
+        "E01#sn36.21:5.1–5.4",
+        "E01-EN#sn36.21:2.1–3.15"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 11,
+      "C_unique_ids": 6,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "NARROW_TEXTUAL_REPORT",
+      "atomic_claim": "SN36.21 nêu tám nhóm nguyên nhân cảm thọ, gồm quả nghiệp, và bác quy mọi cảm thọ về nghiệp trước.",
+      "verdict_scope": "Chỉ các báo cáo nội dung hẹp P011/P016/P018/P019, không toàn đoạn/bài, mọi bất hạnh hoặc mọi truyền thống.",
+      "semantic_verdict": "SUPPORTED_FOR_LISTED_TEXTUAL_REPORTS_ONLY",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Phạm vi vedayita/cảm thọ; giữ vai trò quả nghiệp trong danh sách.",
+        "Không chứng nhận phân loại y khoa hoặc nhân quả thực nghiệm."
+      ],
+      "unconfirmed_parts": [
+        "Mở rộng sang mọi bất hạnh và toàn Phật giáo sơ kỳ.",
+        "Toàn bộ lập luận hoặc mọi câu của đoạn/bài.",
+        "Thẩm định Pāli độc lập của chuyên gia."
+      ],
+      "supported_claims": [
+        {
+          "claim": "Danh sách tám nhóm gồm quả nghiệp",
+          "source_refs": [
+            "E01#sn36.21:2.1",
+            "E01#sn36.21:3.1–3.7",
+            "E01#sn36.21:5.1–5.4"
+          ]
+        },
+        {
+          "claim": "Bác quan điểm quy mọi cảm thọ về nghiệp trước",
+          "source_refs": [
+            "E01#sn36.21:2.4–2.7",
+            "E01#sn36.21:3.12–3.15"
+          ]
+        }
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC02",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng.",
+      "source_refs": [
+        "E01#sn36.21:1.4",
+        "E01#sn36.21:1.5",
+        "E01#sn36.21:1.6",
+        "E01#sn36.21:2.4–2.7",
+        "E01-EN#sn36.21:1.4–1.6"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "QUOTE_MISMATCH",
+      "B_status": "UNVERIFIED",
+      "C_entries": 7,
+      "C_unique_ids": 4,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "EXACT_QUOTE_VS_EDITORIAL_AND_SEMANTIC_REVIEW",
+      "atomic_claim": "Quan hệ giữa câu được bài dẫn và lời trình bày quan điểm đối thoại trong SN36.21:1.4–1.6.",
+      "verdict_scope": "Đánh giá sơ bộ quan hệ nghĩa/ngữ cảnh; không thay phán quyết nguyên văn theo witness ghim.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Gate lịch sử REJECTED/QUOTE_MISMATCH giữ nguyên.",
+        "Phép so biên tập của Codex không là normalization hoặc A verification mới."
+      ],
+      "unconfirmed_parts": [
+        "Phán quyết ngữ pháp/âm vị và quy ước trích dẫn của chuyên gia Pāli.",
+        "Một ấn bản khác đủ provenance cho nguyên văn bài."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC03",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "source_refs": [
+        "H01#0252c12–0253a08",
+        "H01#0253a06–0253a07",
+        "Y01#0678a09–0678a10",
+        "Y01#teiHeader/titleStmt/author",
+        "Y01#teiHeader/editionStmt"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "QUOTE_MISMATCH",
+      "B_status": "UNVERIFIED",
+      "C_entries": 7,
+      "C_unique_ids": 4,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "EDITION_ATTRIBUTION_AND_MARKUP_SPAN",
+      "atomic_claim": "Chuỗi chữ đang xét thuộc đúng T99.977; hình thức dấu câu và edition attribution phải xét riêng.",
+      "verdict_scope": "Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "REJECTED/QUOTE_MISMATCH lịch sử giữ nguyên.",
+        "Đọc nối lb không là gate mới; Y là tác phẩm khác."
+      ],
+      "unconfirmed_parts": [
+        "Bản Trang Xuân Giang được bài khai.",
+        "Nghĩa, dấu câu và quan hệ truyền bản do chuyên gia Hán xác nhận."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC04",
+      "provisional_label": "CONTRADICTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Citation identity mismatch chỉ theo hệ định danh đã ghim; alias chưa kiểm.",
+      "source_refs": [
+        "E05#sn35.145:0.1–0.3",
+        "E05#sn35.145:1.1–1.15",
+        "E11#sn35.146:0.1–0.3",
+        "E11#sn35.146:1.1–1.10"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 3,
+      "C_unique_ids": 2,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "PINNED_CITATION_IDENTITY_MISMATCH",
+      "atomic_claim": "Đoạn nghiệp cũ/nghiệp mới được quy thuộc SN35.145 theo hệ định danh Bilara/SuttaCentral đã ghim.",
+      "verdict_scope": "CONTRADICTED chỉ áp dụng mệnh đề định danh nguồn trên: trong pin này nội dung ở SN35.146, không phải SN35.145.",
+      "semantic_verdict": "NOT_ADJUDICATED_AS_DOCTRINAL_CONTRADICTION",
+      "label_dimension": "PINNED_SOURCE_IDENTITY",
+      "conditions_or_limits": [
+        "Sai citation theo một hệ ID không chứng minh nội dung giáo lý thực sự mâu thuẫn kinh.",
+        "Phán quyết không áp dụng mọi hệ đánh số/alias lịch sử."
+      ],
+      "unconfirmed_parts": [
+        "Alias/hệ đánh số của ấn bản Thanissaro.",
+        "Đánh giá toàn luận điểm giáo lý hoặc toàn P075/P142.",
+        "Semantic adjudication của chuyên gia."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC05",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Tách tiền đề nguồn và mô hình tổng hợp; cần chuyên gia.",
+      "source_refs": [
+        "E03#mn135:5.1–8.5",
+        "E01#sn36.21:2.1–3.15",
+        "E03-EN#mn135:5.1–8.3"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 13,
+      "C_unique_ids": 7,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "AUTHOR_SYNTHESIS",
+      "atomic_claim": "Mô hình hai cấp độ là tổng hợp từ các tiền đề trong MN135 và SN36.21.",
+      "verdict_scope": "Phân tích đủ/thiếu căn cứ cho tổng hợp, không gọi mô hình là nguyên văn kinh.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Giữ điều kiện tái sinh và attribution thời điểm quả của MN135."
+      ],
+      "unconfirmed_parts": [
+        "Tính hợp lệ của mô hình tổng hợp, cần chuyên gia."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC06",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Tách cảnh báo nhận thức và ứng dụng đạo đức; cần chuyên gia.",
+      "source_refs": [
+        "E07#an4.77:1.1–1.11",
+        "E06#mn136:8.1–8.10",
+        "E06#mn136:9.7–9.9",
+        "E06#mn136:13.1–16.11",
+        "E06#mn136:17.1–20.4"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 7,
+      "C_unique_ids": 4,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "EPISTEMIC_TO_NORMATIVE_INFERENCE",
+      "atomic_claim": "Giới hạn suy luận về nghiệp và bước ứng dụng đạo đức cần được đánh giá riêng.",
+      "verdict_scope": "Không đồng nhất cảnh báo nhận thức trong nguồn với quy tắc đạo đức được kinh trực tiếp phát biểu.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Giữ tín hiệu suy luận của tác giả; không quy thành giả trích."
+      ],
+      "unconfirmed_parts": [
+        "Phạm vi acinteyya và cầu nối chuẩn tắc, cần chuyên gia."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC07",
+      "provisional_label": "BLOCKED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker.",
+      "source_refs": [],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "REJECTED",
+      "C_entries": 1,
+      "C_unique_ids": 1,
+      "publication_authorized": false,
+      "blocker_code": "BLOCKED_MISSING_SOURCE",
+      "issue_type": "BLOCKED_MISSING_SOURCE",
+      "atomic_claim": "Quy thuộc cụ thể cho tác phẩm Gethin và Thanissaro.",
+      "verdict_scope": "Không thể xác minh khi chưa có tài liệu tác giả đủ edition/vị trí/ngữ cảnh/provenance.",
+      "semantic_verdict": "BLOCKED_MISSING_SOURCE",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Không dùng snippet, ký ức mô hình hoặc nguồn khác để xác nhận tác giả."
+      ],
+      "unconfirmed_parts": [
+        "Cả ba quy thuộc học giả/chú giải hiện đại."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC08",
+      "provisional_label": "INDETERMINATE",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Nghĩa theo ngữ cảnh chưa adjudicate; kiểm tiền đề câu hỏi.",
+      "source_refs": [
+        "E01#sn36.21:3.6",
+        "E01#sn36.21:5.3",
+        "E01-EN#sn36.21:3.6",
+        "E01-EN#sn36.21:5.3",
+        "E04#mn101:12.3–15.6",
+        "H01#0252c23–0252c29",
+        "H02#0452b16–0452b25"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 11,
+      "C_unique_ids": 6,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "QUESTION_PREMISE_AND_LEXICAL_SCOPE",
+      "atomic_claim": "Độ đủ của gloss thực có trong T01R08, không phải một khẳng định độc quyền được người kiểm toán thêm vào.",
+      "verdict_scope": "Nghĩa/độ bao quát gloss giữ INDETERMINATE; câu hỏi có chữ chỉ không được gán thành nguyên văn tác giả.",
+      "semantic_verdict": "INDETERMINATE",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Câu hỏi lịch sử đã khóa giữ nguyên.",
+        "Bản Word có gloss ngắn, không có chữ chỉ/only trong ô này."
+      ],
+      "unconfirmed_parts": [
+        "Lexical range và gloss Việt cuối cùng do chuyên gia Pāli xác nhận."
+      ],
+      "question_premise_difference": {
+        "historical_question_unchanged": true,
+        "question_contains_only": true,
+        "article_cell_contains_only": false,
+        "article_locator": "T01R08",
+        "target_of_premise_check": "AUDIT_QUESTION_NOT_AUTHOR_CLAIM"
+      },
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC09",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Giữ khác danh sách và ranh tiểu kinh; không tự bù reading.",
+      "source_refs": [
+        "H01#0253a08–0253a18",
+        "H02#0452b04–0452c16",
+        "H02#0452c01–0452c08"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 5,
+      "C_unique_ids": 3,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "WITNESS_LIST_AND_QUESTION_PREMISE",
+      "atomic_claim": "Phần chung và danh sách thực có trong từng tiểu kinh Hán cần giữ riêng.",
+      "verdict_scope": "Không gán giả định hai danh sách đủ giống hệt thành nguyên văn tác giả; giữ H02 nói năm nhưng hiện bốn mục.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Chỉ dùng kinh211, không lấy0453a01 thuộc212.",
+        "Không tự bù mục hoặc xác định lịch sử reading."
+      ],
+      "unconfirmed_parts": [
+        "Thuật ngữ/dị bản và lịch sử truyền bản, cần chuyên gia Hán."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC10",
+      "provisional_label": "PARTIALLY_SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Giới hạn phạm vi tổng hợp và độ đại diện của mẫu.",
+      "source_refs": [
+        "E01#sn36.21:1.5–3.15",
+        "E02#an3.61:1.1–3.3",
+        "E02#an3.61:13.5–16.14",
+        "E04#mn101:12.3–15.6",
+        "E09#sn56.11:4.1–4.10"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 13,
+      "C_unique_ids": 7,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "SYNTHESIS_SCOPE_LIMIT",
+      "atomic_claim": "Mệnh đề hẹp về cảm thọ và mức mở rộng sang mọi bất hạnh/toàn truyền thống phải tách riêng.",
+      "verdict_scope": "Nguồn mẫu không tự phê duyệt phạm vi rộng hoặc mức chắc chắn toàn bài.",
+      "semantic_verdict": "PARTIALLY_SUPPORTED_PROVISIONAL",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Không dùng12 ca exploratory làm độ chính xác đại diện."
+      ],
+      "unconfirmed_parts": [
+        "Giới hạn phạm vi và luận cứ lịch sử/đạo đức, cần chuyên gia."
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC11",
+      "provisional_label": "SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng.",
+      "source_refs": [
+        "E03#mn135:3.1–4.8",
+        "E03#mn135:5.1–6.5",
+        "E03#mn135:7.1–8.5",
+        "E03#mn135:13.1–14.5",
+        "E03-EN#mn135:5.1–5.4",
+        "E03-EN#mn135:7.1–8.3",
+        "E03-EN#mn135:13.1–14.3"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 11,
+      "C_unique_ids": 6,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "CONDITIONAL_TEXTUAL_REPORT_AND_HISTORICAL_LOCATOR",
+      "atomic_claim": "MN135 liên hệ sát sinh/không sát sinh với tuổi thọ, gây hại/không gây hại với sức khỏe, và bố thí/không bố thí với tài sản.",
+      "verdict_scope": "Chỉ phát biểu hẹp rằng kinh có các liên hệ này; không phê duyệt toàn P063/toàn bài hoặc xác nhận nhân quả thực nghiệm.",
+      "semantic_verdict": "SUPPORTED_FOR_LISTED_TEXTUAL_REPORTS_ONLY",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "Giữ nghiệp đã thực hành, sau chết và nếu trở lại làm người.",
+        "Không suy ngược từ bệnh/nghèo để kết tội cá nhân.",
+        "mn135:5.6 không tồn tại vẫn BLOCKED; selector đề xuất là bổ sung mới."
+      ],
+      "unconfirmed_parts": [
+        "Cách diễn ý có thể và mọi suy rộng cá nhân.",
+        "Nội dung ngoài ba quan hệ hẹp.",
+        "Chuyên gia Pāli và quan hệ MN135/SN36.21."
+      ],
+      "supported_claims": [
+        {
+          "claim": "Quan hệ văn bản về tuổi thọ",
+          "source_refs": [
+            "E03#mn135:5.1–6.5"
+          ]
+        },
+        {
+          "claim": "Quan hệ văn bản về sức khỏe",
+          "source_refs": [
+            "E03#mn135:7.1–8.5"
+          ]
+        },
+        {
+          "claim": "Quan hệ văn bản về tài sản",
+          "source_refs": [
+            "E03#mn135:13.1–14.5"
+          ]
+        }
+      ],
+      "whole_article_approved": false
+    },
+    {
+      "case_id": "AC12",
+      "provisional_label": "SUPPORTED",
+      "authority": "PROVISIONAL_AI_ASSESSMENT",
+      "human_adjudication": "PENDING",
+      "technical_review_note": "Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng.",
+      "source_refs": [
+        "E09#sn56.11:4.1–4.10",
+        "E10#an6.63:6.1",
+        "E10#an6.63:33.1–33.5",
+        "E10#an6.63:34.1–38.3",
+        "E10#an6.63:39.1–43.4"
+      ],
+      "article_wording": "REDACTED_PRIVATE",
+      "quote_status": "NOT_TESTED_AS_ARTICLE_VERBATIM",
+      "B_status": "UNVERIFIED",
+      "C_entries": 13,
+      "C_unique_ids": 7,
+      "publication_authorized": false,
+      "blocker_code": null,
+      "issue_type": "NARROW_TEXTUAL_REPORT_AND_SUPPLEMENTAL_LOCATOR",
+      "atomic_claim": "SN56.11 nêu ba tham ái; AN6.63 định nghĩa nghiệp qua cetanā và hành động thân/lời/tâm.",
+      "verdict_scope": "Chỉ ba phát biểu mô tả nguồn đã liệt kê; không xác nhận toàn P108/P109/P113 hoặc mô hình P112–120/toàn bài.",
+      "semantic_verdict": "SUPPORTED_FOR_LISTED_TEXTUAL_REPORTS_ONLY",
+      "label_dimension": "PROVISIONAL_BOUNDED_REVIEW",
+      "conditions_or_limits": [
+        "AN6.63:6.1 là đề mục, không chứa định nghĩa.",
+        "33.3–33.5 là đối chiếu bổ sung trong cùng pin; không hồi tố đổi control6.1.",
+        "Không gọi mới A/B hoặc semantic approval."
+      ],
+      "unconfirmed_parts": [
+        "Nghĩa thuật ngữ do chuyên gia xác nhận.",
+        "Tổng hợp P112–120 và quan hệ nghiệp/tham ái.",
+        "Phạm vi6.1–6.5 cũ không được xem là đã chứng minh định nghĩa."
+      ],
+      "supported_claims": [
+        {
+          "claim": "Taṇhā và ba loại tham ái",
+          "source_refs": [
+            "E09#sn56.11:4.4–4.5"
+          ]
+        },
+        {
+          "claim": "Định nghĩa nghiệp qua cetanā và thân/lời/tâm",
+          "source_refs": [
+            "E10#an6.63:33.3–33.5"
+          ]
+        }
+      ],
+      "whole_article_approved": false
+    }
+  ],
+  "semantic_accuracy": null,
+  "independent_ground_truth": false,
+  "dossier_version": "v2_audit_corrections",
+  "labels_changed": [],
+  "label_counts_note": "Same display labels as V1, with explicit dimensions/scopes. AC04 CONTRADICTED is citation identity only, not a doctrinal semantic verdict."
+}
