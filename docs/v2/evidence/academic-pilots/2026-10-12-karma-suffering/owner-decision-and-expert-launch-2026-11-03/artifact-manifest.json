@@ -1,0 +1,57 @@
+{
+  "kind": "PUBLIC_OWNER_DECISION_PROCESS_TEMPLATES",
+  "payload_count": 10,
+  "hash_policy": "Manifest excludes itself and SHA256SUMS; checksum file includes manifest and payloads, excludes itself.",
+  "files": [
+    {
+      "path": "AC03_AC07_SOURCE_REQUESTS_VI.md",
+      "bytes": 2251,
+      "sha256": "896bff171251d2e3ac6dd7ee3943143d748c3d1b8c9d52d6ffabd5bce6ba9f61"
+    },
+    {
+      "path": "CASE_BY_CASE_EXPERT_ASSIGNMENT.md",
+      "bytes": 4419,
+      "sha256": "e9a77a8477476d2a8a36bb170656867c13e9ffecf959058ed226705e60fb563c"
+    },
+    {
+      "path": "CBETA_INQUIRY_DRAFT_VI.md",
+      "bytes": 2409,
+      "sha256": "62c37c816dbaaa2d55810fb2ef5e1ee9acf26120cffc09147be29dbdd361bb89"
+    },
+    {
+      "path": "EXPERT_INVITATION_DRAFT_VI.md",
+      "bytes": 2567,
+      "sha256": "9e6bbd752aea3adf55565a3d152986bd8da41fcadca0015eff729561ecdb0543"
+    },
+    {
+      "path": "EXPERT_REQUIREMENTS_AND_CANDIDATES_VI.md",
+      "bytes": 2209,
+      "sha256": "9d89bbb3944e67dcceb6d9a4902f8a06a545b3216e3bd2ef06e0d497eefe5e9d"
+    },
+    {
+      "path": "FINAL_ACTION_PLAN_VI.md",
+      "bytes": 2927,
+      "sha256": "f6b4eb8ac4725577463b47f4465b371e01668f52889aabdb4e91838895f40d69"
+    },
+    {
+      "path": "GO_NO_GO_MATRIX.json",
+      "bytes": 11330,
+      "sha256": "2defd99e65f24e32b0c9fc00fe506c54e91c5e1be0e4dee0e337b3466a3052ea"
+    },
+    {
+      "path": "OWNER_DECISIONS_REQUIRED_VI.md",
+      "bytes": 2788,
+      "sha256": "07d6565db476c9fb0737c0cbf8b33961a94937869cdb069b29d3cc62cbaa8e5a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1977,
+      "sha256": "4ae84376192839671a8eb32420e65899e54acf929d6e28e9888ff1e6c15933f0"
+    },
+    {
+      "path": "REVIEWER_HANDOFF_SOP_VI.md",
+      "bytes": 3397,
+      "sha256": "74e83029fbbc24758f4182071b60ef74071822a9689a57aef2258c9c92a4e8ce"
+    }
+  ]
+}
