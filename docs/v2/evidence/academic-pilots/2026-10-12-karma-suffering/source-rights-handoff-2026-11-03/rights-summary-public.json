@@ -1,0 +1,24 @@
+{
+  "source_snapshots": 17,
+  "named_licenses_verified": 5,
+  "original_Pali_public_domain_basis": 11,
+  "published_reuse_basis_verified": 16,
+  "unresolved_source_scope": [
+    "Y01"
+  ],
+  "actual_distribution_clearance": 0,
+  "breakdown": {
+    "CC0_Sujato_translations": 3,
+    "CC_BY_NC_SA_3_0_TW_Han_editions": 2,
+    "public_domain_original_Pali": 11,
+    "Yinshun_custom_notice_scope_unresolved": 1
+  },
+  "not_a_legal_opinion": true,
+  "private_article_external_permission": "PENDING",
+  "no_blanket_license_assumption": true,
+  "official_urls": [
+    "https://github.com/suttacentral/bilara-data/blob/0914c609e49215bb1473199929ee8a2996b423c4/LICENSE.md",
+    "https://suttacentral.net/licensing",
+    "https://www.cbeta.org/copyright.php"
+  ]
+}

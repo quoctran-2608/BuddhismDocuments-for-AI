@@ -1,0 +1,37 @@
+{
+  "CONTENT_READY": [
+    "AC01",
+    "AC02",
+    "AC04",
+    "AC05",
+    "AC06",
+    "AC08",
+    "AC09",
+    "AC10",
+    "AC11",
+    "AC12"
+  ],
+  "partial_content_blocked": [
+    "AC03",
+    "AC07"
+  ],
+  "DISTRIBUTION_CLEARED": [],
+  "scope": {
+    "AC03": "Current named punctuation witness found; article-used version not established.",
+    "AC07": "Official Thanissaro texts available; Gethin passages/access remain missing.",
+    "AC08": "Bounded lexical source dossier available for human review; no final sense selected."
+  },
+  "original_nine_content_ready": 9,
+  "original_nine_distribution_cleared": 0,
+  "experts_assigned": 0,
+  "human_decisions_received": 0,
+  "external_actions": {
+    "invitation": "NOT_SENT",
+    "expert_delivery": "NOT_RUN",
+    "Drive_sharing": "NOT_RUN"
+  },
+  "status": [
+    "HUMAN_ADJUDICATION_PENDING",
+    "PUBLICATION_NOT_PERMITTED"
+  ]
+}

@@ -1,0 +1,7 @@
+# Method and limits
+
+Verify every source's type, creator, pinned file/version and specific applicable terms. Separate named licenses from public-domain original text status; retain source hashes and evidence URLs. Sujato translations are checked against the pinned Bilara LICENSE. Legacy translations are not covered by inference. CBETA current terms and per-file headers are checked together; the Yinshun collection is excluded from default CC terms, so its additional reuse scope remains unresolved.
+
+Official-source acquisition is a new supplement authorized for this phase outside the unchanged historical corpus. Current terms are timestamped observations, not backdated source pins. Search results discover URLs; accepted text evidence requires direct reading, locator/version and checksum. Full copyrighted books and unresolved full-page/database rebundling are excluded from the public projection. Direct official reading is a fallback where appropriate; public reading access does not grant copying rights.
+
+No legal opinion is issued. Published reuse terms do not confirm the project use context, private article consent or recipient/security requirements. No source or case is marked distribution-cleared. Independent A appendices contain source questions, while prior outcomes and preparer comparisons stay with the custodian. No changes to historical quotation gates or semantic decisions.
