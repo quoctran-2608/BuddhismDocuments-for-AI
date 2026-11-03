@@ -1,3 +1,11 @@
+# Round 3 v2 redacted audit corrections
+
+Hiệu đính theo [audit độc lập](https://github.com/quoctran-2608/BuddhismDocuments-for-AI/pull/5#issuecomment-6590966665). Xem [nội dung hiệu đính](audit-corrections-v2.md) và [đối chiếu validation](validation-reconciliation-public.json). AC04 CONTRADICTED chỉ định danh nguồn theo pin; AC01/11/12 chỉ hỗ trợ atomic textual reports. Quote mismatches giữ nguyên. Không nguyên văn bài riêng, đường dẫn cá nhân, source bytes hoặc ResearchStore trong projection này.
+
+84 là tổng cuối V1 có receipt,81 là bộ nền cũ; ba checks thêm được liệt kê. Reconciliation không giả phục hồi standalone81-PASS log. Validation V2 được ghi riêng, không chuyên gia/ground truth mới. Không merge, không mở publication.
+
+Phần thông tin V1 dưới đây là bối cảnh được bảo lưu; V2 bổ sung scope fields và hai tài liệu hiệu đính nêu trên.
+
 # BCR Pilot 01 Round 3 public redacted review preparation
 
 **SEMANTIC_REVIEW_PROVISIONAL · HUMAN_ADJUDICATION_PENDING · PUBLICATION_NOT_PERMITTED.**

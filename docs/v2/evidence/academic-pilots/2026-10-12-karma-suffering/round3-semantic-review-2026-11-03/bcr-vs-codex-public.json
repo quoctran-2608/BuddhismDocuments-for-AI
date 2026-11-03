@@ -33,7 +33,8 @@
           "round": 2
         }
       ],
-      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng.; Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng.; Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "verdict_scope_note": "Đánh giá sơ bộ quan hệ nghĩa/ngữ cảnh; không thay phán quyết nguyên văn theo witness ghim.; Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99."
     },
     {
       "id": "R3-F02",
@@ -49,7 +50,8 @@
         "E01-EN#sn36.21:1.5"
       ],
       "machine_evidence": [],
-      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng."
+      "note": "Giữ quote mismatch; phân loại biên tập và semantic review riêng.",
+      "verdict_scope_note": "Đánh giá sơ bộ quan hệ nghĩa/ngữ cảnh; không thay phán quyết nguyên văn theo witness ghim."
     },
     {
       "id": "R3-F03",
@@ -64,7 +66,8 @@
         "H01#0253a06–0253a08"
       ],
       "machine_evidence": [],
-      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "verdict_scope_note": "Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99."
     },
     {
       "id": "R3-F04",
@@ -92,7 +95,8 @@
           "round": 2
         }
       ],
-      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "verdict_scope_note": "Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99."
     },
     {
       "id": "R3-F05",
@@ -109,7 +113,8 @@
         "Y01#0678a10"
       ],
       "machine_evidence": [],
-      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "verdict_scope_note": "Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99."
     },
     {
       "id": "R3-F06",
@@ -137,7 +142,8 @@
           "round": 2
         }
       ],
-      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới."
+      "note": "Giữ edition/subwork/witness riêng; đọc chuỗi qua markup không là gate mới.",
+      "verdict_scope_note": "Source presence/ngữ cảnh của T99, không xác nhận edition-specific verbatim hoặc lấy witness Y thay T99."
     },
     {
       "id": "R3-F07",
@@ -155,7 +161,8 @@
         "E11#sn35.146:1.3–1.10"
       ],
       "machine_evidence": [],
-      "note": "Citation identity mismatch chỉ theo hệ định danh đã ghim; alias chưa kiểm."
+      "note": "Citation identity mismatch chỉ theo hệ định danh đã ghim; alias chưa kiểm.",
+      "verdict_scope_note": "CONTRADICTED chỉ áp dụng mệnh đề định danh nguồn trên: trong pin này nội dung ở SN35.146, không phải SN35.145."
     },
     {
       "id": "R3-F08",
@@ -171,7 +178,8 @@
         "E01#sn36.21:2.1–3.15"
       ],
       "machine_evidence": [],
-      "note": "Tách tiền đề nguồn và mô hình tổng hợp; cần chuyên gia."
+      "note": "Tách tiền đề nguồn và mô hình tổng hợp; cần chuyên gia.",
+      "verdict_scope_note": "Phân tích đủ/thiếu căn cứ cho tổng hợp, không gọi mô hình là nguyên văn kinh."
     },
     {
       "id": "R3-F09",
@@ -188,7 +196,8 @@
         "E06#mn136:17.2–20.4"
       ],
       "machine_evidence": [],
-      "note": "Tách cảnh báo nhận thức và ứng dụng đạo đức; cần chuyên gia."
+      "note": "Tách cảnh báo nhận thức và ứng dụng đạo đức; cần chuyên gia.",
+      "verdict_scope_note": "Không đồng nhất cảnh báo nhận thức trong nguồn với quy tắc đạo đức được kinh trực tiếp phát biểu."
     },
     {
       "id": "R3-F10",
@@ -214,7 +223,8 @@
           "round": 2
         }
       ],
-      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker."
+      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker.",
+      "verdict_scope_note": "Không thể xác minh khi chưa có tài liệu tác giả đủ edition/vị trí/ngữ cảnh/provenance."
     },
     {
       "id": "R3-F11",
@@ -227,7 +237,8 @@
       "human_adjudication": "PENDING",
       "source_refs": [],
       "machine_evidence": [],
-      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker."
+      "note": "Nguồn tác giả hiện đại chưa có provenance, giữ blocker.",
+      "verdict_scope_note": "Không thể xác minh khi chưa có tài liệu tác giả đủ edition/vị trí/ngữ cảnh/provenance."
     },
     {
       "id": "R3-F12",
@@ -243,7 +254,8 @@
         "E04#mn101:12.3–15.3"
       ],
       "machine_evidence": [],
-      "note": "Nghĩa theo ngữ cảnh chưa adjudicate; kiểm tiền đề câu hỏi."
+      "note": "Nghĩa theo ngữ cảnh chưa adjudicate; kiểm tiền đề câu hỏi.",
+      "verdict_scope_note": "Nghĩa/độ bao quát gloss giữ INDETERMINATE; câu hỏi có chữ chỉ không được gán thành nguyên văn tác giả."
     },
     {
       "id": "R3-F13",
@@ -259,7 +271,8 @@
         "H02#0452c01–0452c02"
       ],
       "machine_evidence": [],
-      "note": "Giữ khác danh sách và ranh tiểu kinh; không tự bù reading."
+      "note": "Giữ khác danh sách và ranh tiểu kinh; không tự bù reading.",
+      "verdict_scope_note": "Không gán giả định hai danh sách đủ giống hệt thành nguyên văn tác giả; giữ H02 nói năm nhưng hiện bốn mục."
     },
     {
       "id": "R3-F14",
@@ -276,7 +289,8 @@
         "E09#sn56.11:4.1–4.5"
       ],
       "machine_evidence": [],
-      "note": "Giới hạn phạm vi tổng hợp và độ đại diện của mẫu."
+      "note": "Giới hạn phạm vi tổng hợp và độ đại diện của mẫu.",
+      "verdict_scope_note": "Nguồn mẫu không tự phê duyệt phạm vi rộng hoặc mức chắc chắn toàn bài."
     },
     {
       "id": "R3-F15",
@@ -298,7 +312,8 @@
           "round": 2
         }
       ],
-      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng."
+      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng.",
+      "verdict_scope_note": "Chỉ phát biểu hẹp rằng kinh có các liên hệ này; không phê duyệt toàn P063/toàn bài hoặc xác nhận nhân quả thực nghiệm."
     },
     {
       "id": "R3-F16",
@@ -315,7 +330,8 @@
         "E03#mn135:13.2–14.5"
       ],
       "machine_evidence": [],
-      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng."
+      "note": "Giữ selector lịch sử vắng; đề xuất locator mới tách riêng.",
+      "verdict_scope_note": "Chỉ phát biểu hẹp rằng kinh có các liên hệ này; không phê duyệt toàn P063/toàn bài hoặc xác nhận nhân quả thực nghiệm."
     },
     {
       "id": "R3-F17",
@@ -331,7 +347,8 @@
         "E10#an6.63:33.3–33.5"
       ],
       "machine_evidence": [],
-      "note": "Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng."
+      "note": "Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng.",
+      "verdict_scope_note": "Chỉ ba phát biểu mô tả nguồn đã liệt kê; không xác nhận toàn P108/P109/P113 hoặc mô hình P112–120/toàn bài."
     },
     {
       "id": "R3-F18",
@@ -349,7 +366,8 @@
         "E10#an6.63:33.3–33.5"
       ],
       "machine_evidence": [],
-      "note": "Phạm vi phát biểu hẹp được phân biệt với phạm vi suy rộng.; Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng."
+      "note": "Phạm vi phát biểu hẹp được phân biệt với phạm vi suy rộng.; Đề mục được gate không thay định nghĩa; vị trí bổ sung giữ riêng.",
+      "verdict_scope_note": "Chỉ các báo cáo nội dung hẹp P011/P016/P018/P019, không toàn đoạn/bài, mọi bất hạnh hoặc mọi truyền thống.; Chỉ ba phát biểu mô tả nguồn đã liệt kê; không xác nhận toàn P108/P109/P113 hoặc mô hình P112–120/toàn bài."
     },
     {
       "id": "R3-F19",
@@ -590,7 +608,8 @@
           "round": 2
         }
       ],
-      "note": "Historical machine workflow observations; no new run or semantic approval."
+      "note": "Historical machine workflow observations; no new run or semantic approval.",
+      "verdict_scope_note": "Historical machine workflow only; no semantic approval."
     }
   ],
   "historical_machine_counts": {
@@ -618,5 +637,6 @@
     "semantic_accuracy": null,
     "independent_ground_truth": false
   },
-  "privacy": "No article quotations, private case prose, local paths or raw data."
+  "privacy": "No article quotations, private case prose, local paths or raw data.",
+  "version": "v2_audit_corrections"
 }

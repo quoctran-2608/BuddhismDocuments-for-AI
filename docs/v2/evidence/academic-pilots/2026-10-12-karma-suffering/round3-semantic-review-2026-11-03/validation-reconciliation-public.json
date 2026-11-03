@@ -1,0 +1,245 @@
+{
+  "version": "R3_FINALIZATION_V2",
+  "reconciled_at": "2026-11-02T23:49:15.507045+00:00",
+  "script": "commands-and-provenance/validate_and_package.py",
+  "original_script_sha256": "f170dd5ca3399693fbd7d32012ce1073091d45cf1e4dfebb0e00471e09b85cc0",
+  "added_three_checks": [
+    "17_bundled_source_snapshots_match_inputs",
+    "draft_pr_scope_only_new_public_docs",
+    "github_public_files_match_local_bytes"
+  ],
+  "groups": [
+    {
+      "group": "case_dossiers",
+      "final_v1_count": 49,
+      "final_v1_pass_count": 49,
+      "base81_count": 49,
+      "checks": [
+        "12_unique_cases",
+        "AC01_locked_inputs_preserved",
+        "AC01_authority_pending",
+        "AC01_A_to_F_sections",
+        "AC01_seven_semantic_answers",
+        "AC02_locked_inputs_preserved",
+        "AC02_authority_pending",
+        "AC02_A_to_F_sections",
+        "AC02_seven_semantic_answers",
+        "AC03_locked_inputs_preserved",
+        "AC03_authority_pending",
+        "AC03_A_to_F_sections",
+        "AC03_seven_semantic_answers",
+        "AC04_locked_inputs_preserved",
+        "AC04_authority_pending",
+        "AC04_A_to_F_sections",
+        "AC04_seven_semantic_answers",
+        "AC05_locked_inputs_preserved",
+        "AC05_authority_pending",
+        "AC05_A_to_F_sections",
+        "AC05_seven_semantic_answers",
+        "AC06_locked_inputs_preserved",
+        "AC06_authority_pending",
+        "AC06_A_to_F_sections",
+        "AC06_seven_semantic_answers",
+        "AC07_locked_inputs_preserved",
+        "AC07_authority_pending",
+        "AC07_A_to_F_sections",
+        "AC07_seven_semantic_answers",
+        "AC08_locked_inputs_preserved",
+        "AC08_authority_pending",
+        "AC08_A_to_F_sections",
+        "AC08_seven_semantic_answers",
+        "AC09_locked_inputs_preserved",
+        "AC09_authority_pending",
+        "AC09_A_to_F_sections",
+        "AC09_seven_semantic_answers",
+        "AC10_locked_inputs_preserved",
+        "AC10_authority_pending",
+        "AC10_A_to_F_sections",
+        "AC10_seven_semantic_answers",
+        "AC11_locked_inputs_preserved",
+        "AC11_authority_pending",
+        "AC11_A_to_F_sections",
+        "AC11_seven_semantic_answers",
+        "AC12_locked_inputs_preserved",
+        "AC12_authority_pending",
+        "AC12_A_to_F_sections",
+        "AC12_seven_semantic_answers"
+      ]
+    },
+    {
+      "group": "protocol_lock",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "protocol_lock_unchanged"
+      ]
+    },
+    {
+      "group": "repository_state",
+      "final_v1_count": 5,
+      "final_v1_pass_count": 5,
+      "base81_count": 5,
+      "checks": [
+        "repository_head_unchanged",
+        "tracked_repository_bytes_unchanged",
+        "working_tree_clean",
+        "pins_manifest_unchanged",
+        "local_index_presence_unchanged"
+      ]
+    },
+    {
+      "group": "historical_inputs",
+      "final_v1_count": 2,
+      "final_v1_pass_count": 2,
+      "base81_count": 2,
+      "checks": [
+        "1243_original_raw_files_unchanged",
+        "round2_zip_unchanged"
+      ]
+    },
+    {
+      "group": "source_hashes",
+      "final_v1_count": 17,
+      "final_v1_pass_count": 17,
+      "base81_count": 17,
+      "checks": [
+        "E01_source_hash",
+        "E02_source_hash",
+        "E03_source_hash",
+        "E04_source_hash",
+        "E05_source_hash",
+        "E06_source_hash",
+        "E07_source_hash",
+        "E08_source_hash",
+        "E09_source_hash",
+        "E10_source_hash",
+        "E11_source_hash",
+        "H01_source_hash",
+        "H02_source_hash",
+        "E01-EN_source_hash",
+        "E02-EN_source_hash",
+        "E03-EN_source_hash",
+        "Y01_source_hash"
+      ]
+    },
+    {
+      "group": "bundled_source_copies",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 0,
+      "checks": [
+        "17_bundled_source_snapshots_match_inputs"
+      ]
+    },
+    {
+      "group": "selector_endpoints",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "all_cited_selector_endpoints_exist"
+      ]
+    },
+    {
+      "group": "raw_machine_bindings",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "machine_findings_have_valid_raw_bindings"
+      ]
+    },
+    {
+      "group": "historical_metrics",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "raw_counts_match_corrected_metrics"
+      ]
+    },
+    {
+      "group": "public_allowlist",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "public_files_allowlisted"
+      ]
+    },
+    {
+      "group": "privacy_patterns",
+      "final_v1_count": 2,
+      "final_v1_pass_count": 2,
+      "base81_count": 2,
+      "checks": [
+        "no_personal_paths_credentials_or_email_in_public",
+        "no_long_private_article_verbatim_in_public"
+      ]
+    },
+    {
+      "group": "github_post_upload",
+      "final_v1_count": 2,
+      "final_v1_pass_count": 2,
+      "base81_count": 0,
+      "checks": [
+        "github_public_files_match_local_bytes",
+        "draft_pr_scope_only_new_public_docs"
+      ]
+    },
+    {
+      "group": "artifact_links",
+      "final_v1_count": 1,
+      "final_v1_pass_count": 1,
+      "base81_count": 1,
+      "checks": [
+        "artifact_markdown_links_resolve"
+      ]
+    }
+  ],
+  "answer": "81 is the earlier base checkset;84 is the final archived V1 checkset. Three later-added checks explain the difference. The PR description was stale.",
+  "counting_rule": "A named check is one boolean assertion, not number of files tested;139/139 checksum entries and17 source snapshots are separate coverage counts.",
+  "historical_runs": [
+    {
+      "artifact": "commands-and-provenance/validation-attempt01.json",
+      "sha256": "18d741f58af88722309043b156c17c39fbd2dc70478c234d02a37a6b999da357",
+      "checked_at": "2026-11-02T22:42:37.415382+00:00",
+      "check_count": 81,
+      "pass_count": 80,
+      "fail_count": 1,
+      "passed": false,
+      "errors": [
+        "no_personal_paths_credentials_or_email_in_public"
+      ]
+    },
+    {
+      "artifact": "commands-and-provenance/validation-public-transport-attempt01.json",
+      "sha256": "d41e69645ad1a0f4e7e40316c2b124ab0c3161b1229e0710ea07b002468dd87b",
+      "checked_at": "2026-11-02T22:44:51.415343+00:00",
+      "check_count": 83,
+      "pass_count": 82,
+      "fail_count": 1,
+      "passed": false,
+      "errors": [
+        "github_public_files_match_local_bytes"
+      ]
+    },
+    {
+      "artifact": "commands-and-provenance/validation.json",
+      "sha256": "a934aa37e21c53ff2f33aaf61f84b157295afd8c79c0f1f06aa65589149e75fc",
+      "checked_at": "2026-11-02T22:49:20.105831+00:00",
+      "check_count": 84,
+      "pass_count": 84,
+      "fail_count": 0,
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "reported_81_pass": {
+    "standalone_81_pass_json_or_log_preserved": false,
+    "exact_successful_81_run_start_end": "NOT_CAPTURED_IN_PRESERVED_FILE",
+    "corroboration": "The81 named base checks are present in the final84-check JSON, where all81 pass. This does not reconstruct or backdate a missing standalone81-pass receipt."
+  },
+  "new_private_validation": "Separate version2 validation receipt; the public audit did not rerun81/84 private checks."
+}
