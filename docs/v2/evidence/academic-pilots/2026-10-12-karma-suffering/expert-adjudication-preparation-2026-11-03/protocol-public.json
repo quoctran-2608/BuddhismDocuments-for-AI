@@ -1,0 +1,41 @@
+{
+  "protocol_id": "BCR-PILOT01-EXPERT-PREPARATION-20261103-v1",
+  "private_protocol_sha256": "e32cb0ed451e252d0027554cc818f5070af6721056a40efb19a242fc25f341c2",
+  "locked_before_packets": true,
+  "base_main": "6b43b7a2f9946c024fa29b6360eb6f904611edc9",
+  "preparation_only": true,
+  "prior_preparer_exposure": true,
+  "fully_blinded": false,
+  "dimensions": [
+    "SOURCE_IDENTITY",
+    "VERBATIM",
+    "TRANSLATION",
+    "CONTEXT",
+    "CLAIM_SUPPORT",
+    "ALTERNATIVES",
+    "INFERENCE_SCOPE"
+  ],
+  "labels": [
+    "SUPPORTED",
+    "PARTIALLY_SUPPORTED",
+    "INSUFFICIENT_SUPPORT",
+    "CONTRADICTED",
+    "INDETERMINATE",
+    "BLOCKED"
+  ],
+  "minimum_qualified_reviewers_per_case": 1,
+  "second_reviewer_recommended": [
+    "AC02",
+    "AC03",
+    "AC04",
+    "AC07",
+    "AC08",
+    "AC09",
+    "AC11",
+    "AC12"
+  ],
+  "expert_authentication": false,
+  "expert_decisions": "PENDING",
+  "new_BCR_runs": 0,
+  "publication_authorized": false
+}
