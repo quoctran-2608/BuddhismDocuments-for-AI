@@ -1,5 +1,9 @@
 # Sử dụng phần tích hợp E
 
+P0/2 có pipeline AI proposal tùy chọn: [hướng dẫn/model adapter](P0_2_USAGE.md).
+Source verification, AI semantic proposal và authorized approval là ba kết
+quả khác nhau; pipeline mới không cấp approval hoặc quyền công bố.
+
 P0/1 bổ sung đường tùy chọn nhận claim và nguồn khai báo: xem
 [Claim/Work-Constrained Retrieval](P0_1_USAGE.md). Các lệnh Quick, Research
 theo query và CLI 1.0 giữ nguyên hành vi mặc định.

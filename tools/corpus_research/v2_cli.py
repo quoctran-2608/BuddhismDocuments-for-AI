@@ -20,6 +20,13 @@ def parser():
     p.add_argument('--db',type=Path,default=root/'derived/corpus.sqlite3')
     p.add_argument('--store',type=Path,default=root/'derived/research.sqlite3')
     sub = p.add_subparsers(dest='command',required=True)
+    semantic = sub.add_parser('semantic-assess',help='P0/2 support/challenge proposals; never approval or accepted claims.')
+    semantic.add_argument('--run-id',required=True)
+    semantic.add_argument('--claim-id',required=True)
+    semantic.add_argument('--version',type=int,required=True)
+    semantic.add_argument('--output',type=Path,required=True)
+    semantic.add_argument('--counter-query',action='append')
+    semantic.add_argument('--model-config',type=Path,help='Trusted host command/model configuration; never a proposal or source field.')
     declared = sub.add_parser('claim-run-create',help='Create a pending draft using exact declared source references; no lexical substitution.')
     declared.add_argument('--run-id',required=True)
     declared.add_argument('--question',required=True)
@@ -97,7 +104,15 @@ def main(argv=None):
         else:
             research = LocalResearch(host,args.store)
             store = research.store
-            if args.command=='claim-run-create':
+            if args.command=='semantic-assess':
+                from .model_adapter import model_from_config
+                from .semantic_workflow import assess_research_claim,write_assessment
+                model=model_from_config(load(args.model_config)) if args.model_config else None
+                assessment=assess_research_claim(research,run_id=args.run_id,claim_id=args.claim_id,
+                    expected_version=args.version,model=model,counter_queries=args.counter_query)
+                result={'assessment':assessment,'artifacts':write_assessment(research,assessment,args.output),
+                        'publication_authorized':False}
+            elif args.command=='claim-run-create':
                 from .declared_sources import create_declared_run
                 data=load(args.input)
                 if not isinstance(data,dict) or set(data)!={'claims','source_references'}:
