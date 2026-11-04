@@ -1,0 +1,322 @@
+{
+  "baseline": "bdff78ad83d0f56c676155555b063d52f12634d5",
+  "generated_at": "2026-11-04T04:26:18.903866+00:00",
+  "full_suite": {
+    "exit_code": 0,
+    "unittest_tests_run": 432,
+    "passed_methods": 432,
+    "skipped_classes": [
+      "test_declared_sources_corpus.PilotDeclaredSourceTests: explicit existing-index environment required; executed separately below"
+    ],
+    "failures": 0,
+    "errors": 0,
+    "by_module": {
+      "test_acceptance": 9,
+      "test_cbeta_resolver": 10,
+      "test_cjk_substring_search": 1,
+      "test_claims": 82,
+      "test_connector_contract": 11,
+      "test_corpus_integration": 14,
+      "test_counterevidence": 70,
+      "test_declared_sources": 22,
+      "test_golden_research": 11,
+      "test_local_integration": 40,
+      "test_normalization": 7,
+      "test_remote_access": 15,
+      "test_research_run": 77,
+      "test_source_span_selection": 16,
+      "test_text_roles": 3,
+      "test_verification": 44
+    },
+    "started_at": "2026-11-04T04:27:55.546425+00:00",
+    "finished_at": "2026-11-04T04:28:21.318916+00:00",
+    "elapsed_seconds": 25.777328098000005,
+    "setup": "Exact byte copy of working tree to temporary Linux Git workspace; links to all 13 existing pinned sources. No download. Temporary acceptance index only; historical pilot index untouched.",
+    "product_bytes_match": true
+  },
+  "pilot": {
+    "tests_run": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 1.3829393999999997,
+    "finished_at": "2026-11-04T04:27:54.498554+00:00",
+    "host_baseline": "bdff78ad83d0f56c676155555b063d52f12634d5",
+    "db_bytes": 12102680576,
+    "mount": {
+      "mount": {
+        "filesystems": [
+          {
+            "target": "/mnt/bcr-p01-readonly",
+            "source": "/dev/loop0",
+            "fstype": "ext4",
+            "options": "ro,relatime,norecovery"
+          }
+        ]
+      },
+      "exit_code": 0,
+      "script_sha256": "9265a7a074d759bbd62d020824f85d94d78732d770ad0b26da55396d4f44ea26",
+      "finished_at": "2026-11-04T04:27:54.535534+00:00",
+      "unmounted": true
+    },
+    "sources_before": [
+      {
+        "path": "suttacentral/bilara-data",
+        "head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_clean": true
+      },
+      {
+        "path": "suttacentral/sc-data",
+        "head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/xml-p5",
+        "head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/BM_u8",
+        "head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-translation-memory",
+        "head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-rdf",
+        "head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-tei",
+        "head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_clean": true
+      },
+      {
+        "path": "openpecha/C0A2DD042",
+        "head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-pali",
+        "head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-chinese",
+        "head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-sanskrit",
+        "head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_clean": true
+      },
+      {
+        "path": "pts/pts-archive",
+        "head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_clean": true
+      },
+      {
+        "path": "third-party/pali-canon",
+        "head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_clean": true
+      }
+    ],
+    "sources_after": [
+      {
+        "path": "suttacentral/bilara-data",
+        "head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_clean": true
+      },
+      {
+        "path": "suttacentral/sc-data",
+        "head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/xml-p5",
+        "head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/BM_u8",
+        "head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-translation-memory",
+        "head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-rdf",
+        "head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-tei",
+        "head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_clean": true
+      },
+      {
+        "path": "openpecha/C0A2DD042",
+        "head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-pali",
+        "head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-chinese",
+        "head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-sanskrit",
+        "head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_clean": true
+      },
+      {
+        "path": "pts/pts-archive",
+        "head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_clean": true
+      },
+      {
+        "path": "third-party/pali-canon",
+        "head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_clean": true
+      }
+    ],
+    "observations": [
+      {
+        "name": "default-keyword",
+        "status": "DISCOVERY_ONLY",
+        "identity": {
+          "corpus": "suttacentral-bilara",
+          "work_id": "an3.61",
+          "source_path": "suttacentral/bilara-data/root/pli/ms/sutta/an/an3/an3.61_root-pli-ms.json",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "segment_id": "an3.61:0.1..an3.61:10.2",
+          "witness": "root:root-pli-ms",
+          "text_role": "root_text"
+        },
+        "elapsed_seconds": 0.08493590000000051,
+        "metrics": {
+          "retrieval_seconds": 0.04288969999999992,
+          "source_seconds": 0.041269699999999965,
+          "verification_seconds": 0.0005202000000004148,
+          "source_reads": 2,
+          "retrieval_calls": 1
+        }
+      },
+      {
+        "name": "declared-AC01",
+        "status": "VERIFIED",
+        "identity": {
+          "corpus": "suttacentral-bilara",
+          "repository": "suttacentral/bilara-data",
+          "work_id": "sn36.21",
+          "source_path": "root/pli/ms/sutta/sn/sn36/sn36.21_root-pli-ms.json",
+          "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+          "source_blob_sha": "1bdd992dcdce5be6e86cc209ec9f2c982de4fc4f",
+          "segment_id": "sn36.21:2.1",
+          "sequence_no": 9,
+          "witness": "root:root-pli-ms",
+          "evidence_class": "canonical_root",
+          "text_role": "root_text"
+        },
+        "elapsed_seconds": 0.0243108000000003,
+        "metrics": {
+          "retrieval_seconds": 0.0,
+          "source_seconds": 0.02086579999999927,
+          "verification_seconds": 0.00024499999999960664,
+          "source_reads": 3,
+          "retrieval_calls": 0
+        }
+      }
+    ]
+  },
+  "preservation": {
+    "historic_manifests": [
+      {
+        "artifact": "academic-pilot01-ai-autonomous-verification",
+        "checked": 62,
+        "failures": []
+      },
+      {
+        "artifact": "academic-pilot01-expert-adjudication-preparation",
+        "checked": 239,
+        "failures": []
+      }
+    ],
+    "claims": 37,
+    "all_claims_pending": true,
+    "decision_cells": 259,
+    "all_cells_pending": true,
+    "claim_register_sha256": "aa4b6bd09d2b1a3592d215ebdb60f78f2e56840eea811f6ec440bd0062125b00"
+  },
+  "tested_files": [
+    {
+      "path": "tools/corpus_research/declared_sources.py",
+      "sha256": "8ab0dc8e79777135078eb503eb88f221d170626319b9bb5bd46473609d7ba956"
+    },
+    {
+      "path": "tools/corpus_research/v2_cli.py",
+      "sha256": "28ac0e988549a56c226a54354294b44b50955030862c06767bc37e86ea14595f"
+    },
+    {
+      "path": "tests/test_declared_sources.py",
+      "sha256": "eba739cddf0c6561d41f498d4e0d8b2ab11f856e66cb737ef4ba8c090e31e985"
+    },
+    {
+      "path": "tests/test_declared_sources_corpus.py",
+      "sha256": "185677ca3a7a9a8ea839a56ffe66e4ff1f1097e2ee1f3b4c0ec585437cee14dd"
+    }
+  ],
+  "local_raw_receipts": [
+    {
+      "path": ".m\\p01-tools\\results\\full-suite.receipt.json",
+      "sha256": "41c171d8c2267de6f564d92aec3020279d31c41c799b5e5f3620429eadb2dd65",
+      "bytes": 33158
+    },
+    {
+      "path": ".m\\p01-tools\\results\\full-suite.stderr",
+      "sha256": "c4ccce72dcb5980d7852499727f1a97b42a505dad9974769d13ef687adb35510",
+      "bytes": 66809
+    },
+    {
+      "path": ".m\\p01-tools\\results\\full-suite.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".m\\p01-tools\\results\\mount-receipt.json",
+      "sha256": "5fde70c6c0b3d0f23950cbaa8181240f93b1cf9173bbaf52d4e70a4cdadaecf2",
+      "bytes": 388
+    },
+    {
+      "path": ".m\\p01-tools\\results\\preservation.json",
+      "sha256": "bba6cbc6913547557af9a06cc76d47ff5639a928cee9cde1232f4dc684839a36",
+      "bytes": 493
+    },
+    {
+      "path": ".m\\p01-tools\\results\\real-regression.json",
+      "sha256": "613bae5f0ed038fa110d5f06d4074afe40e771d186ffbb3cd337b1695bc1a020",
+      "bytes": 69685
+    },
+    {
+      "path": ".m\\p01-tools\\results\\real-regression.stderr",
+      "sha256": "cdc5acbb5ad93aee7051fe938fc15aea3e589c5898292c59b283900cceb831ba",
+      "bytes": 1603
+    }
+  ],
+  "semantic_approval": false,
+  "publication_authorized": false,
+  "distribution_cleared": 0
+}

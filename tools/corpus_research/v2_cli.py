@@ -20,6 +20,19 @@ def parser():
     p.add_argument('--db',type=Path,default=root/'derived/corpus.sqlite3')
     p.add_argument('--store',type=Path,default=root/'derived/research.sqlite3')
     sub = p.add_subparsers(dest='command',required=True)
+    declared = sub.add_parser('claim-run-create',help='Create a pending draft using exact declared source references; no lexical substitution.')
+    declared.add_argument('--run-id',required=True)
+    declared.add_argument('--question',required=True)
+    declared.add_argument('--corpus',action='append',required=True)
+    declared.add_argument('--input',type=Path,required=True)
+    declared_source = sub.add_parser('verify-source',help='Verify a declared source for a claim; no semantic approval.')
+    declared_source.add_argument('--claim-id',required=True)
+    declared_source.add_argument('--input',type=Path,required=True)
+    expanded = sub.add_parser('source-search',help='Explicit additional discovery labeled EXPANDED; never replaces a declared source.')
+    expanded.add_argument('query')
+    expanded.add_argument('--claim-id',required=True)
+    expanded.add_argument('--corpus',required=True)
+    expanded.add_argument('--limit',type=int,default=3)
     quick = sub.add_parser('quick',help='Retrieve a few hits and verify their pinned source spans; no research store.')
     quick.add_argument('query')
     quick.add_argument('--corpus')
@@ -71,14 +84,26 @@ def main(argv=None):
     args = parser().parse_args(argv)
     try:
         host = LocalHost(args.root,args.db,source_root=args.source_root)
-        if args.command=='quick':
+        if args.command=='verify-source':
+            from .declared_sources import verify_declared_source
+            result = verify_declared_source(host,load(args.input),claim_id=args.claim_id)
+        elif args.command=='source-search':
+            from .declared_sources import search_expanded_sources
+            result = search_expanded_sources(host,args.query,claim_id=args.claim_id,corpus=args.corpus,limit=args.limit)
+        elif args.command=='quick':
             result = host.quick(args.query,corpus=args.corpus,language=args.language,limit=args.limit)
         elif args.command=='quote':
             result = host.verify_record(args.record_id,quotation=args.text)
         else:
             research = LocalResearch(host,args.store)
             store = research.store
-            if args.command=='run-create':
+            if args.command=='claim-run-create':
+                from .declared_sources import create_declared_run
+                data=load(args.input)
+                if not isinstance(data,dict) or set(data)!={'claims','source_references'}:
+                    raise ValueError('input requires claims and source_references only')
+                result=create_declared_run(research,run_id=args.run_id,question=args.question,claims=data['claims'],source_references=data['source_references'],corpora=args.corpus)
+            elif args.command=='run-create':
                 result = research.create(run_id=args.run_id,question=args.question,queries=args.query,
                     corpora=args.corpus,limit=args.limit,counter_queries=args.counter_query)
             elif args.command=='run-show':

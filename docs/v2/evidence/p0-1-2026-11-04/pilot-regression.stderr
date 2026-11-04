@@ -1,0 +1,14 @@
+test_ac01_default_lexical_remains_off_target_but_declared_is_exact (test_declared_sources_corpus.PilotDeclaredSourceTests.test_ac01_default_lexical_remains_off_target_but_declared_is_exact) ... ok
+test_ac01_sn3621_individual_segment_inside_core_chunk (test_declared_sources_corpus.PilotDeclaredSourceTests.test_ac01_sn3621_individual_segment_inside_core_chunk) ... ok
+test_ac04_cross_work_path_does_not_auto_renumber (test_declared_sources_corpus.PilotDeclaredSourceTests.test_ac04_cross_work_path_does_not_auto_renumber) ... ok
+test_ac04_sn35145_and_sn35146_remain_distinct (test_declared_sources_corpus.PilotDeclaredSourceTests.test_ac04_sn35145_and_sn35146_remain_distinct) ... ok
+test_actual_claim_binding_and_publication_remain_pending (test_declared_sources_corpus.PilotDeclaredSourceTests.test_actual_claim_binding_and_publication_remain_pending) ... ok
+test_actual_missing_source_repository (test_declared_sources_corpus.PilotDeclaredSourceTests.test_actual_missing_source_repository) ... ok
+test_actual_multiple_witnesses_are_ambiguous (test_declared_sources_corpus.PilotDeclaredSourceTests.test_actual_multiple_witnesses_are_ambiguous) ... ok
+test_actual_wrong_work_path_pin_witness_segment (test_declared_sources_corpus.PilotDeclaredSourceTests.test_actual_wrong_work_path_pin_witness_segment) ... ok
+test_original_pilot_claim_text_is_preserved_in_new_pending_draft (test_declared_sources_corpus.PilotDeclaredSourceTests.test_original_pilot_claim_text_is_preserved_in_new_pending_draft) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.017s
+
+OK

@@ -1,5 +1,9 @@
 # Sử dụng phần tích hợp E
 
+P0/1 bổ sung đường tùy chọn nhận claim và nguồn khai báo: xem
+[Claim/Work-Constrained Retrieval](P0_1_USAGE.md). Các lệnh Quick, Research
+theo query và CLI 1.0 giữ nguyên hành vi mặc định.
+
 Quick đã tra cứu/kiểm nguồn được; Research tạo hồ sơ dự thảo và gói phản biện.
 Research chưa có quyền công bố kết luận đã được chấp thuận. Các lệnh 1.0 trong
 [CLI.md](../CLI.md) giữ nguyên. Kết quả và giới hạn nghiệm thu xem [E_REPORT.md](E_REPORT.md).
