@@ -1,0 +1,381 @@
+{
+  "baseline": "11b7d55a7bbadcbfc0f08cf5194947a09da9a06b",
+  "generated_at": "2026-11-04T07:48:29.599364+00:00",
+  "inference_status": "MODEL_INFERENCE_NOT_EXECUTED",
+  "real_model_calls": 0,
+  "semantic_accuracy": "NOT_MEASURED",
+  "provider_tokens": null,
+  "provider_cost": null,
+  "full_suite": {
+    "methods_passed": 462,
+    "failures": 0,
+    "errors": 0,
+    "skipped_classes": [
+      "test_declared_sources_corpus.PilotDeclaredSourceTests",
+      "test_semantic_pilot.SemanticPilotTests"
+    ],
+    "by_module": {
+      "test_acceptance": 9,
+      "test_cbeta_resolver": 10,
+      "test_cjk_substring_search": 1,
+      "test_claims": 82,
+      "test_connector_contract": 11,
+      "test_corpus_integration": 14,
+      "test_counterevidence": 70,
+      "test_declared_sources": 22,
+      "test_golden_research": 11,
+      "test_local_integration": 40,
+      "test_normalization": 7,
+      "test_remote_access": 15,
+      "test_research_run": 77,
+      "test_semantic_assessment": 30,
+      "test_source_span_selection": 16,
+      "test_text_roles": 3,
+      "test_verification": 44
+    },
+    "started_at": "2026-11-04T07:48:52.665238+00:00",
+    "finished_at": "2026-11-04T07:49:19.356589+00:00",
+    "elapsed_seconds": 26.69135366500001,
+    "exit_code": 0,
+    "setup": "Exact-byte temporary Linux Git copy with links to existing 13 pinned sources and temporary acceptance index.",
+    "product_bytes_match": true
+  },
+  "pilot": {
+    "methods_passed": 16,
+    "p01_methods": 9,
+    "p02_methods": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "started_at": "2026-11-04T07:48:50.062480+00:00",
+    "finished_at": "2026-11-04T07:48:59.657510+00:00",
+    "elapsed_seconds": 9.595025776999996,
+    "sources_before": [
+      {
+        "path": "suttacentral/bilara-data",
+        "head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_clean": true
+      },
+      {
+        "path": "suttacentral/sc-data",
+        "head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/xml-p5",
+        "head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/BM_u8",
+        "head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-translation-memory",
+        "head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-rdf",
+        "head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-tei",
+        "head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_clean": true
+      },
+      {
+        "path": "openpecha/C0A2DD042",
+        "head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-pali",
+        "head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-chinese",
+        "head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-sanskrit",
+        "head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_clean": true
+      },
+      {
+        "path": "pts/pts-archive",
+        "head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_clean": true
+      },
+      {
+        "path": "third-party/pali-canon",
+        "head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_clean": true
+      }
+    ],
+    "sources_after": [
+      {
+        "path": "suttacentral/bilara-data",
+        "head": "0914c609e49215bb1473199929ee8a2996b423c4",
+        "tracked_clean": true
+      },
+      {
+        "path": "suttacentral/sc-data",
+        "head": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/xml-p5",
+        "head": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+        "tracked_clean": true
+      },
+      {
+        "path": "cbeta/BM_u8",
+        "head": "83bc009a6f3333fa2d61cb436ee6181b1335beb4",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-translation-memory",
+        "head": "0c89d8ef4998e2a4cacb7d675a9d5bbba2a22b22",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-rdf",
+        "head": "c40f02614313d4772319ffb0173766dbaf0764cf",
+        "tracked_clean": true
+      },
+      {
+        "path": "84000/data-tei",
+        "head": "bdfc81c9aecdfaf93e084ab64a885577de773046",
+        "tracked_clean": true
+      },
+      {
+        "path": "openpecha/C0A2DD042",
+        "head": "1164df36da0b78ec8afa6baad9cb131a9b604366",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-pali",
+        "head": "60d3af5bb4d0692832e05114099f1163450ff49d",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-chinese",
+        "head": "068082747ea11d02cb5dbdfeec50f5072422713e",
+        "tracked_clean": true
+      },
+      {
+        "path": "buddhanexus/segmented-sanskrit",
+        "head": "8ba2ab31e116e3363f8d048b3ceb44e717693873",
+        "tracked_clean": true
+      },
+      {
+        "path": "pts/pts-archive",
+        "head": "50a8d4538ed1251b2675d0fcf24182e52c4f454a",
+        "tracked_clean": true
+      },
+      {
+        "path": "third-party/pali-canon",
+        "head": "7d44211b1ae51ed6c447ee07bd0557b567114170",
+        "tracked_clean": true
+      }
+    ],
+    "mount": {
+      "mount": {
+        "filesystems": [
+          {
+            "target": "/mnt/bcr-p02-readonly",
+            "source": "/dev/loop0",
+            "fstype": "ext4",
+            "options": "ro,relatime,norecovery"
+          }
+        ]
+      },
+      "exit_code": 0,
+      "script_sha256": "c6828b71b860fd4d687451bfe280861565f0efb592856edcc853d480b88e5999",
+      "finished_at": "2026-11-04T07:49:00.006465+00:00",
+      "unmounted": true
+    },
+    "examples": [
+      {
+        "claim_id": "AC01-C01",
+        "inference_status": "MODEL_INFERENCE_NOT_EXECUTED",
+        "scenario": "NO_MODEL",
+        "support": null,
+        "final_status": "UNRESOLVED",
+        "final_level": null,
+        "calls": 0,
+        "artifacts": [
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC01-C01.json",
+            "sha256": "966f2d30ef2a0d5a8cbf94a739bafae00da935cc303936a45254b58f1ca913be"
+          },
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC01-C01.md",
+            "sha256": "a0c5208ebd78f4debcd9a627e7a5178bb989582331caa54c02c85cbf359f1ed4"
+          }
+        ]
+      },
+      {
+        "claim_id": "AC01-C02",
+        "inference_status": "MODEL_INFERENCE_NOT_EXECUTED",
+        "scenario": "SCRIPTED_FIXTURE_lower",
+        "support": "DIRECT",
+        "final_status": "PROPOSED",
+        "final_level": "WEAK",
+        "calls": 2,
+        "artifacts": [
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC01-C02.json",
+            "sha256": "ded2c80e406e7b579b4e6fdc9db7680a037ec0c9e5f73478b41021e9963d2e1c"
+          },
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC01-C02.md",
+            "sha256": "bcd30e242a5802d2a4d3b3d6647ca7531343f099a1d956428b0bf6dd91ef2b6e"
+          }
+        ]
+      },
+      {
+        "claim_id": "AC08-C01",
+        "inference_status": "MODEL_INFERENCE_NOT_EXECUTED",
+        "scenario": "SCRIPTED_FIXTURE_issue",
+        "support": "DIRECT",
+        "final_status": "UNRESOLVED",
+        "final_level": null,
+        "calls": 2,
+        "artifacts": [
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC08-C01.json",
+            "sha256": "1189e453190ae3a8ec98a348d65f015adb9aaefc1d70d811a854fdcba2260fe1"
+          },
+          {
+            "path": "/mnt/d/WORKING/BuddhismDocuments-for-AI/.m/p02-tools/final-results/private-examples/AC08-C01.md",
+            "sha256": "f6d3d7b6d9e70983e22e929aac3cb6f38dd6609cb7a96b4ac19dc482c9807953"
+          }
+        ]
+      }
+    ],
+    "scope": "Native-unit source identity and software plumbing; fixture judgments are scripted, not semantic detections. Five original version/source blockers are missing-source inputs, not inferred approvals."
+  },
+  "preservation": {
+    "checks": [
+      {
+        "artifact": "academic-pilot01-ai-autonomous-verification",
+        "checksums_passed": 62
+      },
+      {
+        "artifact": "academic-pilot01-expert-adjudication-preparation",
+        "checksums_passed": 239
+      }
+    ],
+    "claim_count": 37,
+    "pending_cells": 259,
+    "all_pending": true,
+    "case_count": 12,
+    "register_sha256": "aa4b6bd09d2b1a3592d215ebdb60f78f2e56840eea811f6ec440bd0062125b00"
+  },
+  "tested_files": [
+    {
+      "path": "tools/corpus_research/model_adapter.py",
+      "sha256": "b7b2d10506a9cefb009b014cd588d6a49f9b7bd8e2dbfec57b30f5a0eb5a31b5"
+    },
+    {
+      "path": "tools/corpus_research/semantic_assessment.py",
+      "sha256": "71a4572affad7be5cc851d4bf4093140aa22c4b17453eb64f6bb32157350a9d8"
+    },
+    {
+      "path": "tools/corpus_research/semantic_workflow.py",
+      "sha256": "1faef30e0048e67c44729b00f42bd1e2c93a2532041e22479869d76f4a678b23"
+    },
+    {
+      "path": "tools/corpus_research/v2_cli.py",
+      "sha256": "35143abda4d05efc9015c5690888e8ac0f2b331405a55196b239f24367f5dabd"
+    },
+    {
+      "path": "tests/test_semantic_assessment.py",
+      "sha256": "858496af34290c2969ab6d1db3c248e66961aed50079b732e30ea912da205d8f"
+    },
+    {
+      "path": "tests/test_semantic_pilot.py",
+      "sha256": "521eececb264218a898b218c8cb625e78e08ec562d767011154ecebe137d8d64"
+    },
+    {
+      "path": "tests/fixtures/semantic_model.py",
+      "sha256": "deea8b83fcc64790b632678459e409df03539e89053cab1de20943e0a37807d2"
+    }
+  ],
+  "local_receipts": [
+    {
+      "path": ".m/p02-tools/final-results/full-suite.receipt.json",
+      "sha256": "7642273e67d64ff22d21875b37a351aef0b9002cf4eb410771d782c24ccab72d",
+      "bytes": 35306
+    },
+    {
+      "path": ".m/p02-tools/final-results/full-suite.stderr",
+      "sha256": "b43b1c222aa8babfcd49206539d3928cf26a62dc847be1fb7d091da8cacc3ff0",
+      "bytes": 71438
+    },
+    {
+      "path": ".m/p02-tools/final-results/full-suite.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".m/p02-tools/final-results/mount-receipt.json",
+      "sha256": "36dacc76f0d066b7d1757bb5e0f04a8c343de026bb87519ec0d700ffdc742602",
+      "bytes": 388
+    },
+    {
+      "path": ".m/p02-tools/final-results/pilot-receipt.json",
+      "sha256": "0b65e4347fcbba9a8731fee16ec77b8d996b95d86400caa4eae426b63d523c55",
+      "bytes": 7244
+    },
+    {
+      "path": ".m/p02-tools/final-results/pilot.stderr",
+      "sha256": "c31ffac1a2b79c0d3f4815e44705839b1b48a9d03095b7e94916070d0e1dd123",
+      "bytes": 2748
+    },
+    {
+      "path": ".m/p02-tools/final-results/preservation.json",
+      "sha256": "2ab7da12b5beb7da4a7e6b55dca369afd4e5b000dba957a5719f171d215a5691",
+      "bytes": 418
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC01-C01.json",
+      "sha256": "966f2d30ef2a0d5a8cbf94a739bafae00da935cc303936a45254b58f1ca913be",
+      "bytes": 4846
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC01-C01.md",
+      "sha256": "a0c5208ebd78f4debcd9a627e7a5178bb989582331caa54c02c85cbf359f1ed4",
+      "bytes": 2685
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC01-C02.json",
+      "sha256": "ded2c80e406e7b579b4e6fdc9db7680a037ec0c9e5f73478b41021e9963d2e1c",
+      "bytes": 20194
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC01-C02.md",
+      "sha256": "bcd30e242a5802d2a4d3b3d6647ca7531343f099a1d956428b0bf6dd91ef2b6e",
+      "bytes": 5837
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC08-C01.json",
+      "sha256": "1189e453190ae3a8ec98a348d65f015adb9aaefc1d70d811a854fdcba2260fe1",
+      "bytes": 28215
+    },
+    {
+      "path": ".m/p02-tools/final-results/private-examples/AC08-C01.md",
+      "sha256": "f6d3d7b6d9e70983e22e929aac3cb6f38dd6609cb7a96b4ac19dc482c9807953",
+      "bytes": 8815
+    }
+  ],
+  "semantic_approval": false,
+  "publication_authorized": false,
+  "distribution_cleared": 0
+}
