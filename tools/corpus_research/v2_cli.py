@@ -20,6 +20,12 @@ def parser():
     p.add_argument('--db',type=Path,default=root/'derived/corpus.sqlite3')
     p.add_argument('--store',type=Path,default=root/'derived/research.sqlite3')
     sub = p.add_subparsers(dest='command',required=True)
+    output = sub.add_parser('output-check',help='P0/3 structured title/quote/identity and recorded-condition checks; no approval.')
+    output.add_argument('--run-id',required=True)
+    output.add_argument('--version',type=int,required=True)
+    output.add_argument('--input',type=Path,required=True)
+    output.add_argument('--notes',type=Path,help='Previously recorded condition/scope/attribution annotations; not semantic ground truth.')
+    output.add_argument('--output',type=Path,required=True)
     semantic = sub.add_parser('semantic-assess',help='P0/2 support/challenge proposals; never approval or accepted claims.')
     semantic.add_argument('--run-id',required=True)
     semantic.add_argument('--claim-id',required=True)
@@ -104,7 +110,11 @@ def main(argv=None):
         else:
             research = LocalResearch(host,args.store)
             store = research.store
-            if args.command=='semantic-assess':
+            if args.command=='output-check':
+                from .output_workflow import write_output_check
+                result=write_output_check(research,run_id=args.run_id,expected_version=args.version,
+                    document=load(args.input),notes=load(args.notes) if args.notes else None,output=args.output)
+            elif args.command=='semantic-assess':
                 from .model_adapter import model_from_config
                 from .semantic_workflow import assess_research_claim,write_assessment
                 model=model_from_config(load(args.model_config)) if args.model_config else None
