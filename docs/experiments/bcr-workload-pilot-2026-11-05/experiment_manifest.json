@@ -1,0 +1,113 @@
+{
+  "experiment_id": "BCR-WORKLOAD-PILOT-2026-11-05",
+  "design": "Pilot so sánh khối lượng mỗi phiên, giữ quy trình 5 chặng giống nhau; KHÔNG phải phép đo độ chính xác học thuật có ground truth.",
+  "baseline": "dfdd3cbb79e3dbfb49a855702fa00e4bad3b3410",
+  "required_commit_content": "main merged P0/3; if only 06c4978 on machine, note Git tree equivalence and exact HEAD",
+  "claims": [
+    "AC04-C01",
+    "AC05-C01",
+    "AC06-C01",
+    "AC09-C01"
+  ],
+  "case_reference_hints": {
+    "AC04-C01": {
+      "seed_work_ids": [
+        "sn35.145",
+        "sn35.146"
+      ],
+      "seed_repo": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+    },
+    "AC05-C01": {
+      "seed_work_ids": [
+        "mn135"
+      ],
+      "seed_repo": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+    },
+    "AC06-C01": {
+      "seed_work_ids": [
+        "an4.77",
+        "mn136"
+      ],
+      "seed_repo": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4"
+    },
+    "AC09-C01": {
+      "seed_work_ids": [
+        "T02n0099",
+        "T02n0100"
+      ],
+      "seed_repo": "cbeta-org/xml-p5",
+      "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d"
+    }
+  },
+  "arms": {
+    "A": {
+      "session_count": 1,
+      "claims_per_session": 4,
+      "assignments": {
+        "A": [
+          "AC04-C01",
+          "AC05-C01",
+          "AC06-C01",
+          "AC09-C01"
+        ]
+      }
+    },
+    "B": {
+      "session_count": 2,
+      "claims_per_session": 2,
+      "assignments": {
+        "B1": [
+          "AC04-C01",
+          "AC05-C01"
+        ],
+        "B2": [
+          "AC06-C01",
+          "AC09-C01"
+        ]
+      }
+    },
+    "C": {
+      "session_count": 4,
+      "claims_per_session": 1,
+      "assignments": {
+        "C1": [
+          "AC04-C01"
+        ],
+        "C2": [
+          "AC05-C01"
+        ],
+        "C3": [
+          "AC06-C01"
+        ],
+        "C4": [
+          "AC09-C01"
+        ]
+      }
+    }
+  },
+  "control_variables": [
+    "cùng Git tree và pins/index",
+    "cùng claim verbatim từ frozen register",
+    "cùng nguyên tắc 5 chặng",
+    "cùng phạm vi corpus được phép",
+    "cùng chính sách đọc nguồn và rào chắn Gate A/P0/3",
+    "không xem báo cáo/scores của phiên khác"
+  ],
+  "outcomes": [
+    "lỗi định danh/title/quote có bằng chứng",
+    "bỏ sót điều kiện được đối chiếu hậu kiểm",
+    "tự suy rộng/causal/stance chưa chứng minh",
+    "đã tìm/đã mở phản chứng so với ứng viên",
+    "P0/3 status theo item",
+    "thời gian/tokens/calls nếu thực đo",
+    "lượng bằng chứng và nguồn đã mở",
+    "số bước bị bỏ sót"
+  ],
+  "no_ground_truth": "Không suy tỉ lệ semantic accuracy từ A VERIFIED, P0/3 CHECKED hay tự chấm của Codex",
+  "original_source_contract": "Lấy đúng nguyên văn frozen claim register local; chỉ chọn claim có thật, không trích phần kết luận từ báo cáo cũ.",
+  "historical_immutability": "13 source pins; 37 frozen claims; 259 human PENDING; rights/publication closed",
+  "generated_utc": "2026-11-05T07:08:14.585586+00:00"
+}

@@ -1,0 +1,45 @@
+# CODEX — BCR WORKLOAD PILOT: NHÁNH A / RUN A
+
+**Đây là một chat Codex MỚI, độc lập.** Không nối tiếp chat phát triển hay nghiên cứu trước đó.
+
+Thử nghiệm so sánh khối lượng claim mỗi phiên, **không phải tạo kết luận đúng theo đáp án trước**.
+
+**RUN_ID:** `A`  
+**ARM:** `A`  
+**CẦN NGHIÊN CỨU ĐÚNG CÁC CLAIM:** `AC04-C01`, `AC05-C01`, `AC06-C01`, `AC09-C01`.  
+**QUY MÔ:** 4 claim trong phiên này; **không tách sang phiên chat khác** và không thêm claim mới.
+
+## QUY TẮC CỐ ĐỊNH CHO MỌI NHÁNH
+
+- Hoạt động trên `quoctran-2608/BuddhismDocuments-for-AI`, yêu cầu nội dung baseline `dfdd3cbb79e3dbfb49a855702fa00e4bad3b3410`; xác định HEAD thực và ghi SHA/tree. Nếu thiếu merge SHA local mà ở `06c4978...`, báo tính tương đương của Git tree (nếu có chứng cứ), không giả đã chạy main.
+- Đọc `AGENTS.md`, `.codex/skills/buddhist-corpus-research/SKILL.md`, `docs/v2/P0_1_USAGE.md`, `docs/v2/P0_3_USAGE.md`. Local offline theo AGENTS. Kiểm nguồn/index riêng. Không sửa Git tracked tree, pinned source, index, 37 frozen claims hay 259 PENDING. Nếu chỉ có dữ liệu quyền hạn chế, không gửi ra remote ngoài quy trình được phép.
+- Tra **nguyên văn các frozen claim ID được giao** trong hồ sơ nguồn gốc; lưu hash, không tự tạo nội dung mới từ tóm tắt. Nguồn gợi ý trong manifest chỉ là locator, chưa là chứng cứ hỗ trợ.
+- Tuyệt đối **không đọc** báo cáo/nghiên cứu/bảng điểm từ các lần thử trước (bao gồm `bcr-research-agent-evaluation-20261104/`, `bcr-p03-forward-test-20261105/`, `round3-semantic-review` và `P0_3_REPORT_VI.md`) hoặc output của nhóm khác **trước khi khóa báo cáo cuối**. Không được dùng nhận định lịch sử trong prompt để định hướng kết luận.
+- Sử dụng P0/1 ràng nguồn; Gate A phải từ reader/pin thật, không từ JSON tự ghi. Đọc đủ ngữ cảnh trước/sau, không tự coi translation là nhân chứng độc lập. P0/3 là optional checker; khi có loại item phù hợp phải chạy và báo chính xác `CHECKED/REJECTED/UNVERIFIED`. Nếu không có khả năng chạy, ghi lý do, không tạo receipt giả.
+- 5 chặng giống nhau, đúng thứ tự: (1) preflight và A, (2) đọc hiểu nguồn, (3) phân tích claim, (4) phản biện, (5) output-check và báo cáo. Kết thúc mỗi chặng lưu `stage-1..5.json` hoặc `.md` có source IDs, điều kiện được ghi nhận, điều chưa xử lý; ở chặng tiếp chỉ dùng tóm tắt có kiểm và re-open source khi cần, không dùng tóm tắt là nhân chứng mới.
+- Không cố tình giảm tiêu chuẩn chứng cứ khi được giao nhiều claim. Không làm thêm lược đồ đặc quyền ở nhánh nhỏ. Ghi thời gian thật, lượt gọi, token nếu môi trường hiện được số đo; nếu không `NOT_AVAILABLE`. Dùng đường store/output tách biệt theo RUN_ID.
+- Nghiên cứu claim thật bằng suy luận Codex chat được gắn nhãn AI_INTERPRETATION; không tự tuyên bố đây là P0/2 adapter inference. CHECKED không là semantic approval; không biến candidate phản chứng thành phản chứng đã đọc.
+- Không cập nhật AGENTS/skill/code, không PR, không merge. HUMAN_ADJUDICATION_PENDING; DISTRIBUTION_CLEARED=0; PUBLICATION_NOT_PERMITTED.
+
+## YÊU CẦU ĐẦU RA THỐNG NHẤT
+
+Lưu dưới `bcr-workload-experiment-20261105/runs/RUN_ID/` (đường RUN_ID của bạn), không ghi chung/ghi đè:
+- `preflight.json` (HEAD, tree, source pins, index profile, readers, các lỗi môi trường);
+- `stage-1` tới `stage-5` với chứng cứ, giới hạn, nhận định và chống tự lặp kết quả;
+- `findings-vi.md` (mỗi claim: nguyên văn và hash; evidence refs; phân tích; phản biện; kết luận giới hạn; P0/3 status; còn thiếu gì);
+- `run-summary.json` theo dạng JSON dưới đây, có ít nhất `run_id`, `arm`, `claim_ids`, `claim_content_sha256`, `baseline_observed_sha`, `stages_completed`, `per_claim`, `tool_executions`, `resource_usage`, `limitations`;
+- `commands.jsonl` (nếu dùng shell); receipts Gate A và P0/3 không thay thế bởi mô tả tự kể;
+- `SHA256SUMS.txt` hash các tệp mới sau khi hoàn thành. Báo trực tiếp đường output thật.
+
+Trong `per_claim`, mỗi claim cần các trường: `claim_id`, `source_units_verification` (counts VERIFIED/UNVERIFIED/REJECTED), `p03_items` (counts CHECKED/REJECTED/UNVERIFIED), `claim_reading`, `conditions_recorded`, `counterevidence_reviewed`, `unreviewed_candidates`, `assertions_with_provenance`, `known_gaps`, `self_detected_errors`, `notes`. Ghi rõ các thống kê là observed vs inferred.
+
+Không tự chấm semantic accuracy. Nếu môi trường không cho phép xác minh một claim, giữ UNRESOLVED và ghi nguyên nhân, không lén thay claim.
+
+
+## LƯU Ý RIÊNG CHO RUN A
+
+Khi thực hiện từng chặng, xử lý TOÀN BỘ bốn claim cùng chặng, rồi mới chuyển chặng tiếp theo. Không tự tách thành chat riêng hoặc giảm số claim.
+
+- Đầu vào là claim registry khóa của BCR, không lấy `final-report-vi.md` của phiên cũ làm nguyên văn. Nếu không tìm được văn bản/nguồn đủ cho claim, ghi bị chặn; không đổi assignment.
+- Khi đưa nhận định cuối, tách hẳn lỗi do code P0/3 không phát hiện khỏi lỗi do người/agent không ghi đủ điều kiện từ đầu. Trình bày nguồn đã mở, không dùng tri thức mô hình để bổ sung câu kinh.
+- Làm hết phần có thể trong môi trường; kết thúc bằng một báo cáo ngắn nêu vị trí các receipts. Không được đọc thư mục `runs` của nhánh khác trong lúc làm.

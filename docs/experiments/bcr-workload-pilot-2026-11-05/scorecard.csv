@@ -1,0 +1,13 @@
+run_id,arm,claim_id,claim_sha256,baseline_sha,source_units_verified,source_units_unverified,p03_checked,p03_unverified,p03_rejected,objective_source_error_count,condition_omission_incidents,unsupported_generalization_incidents,counterevidence_reviewed_count,counterevidence_candidate_unreviewed_count,new_error_found_y_n,elapsed_seconds,tokens_reported,gate_log_verification,assessment_note,reviewer_evidence_anchor
+A,A,AC04-C01,,,,,,,,,,,,,,,,,,
+A,A,AC05-C01,,,,,,,,,,,,,,,,,,
+A,A,AC06-C01,,,,,,,,,,,,,,,,,,
+A,A,AC09-C01,,,,,,,,,,,,,,,,,,
+B1,B,AC04-C01,,,,,,,,,,,,,,,,,,
+B1,B,AC05-C01,,,,,,,,,,,,,,,,,,
+B2,B,AC06-C01,,,,,,,,,,,,,,,,,,
+B2,B,AC09-C01,,,,,,,,,,,,,,,,,,
+C1,C,AC04-C01,,,,,,,,,,,,,,,,,,
+C2,C,AC05-C01,,,,,,,,,,,,,,,,,,
+C3,C,AC06-C01,,,,,,,,,,,,,,,,,,
+C4,C,AC09-C01,,,,,,,,,,,,,,,,,,
