@@ -1,5 +1,9 @@
 # Sử dụng phần tích hợp E
 
+P0/3 kiểm fields đầu ra và giữ condition/scope/attribution đã ghi:
+[output-check và hướng dẫn chat mới](P0_3_USAGE.md). CHECKED không chứng minh
+đúng toàn văn xuôi hoặc cấp approval/publication.
+
 P0/2 có pipeline AI proposal tùy chọn: [hướng dẫn/model adapter](P0_2_USAGE.md).
 Source verification, AI semantic proposal và authorized approval là ba kết
 quả khác nhau; pipeline mới không cấp approval hoặc quyền công bố.
