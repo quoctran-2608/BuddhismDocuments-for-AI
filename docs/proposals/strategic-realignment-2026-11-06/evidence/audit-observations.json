@@ -1,0 +1,413 @@
+{
+  "audit_date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "baseline": "dfdd3cbb79e3dbfb49a855702fa00e4bad3b3410",
+  "tree": "f56fd057785c8a5ee35c66b4040027fb0150a208",
+  "classification": "SOFTWARE_AND_WORKFLOW_AUDIT_NOT_SEMANTIC_ADJUDICATION",
+  "runtime": "Ubuntu WSL / Python 3.12",
+  "tests": {
+    "modules": [
+      "test_declared_sources",
+      "test_source_span_selection",
+      "test_output_verification",
+      "test_connector_contract"
+    ],
+    "run": 71,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 7.007248349000065
+  },
+  "index_state": [
+    {
+      "corpus": "cbeta-tei",
+      "repo_path": "cbeta/xml-p5",
+      "source_sha": "dbdea41071e1e260ad84b72faefd4587333cf76d",
+      "parser_version": "2026-09-22.6",
+      "evidence_class": "authoritative_structured",
+      "indexed_at": "2026-10-12T04:15:36.274445+00:00",
+      "record_count": 12615232,
+      "relation_count": 0,
+      "variant_count": 1056173,
+      "lemma_count": 0
+    },
+    {
+      "corpus": "suttacentral-bilara",
+      "repo_path": "suttacentral/bilara-data",
+      "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+      "parser_version": "2026-09-23.1-text-role",
+      "evidence_class": "canonical_root",
+      "indexed_at": "2026-10-12T04:08:08.985785+00:00",
+      "record_count": 22985,
+      "relation_count": 0,
+      "variant_count": 4542,
+      "lemma_count": 0
+    },
+    {
+      "corpus": "suttacentral-relations",
+      "repo_path": "suttacentral/sc-data",
+      "source_sha": "cf4fcfb4e2a69cd1e1cd986b0ad02a3e4713d3ab",
+      "parser_version": "2026-09-22.8-sc-cbeta-bridge",
+      "evidence_class": "metadata_relationship",
+      "indexed_at": "2026-10-12T04:18:19.363759+00:00",
+      "record_count": 0,
+      "relation_count": 430436,
+      "variant_count": 0,
+      "lemma_count": 0
+    }
+  ],
+  "search_index_state": [
+    {
+      "component": "text-search",
+      "version": "2026-09-23.cjk-trigram-v1",
+      "rebuilt_at": "2026-10-12T05:06:03.490474+00:00",
+      "record_count": 12616163
+    }
+  ],
+  "source_pin_checks": {
+    "total": 13,
+    "all_match": true,
+    "tracked_clean_before_after": true
+  },
+  "native_source_probes": {
+    "corpus": "suttacentral-bilara",
+    "work_id": "mn135",
+    "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+    "source_sha": "0914c609e49215bb1473199929ee8a2996b423c4",
+    "source_blob_sha": "2d955d4f7f77bd4e95951f9289d3349ae8697c93",
+    "witness": "translation:translation-en-sujato",
+    "probes": [
+      {
+        "segment_id": "mn135:5.5",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:6.5",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:7.4",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:7.5",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:8.4",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:8.5",
+        "native_key_exists": true,
+        "native_length": 0,
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE",
+        "failures": [
+          {
+            "source_path": "translation/en/sujato/sutta/mn/mn135_translation-en-sujato.json",
+            "error": "source format/location or matching contiguous span is unavailable or unsupported"
+          }
+        ],
+        "evidence_id": null
+      },
+      {
+        "segment_id": "mn135:5.2",
+        "native_key_exists": true,
+        "native_length": 145,
+        "status": "VERIFIED",
+        "reason": "SOURCE_VERIFIED",
+        "failures": null,
+        "evidence_id": "e-07bec785f094b747615dbc3b"
+      },
+      {
+        "segment_id": "mn135:5.3",
+        "native_key_exists": true,
+        "native_length": 123,
+        "status": "VERIFIED",
+        "reason": "SOURCE_VERIFIED",
+        "failures": null,
+        "evidence_id": "e-4fe90735e8ce7a2ce9ae7f2b"
+      }
+    ],
+    "title_facts_available": false
+  },
+  "all_or_nothing_probe": {
+    "bindings": [
+      {
+        "status": "UNVERIFIED",
+        "reason": "SOURCE_OR_SEGMENT_UNAVAILABLE"
+      },
+      {
+        "status": "VERIFIED",
+        "reason": "SOURCE_VERIFIED"
+      }
+    ],
+    "supporting_evidence_ids": [],
+    "accepted_claim_ids": [],
+    "limitations": [
+      "DECLARED_SOURCE_UNRESOLVED: no substitute evidence was linked",
+      "Only the resolved contiguous source text is verified; markup/escaped text is not flattened."
+    ]
+  },
+  "same_core_scope_probe": {
+    "timestamp": "2026-11-06T01:27:26.255386+00:00",
+    "fixture_only": true,
+    "all_built_with_profile": "core",
+    "index_state": [
+      {
+        "corpus": "84000-tei",
+        "repo_path": "84000/data-tei",
+        "source_sha": "a30a9d95f800fc5e65155d4f1c98bdee47947064",
+        "parser_version": "2026-09-23.1-note-roles",
+        "evidence_class": "authoritative_structured",
+        "indexed_at": "2026-11-06T01:27:26.249292+00:00",
+        "record_count": 6,
+        "relation_count": 2,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "cbeta-tei",
+        "repo_path": "cbeta/xml-p5",
+        "source_sha": "eb48e56648203accdb3c9a1246ee16cb5e5c2780",
+        "parser_version": "2026-09-22.6",
+        "evidence_class": "authoritative_structured",
+        "indexed_at": "2026-11-06T01:27:26.245387+00:00",
+        "record_count": 2,
+        "relation_count": 0,
+        "variant_count": 0,
+        "lemma_count": 0
+      },
+      {
+        "corpus": "suttacentral-bilara",
+        "repo_path": "suttacentral/bilara-data",
+        "source_sha": "c061dae3f51e120cc73d0508057527a3e58bc1bf",
+        "parser_version": "2026-09-23.1-text-role",
+        "evidence_class": "canonical_root",
+        "indexed_at": "2026-11-06T01:27:26.239528+00:00",
+        "record_count": 2,
+        "relation_count": 0,
+        "variant_count": 1,
+        "lemma_count": 0
+      }
+    ],
+    "singleton_scopes": [
+      {
+        "corpora": [
+          "suttacentral-bilara"
+        ],
+        "source_revisions": [
+          {
+            "corpus": "suttacentral-bilara",
+            "repository": "suttacentral/bilara-data",
+            "source_sha": "c061dae3f51e120cc73d0508057527a3e58bc1bf"
+          }
+        ],
+        "constraints": [
+          "indexed_profile:2026-09-23.1-text-role"
+        ]
+      },
+      {
+        "corpora": [
+          "cbeta-tei"
+        ],
+        "source_revisions": [
+          {
+            "corpus": "cbeta-tei",
+            "repository": "cbeta-org/xml-p5",
+            "source_sha": "eb48e56648203accdb3c9a1246ee16cb5e5c2780"
+          }
+        ],
+        "constraints": [
+          "indexed_profile:2026-09-22.6"
+        ]
+      }
+    ],
+    "combined_error": "mixed index profiles require a separate explicit host scope policy"
+  },
+  "index_protection": {
+    "options": "ro,relatime,norecovery",
+    "unmounted": true,
+    "image_size_mtime_unchanged": true,
+    "index_full_hash_not_performed": true
+  },
+  "history_verification": {
+    "checked_at": "2026-11-06T01:32:55.113565+00:00",
+    "historical_files_unchanged": 1023,
+    "manifests": [
+      {
+        "path": "academic-pilot01-expert-adjudication-preparation/SHA256SUMS.txt",
+        "entries": 239,
+        "sha256": "5205354a0f2bd5e545bd21f587662ecc2afd565b2fb73d85650e07b8c493c5d8"
+      },
+      {
+        "path": "bcr-research-agent-evaluation-20261104/FINAL-SHA256SUMS.txt",
+        "entries": 130,
+        "sha256": "f6b6c7d5e83de2a065bdecdc482c3c358398cf14b52603ac374cb2d035280aa2"
+      },
+      {
+        "path": "bcr-p03-forward-test-20261105/SHA256SUMS.txt",
+        "entries": 270,
+        "sha256": "6b7eaea35e2c86dae771b54d71fc92c2fc316cefeb953afd574715eef3fbf43c"
+      },
+      {
+        "path": "bcr-workload-experiment-20261105/runs/A/SHA256SUMS.txt",
+        "entries": 174,
+        "sha256": "47f55e96960724be4cdec143f6bc0ae0b4dbfaed905b6679e39cac3f1c21e98e"
+      },
+      {
+        "path": "bcr-workload-experiment-20261105/runs/B1/SHA256SUMS.txt",
+        "entries": 180,
+        "sha256": "e4b5072da488443c00b869f5ec082f0547aa5fa97752f83cc96314409654ac1f"
+      }
+    ],
+    "claim_count": 37,
+    "decision_count": 259,
+    "all_pending": true
+  },
+  "local_receipt_hashes": [
+    {
+      "file": "audit_runtime.py",
+      "sha256": "92e0477c107902d8f88ba171b4f7e293393f30ed8886b64970f03a90467406be"
+    },
+    {
+      "file": "readonly_runner.py",
+      "sha256": "a33e3a577bd94470bccc122f134e30227bd1954dd20695910024a0ee490c0188"
+    },
+    {
+      "file": "core_scope_probe.py",
+      "sha256": "32d0761d50ba2c8b393c8642df764208cf984afe0018c1801beff3be84dec930"
+    },
+    {
+      "file": "runtime-audit.json",
+      "sha256": "b6a7e22730c8a4c5db7818decf7032413a062b9d0087cc7388e10a16a17afb78"
+    },
+    {
+      "file": "mount-receipt.json",
+      "sha256": "6908222a874da86790286bd87a3ef710e9461797b587a0a9ac7b0362d43fd4ef"
+    },
+    {
+      "file": "core-scope-probe.json",
+      "sha256": "74a5a2e8d1fc9e898b60ce7b22ff2eb59c00fcab970dd1ec446d27cacab30d2a"
+    },
+    {
+      "file": "history-verification.json",
+      "sha256": "cc4d2af599852677a4199525cb030b11bbb7a224a90f1548463b24bad652538d"
+    }
+  ],
+  "historical_record_anchors": [
+    {
+      "path": "bcr-workload-experiment-20261105/runs/A/findings-vi.md",
+      "sha256": "4b342a14b35cc7061a445737c1d7aeb85b5f40327b921af17c8bb840a4689fbd"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/A/run-summary.json",
+      "sha256": "df5157c12209614e402cc7f302382828eb40789d0e629bc4ba8c79addc1422e1"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/A/LOCK.json",
+      "sha256": "50ecd685ed1de895962df6483219ea2b52c2942c666854207b0fe4e8c60b7684"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/B1/findings-vi.md",
+      "sha256": "c139572dd53b3f68e7c218b0b650ec1a9cc10d2f7c7b1d991b0d5e60abad67e6"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/B1/run-summary.json",
+      "sha256": "c3315def1a9779b8765aae8538616ea6db96359784f839a940f5fe6ff8aa8e3f"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/B1/receipts/stage1-declared-run.json",
+      "sha256": "dd8a22e00f72296264093a3e152d13f755e9857122da63a332509fc243cd4f59"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/B1/receipts/p03-AC05-C01.json",
+      "sha256": "b765c8b98c492049cea221ee4cd32cfb8f15561f539180bc631b9dcbde147979"
+    },
+    {
+      "path": "bcr-workload-experiment-20261105/runs/B1/LOCK.json",
+      "sha256": "c4f07af64faf3068f4d1d969b924f00ec91cf1b7bfc02930c6ee153acfa808e9"
+    },
+    {
+      "path": "bcr-p03-forward-test-20261105/reports/final-report-vi.md",
+      "sha256": "176f8af69e103d5c2d0ad9e39837d6e34a902df1b21b8351082bea93a6ecb796"
+    },
+    {
+      "path": "bcr-p03-forward-test-20261105/empty-native-unit-observations.json",
+      "sha256": "a28cb270cbfadf3b73f1985a5282e2b563780fa3b88ae20dc2c576119d47f3a0"
+    },
+    {
+      "path": "bcr-p03-forward-test-20261105/negative-controls/test-matrix-final.json",
+      "sha256": "39fc51811e5c63ecec50921c939f6ced3ef806d597f99952dc1eb3179d30021c"
+    }
+  ],
+  "not_run": [
+    "full_suite",
+    "full_pilot_classes",
+    "windows_native_full",
+    "live_connector",
+    "work_runtime",
+    "model_inference",
+    "semantic_quality_audit",
+    "batching_comparison",
+    "query_recall_benchmark"
+  ],
+  "real_model_calls": 0,
+  "semantic_truth_verified": false,
+  "academic_approval": false,
+  "publication_authorized": false,
+  "DISTRIBUTION_CLEARED": 0,
+  "adjudication_status": "HUMAN_ADJUDICATION_PENDING",
+  "publication_status": "PUBLICATION_NOT_PERMITTED"
+}
